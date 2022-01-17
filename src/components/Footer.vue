@@ -58,7 +58,7 @@ const linkConfig = computed(() => {
         },
         {
           label: t('footer.footer4'),
-          href: ''
+          href: 'https://drive.google.com/drive/folders/13gk5XzfJmCUyRCmoleWH47REUOyGc4yo?usp=sharing'
         },
         {
           label: t('footer.footer5'),

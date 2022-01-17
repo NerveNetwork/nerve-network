@@ -9,10 +9,10 @@ import OECLogo from '@/assets/img/chainLogo/OEC.png';
 import HarmonyLogo from '@/assets/img/chainLogo/Harmony.png';
 import PolygonLogo from '@/assets/img/chainLogo/Polygon.png';
 import KCCLogo from '@/assets/img/chainLogo/KCC.png';
-import CROLogo from '@/assets/img/chainLogo/cro.png';
+import CROLogo from '@/assets/img/chainLogo/Cronos.png';
 import AVAVLogo from '@/assets/img/chainLogo/AVAX.png';
-import ARBILogo from '@/assets/img/chainLogo/ARBITRUM.png';
-import FTMLogo from '@/assets/img/chainLogo/FTM.png';
+import ARBILogo from '@/assets/img/chainLogo/arbitrum.png';
+import FTMLogo from '@/assets/img/chainLogo/fantom.png';
 
 const isBeta = config.isBeta;
 

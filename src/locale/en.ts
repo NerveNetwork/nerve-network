@@ -17,7 +17,7 @@ const en = {
     footer1: 'Buy NVT',
     footer2: 'Developers',
     footer3: 'Documentation',
-    footer4: 'Design report',
+    footer4: 'Audit report',
     footer5: 'White paper',
     footer6: 'Community',
     footer7: 'More',

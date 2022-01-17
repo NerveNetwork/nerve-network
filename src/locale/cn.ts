@@ -17,7 +17,7 @@ const cn = {
     footer1: '购买NVT',
     footer2: '开发者',
     footer3: '文档',
-    footer4: '设计报告',
+    footer4: '审计报告',
     footer5: '白皮书',
     footer6: '社区',
     footer7: '更多',
