@@ -24,6 +24,8 @@ const fallLang = enLocale.name;
 const lang = storage.get('lang') || navigatorLang;
 
 const i18n = createI18n({
+  legacy: false,
+  globalInjection: true,
   locale: lang, // 默认
   fallbackLocale: fallLang, // 没有默认语言时重置为fallLang
   messages
