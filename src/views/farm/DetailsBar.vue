@@ -3,7 +3,7 @@
     <div class="pc-cont">
       <div class="getLp">
         <p
-          class="click"
+          class="link"
           @click="toAddLiquidity"
           v-if="isNerve && tokenInfo.name"
         >
@@ -165,7 +165,7 @@
         </div>
       </div>
       <div class="d-flex align-items-center space-between mt-8 size-14">
-        <span class="text-7e">{{ $t('farm.farm4') }}</span>
+        <span>{{ $t('farm.farm4') }}</span>
         <span>
           {{
             Number(tokenInfo.tatalStakeTokenUSD)
@@ -175,23 +175,22 @@
         </span>
       </div>
       <div class="d-flex align-items-center space-between mt-8 size-14">
-        <span class="text-7e">{{ $t('farm.farm5') }}</span>
+        <span>{{ $t('farm.farm5') }}</span>
         <span>
           {{ $thousands(tokenInfo.syrupTokenBalance) }}
           {{ tokenInfo.syrupTokenSymbol }}
         </span>
       </div>
       <div
-        class="text-4a mt-8"
+        class="link mt-8"
         @click="toAddLiquidity"
         v-if="isNerve && tokenInfo.name"
       >
         {{ $t('farm.farm7') + ' ' + tokenInfo.name + ' Lp' }}
       </div>
-      <!--      <div class="text-4a mt-8">{{ $t("farm.farm8") }}</div>-->
     </div>
     <lp-dialog
-      v-model:showLPDialog="dialogAddOrMinus"
+      v-model:show="dialogAddOrMinus"
       :loading="loading"
       :balance="balance"
       :addOrMinus="addOrMinus"
@@ -207,7 +206,7 @@ import { onMounted, ref, PropType } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
-import LpDialog from '@/components/LpDialog.vue';
+import LpDialog from './LpDialog.vue';
 import { txAbi } from '@/contractConfig/contractConfig';
 import useContractAddress from '@/views/farm/hooks/useContractAddress';
 import useStoreState from '@/hooks/useStoreState';
@@ -483,8 +482,15 @@ function toAddLiquidity() {
   if (!props.isPool) {
     url = `/liquidity/${lpPairAssetAChainId}-${lpPairAssetAAssetId}/${lpPairAssetBChainId}-${lpPairAssetBAssetId}`;
   } else {
-    const USDT = isBeta ? '5-7' : '9-3';
-    url = `/trading/${USDT}/${stakeTokenChainId}-${stakeTokenAssetId}`;
+    const { chainId, assetId, NULSConfig } = config;
+    if (stakeTokenChainId === chainId && stakeTokenAssetId === assetId) {
+      // 兑换资产为NVT， 使用NULS兑换
+      const NULSInfo = NULSConfig.chainId + '-' + NULSConfig.assetId;
+      url = `/swap/${NULSInfo}/${stakeTokenChainId}-${stakeTokenAssetId}`;
+    } else {
+      const nvtInfo = chainId + '-' + assetId;
+      url = `/swap/${nvtInfo}/${stakeTokenChainId}-${stakeTokenAssetId}`;
+    }
   }
   router.push(url);
 }
@@ -499,7 +505,8 @@ function toAddLiquidity() {
     padding: 20px 20px 18px 18px;
     //border: 1px solid #aab2c9;
     border-radius: 10px;
-    background-color: #313161;
+    background-color: #fff;
+    border: 1px solid #e4efff;
     .count-cont {
       //font-weight: bold;
       font-size: 20px;
@@ -517,12 +524,8 @@ function toAddLiquidity() {
       line-height: 36px;
       text-align: center;
       font-size: 15px;
-      color: $txColor;
       border-radius: 10px;
-      &.btn_disabled {
-        opacity: 0.2;
-        background-color: $btnColor !important;
-      }
+      color: #fff;
     }
   }
   .mt-8 {
@@ -531,7 +534,8 @@ function toAddLiquidity() {
 }
 .farm-details {
   /* height: 148px; */
-  background-color: #21214d;
+  background-color: #fafcff;
+  border-bottom: 1px solid #e4e9f4;
   .pc-cont {
     padding: 20px 40px 20px 30px;
     //border-bottom: 1px solid #e4efff;
@@ -541,9 +545,6 @@ function toAddLiquidity() {
     .getLp {
       width: 200px;
       p {
-        font-size: 16px;
-        font-weight: 500;
-        color: #fcfcfc;
         line-height: 24px;
         margin-top: 8px;
         //cursor: not-allowed;
@@ -564,8 +565,8 @@ function toAddLiquidity() {
         margin-left: 60px;
         height: 108px;
         padding: 20px;
-        background: #313161;
-        //border: 1px solid #e4efff;
+        background: #fff;
+        border: 1px solid #e4efff;
         border-radius: 10px;
         .left {
           max-width: 200px;
@@ -587,7 +588,7 @@ function toAddLiquidity() {
         .btns {
           width: 90px;
           height: 38px;
-          background: #4a5ef2;
+          //background: #4a5ef2;
           border-radius: 6px;
         }
       }

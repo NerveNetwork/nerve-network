@@ -53,7 +53,9 @@
                 ></detail-bar>
               </collapse-transition>
             </div>
-            <div class="no-data" v-if="!liquidityList.length">No Data</div>
+            <div class="no-data" v-if="!liquidityList.length">
+              {{ $t('public.public19') }}
+            </div>
           </div>
           <pagination
             v-model:pager="pager"

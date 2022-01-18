@@ -1,22 +1,27 @@
 <template>
   <el-dialog
-    title=""
+    :title="
+      addOrMinus === LpDialogType.Add
+        ? $t('farm.farm20') + 'LP'
+        : $t('farm.farm10') + 'LP'
+    "
     center
     width="470px"
     custom-class="add-minus-dialog"
-    v-model="show"
+    v-model="visible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :show-close="false"
+    @closed="close"
   >
-    <div v-loading="loading" element-loading-background="rgba(24, 24, 55, 0.8)">
-      <div class="titles">
+    <div v-loading="loading">
+      <!--      <div class="titles">
         {{
           addOrMinus === LpDialogType.Add
             ? $t('farm.farm20')
             : $t('farm.farm10')
         }}LP
-      </div>
+      </div>-->
       <div class="infos">
         <div class="in flex-between">
           <span>
@@ -37,7 +42,7 @@
         <div class="clear"></div>
         <div class="to">
           <el-input class="no-border" placeholder="0.0" v-model="numberValue">
-            <template #append><span @click="clickMax">Max</span></template>
+            <template #append><span @click="clickMax">MAX</span></template>
           </el-input>
           <span class="fr lp" v-if="lpName">{{ lpName }}</span>
         </div>
@@ -61,107 +66,90 @@
   </el-dialog>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch, computed, PropType } from 'vue';
+<script lang="ts" setup>
+import { ref, watch, computed } from 'vue';
 import { Minus } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
-import { LpDialogType } from '@/views/farm/types';
+import { LpDialogType } from './types';
 
-export default defineComponent({
-  props: {
-    showLPDialog: Boolean,
-    balance: {
-      type: String,
-      default: ''
-    },
-    loading: Boolean,
-    addOrMinus: {
-      type: String as PropType<LpDialogType>
-    },
-    lpName: String,
-    decimal: [String, Number]
+const props = defineProps<{
+  show: boolean;
+  balance: string;
+  loading: boolean;
+  addOrMinus: LpDialogType;
+  lpName: string;
+  decimal: number;
+}>();
+
+const emit = defineEmits(['update:show', 'confirm']);
+
+const { t } = useI18n();
+const visible = computed({
+  get() {
+    return props.show;
   },
-  emits: ['confirm', 'update:showLPDialog'],
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const show = ref(false);
-    watch(
-      () => props.showLPDialog,
-      val => (show.value = val),
-      { immediate: true }
-    );
-
-    const disableTx = computed(() => {
-      return !!(!Number(numberValue.value) || amountErrorTip.value);
-    });
-
-    const numberValue = ref('');
-
-    const amountErrorTip = ref('');
-    watch(
-      () => numberValue.value,
-      val => {
-        if (val) {
-          let decimals = props.decimal || 0;
-          let patrn: RegExp;
-          if (!decimals) {
-            patrn = new RegExp('^([1-9][\\d]*|0)(\\.[\\d]*)?$|(^\\.[\\d]*$)');
-            // patrn = new RegExp("^([1-9][\\d]{0,20}|0)(\\.[\\d])?$");
-          } else {
-            // patrn = new RegExp(
-            //   "^([1-9][\\d]{0,20}|0)(\\.[\\d]{0," + decimals + "})?$"
-            // );
-            patrn = new RegExp(
-              '^([1-9][\\d]*|0)(\\.[\\d]{0,' +
-                decimals +
-                '})?$|(^\\.[\\d]{0,' +
-                decimals +
-                '}$)'
-            );
-          }
-          if (!patrn.exec(val)) {
-            amountErrorTip.value = t('transfer.transfer17') + decimals;
-          } else if (
-            !Number(props.balance) ||
-            Minus(props.balance, val).toNumber() < 0
-          ) {
-            amountErrorTip.value = t('transfer.transfer15');
-          } else {
-            amountErrorTip.value = '';
-          }
-        }
-      }
-    );
-
-    function clickMax() {
-      if (!Number(props.balance)) return;
-      numberValue.value = props.balance;
-    }
-
-    function closeAddOrMinus() {
-      emit('update:showLPDialog', false);
-      numberValue.value = '';
-    }
-    function confirmAddOrMinus() {
-      emit('confirm', numberValue.value);
-      numberValue.value = '';
-    }
-    return {
-      show,
-      numberValue,
-      amountErrorTip,
-      disableTx,
-      clickMax,
-      closeAddOrMinus,
-      confirmAddOrMinus,
-      LpDialogType
-    };
+  set(val) {
+    emit('update:show', val);
   }
 });
+
+const numberValue = ref('');
+const amountErrorTip = ref('');
+const disableTx = computed(() => {
+  return !!(!Number(numberValue.value) || amountErrorTip.value);
+});
+watch(
+  () => numberValue.value,
+  val => {
+    if (val) {
+      let decimals = props.decimal || 0;
+      let patrn: RegExp;
+      if (!decimals) {
+        patrn = new RegExp('^([1-9][\\d]*|0)(\\.[\\d]*)?$|(^\\.[\\d]*$)');
+      } else {
+        patrn = new RegExp(
+          '^([1-9][\\d]*|0)(\\.[\\d]{0,' +
+            decimals +
+            '})?$|(^\\.[\\d]{0,' +
+            decimals +
+            '}$)'
+        );
+      }
+      if (!patrn.exec(val)) {
+        amountErrorTip.value = t('transfer.transfer17') + decimals;
+      } else if (
+        !Number(props.balance) ||
+        Minus(props.balance, val).toNumber() < 0
+      ) {
+        amountErrorTip.value = t('transfer.transfer15');
+      } else {
+        amountErrorTip.value = '';
+      }
+    }
+  }
+);
+
+function clickMax() {
+  if (!Number(props.balance)) return;
+  numberValue.value = props.balance;
+}
+
+function closeAddOrMinus() {
+  emit('update:show', false);
+  numberValue.value = '';
+}
+function confirmAddOrMinus() {
+  emit('confirm', numberValue.value);
+  numberValue.value = '';
+}
+function close() {
+  amountErrorTip.value = '';
+  numberValue.value = '';
+}
 </script>
 
 <style lang="scss">
-@import '../assets/css/style.scss';
+@import '../../assets/css/style.scss';
 .add-minus-dialog {
   border-radius: 10px;
   .el-dialog__header {
@@ -182,25 +170,19 @@ export default defineComponent({
       width: 100%;
       height: 98px;
       padding: 15px 20px;
-      background: #242449;
-      //border: 1px solid #e3eeff;
+      //background: #242449;
+      border: 1px solid #e4e9f4;
       border-radius: 15px;
       position: relative;
       .in {
         font-size: 14px;
         font-weight: 500;
-        color: #7e87c2;
+        color: #5e6983;
         margin-bottom: 4px;
       }
       .to {
         display: flex;
         align-items: center;
-        //:deep(.el-input) {
-        //  flex: 1;
-        //  input {
-        //    background-color: transparent;
-        //  }
-        //}
         .el-input {
           flex: 1;
           .el-input__inner {
@@ -216,8 +198,7 @@ export default defineComponent({
           span {
             display: inline-block;
             padding: 3px 6px;
-            color: $labelColor;
-            background-color: #34345a;
+            color: #608fff;
             cursor: pointer;
             border-radius: 5px;
           }
@@ -246,11 +227,8 @@ export default defineComponent({
     .el-button {
       width: 185px;
       height: 48px;
-      background: #ffffff;
-      border: 1px solid #4a5ef2;
     }
     .el-button--primary {
-      background: #4a5ef2;
       margin-left: 20px;
     }
   }

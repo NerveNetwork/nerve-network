@@ -36,6 +36,7 @@
           v-for="item in list"
           :key="item.assetKey"
           @click="changeSelect(item.assetKey)"
+          :class="{ 'disable-item': noCancel(item.chainId, item.assetId) }"
         >
           <div class="flex-center">
             <symbol-icon :icon="item.symbol"></symbol-icon>
@@ -74,6 +75,7 @@
 import { defineComponent, PropType, computed, watch, ref } from 'vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import _ from 'lodash';
+import config from '@/config';
 // import VirtualList from "@/components/VirtualList.vue";
 
 import { AssetItemType } from './types';
@@ -146,6 +148,8 @@ export default defineComponent({
       }
     }
     function changeSelect(key: string) {
+      const nvtKey = config.chainId + '-' + config.assetId;
+      if (key === nvtKey) return;
       backupList.map(v => {
         if (v.assetKey === key) {
           v.added = !v.added;
@@ -178,13 +182,19 @@ export default defineComponent({
       // virtualList.value?.resetScroll();
     }
 
+    // 不能取消勾选
+    function noCancel(assetChainId: number, assetsId: number) {
+      return config.chainId === assetChainId && config.assetId === assetsId;
+    }
+
     return {
       list,
       showDialog,
       changeSelect,
       searchVal,
       closed,
-      confirm
+      confirm,
+      noCancel
     };
   }
 });
@@ -273,7 +283,7 @@ export default defineComponent({
         }
         span {
           font-size: 14px;
-          color: $labelColor;
+          //color: $labelColor;
           font-weight: 400;
         }
       }
@@ -303,6 +313,23 @@ export default defineComponent({
             border-color: #409eff;
             &:after {
               border-color: #fff;
+            }
+          }
+        }
+      }
+      &.disable-item {
+        cursor: not-allowed;
+        .el-checkbox {
+          .el-checkbox__input .el-checkbox__inner {
+            cursor: not-allowed !important;
+            &:after {
+              cursor: not-allowed !important;
+            }
+          }
+          &.is-checked {
+            .el-checkbox__inner {
+              background-color: #dcdfe6 !important;
+              border-color: #dcdfe6;
             }
           }
         }

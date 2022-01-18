@@ -151,7 +151,7 @@ const validateJoinAmount = async (rule: any, value: any, callback: any) => {
       )
     );
   } else if (!Number(currentCurrency.value.available)) {
-    callback(new Error(t('tips.tips23')));
+    callback(new Error(t('staking.staking55')));
   } else if (Number(value) > maxAvailable) {
     callback(
       new Error(

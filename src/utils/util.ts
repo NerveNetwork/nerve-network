@@ -4,6 +4,7 @@ import config from '@/config';
 import storage from '@/utils/storage';
 import { AssetItem, HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import nerve from 'nerve-sdk-js';
 
 interface Obj {
   [key: string]: unknown;
@@ -300,4 +301,10 @@ export function openExplorer(type: string, query: string) {
     url += '/consensus/info?hash=' + query;
   }
   window.open(url);
+}
+
+// 验证是否是nerve地址
+export function isValidNerveAddress(address: string) {
+  const result = nerve.verifyAddress(address);
+  return !!(result && result.right && result.chainId === config.chainId);
 }

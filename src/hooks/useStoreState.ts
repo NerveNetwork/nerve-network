@@ -15,12 +15,15 @@ export default function useStoreState() {
   const wrongChain = computed(() => store.getters.wrongChain);
   // L1网络地址
   const currentAddress = computed(() => store.getters.currentAddress);
+  // nvt价格
+  const nvtPrice = computed(() => store.state.nvtPrice);
   return {
     nerveAddress,
     assetsList,
     addressInfo,
     chain,
     wrongChain,
-    currentAddress
+    currentAddress,
+    nvtPrice
   };
 }

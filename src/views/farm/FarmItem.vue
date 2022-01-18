@@ -65,20 +65,20 @@
           </div>
           <div class="farm-info">
             <div class="farm-info_item">
-              <div class="text-7e">{{ $t('farm.farm2') }}</div>
+              <div>{{ $t('farm.farm2') }}</div>
               <div class="mt-8 size-15">
                 {{ $thousands(item.pendingReward) }}
               </div>
             </div>
             <div class="farm-info_item">
-              <div class="text-7e">APR</div>
+              <div>APR</div>
               <div class="mt-8 size-15">
                 {{ Number(item.apr) ? item.apr + '%' : '--' }}
               </div>
             </div>
           </div>
         </div>
-        <div class="farm-option text-4a size-14">
+        <div class="farm-option link size-14">
           {{ $t('farm.farm6') }}
         </div>
       </div>
@@ -146,7 +146,6 @@ function handleLoading(status: boolean) {
   .farm-item_cont {
     display: flex;
     padding: 15px 15px 15px 15px;
-    border-bottom: 1px solid #202049;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
@@ -201,7 +200,7 @@ function handleLoading(status: boolean) {
     font-family: PingFang SC;
     .title {
       height: 90px;
-      border-bottom: 1px solid #20204a;
+      border-bottom: 1px solid #e4e9f4;
       display: flex;
       align-items: center;
       padding: 0 30px;

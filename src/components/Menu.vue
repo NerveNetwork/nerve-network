@@ -7,7 +7,10 @@
         @click="emit('clickMenu')"
       >
         <a v-if="item.url" :href="item.url" target="_blank">{{ item.label }}</a>
-        <template v-else>
+        <router-link v-else :to="'/' + item.key">
+          {{ item.label }}
+        </router-link>
+<!--        <template v-else>
           <router-link v-if="!item.needAuth" :to="'/' + item.key">
             {{ item.label }}
           </router-link>
@@ -22,7 +25,7 @@
               <a href="javascript:" @click="authClick">{{ item.label }}</a>
             </auth-button>
           </template>
-        </template>
+        </template>-->
       </div>
     </template>
     <div class="lang-warp mobile" @click="changeLang">

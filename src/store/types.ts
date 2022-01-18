@@ -39,6 +39,7 @@ export interface Account {
   farms?: AccountFarm[];
   visiableAssets?: string[];
   txs?: TxInfo[];
+  slippageTolerance?: string;
 }
 
 export interface TxInfo {
@@ -57,4 +58,5 @@ export interface State {
   destroyAddress: string | undefined;
   feeAddress: string | undefined;
   assetList: AssetItem[] | [];
+  nvtPrice: string;
 }

@@ -46,19 +46,20 @@ const en = {
     public19: 'No Data',
     public20: 'Height',
     public21: 'CreateTime',
-    public22: 'Status'
+    public22: 'Status',
+    public23: 'The last 20 transactions will be displayed below'
   },
   home: {
-    home1: '去中心化网络，高效Layer2',
+    home1: 'Decentralized digital asset service network',
     home2:
-      '旨在打破孤立的区块链价值，建立跨链资产交换网络，为Defi应用生态提供一切必要的底层支持。让每一位数字资产持有者体验真正安全、免费、透明的 Defi 应用服务。',
+      'It aims to break the isolated blockchain value, establish a cross-chain asset exchange network, and provide all necessary underlying support for the Defi application ecosystem. Let every digital asset holder experience a truly safe, free and transparent Defi application service.',
     home3: '2 second confirmation, no rollback, 0 transaction fee',
     home4: 'Asset cross-chain, minute-level, low handling fee',
-    home5: '进入兑换',
-    home6: '进入Bridge',
-    home7: '总交易量',
-    home8: '最高APR',
-    home9: '合作伙伴'
+    home5: 'Launch Swap ',
+    home6: 'Launch Bridge',
+    home7: 'Total Volume',
+    home8: 'Highest APR',
+    home9: 'Partners'
   },
   assets: {
     assets1: 'Layer2 Asset',
@@ -247,7 +248,7 @@ const en = {
     staking51:
       'Estimated rewards are calculated based on deposit demand over a rolling 30 day period',
     staking52: 'Operation',
-    staking53: 'Item',
+    staking53: ' Item',
     staking54: 'Tips',
     staking55: 'This asset has no available balance'
   },
@@ -294,7 +295,7 @@ const en = {
     createNode13: 'Deposit must be numbered',
     createNode14: 'The balance is insufficient',
     createNode15: 'Deposit not less than 200000 and not more than 100000000',
-    createNode16: '创建地址有过红牌惩罚不能再创建节点'
+    createNode16: 'The creation of the address has a red card penalty and can no longer create a node'
   },
   nodeDetail: {
     nodeDetail1: 'Unregister Node',

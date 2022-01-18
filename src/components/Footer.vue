@@ -12,7 +12,7 @@
             </el-button>
           </p>
         </div>
-        <p class="copy-right pc">Copyright © 2022 NERVE</p>
+        <p class="copy-right pc">Copyright 2022 © All rights Reserved. Nerve</p>
       </div>
       <div class="right flex-between">
         <ul v-for="linkItem in linkConfig" :key="linkItem.label">
@@ -25,7 +25,7 @@
           </li>
         </ul>
       </div>
-      <p class="copy-right mobile">Copyright © 2022 NERVE</p>
+      <p class="copy-right mobile">Copyright 2022 © All rights Reserved. Nerve</p>
     </div>
   </div>
 </template>
@@ -114,12 +114,7 @@ function buyNvt() {
   );
 }
 
-const { assetsList } = useStoreState();
-const nvtPrice = computed(() => {
-  if (!assetsList.value.length) return 0;
-  const nvt = assetsList.value.find(v => v.symbol === 'NVT');
-  return nvt?.usdPrice || 0;
-});
+const { nvtPrice } = useStoreState();
 </script>
 
 <style lang="scss">
@@ -127,7 +122,7 @@ const nvtPrice = computed(() => {
   //background: #fafcff;
   background-color: #fff;
   border: 1px solid #e4e9f4;
-  padding: 30px 0 40px;
+  padding: 25px 0 30px;
 
   .flex-between {
     align-items: start;
@@ -135,7 +130,7 @@ const nvtPrice = computed(() => {
 
   .left {
     .top {
-      margin-bottom: 50px;
+      margin-bottom: 40px;
 
       .logo {
         width: 120px;
@@ -176,6 +171,7 @@ const nvtPrice = computed(() => {
 
   .right {
     width: 50%;
+    padding-right: 100px;
 
     li {
       font-size: 14px;
@@ -204,6 +200,7 @@ const nvtPrice = computed(() => {
     }
     .left, .right {
       width: 100%;
+      padding: 0;
     }
     .left .top {
       margin-bottom: 20px;

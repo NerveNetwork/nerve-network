@@ -43,7 +43,7 @@ export default function useBroadcastNerveHex() {
     });
     console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
-    if (res.hash) {
+    if (res && res.hash) {
       const txInfo: TxInfo = {
         type,
         hash: res.hash,
@@ -78,7 +78,7 @@ export default function useBroadcastNerveHex() {
     });
     console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
-    if (res.hash) {
+    if (res && res.hash) {
       const txInfo: TxInfo = {
         type,
         hash: res.hash,

@@ -79,7 +79,7 @@ export default function useAssetsList() {
         })
       );
     } else {
-      const defaultSymbol = ['ETH', 'USDT', 'USDC'];
+      const defaultSymbol = ['NVT'];
       result = sortDataByValue.filter(
         v => defaultSymbol.indexOf(v.symbol) > -1
       );

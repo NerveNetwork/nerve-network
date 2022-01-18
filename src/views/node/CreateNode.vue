@@ -69,7 +69,7 @@ import { ElForm } from 'element-plus';
 import nerve from 'nerve-sdk-js';
 import { useI18n } from 'vue-i18n';
 import { useToast } from 'vue-toastification';
-import { timesDecimals } from '@/utils/util';
+import { timesDecimals, isValidNerveAddress } from '@/utils/util';
 import { getPunishList } from '@/service/api';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
@@ -91,13 +91,10 @@ const formData = reactive({
   amount: ''
 });
 const checkRewardAddress = (rule: any, value: any, callback: any) => {
-  let patrn = { right: '' };
-  if (value && value.length > 5) {
-    patrn = nerve.verifyAddress(value);
-  }
+  const isValidAddress = isValidNerveAddress(value);
   if (!value) {
     return callback(new Error(t('createNode.createNode6')));
-  } else if (!patrn.right) {
+  } else if (!isValidAddress) {
     return callback(new Error(t('createNode.createNode10')));
   } else {
     formData.blockAddress &&
@@ -106,17 +103,14 @@ const checkRewardAddress = (rule: any, value: any, callback: any) => {
   }
 };
 const checkBlockAddress = (rule: any, value: any, callback: any) => {
-  let patrn = { right: '' };
-  if (value && value.length > 5) {
-    patrn = nerve.verifyAddress(value);
-  }
+  const isValidAddress = isValidNerveAddress(value);
   if (!value) {
     return callback(new Error(t('createNode.createNode7')));
   } else if (value === props.address) {
     return callback(new Error(t('createNode.createNode8')));
   } else if (value === formData.rewardAddress) {
     return callback(new Error(t('createNode.createNode11')));
-  } else if (!patrn.right) {
+  } else if (!isValidAddress) {
     return callback(new Error(t('createNode.createNode12')));
   } else {
     callback();

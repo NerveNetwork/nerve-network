@@ -1,9 +1,12 @@
 <template>
-  <div :class="['header', route.path === '/' ? 'home-header' : '']" @click="showMenu = false">
+  <div
+    :class="['header', route.path === '/' ? 'home-header' : '']"
+    @click="showMenu = false"
+  >
     <div class="flex-between w1200">
       <div class="left">
-        <div class="logo" @click="toUrl('home')">
-          <img src="./../assets/img/nervelogo.svg" alt="" />
+        <div class="logo" @click="router.push('/')">
+          <img src="../../assets/img/nervelogo.svg" alt="" />
         </div>
         <Menu class="pc-menu" :address="address" :nerveAddress="nerveAddress" />
       </div>
@@ -22,112 +25,51 @@
               <img :src="chainLogo" alt="" />
               丨
             </div>
-            <img src="../assets/img/nerveIcon.png" alt="" />
+            <img src="../../assets/img/nerveIcon.png" alt="" />
             <span>
               {{ superLong(nerveAddress, 5) }}
             </span>
           </div>
-<!--          <div class="address-wrap" v-else>
-            <SwitchChain v-model="showSwitchChain" :chainId="chainId">
-              <template v-if="wrongChain">
-                <p class="wrong-chain" @click="showSwitchChain = true">
-                  {{ $t('public.public18') }}
-                </p>
-              </template>
-              <template v-else>
-                <div class="chain-wrap" @click="showSwitchChain = true">
-                  <img :src="chainLogo" alt="" />
-                  <el-icon style="margin-right: 5px"><caret-bottom /></el-icon>
-                  <span @click.stop="manageAccount = true">
-                    {{ superLong(nerveAddress, 5) }}
-                  </span>
-                </div>
-              </template>
-            </SwitchChain>
-          </div>-->
+          <!--          <div class="address-wrap" v-else>
+                      <SwitchChain v-model="showSwitchChain" :chainId="chainId">
+                        <template v-if="wrongChain">
+                          <p class="wrong-chain" @click="showSwitchChain = true">
+                            {{ $t('public.public18') }}
+                          </p>
+                        </template>
+                        <template v-else>
+                          <div class="chain-wrap" @click="showSwitchChain = true">
+                            <img :src="chainLogo" alt="" />
+                            <el-icon style="margin-right: 5px"><caret-bottom /></el-icon>
+                            <span @click.stop="manageAccount = true">
+                              {{ superLong(nerveAddress, 5) }}
+                            </span>
+                          </div>
+                        </template>
+                      </SwitchChain>
+                    </div>-->
         </div>
         <span @click="switchLang" class="click pc" style="margin-left: 10px">
           {{ lang }}
         </span>
         <img
           class="menu-icon mobile click"
-          src="../assets/img/icon-menu.svg"
+          src="../../assets/img/icon-menu.svg"
           alt=""
           @click.stop="toggleShowMenu"
         />
       </div>
-      <div class="custom-overlay">
-        <el-dialog
-          title="Connect to a wallet"
-          custom-class="connect-dialog"
-          :show-close="false"
-          v-model="showConnect"
-          :append-to-body="true"
-          @closed="showConnectDialog(false)"
-        >
-          <div class="list">
-            <div
-              class="connect-btn"
-              v-for="(item, index) in providerList"
-              :key="index"
-              @click="connectProvider(item.provider)"
-            >
-              {{ item.name }}
-              <img class="fr" :src="item.src" alt="" />
-            </div>
-          </div>
-        </el-dialog>
-      </div>
-      <div class="custom-overlay">
-        <el-dialog
-          :title="$t('public.public6')"
-          custom-class="account-manage"
-          :show-close="false"
-          v-model="manageAccount"
-          :append-to-body="true"
-        >
-          <div class="content">
-            <div class="top">
-              <p>
-                <span class="pc">{{ superLong(nerveAddress, 8) }}</span>
-                <span class="mobile">{{ superLong(nerveAddress, 7) }}</span>
-              </p>
-              <p>
-                <span @click="copy(nerveAddress)">
-                  <i class="iconfont icon-fuzhi"></i>
-                </span>
-                <span @click="openExplorer('address', nerveAddress)">
-                  <i class="iconfont icon-tiaozhuanlianjie"></i>
-                </span>
-              </p>
-            </div>
-            <div class="bottom tc">
-              <el-button type="primary" @click="disconnectProvider">
-                {{ $t('public.public7') }}
-              </el-button>
-            </div>
-          </div>
-          <div class="txs">
-            <p>{{ $t('public.public23') }}</p>
-            <template v-if="accountTxs.length">
-              <div class="tx-item flex" v-for="item in accountTxs" :key="item.hash">
-                <span
-                  class="hash link"
-                  @click="openExplorer('hash', item.hash)"
-                >
-                  {{ superLong(item.hash) }}
-                </span>
-                <span class="create-time">{{ formatTime(item.time) }}</span>
-                <span class="status">
-                  <span class="iconfont icon-chenggong" v-if="item.status === 1" style="color:#94A6CE;"></span>
-                  <el-icon color="#2688F7" class="is-loading" v-else><loading /></el-icon>
-                </span>
-              </div>
-            </template>
-            <p v-else class="no-data">{{ $t('public.public19') }}</p>
-          </div>
-        </el-dialog>
-      </div>
+      <ConnectWallet
+        v-model:show="showConnect"
+        @changeShow="showConnectDialog"
+        @connect="connectProvider"
+      />
+      <AccountManage
+        v-model:show="manageAccount"
+        :address="nerveAddress"
+        @disconnect="disconnectProvider"
+        :txList="accountTxs"
+      />
     </div>
     <MobileMenu v-model:show="showMenu" :address="address" :nerveAddress="nerveAddress" />
   </div>
@@ -137,32 +79,27 @@
 import { ref, watch, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import Menu from './Menu.vue';
-import MobileMenu from './MobileMenu.vue';
-import useEthereum, { providerList } from '@/hooks/useEthereum';
-import useCopy from '@/hooks/useCopy';
+import Menu from '../Menu.vue';
+import ConnectWallet from './ConnectWallet.vue';
+import AccountManage from './AccountManage.vue';
+import MobileMenu from '../MobileMenu.vue';
+import useEthereum from '@/hooks/useEthereum';
 import useLang from '@/hooks/useLang';
-import AuthButton from './AuthButton.vue';
-import SwitchChain from './SwitchChain.vue';
+import AuthButton from '../AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-import dayjs from 'dayjs';
 import { getTx } from '@/service/api';
-import { superLong, getCurrentAccount, isNULSOrNERVE, openExplorer } from '@/utils/util';
+import { superLong, getCurrentAccount, isNULSOrNERVE } from '@/utils/util';
 import { Account, TxInfo } from '@/store/types';
 import storage from '@/utils/storage';
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
-// console.log(store, 66);
-// const showConnect = store.state.showConnect;
-const { address, chainId, initProvider, connect, disconnect } =
-  useEthereum();
-const { nerveAddress, wrongChain: notL1Chain, addressInfo } = useStoreState();
-initProvider();
 
-const { copy } = useCopy();
+const { address, chainId, initProvider, connect, disconnect } = useEthereum();
+const { nerveAddress, wrongChain: notL1Chain } = useStoreState();
+initProvider();
 
 const { lang, switchLang } = useLang();
 
@@ -247,16 +184,6 @@ const chainLogo = computed(() => {
   return logo;
 });
 
-const showSwitchChain = ref(false);
-
-function toUrl(name: string, url = '') {
-  if (url) {
-    window.open(url);
-  } else {
-    router.push({ name: name });
-  }
-}
-
 const showMenu = ref(false);
 function toggleShowMenu() {
   showMenu.value = !showMenu.value;
@@ -271,9 +198,7 @@ onMounted(() => {
   checkTxStatus();
 });
 const accountTxs = ref<TxInfo[]>([]);
-function formatTime(time: number) {
-  return dayjs(time).format('MM-DD HH:mm');
-}
+
 async function checkTxStatus() {
   if (!address.value || !nerveAddress.value) return;
   const account = getCurrentAccount(address.value);
@@ -282,11 +207,11 @@ async function checkTxStatus() {
     isQuery = true;
     try {
       accountTxs.value = [...txs];
-      const pendingTx = txs.filter(v => v.status === 0);
+      const pendingTx = txs.filter((v: TxInfo) => v.status === 0);
       if (pendingTx.length) {
         const newTxs = await pollingTx(pendingTx);
         newTxs.map(tx => {
-          txs.map(v => {
+          txs.map((v: TxInfo) => {
             if (tx.hash === v.hash) {
               v.status = tx.status;
             }
@@ -324,7 +249,7 @@ async function pollingTx(txs: TxInfo[]) {
 </script>
 
 <style lang="scss">
-@import '../assets/css/style.scss';
+@import '../../assets/css/style.scss';
 .header {
   box-shadow: 0 0 10px rgb(0 0 0 / 10%);
   .w1200 {
@@ -380,7 +305,9 @@ async function pollingTx(txs: TxInfo[]) {
     .auth-button {
       height: 100%;
       .el-button {
+        width: 100%;
         height: 100%;
+        border-radius: 18px;
         min-height: auto;
         padding: 0 20px;
       }

@@ -12,10 +12,11 @@
             <div class="address">
               {{ $t('assets.assets3') }}
               {{ nerveAddress }}
-              <i class="iconfont icon-fuzhi" @click="$copy(nerveAddress)"></i>
+              <i class="iconfont icon-fuzhi" @click="$copy(nerveAddress)" v-if="nerveAddress"></i>
             </div>
             <i
               class="iconfont icon-tianjia"
+              v-if="nerveAddress"
               @click="showAssetManage = true"
             ></i>
           </div>
@@ -132,15 +133,15 @@
       <div class="p-24 address-wrap flex-center">
         <div class="address">
           {{ $t('assets.assets3') }}
-          <span class="text-7e size-14">
+          <span class="size-14">
             {{ superLong(nerveAddress, 9) }}
           </span>
-          <i class="iconfont icon-fuzhi" @click="$copy(nerveAddress)"></i>
+          <i class="iconfont icon-fuzhi" @click="$copy(nerveAddress)" v-if="nerveAddress"></i>
         </div>
-        <i class="iconfont icon-tianjia" @click="showAssetManage = true"></i>
+        <i class="iconfont icon-tianjia" @click="showAssetManage = true" v-if="nerveAddress"></i>
       </div>
       <el-empty
-        description="No Data"
+        :description="$t('public.public19')"
         v-loading="loading"
         v-if="!selectAssets.length"
       />
@@ -162,7 +163,7 @@
                 <div class="font-bold align-right" style="font-size: 15px">
                   {{ $thousands(item.number) }}
                 </div>
-                <div class="size-13 text-7e align-right">
+                <div class="size-13 align-right">
                   ≈{{ $thousands(item.valuation) }}
                 </div>
               </div>
@@ -286,12 +287,12 @@ export default defineComponent({
       currentAddress: address
     } = useStoreState();
 
-    const router = useRouter();
+    /*const router = useRouter();
     onMounted(() => {
       if (!nerveAddress.value) {
         router.push('/');
       }
-    });
+    });*/
 
     const {
       loading,
@@ -423,6 +424,7 @@ export default defineComponent({
   background-color: $BgColor;
   overflow: hidden;
   border-radius: 10px;
+  border: 1px solid #e4e9f4;
 
   .address-wrap {
     justify-content: space-between;
@@ -489,6 +491,7 @@ export default defineComponent({
   }
   .option-btn {
     padding: 20px 0;
+    border-bottom: 1px solid #e4e9f4;
     //background-color: #313161;
     .btn-cont {
       display: flex;

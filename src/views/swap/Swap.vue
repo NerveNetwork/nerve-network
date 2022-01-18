@@ -158,7 +158,12 @@
         </div>
       </div>
     </div>
-    <el-dialog
+    <SwapSetting
+      v-model:show="settingDialog"
+      v-model:slippageTolerance="protectPercent"
+      @close="setUserSlippage"
+    />
+<!--    <el-dialog
       :title="$t('trading.trading11')"
       custom-class="swap-setting"
       :show-close="false"
@@ -190,7 +195,7 @@
           <div class="text-error" v-if="protectError">{{ protectError }}</div>
         </div>
       </div>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 
@@ -211,6 +216,7 @@ import {
 import CustomInput from '@/components/CustomInput.vue';
 import AuthButton from '@/components/AuthButton.vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
+import SwapSetting from './SwapSetting.vue';
 import {
   Division,
   divisionAndFix,
@@ -220,7 +226,8 @@ import {
   Times,
   timesDecimals,
   tofix,
-  formatFloat
+  formatFloat,
+  getCurrentAccount
 } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
 import { getWholeTradeExactIn } from '@/service/api';
@@ -231,13 +238,16 @@ import useStoreState from '@/hooks/useStoreState';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { ComponentInternalInstance } from '@vue/runtime-core';
 import { AssetItem, DefaultAsset, SwapState, SwapPairInfo } from './types';
+import { Account } from '@/store/types';
+import storage from '@/utils/storage';
 
 export default defineComponent({
   name: 'swap',
   components: {
     CustomInput,
     SymbolIcon,
-    AuthButton
+    AuthButton,
+    SwapSetting
   },
   props: {
     assetsList: {
@@ -254,7 +264,7 @@ export default defineComponent({
     let storedSwapPairInfo = {}; // 缓存的交易对全量的兑换路径
     const { t } = useI18n();
     const toast = useToast();
-    const { nerveAddress } = useStoreState();
+    const { nerveAddress, addressInfo } = useStoreState();
     const state = reactive<SwapState>({
       feeRate: '0.3', // 千三的手续费
       fromAmount: '',
@@ -266,7 +276,7 @@ export default defineComponent({
       disableWatchFromAmount: false, // 停止监听fromAmount
       disableWatchToAmount: false, // 停止监听toAmount
       insufficient: false, // 流动性不足
-      protectPercent: '0.5', // 划点保护
+      protectPercent: '', // 划点保护
       // protectSets: ["0.5", "1", "3"],
       routesSymbol: [],
       fee: '',
@@ -275,6 +285,21 @@ export default defineComponent({
       protectError: '',
       showLoading: false
     });
+
+    onMounted(() => {
+      const currentAccount = getCurrentAccount(nerveAddress.value);
+      state.protectPercent = currentAccount?.slippageTolerance || '0.5';
+    });
+
+    function setUserSlippage() {
+      const accountList: Account[] = storage.get('accountList') || [];
+      accountList.map(v => {
+        if (v.address.NERVE === nerveAddress.value) {
+          v.slippageTolerance = state.protectPercent;
+        }
+      });
+      storage.set('accountList', accountList);
+    }
 
     const loading = ref(false);
     function handleLoading(status: boolean) {
@@ -887,15 +912,15 @@ export default defineComponent({
     const priceImpactColor = computed(() => {
       let { value } = priceImpactFloat;
       if (!value) return '';
-      const floatNum = Division(value.split('%')[0], 100);
+      const floatNum = Division(value.split('%')[0], 1);
       // @ts-ignore
-      if (Minus(floatNum, 0.003) < 0) {
+      if (Minus(floatNum, 0.3) <= 0) {
         return 'green';
         // @ts-ignore
-      } else if (Minus(floatNum, 0.003) > 0 && Minus(floatNum, 0.03) < 0) {
-        return '';
+      } else if (Minus(floatNum, 0.3) > 0 && Minus(floatNum, 1) < 0) {
+        return '#fd9d2d';
         // @ts-ignore
-      } else if (Minus(floatNum, 0.03) > 0) {
+      } else if (Minus(floatNum, 1) >= 0) {
         return '#c33030';
       } else {
         return '';
@@ -1027,7 +1052,8 @@ export default defineComponent({
       canRefresh,
       copyPair,
       impactButton,
-      confirmText
+      confirmText,
+      setUserSlippage
     };
   }
 });
