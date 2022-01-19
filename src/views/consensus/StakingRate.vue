@@ -194,6 +194,9 @@ async function getStakingRate() {
 function openExplorerUrl() {
   window.open(config.explorerUrl);
 }
+defineExpose({
+  refreshList: getStakingRate
+});
 </script>
 
 <style lang="scss">

@@ -105,12 +105,14 @@ async function getRewardInfo() {
 const joinStakingDialog = ref(false);
 
 function refresh() {
-  setTimeout(() => {
-    getStakingInfo();
-    getRewardInfo();
-  }, 3000);
   emit('refresh');
 }
+defineExpose({
+  refreshList: () => {
+    getStakingInfo();
+    getRewardInfo();
+  }
+});
 </script>
 
 <style lang="scss">

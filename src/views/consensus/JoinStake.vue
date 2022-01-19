@@ -129,12 +129,9 @@ const validateJoinCurrency = (rule: any, value: any, callback: any) => {
   }
 };
 const validateJoinAmount = async (rule: any, value: any, callback: any) => {
-  let baseNumber = 1000;
-  let currencyNumber = Division(baseNumber, nvtPrice).toFixed();
-  let maxAvailable =
-    joinStakingModel.currency === 'NVT'
-      ? Number(Minus(currentCurrency.value.available, 0.001))
-      : Number(currentCurrency.value.available);
+  const baseNumber = 1000;
+  const currencyNumber = Division(baseNumber, nvtPrice).toFixed();
+  const maxAvailable = currentCurrency.value.available
   const decimals = currentCurrency.value.decimals; //8;
   const reg = new RegExp(
     '^([1-9][\\d]{0,20}|0)(\\.[\\d]{0,' + decimals + '})?$'
@@ -143,8 +140,9 @@ const validateJoinAmount = async (rule: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error(t('staking.staking27')));
   } else if (!reg.exec(value)) {
-    callback(new Error(t('transfer.transfer12') + ': ' + decimals));
-  } else if (Minus(value, currencyNumber).toNumber() < 0) {
+    callback(new Error(t('transfer.transfer17') + ': ' + decimals));
+    // @ts-ignore
+  } else if (Minus(value, currencyNumber).toFixed() < 0) {
     callback(
       new Error(
         t('staking.staking49') + currencyNumber + joinStakingModel.currency
@@ -152,7 +150,8 @@ const validateJoinAmount = async (rule: any, value: any, callback: any) => {
     );
   } else if (!Number(currentCurrency.value.available)) {
     callback(new Error(t('staking.staking55')));
-  } else if (Number(value) > maxAvailable) {
+    // @ts-ignore
+  } else if (Minus(value, maxAvailable).toFixed() > 0) {
     callback(
       new Error(
         t('staking.staking50') + maxAvailable + joinStakingModel.currency

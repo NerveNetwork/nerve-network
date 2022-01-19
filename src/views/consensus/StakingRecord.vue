@@ -44,6 +44,7 @@ const props = defineProps<{
   address: string;
   canStakingList: CanStakingListItem[];
 }>();
+const emit = defineEmits(['refresh']);
 
 const { t } = useI18n();
 const toast = useToast();
@@ -281,12 +282,10 @@ async function batchQuit(info: StakingInfo) {
 }
 
 function refreshList() {
-  setTimeout(() => {
-    getStakingList(false);
-  }, 3000);
+  emit('refresh');
 }
 defineExpose({
-  refreshList: refreshList
+  refreshList: () => getStakingList(false)
 });
 </script>
 

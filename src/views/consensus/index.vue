@@ -3,16 +3,18 @@
     <div class="w1200">
       <div class="staking-info">
         <MyStaking
+          ref="myStaking"
           :canStakingList="canStakingList"
           :address="nerveAddress"
-          @refresh="refreshRecord"
+          @refresh="refresh"
         />
-        <StakingRate />
+        <StakingRate ref="stakingRate" />
       </div>
       <StakingRecord
         :canStakingList="canStakingList"
         :address="nerveAddress"
         ref="recordList"
+        @refresh="refresh"
       />
     </div>
   </div>
@@ -40,13 +42,22 @@ async function getCanStakingList() {
   }
 }
 
+const myStaking = ref<InstanceType<typeof MyStaking>>();
+const stakingRate = ref<InstanceType<typeof StakingRate>>();
 const recordList = ref<InstanceType<typeof StakingRecord>>();
 /*function setRecordListRef(el: InstanceType<typeof StakingRecord>) {
   recordList.value.push(el);
 }*/
-// 刷新质押记录
-function refreshRecord() {
-  recordList.value.refreshList();
+
+function refresh() {
+  // console.log(myStaking.value, 'myStaking')
+  // console.log(stakingRate.value, 'stakingRate')
+  // console.log(recordList.value, 'recordList')
+  setTimeout(() => {
+    myStaking.value.refreshList();
+    stakingRate.value.refreshList();
+    recordList.value.refreshList();
+  }, 5000);
 }
 </script>
 
