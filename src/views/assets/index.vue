@@ -93,7 +93,7 @@
                   >
                     <i
                       class="iconfont icon-chongzhidaoL2"
-                      :class="{ disable: disableTx }"
+                      :class="{ disable: disableTx || !scope.row.canToL1OnCurrent }"
                       @click="transfer(scope.row, TransferType.CrossIn)"
                     ></i>
                   </el-tooltip>
@@ -118,7 +118,7 @@
                   >
                     <i
                       class="iconfont icon-tixiandaoL1"
-                      :class="{ disable: disableTx }"
+                      :class="{ disable: disableTx || !scope.row.canToL1OnCurrent}"
                       @click="transfer(scope.row, TransferType.Withdrawal)"
                     ></i>
                   </el-tooltip>
@@ -206,7 +206,7 @@
                 class="btn"
                 @click="transfer(item, TransferType.CrossIn)"
                 v-if="item.canToL1"
-                :class="{ btn_disable: disableTx }"
+                :class="{ btn_disable: disableTx || !item.canToL1OnCurrent }"
               >
                 {{ $t('assets.assets4') }}
               </div>
@@ -217,7 +217,7 @@
                 class="btn"
                 @click="transfer(item, TransferType.Withdrawal)"
                 v-if="item.canToL1"
-                :class="{ btn_disable: disableTx }"
+                :class="{ btn_disable: disableTx || !item.canToL1OnCurrent }"
               >
                 {{ $t('assets.assets6') }}
               </div>
@@ -236,7 +236,7 @@
       v-if="showTransfer"
       v-model:currentTab="currentTab"
       v-model:show="showTransfer"
-      :disableTx="disableTx"
+      :disableTx="disableTx || !assetCanCross"
     />
   </div>
 </template>
@@ -245,12 +245,10 @@
 import {
   defineComponent,
   getCurrentInstance,
-  onMounted,
   provide,
   ref,
   reactive
 } from 'vue';
-import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import AssetsManage from './AssetsManage.vue';
@@ -287,13 +285,6 @@ export default defineComponent({
       currentAddress: address
     } = useStoreState();
 
-    /*const router = useRouter();
-    onMounted(() => {
-      if (!nerveAddress.value) {
-        router.push('/');
-      }
-    });*/
-
     const {
       loading,
       allAssetsList,
@@ -309,8 +300,11 @@ export default defineComponent({
     const currentTab = ref<TransferType>(TransferType.General);
     const showTransfer = ref(false);
     const transferAsset = ref<AssetItemType>({} as AssetItemType); // 当前交易的资产
+    const assetCanCross = ref(true);
     function transfer(asset: AssetItemType, type: TransferType) {
       if (type !== TransferType.General && disableTx.value) return;
+      if (type !== TransferType.General && !asset.canToL1OnCurrent) return;
+      assetCanCross.value = !(disableTx.value || !asset.canToL1OnCurrent);
       currentTab.value = type;
       /*if (type === TransferType.CrossIn) {
         // L1到L2
@@ -386,7 +380,8 @@ export default defineComponent({
       superLong,
       assetClick,
       getContractAddress,
-      TransferType
+      TransferType,
+      assetCanCross
     };
   }
 });

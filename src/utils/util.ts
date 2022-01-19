@@ -5,6 +5,7 @@ import storage from '@/utils/storage';
 import { AssetItem, HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import nerve from 'nerve-sdk-js';
+import { getProvider } from '@/hooks/useEthereum';
 
 interface Obj {
   [key: string]: unknown;
@@ -271,6 +272,19 @@ export function isNULSOrNERVE(address: string | null) {
   }
 }
 
+export function getChain() {
+  const provider = getProvider();
+  const chainId = provider?.chainId;
+  if (!chainId) return null;
+  let chain = '';
+  Object.keys(_networkInfo).map(v => {
+    if (_networkInfo[v][config.ETHNET] === chainId) {
+      chain = _networkInfo[v].name;
+    }
+  });
+  return chain;
+}
+
 // 检查资产是否能在L1-L2间跨链
 export function checkCanToL1(asset: AssetItem): boolean {
   if (!asset.heterogeneousList) return false;
@@ -285,6 +299,16 @@ export function checkCanToL1(asset: AssetItem): boolean {
         return true;
       }
     });
+  });
+}
+
+// 检查资产是否能在当前L1-L2间跨链
+export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
+  const canToL1 = checkCanToL1(asset);
+  if (!canToL1) return false;
+  const currentChain = getChain() as string;
+  return !!asset.heterogeneousList?.find((v: HeterogeneousInfo) => {
+    return _networkInfo[currentChain].chainId === v.heterogeneousChainId;
   });
 }
 
