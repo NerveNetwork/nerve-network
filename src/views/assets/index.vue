@@ -8,12 +8,12 @@
     >
       <div style="position: absolute; width: 100%">
         <div class="assets box_wrapper">
-          <div class="address-wrap flex-center">
-            <div class="address">
+          <div class="address-wrap">
+            <!--            <div class="address">
               {{ $t('assets.assets3') }}
               {{ nerveAddress }}
               <i class="iconfont icon-fuzhi" @click="$copy(nerveAddress)" v-if="nerveAddress"></i>
-            </div>
+            </div>-->
             <i
               class="iconfont icon-tianjia"
               v-if="nerveAddress"
@@ -86,7 +86,29 @@
             >
               <template v-slot="scope">
                 <div class="handle-column" v-if="scope.row">
-                  <el-tooltip
+                  <el-button
+                    type="text"
+                    v-if="scope.row.canToL1"
+                    :disabled="disableTx || !scope.row.canToL1OnCurrent"
+                    @click="transfer(scope.row, TransferType.CrossIn)"
+                  >
+                    {{ $t('transfer.transfer1') }}
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="transfer(scope.row, TransferType.General)"
+                  >
+                    {{ $t('transfer.transfer2') }}
+                  </el-button>
+                  <el-button
+                    type="text"
+                    v-if="scope.row.canToL1"
+                    :disabled="disableTx || !scope.row.canToL1OnCurrent"
+                    @click="transfer(scope.row, TransferType.Withdrawal)"
+                  >
+                    {{ $t('transfer.transfer3') }}
+                  </el-button>
+                  <!--                  <el-tooltip
                     :content="$t('assets.assets4')"
                     placement="top"
                     v-if="scope.row.canToL1"
@@ -121,7 +143,7 @@
                       :class="{ disable: disableTx || !scope.row.canToL1OnCurrent}"
                       @click="transfer(scope.row, TransferType.Withdrawal)"
                     ></i>
-                  </el-tooltip>
+                  </el-tooltip>-->
                 </div>
               </template>
             </el-table-column>
@@ -131,14 +153,18 @@
     </div>
     <div class="mobile-cont pb-28" v-if="!showTransfer">
       <div class="p-24 address-wrap flex-center">
-        <div class="address">
+        <!--        <div class="address">
           {{ $t('assets.assets3') }}
           <span class="size-14">
             {{ superLong(nerveAddress, 9) }}
           </span>
           <i class="iconfont icon-fuzhi" @click="$copy(nerveAddress)" v-if="nerveAddress"></i>
-        </div>
-        <i class="iconfont icon-tianjia" @click="showAssetManage = true" v-if="nerveAddress"></i>
+        </div>-->
+        <i
+          class="iconfont icon-tianjia"
+          @click="showAssetManage = true"
+          v-if="nerveAddress"
+        ></i>
       </div>
       <el-empty
         :description="$t('public.public19')"
@@ -422,7 +448,7 @@ export default defineComponent({
   border: 1px solid #e4e9f4;
 
   .address-wrap {
-    justify-content: space-between;
+    text-align: right;
     font-size: 16px;
     //color: #333;
     margin: 20px 0 10px;
@@ -537,7 +563,7 @@ export default defineComponent({
     font-size: 20px;
   }
   .address-wrap {
-    justify-content: space-between;
+    text-align: right;
     font-size: 24px;
     color: $txColor;
     margin: 0 0 20px;
@@ -583,7 +609,10 @@ export default defineComponent({
       }
     }
     .el-button--text {
-      color: #4a5ef2;
+      color: #2688f7;
+      span {
+        font-size: 14px;
+      }
     }
     .ydy {
       color: $labelColor;

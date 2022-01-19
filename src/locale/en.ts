@@ -74,12 +74,12 @@ const en = {
     assets10: 'Contract: '
   },
   transfer: {
-    transfer1: 'Transfer to L2',
-    transfer2: 'L2 Transfer',
-    transfer3: 'Withdraw to L1',
+    transfer1: 'Cross Into',
+    transfer2: 'Transfer',
+    transfer3: 'Cross Out',
     transfer4: 'From L1',
     transfer5: 'Deposit',
-    transfer6: 'Enter receipient L2 ID',
+    transfer6: 'Please enter NERVE/NULS address',
     transfer7: 'Withdraw to L1',
     transfer8: 'Account',
     transfer9: 'Confirm',
@@ -96,7 +96,9 @@ const en = {
     transfer20: 'Amount',
     transfer21: 'Ethereum',
     transfer22: 'Use other asset',
-    transfer23: 'Broadcast tx failed'
+    transfer23: 'Broadcast tx failed',
+    transfer24: 'Please enter correct NERVE/NULS address',
+    transfer25: 'Insufficient handling fees'
   },
   trading: {
     trading1: 'Order History',

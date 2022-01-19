@@ -1,6 +1,6 @@
 import nerve from 'nerve-sdk-js';
 import { ethers } from 'ethers';
-import { Minus, Plus } from './util';
+import { Minus, Plus, timesDecimals } from './util';
 // const Signature = require("elliptic/lib/elliptic/ec/signature");
 // const txsignatures = require("nerve-sdk-js/lib/model/txsignatures");
 // @ts-ignore
@@ -117,7 +117,8 @@ export class NTransfer {
       //链内交易
       return this.transferTransaction(data);
     } else if (this.type === 10) {
-      //跨链交易
+      //nerve-nuls跨链交易
+      return this.crossChainTransaction(data);
     } else if (this.type === 16) {
       //调用合约
     } else if (this.type === 43) {
@@ -199,6 +200,46 @@ export class NTransfer {
       amount,
       lockTime: 0
     });
+    return { inputs, outputs };
+  }
+
+  // nerve跨链到nuls
+  async crossChainTransaction(transferInfo: any) {
+    const { inputs, outputs } = await this.transferTransaction(transferInfo);
+    // const
+    if (this.chain === 'NERVE') {
+      const CROSS_INFO = config.NULSConfig;
+      // nerve资产跨链到nuls,要收取nuls手续费
+      let isNULS = false;
+      const nulsFee = timesDecimals(0.01, 8);
+      for (let input of inputs) {
+        if (
+          input.assetsChainId === CROSS_INFO.chainId &&
+          input.assetsId === CROSS_INFO.assetId
+        ) {
+          //跨链资产为nuls
+          isNULS = true;
+          input.amount = Plus(input.amount, nulsFee).toFixed();
+        }
+      }
+      if (!isNULS) {
+        // 跨链资产不是nuls
+        const nonce = await this.getNonce(
+          transferInfo.from,
+          CROSS_INFO.chainId,
+          CROSS_INFO.assetId
+        );
+        if (!nonce) throw '获取nuls nonce值失败';
+        inputs.push({
+          address: transferInfo.from,
+          assetsChainId: CROSS_INFO.chainId,
+          assetsId: CROSS_INFO.assetId,
+          amount: nulsFee,
+          locked: 0,
+          nonce: nonce
+        });
+      }
+    }
     return { inputs, outputs };
   }
 

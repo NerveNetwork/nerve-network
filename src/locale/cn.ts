@@ -74,12 +74,12 @@ const cn = {
     assets10: '合约地址: '
   },
   transfer: {
-    transfer1: '充值到L2',
-    transfer2: 'L2转账',
-    transfer3: '提现至L1',
+    transfer1: '跨链转入',
+    transfer2: '转账',
+    transfer3: '跨链转出',
     transfer4: '从L1',
     transfer5: '账户充值',
-    transfer6: '请输入接收者L2 ID',
+    transfer6: '请输入NERVE/NULS地址',
     transfer7: '提现至L1',
     transfer8: '账户',
     transfer9: '确认充值',
@@ -96,7 +96,9 @@ const cn = {
     transfer20: '提现金额',
     transfer21: '以太坊',
     transfer22: '使用其他资产',
-    transfer23: '广播交易失败'
+    transfer23: '广播交易失败',
+    transfer24: '请输入正确的NERVE/NULS地址',
+    transfer25: '手续费不足'
   },
   trading: {
     trading1: '订单历史',

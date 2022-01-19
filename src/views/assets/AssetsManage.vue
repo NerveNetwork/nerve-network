@@ -31,7 +31,7 @@
           </div>
         </template>
       </VirtualList>-->
-      <ul class="list-wrap">
+      <ul class="list-wrap" v-if="list.length">
         <li
           v-for="item in list"
           :key="item.assetKey"
@@ -51,6 +51,7 @@
           <el-checkbox v-model="item.added" disabled></el-checkbox>
         </li>
       </ul>
+      <p v-else class="no-data" style="line-height: 30px">{{ $t('public.public19') }}</p>
       <div class="footer-wrap">
         <el-button @click="showDialog = false">
           {{ $t('public.public8') }}
@@ -236,28 +237,6 @@ export default defineComponent({
         font-weight: 400;
       }
     }
-    /*.el-checkbox {
-      margin-right: 10px;
-      .el-checkbox__inner {
-        width: 20px;
-        height: 20px;
-        background: #fff !important;
-        &::after {
-          height: 10px;
-          left: 6px;
-          top: 2px;
-          font-weight: 600;
-          width: 5px;
-        }
-      }
-      .el-checkbox__input .el-checkbox__inner {
-        cursor: pointer !important;
-        &:after {
-          cursor: pointer !important;
-          transition: none;
-        }
-      }
-    }*/
   }
   .list-wrap {
     max-height: 50vh;
@@ -338,7 +317,7 @@ export default defineComponent({
   }
   .footer-wrap {
     display: block;
-    padding-top: 60px;
+    padding-top: 30px;
     .el-button {
       width: 185px;
       height: 48px;
@@ -350,22 +329,6 @@ export default defineComponent({
 
   .dialog-footer_mobile {
     display: none;
-  }
-
-  @media screen and (max-width: 470px) {
-    //.footer-wrap {
-    //  display: none !important;
-    //}
-    //.dialog-footer_mobile {
-    //  margin-top: 20px !important;
-    //  display: flex !important;
-    //  align-items: center;
-    //  justify-content: space-around;
-    //  .el-button_mobile {
-    //    max-width: 85px;
-    //    width: 100%;
-    //  }
-    //}
   }
 
   @media screen and (max-width: 1200px) {

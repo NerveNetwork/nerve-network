@@ -4,7 +4,21 @@
       <div class="back"><i class="iconfont icon-fanhui" @click="back"></i></div>
       <div class="tab-wrap">
         <el-tabs v-model="activeName">
-          <el-tab-pane :name="TransferType.CrossIn" :disabled="disableTx">
+          <el-tab-pane
+            :name="TransferType.CrossIn"
+            :disabled="disableTx"
+            :label="$t('transfer.transfer1')"
+          ></el-tab-pane>
+          <el-tab-pane
+            :name="TransferType.General"
+            :label="$t('transfer.transfer2')"
+          ></el-tab-pane>
+          <el-tab-pane
+            :name="TransferType.Withdrawal"
+            :disabled="disableTx"
+            :label="$t('transfer.transfer3')"
+          ></el-tab-pane>
+<!--          <el-tab-pane :name="TransferType.CrossIn" :disabled="disableTx">
             <template #label>
               <el-tooltip :content="$t('assets.assets4')" placement="top">
                 <i class="iconfont icon-chongzhidaoL2"></i>
@@ -24,7 +38,7 @@
                 <i class="iconfont icon-tixiandaoL1"></i>
               </el-tooltip>
             </template>
-          </el-tab-pane>
+          </el-tab-pane>-->
         </el-tabs>
       </div>
     </div>
@@ -100,8 +114,8 @@ export default defineComponent({
   margin: 0 auto;
   border-radius: 20px;
   .top {
-    height: 173px;
-    padding: 40px;
+    height: 153px;
+    padding: 40px 40px 20px;
     .back {
       margin-bottom: 25px;
       .iconfont {
@@ -113,8 +127,8 @@ export default defineComponent({
     }
   }
   .el-tabs .el-tabs__item {
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
     //width: 60px;
     //text-align: center;
     .iconfont {
@@ -133,8 +147,8 @@ export default defineComponent({
   }
   @media screen and (max-width: 500px) {
     .top {
-      height: 120px;
-      padding: 20px 20px 10px;
+      height: 110px;
+      padding: 20px 20px 0;
       .back {
         margin-bottom: 15px;
         .iconfont {
