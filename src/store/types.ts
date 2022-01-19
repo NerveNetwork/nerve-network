@@ -47,7 +47,9 @@ export interface TxInfo {
   hash: string;
   time: number;
   status: 0 | 1;
-  type: number;
+  type?: number;
+  L1Chain?: string;
+  L1Type?: string;
 }
 
 // 手动声明 state 类型

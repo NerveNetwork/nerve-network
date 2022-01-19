@@ -312,7 +312,7 @@ export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
   });
 }
 
-// 打开浏览器
+// 打开nerve浏览器
 export function openExplorer(type: string, query: string) {
   let url = config.explorerUrl;
   if (type === 'address') {
@@ -323,6 +323,17 @@ export function openExplorer(type: string, query: string) {
     url += '/consensus/virtualBank';
   } else if (type === 'consensusInfo') {
     url += '/consensus/info?hash=' + query;
+  }
+  window.open(url);
+}
+
+// 打开L1浏览器
+export function openL1Explorer(chain: string, type: string, query: string) {
+  let url = _networkInfo[chain].origin;
+  if (type === 'address') {
+    url += '/address/' + query;
+  } else if (type === 'hash') {
+    url += '/tx/' + query;
   }
   window.open(url);
 }

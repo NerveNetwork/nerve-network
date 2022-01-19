@@ -31,7 +31,7 @@
       <p>{{ $t('public.public23') }}</p>
       <template v-if="txList.length">
         <div class="tx-item flex" v-for="item in txList" :key="item.hash">
-          <span class="hash link" @click="openExplorer('hash', item.hash)">
+          <span class="hash link" @click="openUrl(item)">
             {{ superLong(item.hash) }}
           </span>
           <span class="create-time">{{ formatTime(item.time) }}</span>
@@ -53,8 +53,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import { superLong, openExplorer } from '@/utils/util';
+import { computed } from 'vue';
+import { superLong, openExplorer, openL1Explorer } from '@/utils/util';
 import useCopy from '@/hooks/useCopy';
 import dayjs from 'dayjs';
 import { TxInfo } from '@/store/types';
@@ -79,6 +79,13 @@ const visible = computed({
 });
 function formatTime(time: number) {
   return dayjs(time).format('MM-DD HH:mm');
+}
+function openUrl(item: TxInfo) {
+  if (item.L1Chain) {
+    openL1Explorer(item.L1Chain, 'hash', item.hash);
+  } else {
+    openExplorer('hash', item.hash);
+  }
 }
 </script>
 

@@ -65,6 +65,7 @@ import useCrossIn from '../hooks/useCrossIn';
 import { rootCmpKey, RootComponent, AssetItemType } from '../types';
 import { HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import { setAccountTxs } from '@/hooks/useBroadcastNerveHex';
 
 export default defineComponent({
   name: 'crossIn',
@@ -212,7 +213,7 @@ export default defineComponent({
       loading.value = true;
       try {
         const res = await approveERC20(heterogeneousInfo, father.address);
-        handleMsg(res);
+        handleMsg(res, 'approve');
       } catch (e) {
         toast.error(e.message || e);
       }
@@ -229,17 +230,24 @@ export default defineComponent({
           father.address,
           transferAsset.value.decimals
         );
-        handleMsg(res);
+        handleMsg(res, 'crossIn');
       } catch (e) {
         console.log(e, 'crossin-transfer-error');
         toast.error(e.message || e);
       }
       loading.value = false;
     }
-    function handleMsg(data: any) {
+    function handleMsg(data: any, type: string) {
       if (data.hash) {
         amount.value = '';
         toast.success(t('transfer.transfer14'));
+        setAccountTxs(father.currentAccount.pub, {
+          hash: data.hash,
+          time: new Date().getTime(),
+          status: 0,
+          L1Chain: father.network,
+          L1Type: type
+        });
       } else {
         toast.error(data.message || data);
       }

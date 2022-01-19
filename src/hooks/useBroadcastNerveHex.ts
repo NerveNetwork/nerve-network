@@ -12,7 +12,7 @@ import { Account, TxInfo } from '@/store/types';
   type: number;
 }*/
 
-function setAccountTxs(pub: string, tx: TxInfo) {
+export function setAccountTxs(pub: string, tx: TxInfo) {
   const accountList: Account[] = storage.get('accountList') || [];
   accountList.map(v => {
     if (v.pub === pub) {

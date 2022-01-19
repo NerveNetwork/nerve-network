@@ -92,6 +92,7 @@ import { getTx } from '@/service/api';
 import { superLong, getCurrentAccount, isNULSOrNERVE } from '@/utils/util';
 import { Account, TxInfo } from '@/store/types';
 import storage from '@/utils/storage';
+import { ETransfer } from '@/utils/api';
 
 const store = useStore();
 const router = useRouter();
@@ -234,12 +235,18 @@ async function checkTxStatus() {
 }
 async function pollingTx(txs: TxInfo[]) {
   const txsQuery = txs.map(v => {
-    return getTx(v.hash);
+    if (!v.L1Chain) {
+      return getTx(v.hash);
+    } else {
+      const transfer = new ETransfer(v.L1Chain);
+      return transfer.provider.getTransactionReceipt(v.hash);
+      // return ''
+    }
   });
   const res = await Promise.all(txsQuery);
   res.map(v => {
     txs.map(tx => {
-      if (tx.hash === v.hash) {
+      if (tx.hash === v.hash || tx.hash === v.transactionHash) {
         tx.status = v.status;
       }
     });
