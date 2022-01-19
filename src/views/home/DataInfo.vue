@@ -2,21 +2,31 @@
   <div class="overview-data-info">
     <div class="info-item">
       <p>{{ $t('home.home7') }}</p>
-      <p>$ 367,374,375</p>
+      <p>
+        $
+        <CountUp :end-val="'367374375'" />
+      </p>
     </div>
     <div class="info-item">
       <p>TVL</p>
-      <p>$ 7,374,375</p>
+      <p>
+        $
+        <CountUp :end-val="'7374375'" />
+      </p>
     </div>
     <div class="info-item">
       <p>{{ $t('home.home8') }}</p>
-      <p>3875%</p>
+      <p>
+        <CountUp :end-val="'3875'" :options="{ separator: '' }" />
+        %
+      </p>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import CountUp from '@/components/CountUp.vue';
 
 const name = ref('');
 </script>
@@ -31,6 +41,7 @@ const name = ref('');
   .info-item {
     flex: 1;
     text-align: center;
+
     p {
       color: #a7b1c3;
       line-height: 1;
@@ -48,6 +59,7 @@ const name = ref('');
       border-right: 1px solid #5d6779;
     }
   }
+
   @media screen and (max-width: 1200px) {
     padding: 15px 10px;
     display: block;
@@ -57,15 +69,18 @@ const name = ref('');
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+
       p {
         &:last-of-type {
           font-size: 18px;
           padding-top: 0;
         }
       }
+
       &:nth-child(2) {
         border: none;
       }
+
       &:last-of-type {
         margin: 0;
       }

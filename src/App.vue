@@ -17,7 +17,7 @@ import Footer from '@/components/Footer.vue';
 import useLang from '@/hooks/useLang';
 import nerve from 'nerve-sdk-js';
 import config from '@/config';
-import { getAssetPrice } from '@/service/api';
+import { getAssetPrice, getNodeInfo } from '@/service/api';
 // 设置sdk网络
 nerve.customnet(config.chainId, config.API_URL, config.timeout);
 
@@ -46,14 +46,21 @@ watch(
 );
 onMounted(() => {
   getNvtPrice();
+  getHeight();
   setInterval(() => {
     getNvtPrice();
+    getHeight();
   }, 5000);
 });
 // 获取nvt价格
 async function getNvtPrice() {
   const result = await getAssetPrice(config.chainId, config.assetId);
   store.commit('changeNVTPrice', result || '0');
+}
+// 获取高度
+async function getHeight() {
+  const result = await getNodeInfo();
+  store.commit('changeHeight', result);
 }
 </script>
 

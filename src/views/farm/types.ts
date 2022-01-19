@@ -8,6 +8,7 @@ export enum FarmType {
 export interface SearchState {
   sortValue: '1' | '2';
   mortgageValue: false;
+  farmStatus: 'pending' | 'end';
 }
 
 export interface NerveFarmItem {

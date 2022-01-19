@@ -59,7 +59,10 @@ const cn = {
     home6: '进入Bridge',
     home7: '总交易量',
     home8: '最高APR',
-    home9: '合作伙伴'
+    home9: '合作伙伴',
+    home10: '总流通量',
+    home11: '总市值',
+    home12: '质押量'
   },
   assets: {
     assets1: 'Layer2资产',

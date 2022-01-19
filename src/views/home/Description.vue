@@ -3,7 +3,8 @@
     <div class="pc">
       <div class="left">
         <h3>{{ $t('home.home1') }}</h3>
-        <p>{{ $t('home.home2') }}</p>
+        <p class="desc">{{ $t('home.home2') }}</p>
+        <Overview />
       </div>
       <div
         class="right"
@@ -17,7 +18,8 @@
       <div class="right"></div>
       <div class="left">
         <h3>{{ $t('home.home1') }}</h3>
-        <p>{{ $t('home.home2') }}</p>
+        <p class="desc">{{ $t('home.home2') }}</p>
+        <Overview />
       </div>
     </div>
   </div>
@@ -25,6 +27,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import Overview from './Overview.vue';
 
 const bgWrapper = ref({
   width: '',
@@ -68,7 +71,7 @@ onUnmounted(() => {
     justify-content: center;
 
     h3,
-    p {
+    .desc {
       color: #2d3750;
       line-height: 34px;
     }
@@ -79,7 +82,7 @@ onUnmounted(() => {
       margin-bottom: 18px;
     }
 
-    p {
+    .desc {
       font-size: 20px;
     }
   }
@@ -109,7 +112,7 @@ onUnmounted(() => {
         line-height: 38px;
       }
 
-      p {
+      .desc {
         font-size: 18px;
       }
     }

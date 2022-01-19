@@ -62,4 +62,5 @@ export interface State {
   feeAddress: string | undefined;
   assetList: AssetItem[] | [];
   nvtPrice: string;
+  height: number;
 }

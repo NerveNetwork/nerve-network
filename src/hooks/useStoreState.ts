@@ -17,6 +17,8 @@ export default function useStoreState() {
   const currentAddress = computed(() => store.getters.currentAddress);
   // nvt价格
   const nvtPrice = computed(() => store.state.nvtPrice);
+  // 区块高度
+  const height = computed(() => store.state.height);
   return {
     nerveAddress,
     assetsList,
@@ -24,6 +26,7 @@ export default function useStoreState() {
     chain,
     wrongChain,
     currentAddress,
-    nvtPrice
+    nvtPrice,
+    height
   };
 }

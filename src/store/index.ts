@@ -18,7 +18,8 @@ export default createStore<State>({
     destroyAddress: config['destroyAddress'],
     feeAddress: config['destroyAddress'],
     assetList: storage.get('assetList', 'session') || [],
-    nvtPrice: ''
+    nvtPrice: '',
+    height: 0
   },
   getters: {
     // 异构链名称Ethereum..
@@ -77,6 +78,9 @@ export default createStore<State>({
     },
     changeNVTPrice(state, price) {
       state.nvtPrice = price;
+    },
+    changeHeight(state, height) {
+      state.height = height;
     }
   },
   actions: {

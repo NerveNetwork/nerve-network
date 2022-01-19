@@ -98,6 +98,23 @@ export async function getAssetPrice(chainId: number, assetId: number) {
 }
 
 /**
+ * @desc 查询NodeInfo
+ */
+export async function getNodeInfo() {
+  const channel = 'getNodeInfo';
+  const params = createRPCParams(channel);
+  return await listen({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
+/**
  * @desc 查询资产详情
  * @param chainId 资产chainId
  * @param assetId 资产assetId

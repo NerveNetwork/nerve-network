@@ -59,7 +59,10 @@ const en = {
     home6: 'Launch Bridge',
     home7: 'Total Volume',
     home8: 'Highest APR',
-    home9: 'Partners'
+    home9: 'Partners',
+    home10: 'Circulating Supply',
+    home11: 'Market Cap',
+    home12: 'Staking'
   },
   assets: {
     assets1: 'Layer2 Asset',

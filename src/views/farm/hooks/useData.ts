@@ -40,7 +40,7 @@ export default function useData(isPool: boolean) {
     state.nerveList = filter(data, filterType, onlySeeMortgage);
   }
 
-  const { addressInfo, wrongChain: disableTx } = useStoreState();
+  const { addressInfo, wrongChain: disableTx, height } = useStoreState();
 
   // 用户参与的farm
   function getUserFarm(farmHash?: string) {
@@ -240,24 +240,31 @@ export default function useData(isPool: boolean) {
     // state.uniList = tokenList;
   }
 
-  function filterList(type: string, mortgage: boolean) {
+  function filterList(type: string, mortgage: boolean, farmStatus?: string) {
     filterType = type;
     onlySeeMortgage = mortgage;
     if (totalUniList.length) {
       state.uniList = filter([...totalUniList], type, mortgage, true);
     }
     if (totalNerveList.length) {
-      state.nerveList = filter([...totalNerveList], type, mortgage);
+      state.nerveList = filter([...totalNerveList], type, mortgage, false, farmStatus);
     }
   }
 
-  function filter(list: any, type: string, mortgage: boolean, isUni?: boolean) {
+  function filter(list: any, type: string, mortgage: boolean, isUni?: boolean, farmStatus?: string) {
     let newList = [...list];
     if (!isUni) {
       if (isPool) {
         newList = [...newList].filter(v => !v.swapPairAddress);
       } else {
         newList = [...newList].filter(v => v.swapPairAddress);
+      }
+    }
+    if (farmStatus) {
+      if (farmStatus === 'pending') {
+        newList = [...newList].filter(v => v.stopHeight > height.value);
+      } else {
+        newList = [...newList].filter(v => v.stopHeight < height.value);
       }
     }
     if (mortgage) {

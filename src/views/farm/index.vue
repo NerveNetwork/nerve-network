@@ -43,13 +43,13 @@
         <div class="status">
           <span
             :class="{ 'active-status': state.farmStatus === 'pending' }"
-            @click="state.farmStatus = 'pending'"
+            @click="filterListByStatus('pending')"
           >
             {{ $t('farm.farm24') }}
           </span>
           <span
             :class="{ 'active-status': state.farmStatus === 'end' }"
-            @click="state.farmStatus = 'end'"
+            @click="filterListByStatus('end')"
           >
             {{ $t('farm.farm25') }}
           </span>
@@ -112,10 +112,15 @@ const state = reactive<SearchState>({
 const { nerveList, getFarmData, getUserFarm, uniList, getUniData, filterList } =
   useFarmData(props.isPool);
 watch(
-  () => [state.sortValue, state.mortgageValue] as [string, boolean],
-  ([type, status]) => {
+  () =>
+    [state.sortValue, state.mortgageValue, state.farmStatus] as [
+      string,
+      boolean,
+      string
+    ],
+  ([type, status, farmStatus]) => {
     // console.log(type, status, 999);
-    filterList(type, status);
+    filterList(type, status, farmStatus);
   }
 );
 onMounted(async () => {
@@ -147,6 +152,9 @@ function handleLoading(status: boolean) {
   } else {
     nerveLoading.value = status;
   }
+}
+function filterListByStatus(status) {
+  state.farmStatus = status;
 }
 </script>
 
