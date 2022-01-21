@@ -61,7 +61,7 @@ import { TxInfo } from '@/store/types';
 
 const props = defineProps<{
   show: boolean;
-  address: string;
+  address?: string;
   txList: TxInfo[];
 }>();
 

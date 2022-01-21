@@ -96,7 +96,7 @@ import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { CanStakingListItem } from './types';
 
 const props = defineProps<{
-  address: string;
+  address?: string;
   show: boolean;
   canStakingList: CanStakingListItem[];
 }>();

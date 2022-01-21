@@ -21,6 +21,9 @@
           {{ $t('staking.staking37') }}
         </el-button>
       </el-tooltip>
+      <el-button class="disabled-btn" size="small" v-else-if="!canBatchChange">
+        {{ $t('staking.staking37') }}
+      </el-button>
       <el-button
         v-else
         type="primary"
@@ -471,6 +474,15 @@ function batchHandle(type: BatchHandle) {
   batchType.value = type;
   dialogShow.value = true;
 }
+
+// 是否能批量转定期
+const canBatchChange = computed(() => {
+  const selectedItem = tableData.value.filter(v => v.checked);
+  if (!selectedItem.length) return true;
+  const notStable = checkShow(selectedItem[0]);
+  console.log(notStable, 123465789)
+  return notStable;
+});
 
 function batchEmit() {
   const selectedItem = selectedRow.value

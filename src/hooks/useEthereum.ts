@@ -46,8 +46,8 @@ const NaboxProvier = 'NaboxWallet';
 const OKExProvier = 'okexchain';
 
 export const providerList = [
-  { name: 'MetaMask', src: MetaMask, provider: MetaMaskProvider }
-  // { name: "Nabox", src: Nabox, provider: NaboxProvier }
+  { name: 'MetaMask', src: MetaMask, provider: MetaMaskProvider },
+  { name: 'Nabox', src: Nabox, provider: NaboxProvier }
   // { name: "OKEx Wallet", src: OKEx, provider: OKExProvier },
 ];
 

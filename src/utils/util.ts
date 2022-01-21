@@ -272,13 +272,14 @@ export function isNULSOrNERVE(address: string | null) {
   }
 }
 
+// 获取当前metamask连接的网络名称 不管是正式网还是测试网
 export function getChain() {
   const provider = getProvider();
   const chainId = provider?.chainId;
   if (!chainId) return null;
   let chain = '';
   Object.keys(_networkInfo).map(v => {
-    if (_networkInfo[v][config.ETHNET] === chainId) {
+    if (_networkInfo[v].ropsten === chainId || _networkInfo[v].homestead === chainId) {
       chain = _networkInfo[v].name;
     }
   });
@@ -340,6 +341,10 @@ export function openL1Explorer(chain: string, type: string, query: string) {
 
 // 验证是否是nerve地址
 export function isValidNerveAddress(address: string) {
-  const result = nerve.verifyAddress(address);
-  return !!(result && result.right && result.chainId === config.chainId);
+  try {
+    const result = nerve.verifyAddress(address);
+    return !!(result && result.right && result.chainId === config.chainId);
+  } catch (e) {
+    return false;
+  }
 }

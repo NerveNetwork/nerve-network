@@ -64,6 +64,8 @@ export const _networkInfo = {
     origin: NULSOrigin,
     color: '#00da9d',
     mainAsset: 'NULS',
+    ropsten: '0x-1',
+    homestead: '0x-1',
     logo: NULSLogo
   },
   NERVE: {
@@ -72,6 +74,8 @@ export const _networkInfo = {
     origin: NERVEOrigin,
     color: '#56bff3',
     mainAsset: 'NERVE',
+    ropsten: '0x-2',
+    homestead: '0x-2',
     logo: NERVELogo
   },
   Ethereum: {

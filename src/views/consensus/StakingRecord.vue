@@ -41,7 +41,7 @@ import config from '@/config';
 import { CanStakingListItem, StakingListItem, StakingInfo, BatchHandle } from './types';
 
 const props = defineProps<{
-  address: string;
+  address?: string;
   canStakingList: CanStakingListItem[];
 }>();
 const emit = defineEmits(['refresh']);

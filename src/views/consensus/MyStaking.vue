@@ -38,6 +38,7 @@ import {
 import { divisionAndFix, Plus, fixNumber, Times } from '@/utils/util';
 
 import { AssetItem } from '@/store/types';
+import { CanStakingListItem } from '@/views/consensus/types';
 
 interface PieData {
   name: string;
@@ -46,10 +47,10 @@ interface PieData {
   rate: string;
 }
 
-const props = defineProps({
-  address: String,
-  canStakingList: Array
-});
+const props = defineProps<{
+  address?: string;
+  canStakingList: CanStakingListItem[];
+}>();
 
 const emit = defineEmits(['refresh']);
 
