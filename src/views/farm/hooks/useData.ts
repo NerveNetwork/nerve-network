@@ -251,7 +251,7 @@ export default function useData(isPool: boolean) {
     }
   }
 
-  function filter(list: any, type: string, mortgage: boolean, isUni?: boolean, farmStatus?: string) {
+  function filter(list: any, type: string, mortgage: boolean, isUni?: boolean, farmStatus = 'pending') {
     let newList = [...list];
     if (!isUni) {
       if (isPool) {
