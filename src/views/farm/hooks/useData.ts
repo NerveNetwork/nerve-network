@@ -253,20 +253,24 @@ export default function useData(isPool: boolean) {
 
   function filter(list: any, type: string, mortgage: boolean, isUni?: boolean, farmStatus = 'pending') {
     let newList = [...list];
-    if (!isUni) {
+    /*if (!isUni) {
       if (isPool) {
         newList = [...newList].filter(v => !v.swapPairAddress);
       } else {
         newList = [...newList].filter(v => v.swapPairAddress);
       }
+    }*/
+    if (farmStatus === 'pending') {
+      newList = [...newList].filter(
+        v => !v.stopHeight || v.stopHeight > height.value
+      );
+    } else {
+      newList = [...newList].filter(
+        v => v.stopHeight && v.stopHeight < height.value
+      );
     }
-    if (farmStatus) {
-      if (farmStatus === 'pending') {
-        newList = [...newList].filter(v => v.stopHeight > height.value);
-      } else {
-        newList = [...newList].filter(v => v.stopHeight < height.value);
-      }
-    }
+    // console.log(newList, 21336)
+
     if (mortgage) {
       newList = [...newList].filter(v => Number(v.stakeAmount));
     }

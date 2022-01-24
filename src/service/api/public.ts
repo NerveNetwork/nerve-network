@@ -1,5 +1,4 @@
 import {
-  createRPCParams,
   divisionAndFix,
   Plus,
   Times,
@@ -12,39 +11,20 @@ import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
 import store from '@/store';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import http from '@/service';
 
 const url = config.WS_URL;
 
 //广播hex
 export async function broadcastHex(txHex: string) {
-  const channel = 'broadcastTx';
-  // const channel = "validateTx";
-  const params = createRPCParams(channel);
-  params.params = params.params.concat([txHex]);
-  return await listen({
-    url,
-    channel,
-    id: params.id,
-    params: {
-      cmd: true,
-      channel: 'psrpc:' + JSON.stringify(params)
-    }
-  });
+  const res = await http.rPost('broadcastTx', txHex);
+  return res?.result || null;
 }
 
 // 获取区块信息
 export async function getBlockInfo() {
-  const channel = 'getNodeInfo';
-  const params = createRPCParams(channel);
-  return await listen({
-    url,
-    channel,
-    id: params.id,
-    params: {
-      cmd: true,
-      channel: 'psrpc:' + JSON.stringify(params)
-    }
-  });
+  const res = await http.rPost('getNodeInfo');
+  return res?.result || null;
 }
 
 /**
@@ -77,45 +57,12 @@ export async function uniAssetPrice(symbol: string) {
  * @param assetId 资产assetId
  */
 export async function getAssetPrice(chainId: number, assetId: number) {
-  const channel = 'assetPrice';
-  const params = {
-    method: channel,
-    id: genId(),
-    params: {
-      chainId: Number(chainId),
-      assetId: Number(assetId)
-    }
-  };
-  return await listen({
-    url,
-    channel,
-    id: params.id,
-    params: {
-      cmd: true,
-      channel: 'cmd:' + JSON.stringify(params)
-    }
-  });
+  const res = await http.rPost('getBestSymbolPrice', [chainId, assetId]);
+  return res?.result || null;
 }
 
 /**
- * @desc 查询NodeInfo
- */
-export async function getNodeInfo() {
-  const channel = 'getNodeInfo';
-  const params = createRPCParams(channel);
-  return await listen({
-    url,
-    channel,
-    id: params.id,
-    params: {
-      cmd: true,
-      channel: 'cmd:' + JSON.stringify(params)
-    }
-  });
-}
-
-/**
- * @desc 查询资产详情
+ * @desc 查询账户资产详情
  * @param chainId 资产chainId
  * @param assetId 资产assetId
  * @param address 账户nerve地址
@@ -125,18 +72,12 @@ export async function getAssetBalance(
   assetId: number,
   address: string
 ) {
-  const channel = 'getAccountBalance';
-  const params = createRPCParams(channel);
-  params.params = params.params.concat([chainId, assetId, address]);
-  return await listen({
-    url,
-    channel,
-    id: params.id,
-    params: {
-      cmd: true,
-      channel: 'psrpc:' + JSON.stringify(params)
-    }
-  });
+  const res = await http.rPost('getAccountBalance', [
+    chainId,
+    assetId,
+    address
+  ]);
+  return res?.result || null;
 }
 
 /**
@@ -144,18 +85,8 @@ export async function getAssetBalance(
  * @param address 账户nerve地址
  */
 export async function getAssetList(address = store.state.destroyAddress) {
-  const channel = 'getAccountLedgerList';
-  const params = createRPCParams(channel);
-  params.params.push(address);
-  let res: any = await listen({
-    url,
-    channel,
-    id: params.id,
-    params: {
-      cmd: true,
-      channel: 'psrpc:' + JSON.stringify(params)
-    }
-  });
+  const result = await http.rPost('getAccountLedgerList', address);
+  let res = result?.result;
   if (!res) return [];
   // 主网隐藏tron相关内容
   if (!isBeta) {
@@ -207,41 +138,7 @@ export async function getAssetList(address = store.state.destroyAddress) {
   return sortDataBySymbol;
 }
 
-/**
- * @desc 获取资产usd价格
- * @param chainId 资产chainId
- * @param assetId 资产assetId
- */
-export async function getSymbolUSD(
-  chainId = config.chainId,
-  assetId = config.assetId
-) {
-  const channel = 'getBestSymbolPrice';
-  const params = createRPCParams(channel);
-  params.params = [chainId, assetId];
-  return await listen({
-    url,
-    channel,
-    id: params.id,
-    params: {
-      cmd: true,
-      channel: 'psrpc:' + JSON.stringify(params)
-    }
-  });
-}
-
-
 export async function getTx(hash: string) {
-  const channel = 'getTx';
-  const params = createRPCParams(channel);
-  params.params.push(hash);
-  return await listen({
-    url,
-    channel,
-    id: params.id,
-    params: {
-      cmd: true,
-      channel: 'psrpc:' + JSON.stringify(params)
-    }
-  });
+  const res = await http.rPost('getTx', hash);
+  return res?.result || null;
 }

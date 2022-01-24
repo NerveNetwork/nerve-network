@@ -54,7 +54,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['refresh']);
 
-const { nerveAddress, assetsList } = useStoreState();
+const { nerveAddress, nvtPrice } = useStoreState();
 onMounted(() => {
   getStakingInfo();
   getRewardInfo();
@@ -94,10 +94,10 @@ const myRewardUsd = ref('0');
 async function getRewardInfo() {
   const result: any = await getStakingReward(nerveAddress.value);
   if (result) {
-    const nvtInfo = assetsList.value.find(v => v.symbol === 'NVT') as AssetItem;
+    // const nvtInfo = assetsList.value.find(v => v.symbol === 'NVT') as AssetItem;
     myReward.value = divisionAndFix(result.totalReward, 8, 2);
     myRewardUsd.value = fixNumber(
-      Times(myReward.value, nvtInfo.usdPrice).toFixed(),
+      Times(myReward.value, nvtPrice.value).toFixed(),
       2
     );
   }

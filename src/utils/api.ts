@@ -511,7 +511,7 @@ export class NTransfer {
         assetsChainId: chainId,
         assetsId: assetId,
         amount: 0, // // 必须组装个nvt inputs  金额可填0
-        locked: -1,
+        locked: 0,
         nonce: nvtNonce
       });
       outputs.push({

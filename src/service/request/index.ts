@@ -1,8 +1,10 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { createRPCParams } from '@/utils/util';
 
 class Request {
   instance: AxiosInstance;
+
   constructor(props?: AxiosRequestConfig) {
     this.instance = axios.create(props);
     this.setInterceptors();
@@ -40,16 +42,31 @@ class Request {
     return this.request<T>({ ...config, method: 'GET' });
   }
 
-  post<T>(config: AxiosRequestConfig): Promise<T> {
+  post<T = any>(config: AxiosRequestConfig): Promise<T> {
     return this.request<T>({ ...config, method: 'POST' });
   }
 
-  put<T>(config: AxiosRequestConfig): Promise<T> {
+  put<T = any>(config: AxiosRequestConfig): Promise<T> {
     return this.request<T>({ ...config, method: 'PUT' });
   }
 
-  delete<T>(config: AxiosRequestConfig): Promise<T> {
+  delete<T = any>(config: AxiosRequestConfig): Promise<T> {
     return this.request<T>({ ...config, method: 'DELETE' });
+  }
+
+  rPost<T = any>(method: string, params?: any) {
+    const rpcParams = createRPCParams(method);
+    if (params) {
+      rpcParams.params = rpcParams.params.concat(params);
+    }
+    if (method === 'getBestSymbolPrice') {
+      rpcParams.params.shift();
+    }
+    return this.request<{ result?: T }>({
+      url: '/',
+      method: 'POST',
+      data: rpcParams
+    });
   }
 }
 

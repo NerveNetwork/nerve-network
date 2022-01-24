@@ -67,7 +67,7 @@ import {
   floatToCeil
 } from '@/utils/util';
 import { ETransfer } from '@/utils/api';
-import { getSymbolUSD } from '@/service/api';
+import { getAssetPrice } from '@/service/api';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 
@@ -207,11 +207,11 @@ export default defineComponent({
           );
         }
       } else {
-        const feeAssetUSD = (await getSymbolUSD(chainId, assetId)) as string;
+        const feeAssetUSD = (await getAssetPrice(chainId, assetId)) as string;
         const mainAsset = supportedFeeAssets.value.find(
           v => v.symbol === heterogeneousInfo.chainName
         ) as AssetItemType;
-        const L1MainAssetUSD = (await getSymbolUSD(
+        const L1MainAssetUSD = (await getAssetPrice(
           mainAsset.chainId,
           mainAsset.assetId
         )) as string;
