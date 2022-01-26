@@ -255,7 +255,8 @@ const en = {
     staking52: 'Operation',
     staking53: ' Item',
     staking54: 'Tips',
-    staking55: 'This asset has no available balance'
+    staking55: 'This asset has no available balance',
+    staking56: 'Select'
   },
   nodeType: {
     '1': 'Create node',

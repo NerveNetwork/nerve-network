@@ -18,6 +18,7 @@
           <el-select
             v-model="joinStakingModel.currency"
             @change="changeCurrency"
+            :placeholder="$t('staking.staking56')"
           >
             <el-option
               v-for="(item, index) in canStakingList"

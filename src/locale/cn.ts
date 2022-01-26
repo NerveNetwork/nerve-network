@@ -253,7 +253,8 @@ const cn = {
     staking52: '操作',
     staking53: ' 条',
     staking54: '提示',
-    staking55: '该资产没有可用余额'
+    staking55: '该资产没有可用余额',
+    staking56: '请选择'
   },
   nodeType: {
     '1': '创建节点',

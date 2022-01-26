@@ -351,7 +351,6 @@ export class NTransfer {
     const outputs = [];
     const { chainId, assetId } = config;
     if (assetsChainId !== chainId || assetsId !== assetId) {
-      // const nonce = await this.getNonce(from, assetsChainId, assetsId);
       // 加入的资产不是nvt input组装两个
       inputs.push({
         address: from,
@@ -361,16 +360,6 @@ export class NTransfer {
         locked: -1,
         nonce
       });
-      /*const nvtNonce = await this.getNonce(from, config.chainId, config.assetId);
-      let feeArr = {
-        address: from,
-        assetsChainId: config.chainId,
-        assetsId: config.assetId,
-        amount: transferInfo.fee,
-        locked: 0,
-        nonce: transferInfo.feeBalanceInfo.nonce
-      };
-      inputs.push(feeArr);*/
       outputs.push({
         address: from,
         assetsChainId,
