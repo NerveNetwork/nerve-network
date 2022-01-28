@@ -4,7 +4,7 @@
     <div class="chart-legend">
       <div
         class="legend-item scroll"
-        v-for="(item, index) in this.data"
+        v-for="(item, index) in data"
         :key="item.name"
       >
         <i class="legend-circle" :style="{ backgroundColor: color[index] }"></i>
@@ -26,7 +26,7 @@ const props = defineProps<{
 
 const color = ['#759bf5', '#76e9a7', '#f3a83c', '#9f95f0', '#67d1fe'];
 const chartOptions = computed(() => {
-  if (!props.data) return {};
+  // if (!props.data) return {};
   return {
     tooltip: {
       position: 'top',
@@ -41,7 +41,7 @@ const chartOptions = computed(() => {
       }
     },
     series: {
-      data: props.data
+      data: props.data || []
     }
   };
 });
