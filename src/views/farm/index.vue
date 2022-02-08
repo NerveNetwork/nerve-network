@@ -153,7 +153,7 @@ function handleLoading(status: boolean) {
     nerveLoading.value = status;
   }
 }
-function filterListByStatus(status) {
+function filterListByStatus(status: 'pending' | 'end') {
   state.farmStatus = status;
 }
 </script>

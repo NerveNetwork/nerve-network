@@ -21,6 +21,7 @@ export default function useData(isPool: boolean) {
   let totalNerveList: NerveFarmItem[] = [];
   let filterType = '1'; // 排序类型 1.按照收益排名 2.按照流动性排名
   let onlySeeMortgage = false; // 只看已质押
+  let farmStatusType = 'pending';
   onBeforeUnmount(() => {
     subSocket.unListen(url, 'farmListSub');
   });
@@ -71,7 +72,13 @@ export default function useData(isPool: boolean) {
             });
           });
         }
-        state.nerveList = filter(totalList, filterType, onlySeeMortgage);
+        state.nerveList = filter(
+          totalList,
+          filterType,
+          onlySeeMortgage,
+          false,
+          farmStatusType
+        );
       }
     });
   }
@@ -243,11 +250,18 @@ export default function useData(isPool: boolean) {
   function filterList(type: string, mortgage: boolean, farmStatus?: string) {
     filterType = type;
     onlySeeMortgage = mortgage;
+    farmStatusType = farmStatus || 'pending';
     if (totalUniList.length) {
       state.uniList = filter([...totalUniList], type, mortgage, true);
     }
     if (totalNerveList.length) {
-      state.nerveList = filter([...totalNerveList], type, mortgage, false, farmStatus);
+      state.nerveList = filter(
+        [...totalNerveList],
+        type,
+        mortgage,
+        false,
+        farmStatusType
+      );
     }
   }
 
