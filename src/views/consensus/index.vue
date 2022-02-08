@@ -38,6 +38,9 @@ const canStakingList = ref<CanStakingListItem[]>([]);
 async function getCanStakingList() {
   const result: any = await getCanStackingAssetList();
   if (result && result.length) {
+    result.map((v: any) => {
+      v.assetKey = v.assetChainId + '-' + v.assetId;
+    });
     canStakingList.value = result as CanStakingListItem[];
   }
 }

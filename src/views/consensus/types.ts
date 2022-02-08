@@ -5,6 +5,7 @@ export interface CanStakingListItem {
   nvtPrice: number;
   canBePeriodically: boolean;
   rate: any;
+  assetKey: string;
 }
 
 export interface StakingRateListItem {

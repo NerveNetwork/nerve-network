@@ -24,7 +24,7 @@
               v-for="(item, index) in canStakingList"
               :key="index"
               :label="item.symbol"
-              :value="item.symbol"
+              :value="item.assetKey"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -146,7 +146,7 @@ const validateJoinAmount = async (rule: any, value: any, callback: any) => {
   } else if (Minus(value, currencyNumber).toFixed() < 0) {
     callback(
       new Error(
-        t('staking.staking49') + currencyNumber + joinStakingModel.currency
+        t('staking.staking49') + currencyNumber + currentCurrency.value.symbol
       )
     );
   } else if (!Number(currentCurrency.value.available)) {
@@ -155,7 +155,7 @@ const validateJoinAmount = async (rule: any, value: any, callback: any) => {
   } else if (Minus(value, maxAvailable).toFixed() > 0) {
     callback(
       new Error(
-        t('staking.staking50') + maxAvailable + joinStakingModel.currency
+        t('staking.staking50') + maxAvailable + currentCurrency.value.symbol
       )
     );
   } else {
@@ -187,14 +187,16 @@ const defaultCurrency = assetsList.value.filter(v => v.symbol === 'NVT')[0];
 // const currentCurrency = ref(defaultCurrency);
 
 const currentCurrency = computed(() => {
-  const symbol = joinStakingModel.currency || 'NVT';
-  return (
-    assetsList.value.filter(v => v.symbol === symbol)[0] || { available: 0 }
-  );
+  if (defaultCurrency || joinStakingModel.currency) {
+    const assetKey = joinStakingModel.currency || defaultCurrency.assetKey;
+    return assetsList.value.filter(v => v.assetKey === assetKey)[0];
+  } else {
+    return { available: 0, symbol: '', decimals: 8, chainId: '', assetId: '' };
+  }
 });
 
 if (defaultCurrency) {
-  joinStakingModel.currency = defaultCurrency.symbol;
+  joinStakingModel.currency = defaultCurrency.assetKey;
   joinStakingModel.deadline = 0;
   changeCurrency();
 }
@@ -216,7 +218,7 @@ const deadlineList = computed(() => {
 const isStableCurrency = computed(() => {
   const currency = joinStakingModel.currency;
   return !!props.canStakingList.filter(v => {
-    return v.symbol === currency && !v.canBePeriodically;
+    return v.assetKey === currency && !v.canBePeriodically;
   }).length;
 });
 
