@@ -48,6 +48,7 @@
           :tokenInfo="item"
           :isNerve="isNerve"
           :isPool="isPool"
+          :isFinished="isFinished"
           :nerveAddress="nerveAddress"
           v-show="item.showDetail"
           @loading="handleLoading"
@@ -87,6 +88,7 @@
           :tokenInfo="item"
           :isNerve="isNerve"
           :isPool="isPool"
+          :isFinished="isFinished"
           :nerveAddress="nerveAddress"
           v-show="item.showDetail"
           @loading="handleLoading"
@@ -112,7 +114,8 @@ const props = defineProps({
     default: () => []
   },
   isNerve: Boolean,
-  isPool: Boolean
+  isPool: Boolean,
+  isFinished: Boolean
 });
 const emit = defineEmits(['handleLoading']);
 

@@ -77,6 +77,7 @@
         @handleLoading="handleLoading"
         :isPool="props.isPool"
         isNerve
+        :isFinished="state.farmStatus === 'end'"
       ></farm-item>
     </div>
   </div>

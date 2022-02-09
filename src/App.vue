@@ -57,7 +57,7 @@ onMounted(() => {
 // 获取nvt价格
 async function getNvtPrice() {
   const result = await getNVTPrice(config.chainId, config.assetId);
-  store.commit('changeNVTPrice', result.usdPrice || '0');
+  store.commit('changeNVTPrice', result?.usdPrice || '0');
 }
 // 获取高度
 async function getHeight() {
@@ -72,7 +72,7 @@ async function getHeight() {
 #app {
   width: 100%;
   min-height: 100%;
-  word-break: break-all;
+  //word-break: break-all;
 }
 
 .inner_content {

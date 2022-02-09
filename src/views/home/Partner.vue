@@ -66,12 +66,13 @@ const partners = [
 
 <style lang="scss">
 .partner {
+  padding-top: 40px;
   margin-bottom: 70px;
 
   h3 {
     color: #475472;
     font-size: 30px;
-    margin: 80px 0 40px;
+    margin-bottom: 50px;
     text-align: center;
     font-weight: 600;
   }
@@ -96,6 +97,7 @@ const partners = [
   }
   @media screen and (max-width: 1200px) {
     margin-bottom: 20px;
+    padding-top: 0;
     h3 {
       font-size: 24px;
       margin: 50px 0 20px;

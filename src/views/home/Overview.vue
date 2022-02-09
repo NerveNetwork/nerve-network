@@ -82,7 +82,7 @@ const name = ref('');
   }
 
   @media screen and (max-width: 600px) {
-    padding-top: 15px;
+    padding-top: 25px;
     flex-direction: column;
     .info-item {
       width: 100%;

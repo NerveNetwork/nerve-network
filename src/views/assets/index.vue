@@ -417,6 +417,7 @@ export default defineComponent({
 @import '../../assets/css/style.scss';
 .assets-wrap {
   padding: 0 20px;
+  min-height: calc(100vh - 80px);
 }
 .show_table.el-table--scrollable-y .el-table__body-wrapper {
   overflow: scroll;

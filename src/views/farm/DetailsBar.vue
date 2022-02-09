@@ -86,7 +86,9 @@
                 type="primary"
                 size="small"
                 :disabled="
-                  !!!Number(tokenInfo.syrupTokenBalance) || !nerveAddress
+                  !!!Number(tokenInfo.syrupTokenBalance) ||
+                  !nerveAddress ||
+                  isFinished
                 "
                 @click="handleLP(LpDialogType.Add)"
               >
@@ -154,7 +156,9 @@
                 type="primary"
                 size="small"
                 :disabled="
-                  !!!Number(tokenInfo.syrupTokenBalance) || !nerveAddress
+                  !!!Number(tokenInfo.syrupTokenBalance) ||
+                  !nerveAddress ||
+                  isFinished
                 "
                 @click="handleLP(LpDialogType.Add)"
               >
@@ -231,7 +235,8 @@ const props = defineProps({
   },
   isNerve: Boolean,
   nerveAddress: String,
-  isPool: Boolean
+  isPool: Boolean,
+  isFinished: Boolean
 });
 
 const emit = defineEmits(['loading']);

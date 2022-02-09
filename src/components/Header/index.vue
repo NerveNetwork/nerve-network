@@ -482,7 +482,7 @@ async function pollingTx(txs: TxInfo[]) {
       }
     }
     .bottom {
-      padding: 30px 0 20px;
+      padding: 30px 0 25px;
       .el-button {
         width: 205px;
         height: 48px;
@@ -494,6 +494,7 @@ async function pollingTx(txs: TxInfo[]) {
   .txs {
     max-height: 300px;
     overflow: auto;
+    padding-top: 15px;
     p {
       color: #475472;
       margin-bottom: 5px;

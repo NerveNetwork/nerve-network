@@ -88,7 +88,7 @@ const cn = {
     transfer9: '确认充值',
     transfer10: '确认转账',
     transfer11: '确认提现',
-    transfer12: '选择资产',
+    transfer12: '选择',
     transfer13: '资产授权',
     transfer14: '交易已发出，等待区块确认',
     transfer15: '余额不足',

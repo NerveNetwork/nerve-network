@@ -55,7 +55,7 @@ const props = defineProps<{
   img {
     height: 280px;
     border-radius: 50%;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
   }
   p {
     color: #475472;
@@ -73,7 +73,7 @@ const props = defineProps<{
   }
   .button-wrap {
     width: 280px;
-    margin: 0 auto;
+    margin: 5px auto 0;
     text-align: center;
     background-color: #387cf4;
     border-radius: 10px;
@@ -111,6 +111,9 @@ const props = defineProps<{
     .desc {
       font-size: 16px;
       height: 46px;
+    }
+    .button-wrap {
+      margin-top: 0;
     }
   }
 }

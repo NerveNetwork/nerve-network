@@ -2,7 +2,7 @@
   <div class="home w1200">
     <Description />
     <LinkWrapper />
-    <DataInfo />
+<!--    <DataInfo />-->
     <Partner />
   </div>
 </template>
