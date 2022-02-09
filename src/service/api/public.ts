@@ -62,6 +62,16 @@ export async function getAssetPrice(chainId: number, assetId: number) {
 }
 
 /**
+ * @desc 查询NVT价格, getBestSymbolPrice会在基础上扣除20%
+ * @param chainId 资产chainId
+ * @param assetId 资产assetId
+ */
+export async function getNVTPrice(chainId: number, assetId: number) {
+  const res = await http.rPost('getSymbolInfo', [chainId, assetId]);
+  return res?.result || null;
+}
+
+/**
  * @desc 查询账户资产详情
  * @param chainId 资产chainId
  * @param assetId 资产assetId

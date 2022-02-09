@@ -59,7 +59,7 @@ class Request {
     if (params) {
       rpcParams.params = rpcParams.params.concat(params);
     }
-    if (method === 'getBestSymbolPrice') {
+    if (method === 'getBestSymbolPrice' || method === 'getSymbolInfo') {
       rpcParams.params.shift();
     }
     return this.request<{ result?: T }>({
