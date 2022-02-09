@@ -57,10 +57,10 @@ export default function useData(isPool: boolean) {
       },
       success(data: UserStakeFarm[]) {
         // console.log(data, 321)
-        const totalList = [...state.nerveList];
+        const totalList = [...totalNerveList];
         if (totalList.length) {
-          data.map(item => {
-            totalList.map(v => {
+          totalList.map(v => {
+            data.map(item => {
               if (v.farmHash === item.farmHash) {
                 v.apr = item.apr;
                 v.stakeAmount = fixNumber(item.stakedTokenAmount, 8);
@@ -71,6 +71,18 @@ export default function useData(isPool: boolean) {
               }
             });
           });
+          /*data.map(item => {
+            totalList.map(v => {
+              if (v.farmHash === item.farmHash) {
+                v.apr = item.apr;
+                v.stakeAmount = fixNumber(item.stakedTokenAmount, 8);
+                v.stakeUSD = item.stakedTokenAmountUSD;
+                v.tatalStakeTokenUSD = item.tatalStakeTokenUSD;
+                v.pendingRewardUSD = item.pendingRewardUSD;
+                v.pendingReward = fixNumber(item.pendingReward, 8);
+              }
+            });
+          });*/
         }
         state.nerveList = filter(
           totalList,
