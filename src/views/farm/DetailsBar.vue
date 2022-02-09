@@ -73,7 +73,6 @@
                 size="small"
                 :disabled="
                   !Number(tokenInfo.stakeAmount) ||
-                  !Number(tokenInfo.pendingReward) ||
                   !nerveAddress ||
                   (!tokenInfo.isLocked && isNerve)
                 "
@@ -143,7 +142,6 @@
                 size="small"
                 :disabled="
                   !Number(tokenInfo.stakeAmount) ||
-                  !Number(tokenInfo.pendingReward) ||
                   !nerveAddress ||
                   (!tokenInfo.isLocked && isNerve)
                 "
