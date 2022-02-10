@@ -686,7 +686,7 @@ export default defineComponent({
           // console.log(bestExact, "---bestExact---", pairs, 999);
           if (bestExact) {
             const inAmount = bestExact.tokenAmountIn.amount.toString();
-            const outAmount = bestExact.tokenAmountOut.amount.toString();
+            const outAmount = bestExact.tokenAmountOut.amount.toFixed();
             // console.log(inAmount, outAmount, "===---===", amount, type, state.customerType);
             const tokenPathArray = bestExact.path;
             const routesSymbol: string[] = [];
@@ -718,7 +718,7 @@ export default defineComponent({
             );
             return [
               divisionAndFix(outAmount, toDecimal, toDecimal),
-              priceImpact
+              priceImpact.toFixed()
             ];
           } else {
             return [0, 0];

@@ -22,7 +22,8 @@
             <div class="info-title">
               {{ tokenInfo.syrupTokenSymbol }}{{ $t('farm.farm2') }}
             </div>
-            <el-tooltip placement="top">
+            <!--  添加key 解决必须鼠标移上去才会变更数值问题          -->
+            <el-tooltip placement="top" :key="tokenInfo.pendingReward">
               <template #content>
                 {{ $thousands(tokenInfo.pendingReward) }}
               </template>
@@ -46,7 +47,7 @@
         <div class="alter">
           <div class="left">
             <div class="info-title">{{ $t('farm.farm9') }}LP</div>
-            <el-tooltip placement="top">
+            <el-tooltip placement="top" :key="tokenInfo.stakeAmount">
               <template #content>
                 {{ $thousands(tokenInfo.stakeAmount) }}
               </template>
