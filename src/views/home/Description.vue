@@ -80,6 +80,7 @@ onUnmounted(() => {
       font-weight: 600;
       font-size: 40px;
       margin-bottom: 18px;
+      line-height: 48px;
     }
 
     .desc {

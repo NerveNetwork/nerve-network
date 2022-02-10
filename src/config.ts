@@ -2,7 +2,7 @@ type EnvType = 'beta' | 'prod';
 
 const env = process.env.BUILD_ENV as EnvType;
 
-function getWSUrl(): string {
+/*function getWSUrl(): string {
   let url;
   if (env === 'beta') {
     url = 'ws://beta.api.swap.nerve.network/ws';
@@ -13,14 +13,14 @@ function getWSUrl(): string {
   return url;
 }
 
-const WS_URL = getWSUrl();
+const WS_URL = getWSUrl();*/
 const timeout = 15000;
 
 const config = {
   beta: {
     isBeta: true,
     API_URL: 'http://beta.public.nerve.network',
-    WS_URL,
+    WS_URL: 'ws://beta.api.swap.nerve.network/ws',
     chainId: 5,
     assetId: 1,
     prefix: 'TNVT',
@@ -57,7 +57,7 @@ const config = {
   prod: {
     isBeta: false,
     API_URL: 'https://public.nerve.network',
-    WS_URL, //: "wss://api.swap.nerve.network/ws",
+    WS_URL: 'wss://api.swap.nerve.network/ws',
     chainId: 9,
     assetId: 1,
     prefix: 'NERVE',

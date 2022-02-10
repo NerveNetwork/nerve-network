@@ -1,6 +1,13 @@
 @import "./style.scss";
 //#app {
   .el-input {
+    .el-input__inner {
+      height: 40px;
+      line-height: 40px;
+    }
+    .el-input-group {
+      line-height: normal;
+    }
     input {
       //background: $navBorder;
       //color: $labelColor;
@@ -15,7 +22,18 @@
   }
 
   .el-button {
-
+    height: auto;
+    min-height: 40px;
+    padding: 12px 20px;
+    &.el-button--default {
+      //background: #2A2A56;
+      border-radius: 10px;
+      //border: 0;
+      color: $txColor;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
     &.el-button--primary {
       border-radius: 10px;
       background-color: $btnColor;
@@ -32,14 +50,9 @@
       }
       color: #fff;;
     }
-    &.el-button--default {
-      //background: #2A2A56;
-      border-radius: 10px;
-      //border: 0;
-      color: $txColor;
-      &:hover {
-        opacity: 0.7;
-      }
+    &.el-button--text {
+      padding-left: 0;
+      padding-right: 0;
     }
     span {
       font-size: 16px;
@@ -391,9 +404,18 @@
 }
 
 
+.el-form {
+  .el-form-item--default {
+    margin-bottom: 22px;
+    .el-form-item__error {
+      padding-top: 4px;
+    }
+  }
+}
 .el-form.el-form--label-top {
-  .el-form-item__label {
+  .el-form-item label.el-form-item__label {
     padding: 0 0 5px 0;
+    margin-bottom: 0;
     line-height: 20px;
     color: #8794B1;
   }
@@ -407,6 +429,9 @@
     height: 40px;
     &:first-child {
       margin-right: 20px;
+    }
+    &.el-button--primary {
+      color: #fff;
     }
   }
   .el-button--default {

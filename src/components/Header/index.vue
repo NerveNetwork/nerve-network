@@ -520,7 +520,7 @@ async function pollingTx(txs: TxInfo[]) {
       width: 20%;
       padding-right: 5px;
       display: flex;
-      justify-content: end;
+      justify-content: flex-end;
       .is-loading {
         transform-origin: center center;
       }

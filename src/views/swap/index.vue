@@ -12,7 +12,7 @@
       :assetsList="assetsList"
       :defaultAsset="defaultAsset"
       @toggleExpand="toggleOverview"
-      @selectAsset="selectAsset"
+      @selectAsset="changeOrderList"
       @updateRate="updateRate"
     ></Swap>
     <el-dialog
@@ -41,6 +41,7 @@ import Swap from './Swap.vue';
 import useOverview from './hooks/useOverview';
 import useAsset from './hooks/useAsset';
 import useSelectAsset from './hooks/useSelectAsset';
+import { AssetItem } from '@/store/types';
 
 export default defineComponent({
   name: 'trading',
@@ -71,8 +72,8 @@ export default defineComponent({
       assetsList,
       val => {
         if (val && val.length) {
-          if (selectedAsset) {
-            selectAsset(selectedAsset.from, selectedAsset.to);
+          if (selectedAsset.value) {
+            selectAsset(selectedAsset.value.from, selectedAsset.value.to);
           }
         }
       },
@@ -82,8 +83,16 @@ export default defineComponent({
       }
     );
 
+    // 切换兑换资产后刷新兑换记录
+    function changeOrderList(from: AssetItem, to: AssetItem) {
+      pager.index = 1;
+      pager.total = 0;
+      selectAsset(from, to);
+    }
+
+    // 分页
     function changeList() {
-      selectAsset(selectedAsset?.from, selectedAsset?.to);
+      selectAsset(selectedAsset.value?.from, selectedAsset.value?.to);
     }
 
     const swapRate = ref('');
@@ -104,7 +113,8 @@ export default defineComponent({
       pager,
       changeList,
       swapRate,
-      updateRate
+      updateRate,
+      changeOrderList
     };
   }
 });

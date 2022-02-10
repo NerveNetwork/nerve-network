@@ -192,13 +192,18 @@ export default defineComponent({
     }
 
     function max() {
-      if (isTransferNVT.value) {
+      if (type.value === 10 && (isTransferNVT.value || isTransferNULS.value)) {
+        amount.value = Minus(balance.value, 0.01).toFixed();
+      } else {
+        amount.value = balance.value;
+      }
+      /*if (isTransferNVT.value) {
         amount.value = Minus(balance.value, 0.01).toFixed();
       } else if (isTransferNULS.value) {
         amount.value = Minus(balance.value, 0.01).toFixed();
       } else {
         amount.value = balance.value;
-      }
+      }*/
     }
 
     const { handleTxInfo } = useBroadcastNerveHex();

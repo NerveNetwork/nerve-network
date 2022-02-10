@@ -53,7 +53,7 @@
     </div>
     <el-table :data="tableData" stripe class="staking-list" v-if="staking">
       <el-table-column width="10"></el-table-column>
-      <el-table-column width="35">
+      <el-table-column width="40">
         <template v-slot="scope">
           <el-checkbox
             :disabled="scope.row.fixedType !== 'NONE'"

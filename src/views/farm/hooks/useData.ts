@@ -59,7 +59,7 @@ export default function useData(isPool: boolean) {
         // console.log(data, 321)
         const totalList = [...totalNerveList];
         if (totalList.length) {
-          totalList.map(v => {
+          /*totalList.map(v => {
             data.map(item => {
               if (v.farmHash === item.farmHash) {
                 v.apr = item.apr;
@@ -70,8 +70,8 @@ export default function useData(isPool: boolean) {
                 v.pendingReward = fixNumber(item.pendingReward, 8);
               }
             });
-          });
-          /*data.map(item => {
+          });*/
+          data.map(item => {
             totalList.map(v => {
               if (v.farmHash === item.farmHash) {
                 v.apr = item.apr;
@@ -82,7 +82,7 @@ export default function useData(isPool: boolean) {
                 v.pendingReward = fixNumber(item.pendingReward, 8);
               }
             });
-          });*/
+          });
         }
         state.nerveList = filter(
           totalList,

@@ -15,7 +15,8 @@ import {
 
 export default function useSelectAsset() {
   const { nerveAddress } = useStoreState();
-  let selectedAsset = null as DefaultAsset | null;
+  // let selectedAsset = null as DefaultAsset | null;
+  const selectedAsset = ref<DefaultAsset>();
   const swapSymbol = ref<SwapSymbol>({} as SwapSymbol);
   const orderList = ref<OrderItem[]>([] as OrderItem[]);
   const pager = reactive<Pager>({
@@ -25,7 +26,7 @@ export default function useSelectAsset() {
   });
   async function selectAsset(fromAsset?: AssetItem, toAsset?: AssetItem) {
     if (!nerveAddress.value || !fromAsset || !toAsset) return;
-    selectedAsset = {
+    selectedAsset.value = {
       from: fromAsset,
       to: toAsset
     };

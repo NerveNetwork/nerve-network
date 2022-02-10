@@ -514,6 +514,7 @@ function toAddLiquidity() {
       //font-weight: bold;
       font-size: 20px;
       width: 160px;
+      word-break: break-all;
       span {
         font-size: 14px;
         //font-weight: bold;
