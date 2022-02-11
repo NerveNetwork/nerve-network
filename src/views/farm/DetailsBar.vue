@@ -8,7 +8,7 @@
           v-if="isNerve && tokenInfo.name"
         >
           {{ $t('farm.farm7') + ' ' + tokenInfo.name }}
-          {{ !isPool ? ' LP' : '' }}
+<!--          {{ !isPool ? ' LP' : '' }}-->
           <i class=""></i>
         </p>
         <!--        <p class="click">
@@ -46,7 +46,7 @@
         </div>
         <div class="alter">
           <div class="left">
-            <div class="info-title">{{ $t('farm.farm9') }}LP</div>
+            <div class="info-title">{{ $t('farm.farm9') }}</div>
             <el-tooltip placement="top" :key="tokenInfo.stakeAmount">
               <template #content>
                 {{ $thousands(tokenInfo.stakeAmount) }}
@@ -122,7 +122,7 @@
         </div>
       </div>
       <div class="option-cont mt-15">
-        <div class="text-90">{{ $t('farm.farm9') }} LP</div>
+        <div class="text-90">{{ $t('farm.farm9') }} </div>
         <div class="d-flex align-items-center space-between mt-15">
           <div class="count-cont">{{ $thousands(tokenInfo.stakeAmount) }}</div>
           <div class="btn-group">
@@ -189,7 +189,7 @@
         @click="toAddLiquidity"
         v-if="isNerve && tokenInfo.name"
       >
-        {{ $t('farm.farm7') + ' ' + tokenInfo.name + ' Lp' }}
+        {{ $t('farm.farm7') + ' ' + tokenInfo.name }}
       </div>
     </div>
     <lp-dialog

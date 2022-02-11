@@ -2,7 +2,7 @@
   <div class="overview-data">
     <div class="info-item">
       <p>{{ $t('home.home10') }}</p>
-      <p><CountUp :end-val="overviewData.turnoverAmount" /></p>
+      <p><CountUp :end-val="overviewData.turnoverAmount" /> NVT</p>
     </div>
     <el-divider direction="vertical"></el-divider>
     <div class="info-item">
@@ -15,7 +15,7 @@
     <el-divider direction="vertical"></el-divider>
     <div class="info-item">
       <p>{{ $t('home.home12') }}</p>
-      <p><CountUp :end-val="overviewData.totalStake" /></p>
+      <p><CountUp :end-val="overviewData.totalStake" /> NVT</p>
     </div>
   </div>
 </template>

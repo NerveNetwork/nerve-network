@@ -202,13 +202,14 @@ export default defineComponent({
   }
   .el-input {
     margin-right: 12px;
+    width: auto;
     ::-webkit-input-placeholder {
       color: $labelColor;
     }
   }
   .inner {
     :deep(.el-input) {
-      flex: 1;
+      //flex: 1;
       .el-input__inner {
         font-size: 20px;
         padding-right: 0;

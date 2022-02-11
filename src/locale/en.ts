@@ -53,13 +53,13 @@ const en = {
     home1: 'Decentralized Digital Asset Service Network',
     home2:
       'It aims to break the isolated blockchain，establish a cross-chain asset exchange network and provide all necessary underlying support for the Defi ecosystem. Let every digital asset holder experience a truly safe, free and transparent Defi service.',
-    home3: '2 second confirmation and 0 fees',
+    home3: '2 second confirmation and 0 Gas Fee',
     home4: 'Support 8+ chains',
     home5: 'Launch Swap ',
     home6: 'Launch Bridge',
     home7: 'Total Volume',
     home8: 'Highest APR',
-    home9: 'Partners',
+    home9: 'PartnerShip',
     home10: 'Circulating',
     home11: 'Market Cap',
     home12: 'Staking'
