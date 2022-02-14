@@ -178,10 +178,7 @@ async function quitStaking(asset: StakingListItem) {
     };
     const result: any = await handleTxInfo(transferInfo, 6, txData);
     if (result && result.hash) {
-      toast.success(t('transfer.transfer14'));
       refreshList();
-    } else {
-      toast.error(t('transfer.transfer23'));
     }
   } catch (e) {
     console.log(e, 'quit-error');
@@ -249,10 +246,7 @@ async function batchJoin(info: StakingInfo) {
   };
   const result: any = await handleTxInfo(transferInfo, 33, txData);
   if (result && result.hash) {
-    toast.success(t('transfer.transfer14'));
     refreshList();
-  } else {
-    toast.error(t('transfer.transfer23'));
   }
 }
 
@@ -274,10 +268,7 @@ async function batchQuit(info: StakingInfo) {
   };
   const result: any = await handleTxInfo(transferInfo, 32, txData);
   if (result && result.hash) {
-    toast.success(t('transfer.transfer14'));
     refreshList();
-  } else {
-    toast.error(t('transfer.transfer23'));
   }
 }
 

@@ -467,9 +467,6 @@ async function handleHex(hex: string, type: number) {
   const result: any = await handleNerveHex(hex, type);
   if (result && result.hash) {
     dialogAddOrMinus.value = false;
-    toast.success(t('transfer.transfer14'));
-  } else {
-    toast.error('Failed');
   }
 }
 

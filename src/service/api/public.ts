@@ -18,7 +18,7 @@ const url = config.WS_URL;
 //广播hex
 export async function broadcastHex(txHex: string) {
   const res = await http.rPost('broadcastTx', txHex);
-  return res?.result || null;
+  return res.result || res.error;
 }
 
 // 获取区块信息

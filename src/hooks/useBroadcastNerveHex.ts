@@ -4,6 +4,8 @@ import { NTransfer } from '@/utils/api';
 import { broadcastHex } from '@/service/api';
 import storage from '@/utils/storage';
 import { Account, TxInfo } from '@/store/types';
+import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
 
 /*interface TxInfo {
   inputs: any;
@@ -31,6 +33,8 @@ export function setAccountTxs(pub: string, tx: TxInfo) {
 
 export default function useBroadcastNerveHex() {
   const { addressInfo } = useStoreState();
+  const { t } = useI18n();
+  const toast = useToast();
 
   // 已有交易hex，调用metamask签名，然后广播
   async function handleHex(hex: string, type: number) {
@@ -52,6 +56,7 @@ export default function useBroadcastNerveHex() {
       };
       setAccountTxs(addressInfo.value?.pub, txInfo);
     }
+    handleMessage(res);
     return res;
   }
 
@@ -87,7 +92,18 @@ export default function useBroadcastNerveHex() {
       };
       setAccountTxs(addressInfo.value?.pub, txInfo);
     }
+    handleMessage(res);
     return res;
+  }
+
+  function handleMessage(res: any) {
+    if (res.hash) {
+      toast.success(t('transfer.transfer14'));
+    } else if (res.error) {
+      toast.error(t('error.' + res.code));
+    } else {
+      toast.error('Unknown Error');
+    }
   }
 
   return {
