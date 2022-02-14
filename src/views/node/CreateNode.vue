@@ -175,10 +175,7 @@ function createForm() {
         };
         const result: any = await handleTxInfo(transferInfo, 4, txData);
         if (result && result.hash) {
-          toast.success(t('transfer.transfer14'));
           emit('refresh');
-        } else {
-          toast.error(t('transfer.transfer23'));
         }
       } catch (e) {
         console.log(e, 'create-node-error');

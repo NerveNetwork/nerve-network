@@ -323,11 +323,8 @@ function joinStaking() {
         };
         const result: any = await handleTxInfo(transferInfo, 5, txData);
         if (result && result.hash) {
-          toast.success(t('transfer.transfer14'));
           emit('refresh');
           visible.value = false;
-        } else {
-          toast.error(t('transfer.transfer23'));
         }
       } catch (e) {
         console.log(e, 'join-error');

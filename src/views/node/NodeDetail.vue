@@ -138,10 +138,7 @@ async function stopNode() {
     };
     const result: any = await handleTxInfo(transferInfo, 9, txData);
     if (result && result.hash) {
-      toast.success(t('transfer.transfer14'));
       router.push('/');
-    } else {
-      toast.error(t('transfer.transfer23'));
     }
   } catch (e) {
     console.log(e, 'stop-node-error');
@@ -194,11 +191,8 @@ async function handleDeposit(amount: string, type: HandleType) {
       result = await handleTxInfo(transferInfo, 29, txData);
     }
     if (result && result.hash) {
-      toast.success(t('transfer.transfer14'));
       showDepositDialog.value = false;
       refreshList();
-    } else {
-      toast.error(t('transfer.transfer23'));
     }
   } catch (e) {
     console.log(e, 'deposit-error');

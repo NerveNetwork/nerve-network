@@ -62,7 +62,7 @@ class Request {
     if (method === 'getBestSymbolPrice' || method === 'getSymbolInfo') {
       rpcParams.params.shift();
     }
-    return this.request<{ result?: T }>({
+    return this.request<{ result?: T; error?: T }>({
       url: '/',
       method: 'POST',
       data: rpcParams

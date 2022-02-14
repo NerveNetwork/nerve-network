@@ -223,9 +223,6 @@ export default defineComponent({
         if (result && result.hash) {
           amount.value = '';
           toAddress.value = '';
-          toast.success(t('transfer.transfer14'));
-        } else {
-          toast.error(t('transfer.transfer23'));
         }
       } catch (e) {
         console.log(e, 'common-transfer-error');

@@ -986,12 +986,9 @@ export default defineComponent({
         const res: any = await handleHex(tx.hex, 63);
         if (res && res.hash) {
           context.emit('selectAsset', state.fromAsset, state.toAsset);
-          toast.success(t('transfer.transfer14'));
           state.fromAmount = '';
           state.toAmount = '';
           state.priceImpact = '';
-        } else {
-          toast.error(t('transfer.transfer23'));
         }
       } catch (e) {
         console.log(e, 'Swap-error');
@@ -999,18 +996,6 @@ export default defineComponent({
       }
       loading.value = false;
     }
-
-    /*async function handleHex(hex) {
-      const tAssemble = nerve.deserializationTx(hex);
-      const transfer = new NTransfer({ chain: "NERVE" });
-      const txHex = await transfer.getTxHex({
-        tAssemble,
-        pub: addressInfo.value?.pub,
-        signAddress: addressInfo.value?.address?.Ethereum
-      });
-      console.log(txHex, "===txHex===");
-      return await transfer.broadcastHex(txHex);
-    }*/
 
     // 复制交易对url
     function copyPair() {

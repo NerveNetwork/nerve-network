@@ -192,9 +192,6 @@ async function quit() {
       setTimeout(() => {
         emit('updateList');
       }, 200);
-      toast.success(t('transfer.transfer14'));
-    } else {
-      toast.error('Remove liquidity Failed');
     }
   } catch (e) {
     console.log(e, 'Remove-liquidity-error');
