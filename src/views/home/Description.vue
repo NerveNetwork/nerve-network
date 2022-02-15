@@ -108,8 +108,8 @@ onUnmounted(() => {
       height: auto;
       padding-bottom: 10px;
       h3 {
-        font-size: 30px;
-        margin-bottom: 12px;
+        font-size: 28px;
+        margin-bottom: 5px;
         line-height: 38px;
       }
 

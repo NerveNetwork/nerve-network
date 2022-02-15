@@ -11,7 +11,7 @@ const proxyUrl =
     ? 'https://wallet.nerve.network/'
     : 'http://seeda.nuls.io:8009';
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
+  publicPath: '/',
   configureWebpack: config => {
     // element-plus import es-module
     config.module.rules.push({

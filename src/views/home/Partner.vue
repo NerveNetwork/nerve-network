@@ -14,17 +14,81 @@
 </template>
 
 <script lang="ts" setup>
-import NULS from '@/assets/img/partner/nuls.png';
-import Nabox from '@/assets/img/partner/nabox.png';
-import Binance from '@/assets/img/partner/binance.png';
-import OKEXChain from '@/assets/img/partner/okexchain.png';
-import SlowMist from '@/assets/img/partner/slowmist.png';
-import UniSwap from '@/assets/img/partner/uniswap.png';
-import ChainGuard from '@/assets/img/partner/chainsguard.png';
-import PancakeSwap from '@/assets/img/partner/pancake.png';
-import MDEX from '@/assets/img/partner/mdex.png';
+import OMNI from '@/assets/img/partner/OMINI.jpg';
+import CATCHERVC from '@/assets/img/partner/CATCHERVC.png';
+import Binance from '@/assets/img/partner/Binance.png';
+import Polygon from '@/assets/img/partner/Polygon.png';
+import Cronos from '@/assets/img/partner/Cronos.png';
+import Arbitrum from '@/assets/img/partner/Arbitrum.png';
+import Heco from '@/assets/img/partner/Heco.png';
+import OKEXChain from '@/assets/img/partner/OKEXChain.png';
+import Kcc from '@/assets/img/partner/Kcc.png';
+import Harmony from '@/assets/img/partner/Harmony.png';
+import NULS from '@/assets/img/partner/nuls.jpg';
+import Nabox from '@/assets/img/partner/nabox.jpg';
+import SlowMist from '@/assets/img/partner/slowMist.jpg';
+import ChainGuard from '@/assets/img/partner/chainsGuard.jpg';
 
 const partners = [
+  {
+    src: OMNI,
+    href: 'https://www.omnichains.com/'
+  },
+  {
+    src: CATCHERVC,
+    href: 'https://catchervc.chaincatcher.com/'
+  },
+  {
+    src: Binance,
+    href: 'https://www.binance.org/'
+  },
+  {
+    src: Polygon,
+    href: 'https://polygon.technology/'
+  },
+  {
+    src: Cronos,
+    href: 'https://cronos.crypto.org/'
+  },
+  {
+    src: Arbitrum,
+    href: 'https://arbitrum.io/'
+  },
+  {
+    src: Heco,
+    href: 'https://www.hecochain.com/'
+  },
+  {
+    src: OKEXChain,
+    href: 'https://okex.com/okchain'
+  },
+  {
+    src: Kcc,
+    href: 'https://www.kcc.io/'
+  },
+  {
+    src: Harmony,
+    href: 'https://www.harmony.one/'
+  },
+  {
+    src: NULS,
+    href: 'https://www.nuls.io/'
+  },
+  {
+    src: Nabox,
+    href: 'http://nabox.io/'
+  },
+  {
+    src: SlowMist,
+    href: 'https://www.slowmist.com/'
+  },
+  {
+    src: ChainGuard,
+    href: 'https://www.chainsguard.com/index.html#home'
+  }
+];
+
+/*const partners = [
   {
     src: NULS,
     href: 'https://www.nuls.io/'
@@ -60,8 +124,12 @@ const partners = [
   {
     src: MDEX,
     href: 'https://ht.mdex.com/'
+  },
+  {
+    src: Polygon,
+    href: ''
   }
-];
+];*/
 </script>
 
 <style lang="scss">

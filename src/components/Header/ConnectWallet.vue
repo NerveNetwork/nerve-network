@@ -17,6 +17,7 @@
         {{ item.name }}
         <img class="fr" :src="item.src" alt="" />
       </div>
+      <p class="ledger-tip tc">{{ $t('header.header14') }}</p>
     </div>
   </el-dialog>
 </template>
@@ -41,4 +42,56 @@ const visible = computed({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+@import '../../assets/css/style.scss';
+.connect-dialog {
+  max-width: 470px !important;
+  .el-dialog__body {
+    padding: 0;
+    .list {
+      padding: 0 25px 10px;
+      .connect-btn {
+        height: 50px;
+        line-height: 50px;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 0 15px;
+        margin-bottom: 15px;
+        border-radius: 15px;
+        border: 1px solid #edeef2;
+        //background: rgb(239, 244, 245);
+        //background: $btnColor;
+        cursor: pointer;
+        &:hover {
+          border-color: $linkColor;
+          color: $linkColor;
+        }
+        img {
+          margin-top: 7px;
+          width: 35px;
+          height: 35px;
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 500px) {
+    .el-dialog__body {
+      .list {
+        .connect-btn {
+          height: 45px;
+          line-height: 45px;
+          margin-bottom: 10px;
+          border-radius: 10px;
+          img {
+            width: 30px;
+            height: 30px;
+          }
+        }
+        .ledger-tip {
+          padding-top: 10px;
+        }
+      }
+    }
+  }
+}
+</style>
