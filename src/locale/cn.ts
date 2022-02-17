@@ -11,7 +11,9 @@ const cn = {
     header9: '浏览器',
     header10: '资产',
     header11: '共识',
-    header12: '数据'
+    header12: '数据',
+    header13: '区块链浏览器',
+    header14: '* Nerve网络暂不支持硬件钱包'
   },
   footer: {
     footer1: '购买NVT',
@@ -22,7 +24,8 @@ const cn = {
     footer6: '社区',
     footer7: '更多',
     footer8: '区块链浏览器',
-    footer9: '创建节点'
+    footer9: '创建节点',
+    footer10: '网页钱包'
   },
   public: {
     public1: '资产',
@@ -440,7 +443,7 @@ const cn = {
     home6: '进入Bridge',
     home7: '总交易量',
     home8: '最高APR',
-    home9: '合作伙伴',
+    home9: '投资机构&合作伙伴',
     home10: '总流通量',
     home11: '总市值',
     home12: '质押量'

@@ -89,4 +89,94 @@ function openUrl(item: TxInfo) {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+@import '../../assets/css/style.scss';
+.account-manage {
+  max-width: 470px;
+  .content {
+    /* display: ; */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      span {
+        font-size: 24px;
+        color: $txColor;
+      }
+      i {
+        color: $linkColor;
+        font-size: 32px;
+        cursor: pointer;
+        margin-left: 20px;
+        &.icon-tiaozhuanlianjie {
+          font-size: 30px;
+        }
+      }
+    }
+    .bottom {
+      padding: 30px 0 25px;
+      .el-button {
+        width: 205px;
+        height: 48px;
+        border-radius: 15px;
+        border: none;
+      }
+    }
+  }
+  .txs {
+    max-height: 300px;
+    overflow: auto;
+    padding-top: 15px;
+    p {
+      color: #475472;
+      margin-bottom: 5px;
+      font-size: 16px;
+      &.no-data {
+        padding-top: 8px;
+        font-size: 13px;
+        color: #909399;
+        text-align: center;
+      }
+    }
+    .tx-item {
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .hash {
+      width: 50%;
+    }
+    .create-time {
+      width: 30%;
+    }
+    .status {
+      width: 20%;
+      padding-right: 5px;
+      display: flex;
+      justify-content: flex-end;
+      .is-loading {
+        transform-origin: center center;
+      }
+    }
+  }
+  @media screen and (max-width: 500px) {
+    .content .top span {
+      font-size: 22px;
+      i {
+        font-size: 24px;
+        &.icon-tiaozhuanlianjie {
+          font-size: 22px;
+        }
+      }
+    }
+    .content {
+      .bottom {
+        padding: 20px 0 10px;
+        .el-button {
+          height: 36px;
+        }
+      }
+    }
+  }
+}
+</style>

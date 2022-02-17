@@ -92,9 +92,11 @@ const menus = computed(() => {
         : 'https://bridge.nerve.network/'
     },
     {
-      label: t('header.header12'),
-      key: 'dataInfo',
-      disable: true
+      label: t('header.header13'),
+      key: 'Explorer',
+      url: isBeta
+        ? 'http://beta.scan.nerve.network/'
+        : 'https://scan.nerve.network/'
     }
   ];
 });

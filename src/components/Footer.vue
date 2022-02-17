@@ -37,6 +37,7 @@ import { useRouter } from 'vue-router';
 import useLang from '@/hooks/useLang';
 import useStoreState from '@/hooks/useStoreState';
 import config from '@/config';
+import { isBeta } from '@/utils/util';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -101,6 +102,16 @@ const linkConfig = computed(() => {
           label: t('footer.footer9'),
           href: '/node',
           router: true
+        },
+        {
+          label: t('footer.footer10'),
+          href: isBeta
+            ? 'http://beta.wallet.nerve.network/'
+            : 'https://wallet.nerve.network/'
+        },
+        {
+          label: 'NerveDEX',
+          href: 'https://nervedex.com/'
         }
       ]
     }

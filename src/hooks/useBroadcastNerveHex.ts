@@ -100,7 +100,7 @@ export default function useBroadcastNerveHex() {
     if (res.hash) {
       toast.success(t('transfer.transfer14'));
     } else if (res.error) {
-      toast.error(t('error.' + res.code));
+      toast.error(t('error.' + res.error.code));
     } else {
       toast.error('Unknown Error');
     }

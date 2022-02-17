@@ -11,18 +11,21 @@ const en = {
     header9: 'Explorer',
     header10: 'Assets',
     header11: 'Consensus',
-    header12: 'Info'
+    header12: 'Info',
+    header13: 'Explorer',
+    header14: '* Nerve Network does not support hardware wallets'
   },
   footer: {
     footer1: 'Buy NVT',
     footer2: 'Developers',
     footer3: 'Documentation',
-    footer4: 'Audit report',
-    footer5: 'White paper',
+    footer4: 'Audit Report',
+    footer5: 'White Paper',
     footer6: 'Community',
     footer7: 'More',
-    footer8: 'Block explorer',
-    footer9: 'Create Node'
+    footer8: 'Block Explorer',
+    footer9: 'Create Node',
+    footer10: 'Web Wallet'
   },
   public: {
     public1: 'Asset',
@@ -449,14 +452,14 @@ const en = {
   home: {
     home1: 'Decentralized Digital Asset Service Network',
     home2:
-      'It aims to break the isolated blockchain，establish a cross-chain asset exchange network and provide all necessary underlying support for the Defi ecosystem. Let every digital asset holder experience a truly safe, free and transparent Defi service.',
-    home3: '2 second confirmation and 0 Gas Fee',
+      'NerveNetwork aims to connect all isolated blockchains and establish a cross-chain asset exchange network, providing all necessary underlying support for the Defi ecosystem. Let every digital asset holder experience a truly safe, free and transparent Defi service.',
+    home3: '2 seconds confirmation and 0 gas fee',
     home4: 'Support 8+ chains',
     home5: 'Launch Swap ',
     home6: 'Launch Bridge',
     home7: 'Total Volume',
     home8: 'Highest APR',
-    home9: 'PartnerShip',
+    home9: 'Investors & Partners',
     home10: 'Circulating',
     home11: 'Market Cap',
     home12: 'Staking'
