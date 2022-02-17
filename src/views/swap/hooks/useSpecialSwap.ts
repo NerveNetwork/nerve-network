@@ -1,5 +1,5 @@
 import { ref, onMounted } from 'vue';
-import { Minus } from '@/utils/util';
+import { Minus, divisionDecimals } from '@/utils/util';
 import config from '@/config';
 import {
   getStablePairListForSwapTrade,
@@ -58,8 +58,13 @@ export default function useSpecialSwap() {
       const index = res.coins.findIndex(
         (v: any) => v.assetChainId + '-' + v.assetId === assetKey
       );
+      // console.log(index, res, amount);
       if (index !== -1) {
-        if (Minus(amount, res.balances[index]).toNumber() > 0) {
+        const balance = divisionDecimals(
+          res.balances[index],
+          res.coins[index].decimals
+        );
+        if (Minus(amount, balance).toNumber() > 0) {
           throw 'Insufficient pool balance';
         }
         const arr = new Array(res.coins.length).fill(1).map((v, i) => i);

@@ -1035,7 +1035,7 @@ export default defineComponent({
             const receiveOrderIndexs = await getReceiveOrderIndex(
               stablePairAddress,
               toAssetKey,
-              amountIn
+              state.fromAmount
             );
             tx = await nerve.swap.stableSwapRemoveLiquidity(
               fromAddress,
