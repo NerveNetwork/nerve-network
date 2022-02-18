@@ -438,26 +438,11 @@ export default defineComponent({
     async function changeDirection() {
       if (!state.fromAsset || !state.toAsset) {
         return false;
-      } else if (
-        state.fromAsset &&
-        state.toAsset &&
-        (!state.fromAmount || !state.toAmount)
-      ) {
-        const tempToAsset = { ...state.toAsset };
-        const tempFromAsset = { ...state.fromAsset };
-        state.fromAsset = tempToAsset;
-        state.toAsset = tempFromAsset;
-      } else {
-        const tempToAsset = { ...state.toAsset };
-        const tempFromAsset = { ...state.fromAsset };
-        state.fromAsset = tempToAsset;
-        state.toAsset = tempFromAsset;
-        if (state.customerType === 'from') {
-          state.toAmount = state.fromAmount;
-        } else if (state.customerType === 'to') {
-          state.fromAmount = state.toAmount;
-        }
       }
+      const tempToAsset = { ...state.toAsset };
+      const tempFromAsset = { ...state.fromAsset };
+      state.fromAsset = tempToAsset;
+      state.toAsset = tempFromAsset;
       checkIsStableCoinForNVT(
         state?.fromAsset?.assetKey,
         state?.toAsset?.assetKey
@@ -472,80 +457,105 @@ export default defineComponent({
       }
       getSwapAmount('1', 'to', true);
       context.emit('selectAsset', state.fromAsset, state.toAsset);
+      await getAmountByToggleSwap();
+    }
+
+    // 通过from计算to
+    async function getToByFrom(val: string) {
+      if (state.disableWatchFromAmount) return;
+      customerFocus('from');
+      if (val) {
+        if (!state.fromAsset || !state.toAsset) return false;
+        if (
+          !Number(state.fromAsset.available) ||
+          // @ts-ignore
+          Minus(state.fromAsset.available, val) < 0
+        ) {
+          state.fromAmountError =
+            ((state.fromAsset && state.fromAsset.symbol) || '') +
+            t('transfer.transfer15');
+        } else {
+          state.fromAmountError = '';
+        }
+
+        const [res, priceImpact] = getSwapAmount(val, 'to'); // 通过from计算to
+        state.priceImpact = priceImpact || 0;
+        state.insufficient = res === 0;
+        if (res) {
+          state.disableWatchToAmount = true; // 避免进入无限循环计算
+          state.toAmount = res;
+          getSwapRate(false);
+          await nextTick();
+          state.disableWatchToAmount = false;
+        } else {
+          getSwapRate(true);
+        }
+      } else {
+        state.priceImpact = '';
+        if (!state.fromAmountError) {
+          state.toAmount = '';
+        }
+        getSwapRate(true);
+      }
+    }
+    // 通过to计算from
+    async function getFromByTo(val: string) {
+      if (state.disableWatchToAmount) return;
+      customerFocus('to');
+      if (val) {
+        if (!state.fromAsset || !state.toAsset) return false;
+        const [res, priceImpact] = getSwapAmount(val, 'from'); // 通过to计算from
+        // console.log(res, priceImpact, 666);
+        state.priceImpact = priceImpact || 0;
+        state.insufficient = res === 0;
+        if (res) {
+          state.disableWatchFromAmount = true;
+          state.fromAmount = res;
+          getSwapRate(false);
+          await nextTick();
+          state.disableWatchFromAmount = false;
+        } else {
+          getSwapRate(true);
+        }
+      } else {
+        state.priceImpact = '';
+        state.fromAmount = '';
+        getSwapRate(true);
+      }
+    }
+
+    async function getAmountByToggleSwap() {
+      state.disableWatchToAmount = true;
+      state.disableWatchFromAmount = true;
+      const fromAmount = state.fromAmount;
+      const toAmount = state.toAmount;
+      state.fromAmount = '';
+      state.toAmount = '';
+      await nextTick();
+      console.log(state.customerType, fromAmount, toAmount);
+      if (state.customerType === 'from') {
+        state.disableWatchToAmount = false;
+        state.toAmount = fromAmount;
+      } else if (state.customerType === 'to') {
+        state.disableWatchFromAmount = false;
+        state.fromAmount = toAmount;
+      }
+      await nextTick();
+      state.disableWatchToAmount = false;
+      state.disableWatchFromAmount = false;
     }
 
     // 监听fromAmount变化
     watch(
       () => state.fromAmount,
       async val => {
-        // debugger;
-        if (val) {
-          if (!state.fromAsset || !state.toAsset) return false;
-          if (
-            !Number(state.fromAsset.available) ||
-            // @ts-ignore
-            Minus(state.fromAsset.available, val) < 0
-          ) {
-            state.fromAmountError =
-              ((state.fromAsset && state.fromAsset.symbol) || '') +
-              t('transfer.transfer15');
-          } else {
-            state.fromAmountError = '';
-          }
-
-          if (!state.disableWatchFromAmount) {
-            customerFocus('from');
-            const [res, priceImpact] = getSwapAmount(val, 'to'); // 通过from计算to
-            state.priceImpact = priceImpact || 0;
-            state.insufficient = res === 0;
-            if (res) {
-              state.disableWatchToAmount = true; // 避免进入无限循环计算
-              state.toAmount = res;
-              getSwapRate(false);
-              await nextTick();
-              state.disableWatchToAmount = false;
-            } else {
-              getSwapRate(true);
-            }
-          }
-        } else {
-          state.priceImpact = '';
-          if (!state.fromAmountError) {
-            state.toAmount = '';
-          }
-          customerFocus('from');
-          getSwapRate(true);
-        }
+        await getToByFrom(val);
       }
     );
     watch(
       () => state.toAmount,
       async val => {
-        if (val) {
-          if (!state.fromAsset || !state.toAsset) return false;
-
-          if (!state.disableWatchToAmount) {
-            customerFocus('to');
-            const [res, priceImpact] = getSwapAmount(val, 'from'); // 通过to计算from
-            // console.log(res, priceImpact, 666);
-            state.priceImpact = priceImpact || 0;
-            state.insufficient = res === 0;
-            if (res) {
-              state.disableWatchFromAmount = true;
-              state.fromAmount = res;
-              getSwapRate(false);
-              await nextTick();
-              state.disableWatchFromAmount = false;
-            } else {
-              getSwapRate(true);
-            }
-          }
-        } else {
-          customerFocus('to');
-          state.priceImpact = '';
-          state.fromAmount = '';
-          getSwapRate(true);
-        }
+        await getFromByTo(val);
       },
       {
         deep: true
