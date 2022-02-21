@@ -25,7 +25,7 @@
               <SwitchChain v-model="showSwitchChain" :chainId="chainId">
                 <div class="l1-chain" @click="showSwitchChain = true">
                   <img :src="chainLogo" alt="" v-if="!wrongChain" />
-                  <img src="../../assets/img/nerveIcon.png" alt="" @click="showSwitchChain = true" v-else />
+                  <img src="../../assets/img/net-error.jpg" alt="" @click="showSwitchChain = true" v-else />
                   丨
                 </div>
               </SwitchChain>
