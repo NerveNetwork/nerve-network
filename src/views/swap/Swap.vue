@@ -473,6 +473,7 @@ export default defineComponent({
         ) {
           state.fromAmountError =
             ((state.fromAsset && state.fromAsset.symbol) || '') +
+            ' ' +
             t('transfer.transfer15');
         } else {
           state.fromAmountError = '';
@@ -835,7 +836,7 @@ export default defineComponent({
       }
       const fromAmount = state.fromAmount;
       const toAmount = state.toAmount;
-      if (swapDirection.value === 'from-to') {
+      if (swapDirection.value === 'to-from') {
         swapRate.value = `1 ${state.fromAsset?.symbol} ≈ ${formatFloat(
           Division(toAmount, fromAmount).toFixed(),
           1
@@ -846,6 +847,17 @@ export default defineComponent({
           1
         )} ${state.fromAsset?.symbol}`;
       }
+      /*if (swapDirection.value === 'from-to') {
+        swapRate.value = `1 ${state.fromAsset?.symbol} ≈ ${formatFloat(
+          Division(toAmount, fromAmount).toFixed(),
+          1
+        )} ${state.toAsset?.symbol}`;
+      } else {
+        swapRate.value = `1 ${state.toAsset?.symbol} ≈ ${formatFloat(
+          Division(fromAmount, toAmount).toFixed(),
+          1
+        )} ${state.fromAsset?.symbol}`;
+      }*/
     }
 
     const minReceive = computed(() => {

@@ -6,7 +6,7 @@
         v-for="item in supportChainList"
         :key="item.chainId"
         :class="{ active: item.chainId === chainId }"
-        @click="switchChain(item)"
+        @click.stop="switchChain(item)"
       >
         <img :src="item.logo" alt="" />
         {{ item.chainName }}

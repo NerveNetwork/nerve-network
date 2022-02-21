@@ -73,7 +73,7 @@ export const _networkInfo = {
     chainId: isBeta ? 5 : 9,
     origin: NERVEOrigin,
     color: '#56bff3',
-    mainAsset: 'NERVE',
+    mainAsset: 'NVT',
     ropsten: '0x-2',
     homestead: '0x-2',
     logo: NERVELogo

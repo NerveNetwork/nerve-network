@@ -1,12 +1,14 @@
 <template>
   <div class="w1200 assets-wrap">
     <!--    el-table resize卡顿问题-->
-    <div
+<!--    <div
       class="hack-table-resize"
       v-if="!showTransfer"
       style="position: relative"
     >
-      <div style="position: absolute; width: 100%">
+      <div style="position: absolute; width: 100%">-->
+    <div v-if="!showTransfer">
+      <div>
         <div class="assets box_wrapper">
           <div class="address-wrap">
             <!--            <div class="address">
@@ -22,7 +24,6 @@
           </div>
           <el-table
             :data="selectAssets"
-            height="560"
             class="show_table"
             v-loading="loading"
             stripe
@@ -108,42 +109,6 @@
                   >
                     {{ $t('transfer.transfer3') }}
                   </el-button>
-                  <!--                  <el-tooltip
-                    :content="$t('assets.assets4')"
-                    placement="top"
-                    v-if="scope.row.canToL1"
-                  >
-                    <i
-                      class="iconfont icon-chongzhidaoL2"
-                      :class="{ disable: disableTx || !scope.row.canToL1OnCurrent }"
-                      @click="transfer(scope.row, TransferType.CrossIn)"
-                    ></i>
-                  </el-tooltip>
-                  <el-divider
-                    direction="vertical"
-                    v-if="scope.row.canToL1"
-                  ></el-divider>
-                  <el-tooltip :content="$t('assets.assets5')" placement="top">
-                    <i
-                      class="iconfont icon-L2zhuanzhang"
-                      @click="transfer(scope.row, TransferType.General)"
-                    ></i>
-                  </el-tooltip>
-                  <el-divider
-                    direction="vertical"
-                    v-if="scope.row.canToL1"
-                  ></el-divider>
-                  <el-tooltip
-                    :content="$t('assets.assets6')"
-                    placement="top"
-                    v-if="scope.row.canToL1"
-                  >
-                    <i
-                      class="iconfont icon-tixiandaoL1"
-                      :class="{ disable: disableTx || !scope.row.canToL1OnCurrent}"
-                      @click="transfer(scope.row, TransferType.Withdrawal)"
-                    ></i>
-                  </el-tooltip>-->
                 </div>
               </template>
             </el-table-column>
@@ -234,10 +199,10 @@
                 v-if="item.canToL1"
                 :class="{ btn_disable: disableTx || !item.canToL1OnCurrent }"
               >
-                {{ $t('assets.assets4') }}
+                {{ $t('transfer.transfer1') }}
               </div>
               <div class="btn" @click="transfer(item, TransferType.General)">
-                {{ $t('assets.assets5') }}
+                {{ $t('transfer.transfer2') }}
               </div>
               <div
                 class="btn"
@@ -245,7 +210,7 @@
                 v-if="item.canToL1"
                 :class="{ btn_disable: disableTx || !item.canToL1OnCurrent }"
               >
-                {{ $t('assets.assets6') }}
+                {{ $t('transfer.transfer3') }}
               </div>
             </div>
           </div>
@@ -416,7 +381,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../assets/css/style.scss';
 .assets-wrap {
-  padding: 0 20px;
+  padding: 0 20px 30px;
   min-height: calc(100vh - 160px);
 }
 .show_table.el-table--scrollable-y .el-table__body-wrapper {
@@ -554,7 +519,7 @@ export default defineComponent({
   cursor: not-allowed;
 }
 .assets {
-  max-height: 721px;
+  //max-height: 721px;
   background-color: $BgColor;
   //box-shadow: 0px 2px 0px 0px #e9eaf4;
   border-radius: 30px;

@@ -79,10 +79,16 @@ export default function useAssetsList() {
         })
       );
     } else {
-      const defaultSymbol = ['NVT'];
-      result = sortDataByValue.filter(
-        v => defaultSymbol.indexOf(v.symbol) > -1
-      );
+      // const defaultSymbol = ['NVT'];
+      const defaultSymbol = {};
+      Object.values(_networkInfo).map(v => {
+        defaultSymbol[v.mainAsset] = v.name;
+      });
+      result = sortDataByValue.filter(v => {
+        return (
+          defaultSymbol[v.symbol] && defaultSymbol[v.symbol] === v.originNetwork
+        );
+      });
     }
     selectAssets.value = result;
   }
