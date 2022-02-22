@@ -210,7 +210,7 @@ function filterListByStatus(status: 'pending' | 'end') {
     justify-content: space-between;
     align-items: center;
     height: 40px;
-    margin: 10px 0 20px;
+    margin: 0 0 20px;
     .sort {
       //width: 170px;
       height: 40px;

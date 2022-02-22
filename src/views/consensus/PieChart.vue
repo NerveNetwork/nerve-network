@@ -1,6 +1,7 @@
 <template>
   <div class="staking-pie">
-    <PieChart :options="chartOptions" class="chart" />
+    <!--    <PieChart :options="chartOptions" class="chart" />-->
+    <Chart type="pie" :options="chartOptions" class="chart" />
     <div class="chart-legend">
       <div
         class="legend-item scroll"
@@ -17,7 +18,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import PieChart from '@/components/Charts/PieChart.vue';
+import Chart from '@/components/Charts/index.vue';
 import { toThousands } from '@/utils/util';
 
 const props = defineProps<{
@@ -30,7 +31,7 @@ const chartOptions = computed(() => {
   return {
     tooltip: {
       position: 'top',
-      formatter: item => {
+      formatter: (item: any) => {
         // console.log(item, 123)
         return `<div class="staking-chart-tooltip">
          <i style="background-color: ${color[item.dataIndex]}"></i>
@@ -40,9 +41,11 @@ const chartOptions = computed(() => {
       </div>`;
       }
     },
-    series: {
-      data: props.data || []
-    }
+    series: [
+      {
+        data: props.data || []
+      }
+    ]
   };
 });
 </script>
@@ -51,9 +54,11 @@ const chartOptions = computed(() => {
 .staking-pie {
   height: 100%;
   display: flex;
+
   .chart {
     width: 40% !important;
   }
+
   .chart-legend {
     width: 60%;
     padding-right: 10px;
@@ -61,11 +66,13 @@ const chartOptions = computed(() => {
     display: flex;
     flex-direction: column;
     justify-content: center;
+
     .legend-item {
       width: 100%;
       white-space: nowrap;
       overflow: auto;
     }
+
     .legend-circle {
       display: inline-block;
       width: 8px;
@@ -74,16 +81,19 @@ const chartOptions = computed(() => {
       margin-bottom: 1px;
       border-radius: 50%;
     }
+
     span {
       display: inline-block;
       color: #8794b1;
       font-size: 16px;
+
       &.legend-symbol {
         color: #4f5b78;
         font-size: 14px;
         // width: 70px;
         width: auto;
         margin-right: 10px;
+
         & + span {
           margin-right: 10px;
           /*min-width: 80px;*/
@@ -91,21 +101,26 @@ const chartOptions = computed(() => {
       }
     }
   }
+
   @media screen and (max-width: 1200px) {
     .chart-legend {
       .legend-item {
       }
+
       .legend-circle {
         width: 8px;
         height: 8px;
         margin-right: 5px;
       }
+
       span {
         font-size: 14px;
+
         &.legend-symbol {
           font-size: 14px;
           //width: 1.4rem;
           margin-right: 10px;
+
           & + span {
             margin-right: 10px;
           }
@@ -114,6 +129,7 @@ const chartOptions = computed(() => {
     }
   }
 }
+
 .staking-chart-tooltip {
   background-color: transparent;
   //color: #fff;

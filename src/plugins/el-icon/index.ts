@@ -9,7 +9,8 @@ import {
   Plus,
   Back,
   CaretRight,
-  CircleCheck
+  CircleCheck,
+  Search
 } from '@element-plus/icons-vue';
 
 // 全局注册@element-plus icon
@@ -23,7 +24,8 @@ const components = [
   Plus,
   Back,
   CaretRight,
-  CircleCheck
+  CircleCheck,
+  Search
 ];
 export function useElIcon(app: App) {
   components.forEach(component => {
