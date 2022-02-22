@@ -26,7 +26,7 @@
                 <div class="l1-chain" @click="showSwitchChain = true">
                   <img :src="chainLogo" alt="" v-if="!wrongChain" />
                   <img src="../../assets/img/net-error.svg" alt="" @click="showSwitchChain = true" v-else />
-                  丨
+                  <el-icon style="margin-right: 5px"><caret-bottom /></el-icon>
                 </div>
               </SwitchChain>
               <img src="../../assets/img/nerveIcon.png" alt="" @click="manageAccount = true" />
