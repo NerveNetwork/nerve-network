@@ -61,6 +61,7 @@ export const _networkInfo = {
   NULS: {
     name: 'NULS',
     chainId: isBeta ? 2 : 1,
+    assetKey: isBeta ? '2-1' : '1-1',
     origin: NULSOrigin,
     color: '#00da9d',
     mainAsset: 'NULS',
@@ -71,6 +72,7 @@ export const _networkInfo = {
   NERVE: {
     name: 'NERVE',
     chainId: isBeta ? 5 : 9,
+    assetKey: isBeta ? '5-1' : '9-1',
     origin: NERVEOrigin,
     color: '#56bff3',
     mainAsset: 'NVT',
@@ -81,6 +83,7 @@ export const _networkInfo = {
   Ethereum: {
     name: 'Ethereum',
     chainId: 101,
+    assetKey: isBeta ? '5-2' : '9-2',
     origin: ETHOrigin,
     color: '#5e5e5e',
     mainAsset: 'ETH',
@@ -92,6 +95,7 @@ export const _networkInfo = {
   BSC: {
     name: 'BSC',
     chainId: 102,
+    assetKey: isBeta ? '5-8' : '9-25',
     origin: BSCOrigin,
     color: '#e7b941',
     mainAsset: 'BNB',
@@ -108,6 +112,7 @@ export const _networkInfo = {
   Heco: {
     name: 'Heco',
     chainId: 103,
+    assetKey: isBeta ? '5-9' : '9-55',
     origin: HecoOrigin,
     color: '#336adb',
     mainAsset: 'HT',
@@ -124,6 +129,7 @@ export const _networkInfo = {
   OEC: {
     name: 'OEC',
     chainId: 104,
+    assetKey: isBeta ? '5-12' : '9-87',
     origin: OECOrigin,
     color: '#4883ed',
     mainAsset: 'OKT',
@@ -140,6 +146,7 @@ export const _networkInfo = {
   Harmony: {
     name: 'Harmony',
     chainId: 105,
+    assetKey: isBeta ? '5-33' : '9-159',
     origin: HarmonyOrigin,
     color: '#5cc9c0',
     mainAsset: 'ONE',
@@ -156,6 +163,7 @@ export const _networkInfo = {
   Polygon: {
     name: 'Polygon',
     chainId: 106,
+    assetKey: isBeta ? '5-34' : '9-160',
     origin: PolygonOrigin,
     color: '#7449df',
     mainAsset: 'MATIC',
@@ -172,6 +180,7 @@ export const _networkInfo = {
   KCC: {
     name: 'KCC',
     chainId: 107,
+    assetKey: isBeta ? '5-35' : '9-161',
     origin: KCCOrigin,
     color: '#66ac90',
     mainAsset: 'KCS',
@@ -188,6 +197,7 @@ export const _networkInfo = {
   TRON: {
     name: 'TRON',
     chainId: 108,
+    assetKey: isBeta ? '5-55' : '9-218',
     origin: TRXOrigin,
     color: '#c23631',
     mainAsset: 'TRX',
@@ -198,6 +208,7 @@ export const _networkInfo = {
   Cronos: {
     name: 'Cronos',
     chainId: 109,
+    assetKey: isBeta ? '5-93' : '9-266',
     origin: CronosOrigin,
     color: '#142d4a',
     mainAsset: 'CRO',
@@ -214,6 +225,7 @@ export const _networkInfo = {
   Avalanche: {
     name: 'Avalanche',
     chainId: 110,
+    assetKey: isBeta ? '5-94' : '9-267',
     origin: AvalancheOrigin,
     color: '#d64f49',
     mainAsset: 'AVAX',
@@ -230,6 +242,7 @@ export const _networkInfo = {
   Arbitrum: {
     name: 'Arbitrum',
     chainId: 111,
+    assetKey: isBeta ? '5-95' : '9-268',
     origin: ArbitrumOrigin,
     color: '#526077',
     mainAsset: 'AETH',
@@ -246,6 +259,7 @@ export const _networkInfo = {
   Fantom: {
     name: 'Fantom',
     chainId: 112,
+    assetKey: isBeta ? '5-96' : '9-269',
     origin: FantomOrigin,
     color: '#0529ec',
     mainAsset: 'FTM',

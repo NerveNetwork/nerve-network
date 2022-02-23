@@ -16,7 +16,9 @@
           </li>
           <li class="fl">
             <p>{{ $t('farm.farm3') }}</p>
-            <h2>{{ Number(item.apr) ? item.apr + '%' : '--' }}</h2>
+            <h2>
+              {{ isFinished ? '--' : Number(item.apr) ? item.apr + '%' : '--' }}
+            </h2>
           </li>
           <li class="fl">
             <p>{{ $t('farm.farm4') }}</p>
@@ -74,7 +76,9 @@
             <div class="farm-info_item">
               <div>APR</div>
               <div class="mt-8 size-15">
-                {{ Number(item.apr) ? item.apr + '%' : '--' }}
+                {{
+                  isFinished ? '--' : Number(item.apr) ? item.apr + '%' : '--'
+                }}
               </div>
             </div>
           </div>

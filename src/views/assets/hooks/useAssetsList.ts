@@ -80,13 +80,14 @@ export default function useAssetsList() {
       );
     } else {
       // const defaultSymbol = ['NVT'];
+      // 默认显示各条链主资产
       const defaultSymbol = {};
       Object.values(_networkInfo).map(v => {
-        defaultSymbol[v.mainAsset] = v.name;
+        defaultSymbol[v.mainAsset] = v.assetKey;
       });
       result = sortDataByValue.filter(v => {
         return (
-          defaultSymbol[v.symbol] && defaultSymbol[v.symbol] === v.originNetwork
+          defaultSymbol[v.symbol] && defaultSymbol[v.symbol] === v.assetKey
         );
       });
     }
