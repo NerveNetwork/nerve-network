@@ -67,6 +67,7 @@
         <ChartTab v-model="activeChart" :tabs="chartTabData" />
       </div>
     </div>
+    <TxList />
   </div>
 </template>
 
@@ -78,6 +79,7 @@ import Breadcrumb from '../Breadcrumb.vue';
 import KeyInfo from './KeyInfo.vue';
 import HandleBtn from './Handle.vue';
 import ChartTab from './ChartTab.vue';
+import TxList from './TxList.vue';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -97,8 +99,8 @@ const chartTabData = computed(() => {
   return [
     { label: t('info.info5'), type: 'bar', key: 'tx' },
     { label: t('info.info4'), type: 'line', key: 'liq' }
-  ]
-})
+  ];
+});
 </script>
 
 <style lang="scss">
@@ -118,6 +120,7 @@ const chartTabData = computed(() => {
   }
   .overview {
     display: flex;
+    margin-bottom: 25px;
     .left {
       width: 310px;
       margin-right: 30px;
@@ -178,6 +181,9 @@ const chartTabData = computed(() => {
             border-radius: 20px;
           }
         }
+      }
+      .value {
+        font-size: 20px;
       }
     }
   }

@@ -46,7 +46,7 @@ const emit = defineEmits(['update:modelValue']);
 const name = ref('hi');*/
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .chart-tab {
   .tabs {
     height: 68px;

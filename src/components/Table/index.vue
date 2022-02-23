@@ -41,8 +41,8 @@ const props = withDefaults(
     data: any[];
     columns: Column[];
     pagination?: boolean;
-    total: number | string;
-    pageSize: number | string;
+    total?: number | string;
+    pageSize?: number | string;
   }>(),
   {
     pagination: true,
