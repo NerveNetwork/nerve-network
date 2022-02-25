@@ -58,28 +58,6 @@ const FantomOrigin = isBeta
   : 'https://ftmscan.com';
 
 export const _networkInfo = {
-  NULS: {
-    name: 'NULS',
-    chainId: isBeta ? 2 : 1,
-    assetKey: isBeta ? '2-1' : '1-1',
-    origin: NULSOrigin,
-    color: '#00da9d',
-    mainAsset: 'NULS',
-    ropsten: '0x-1',
-    homestead: '0x-1',
-    logo: NULSLogo
-  },
-  NERVE: {
-    name: 'NERVE',
-    chainId: isBeta ? 5 : 9,
-    assetKey: isBeta ? '5-1' : '9-1',
-    origin: NERVEOrigin,
-    color: '#56bff3',
-    mainAsset: 'NVT',
-    ropsten: '0x-2',
-    homestead: '0x-2',
-    logo: NERVELogo
-  },
   Ethereum: {
     name: 'Ethereum',
     chainId: 101,
@@ -107,6 +85,23 @@ export const _networkInfo = {
     rpcUrl: {
       ropsten: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
       homestead: 'https://bsc-dataseed.binance.org/'
+    }
+  },
+  Polygon: {
+    name: 'Polygon',
+    chainId: 106,
+    assetKey: isBeta ? '5-34' : '9-160',
+    origin: PolygonOrigin,
+    color: '#7449df',
+    mainAsset: 'MATIC',
+    ropsten: '0x13881',
+    homestead: '0x89',
+    supported: true,
+    logo: PolygonLogo,
+    decimals: 18,
+    rpcUrl: {
+      ropsten: 'https://rpc-mumbai.maticvigil.com',
+      homestead: 'https://matic-mainnet.chainstacklabs.com'
     }
   },
   Heco: {
@@ -143,6 +138,23 @@ export const _networkInfo = {
       homestead: 'https://exchainrpc.okex.org'
     }
   },
+  Avalanche: {
+    name: 'Avalanche',
+    chainId: 110,
+    assetKey: isBeta ? '5-94' : '9-267',
+    origin: AvalancheOrigin,
+    color: '#d64f49',
+    mainAsset: 'AVAX',
+    ropsten: '0xa869',
+    homestead: '0xa86a',
+    supported: true,
+    logo: AVAVLogo,
+    decimals: 18,
+    rpcUrl: {
+      ropsten: 'https://api.avax-test.network/ext/bc/C/rpc',
+      homestead: 'https://api.avax.network/ext/bc/C/rpc'
+    }
+  },
   Harmony: {
     name: 'Harmony',
     chainId: 105,
@@ -158,23 +170,6 @@ export const _networkInfo = {
     rpcUrl: {
       ropsten: 'https://api.s0.b.hmny.io',
       homestead: 'https://api.harmony.one'
-    }
-  },
-  Polygon: {
-    name: 'Polygon',
-    chainId: 106,
-    assetKey: isBeta ? '5-34' : '9-160',
-    origin: PolygonOrigin,
-    color: '#7449df',
-    mainAsset: 'MATIC',
-    ropsten: '0x13881',
-    homestead: '0x89',
-    supported: true,
-    logo: PolygonLogo,
-    decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://rpc-mumbai.maticvigil.com',
-      homestead: 'https://matic-mainnet.chainstacklabs.com'
     }
   },
   KCC: {
@@ -222,23 +217,6 @@ export const _networkInfo = {
       homestead: 'https://evm-cronos.crypto.org'
     }
   },
-  Avalanche: {
-    name: 'Avalanche',
-    chainId: 110,
-    assetKey: isBeta ? '5-94' : '9-267',
-    origin: AvalancheOrigin,
-    color: '#d64f49',
-    mainAsset: 'AVAX',
-    ropsten: '0xa869',
-    homestead: '0xa86a',
-    supported: true,
-    logo: AVAVLogo,
-    decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://api.avax-test.network/ext/bc/C/rpc',
-      homestead: 'https://api.avax.network/ext/bc/C/rpc'
-    }
-  },
   Arbitrum: {
     name: 'Arbitrum',
     chainId: 111,
@@ -272,6 +250,30 @@ export const _networkInfo = {
       ropsten: 'https://rpc.testnet.fantom.network',
       homestead: 'https://rpc.ftm.tools'
     }
+  },
+  NULS: {
+    name: 'NULS',
+    chainId: isBeta ? 2 : 1,
+    assetKey: isBeta ? '2-1' : '1-1',
+    origin: NULSOrigin,
+    color: '#00da9d',
+    mainAsset: 'NULS',
+    ropsten: '0x-1',
+    homestead: '0x-1',
+    supported: true,
+    logo: NULSLogo
+  },
+  NERVE: {
+    name: 'NERVE',
+    chainId: isBeta ? 5 : 9,
+    assetKey: isBeta ? '5-1' : '9-1',
+    origin: NERVEOrigin,
+    color: '#56bff3',
+    mainAsset: 'NVT',
+    ropsten: '0x-2',
+    homestead: '0x-2',
+    supported: true,
+    logo: NERVELogo
   }
 };
 

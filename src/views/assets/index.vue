@@ -90,7 +90,7 @@
                   <el-button
                     type="text"
                     v-if="scope.row.canToL1"
-                    :disabled="disableTx || !scope.row.canToL1OnCurrent"
+                    :disabled="disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)"
                     @click="transfer(scope.row, TransferType.CrossIn)"
                   >
                     {{ $t('transfer.transfer1') }}
@@ -104,7 +104,7 @@
                   <el-button
                     type="text"
                     v-if="scope.row.canToL1"
-                    :disabled="disableTx || !scope.row.canToL1OnCurrent"
+                    :disabled="disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)"
                     @click="transfer(scope.row, TransferType.Withdrawal)"
                   >
                     {{ $t('transfer.transfer3') }}
@@ -197,7 +197,7 @@
                 class="btn"
                 @click="transfer(item, TransferType.CrossIn)"
                 v-if="item.canToL1"
-                :class="{ btn_disable: disableTx || !item.canToL1OnCurrent }"
+                :class="{ btn_disable: disableTx || !canToL1OnCurrent(item.canToL1OnCurrent) }"
               >
                 {{ $t('transfer.transfer1') }}
               </div>
@@ -208,7 +208,7 @@
                 class="btn"
                 @click="transfer(item, TransferType.Withdrawal)"
                 v-if="item.canToL1"
-                :class="{ btn_disable: disableTx || !item.canToL1OnCurrent }"
+                :class="{ btn_disable: disableTx || !canToL1OnCurrent(item.canToL1OnCurrent) }"
               >
                 {{ $t('transfer.transfer3') }}
               </div>
@@ -294,8 +294,8 @@ export default defineComponent({
     const assetCanCross = ref(true);
     function transfer(asset: AssetItemType, type: TransferType) {
       if (type !== TransferType.General && disableTx.value) return;
-      if (type !== TransferType.General && !asset.canToL1OnCurrent) return;
-      assetCanCross.value = !(disableTx.value || !asset.canToL1OnCurrent);
+      if (type !== TransferType.General && !canToL1OnCurrent(asset.canToL1OnCurrent)) return;
+      assetCanCross.value = !(disableTx.value || !canToL1OnCurrent(asset.canToL1OnCurrent));
       currentTab.value = type;
       /*if (type === TransferType.CrossIn) {
         // L1到L2
@@ -339,6 +339,11 @@ export default defineComponent({
       filterAssets();
     }
 
+    function canToL1OnCurrent(status: boolean) {
+      if (!status) return false;
+      return network.value !== 'NULS' && network.value !== 'NERVE';
+    }
+
     const rootCmp = reactive({
       nerveAddress,
       address,
@@ -372,7 +377,8 @@ export default defineComponent({
       assetClick,
       getContractAddress,
       TransferType,
-      assetCanCross
+      assetCanCross,
+      canToL1OnCurrent
     };
   }
 });

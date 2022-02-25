@@ -140,7 +140,7 @@ export default defineComponent({
           }
         });
       });
-      const defaultFeeAsset = config.htgMainAsset[network];
+      const defaultFeeAsset = config.htgMainAsset[network] || config.htgMainAsset.NERVE;
       selectedFeeAsset.value = father.allAssetsList.find(asset => {
         return (
           asset.chainId === defaultFeeAsset.chainId &&
