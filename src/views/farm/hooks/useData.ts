@@ -21,7 +21,7 @@ export default function useData(isPool: boolean) {
   let totalNerveList: NerveFarmItem[] = [];
   let filterType = '1'; // 排序类型 1.按照收益排名 2.按照流动性排名
   let onlySeeMortgage = false; // 只看已质押
-  let farmStatusType = 'pending';
+  let farmStatusType = 'pending'; // farm状态 默认显示进行中的farm
   onBeforeUnmount(() => {
     subSocket.unListen(url, 'farmListSub');
   });

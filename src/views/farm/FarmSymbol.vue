@@ -1,24 +1,24 @@
 <template>
   <div class="farm-item-symbol">
-    <div class="mult-img-wrap" v-if="symbols.length > 1">
-      <symbol-icon :icon="symbols[0]"></symbol-icon>
-      <symbol-icon :icon="symbols[1]"></symbol-icon>
+    <div class="mult-img-wrap" v-if="props.logo2">
+      <symbol-icon :icon="props.logo1"></symbol-icon>
+      <symbol-icon :icon="props.logo2"></symbol-icon>
     </div>
     <div class="img-wrap" v-else>
-      <symbol-icon :icon="symbols[0]"></symbol-icon>
+      <symbol-icon :icon="props.logo2"></symbol-icon>
     </div>
-    <div class="name">{{ name }}</div>
+    <div class="name">{{ props.name }}</div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 
 const props = defineProps({
+  logo1: String,
+  logo2: String,
   name: String
 });
-const symbols = computed(() => props.name?.split('-') || []);
 </script>
 
 <style lang="scss">

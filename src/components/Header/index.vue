@@ -382,16 +382,21 @@ async function pollingTx(txs: TxInfo[]) {
       height: 60px;
     }
     .logo {
+      width: 96px;
       margin-right: 0;
     }
     .logo img {
-      width: 96px;
+      margin-right: 0;
     }
     .pc-menu {
       display: none;
     }
     .menu-icon {
       margin-left: 10px;
+    }
+    .account .chain-wrap {
+      margin-left: 0;
+      line-height: 32px;
     }
   }
 }
