@@ -5,7 +5,7 @@
       <symbol-icon :icon="props.logo2"></symbol-icon>
     </div>
     <div class="img-wrap" v-else>
-      <symbol-icon :icon="props.logo2"></symbol-icon>
+      <symbol-icon :icon="props.logo1"></symbol-icon>
     </div>
     <div class="name">{{ props.name }}</div>
   </div>
