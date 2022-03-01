@@ -45,12 +45,12 @@ const props = defineProps({
       position: absolute;
       &:first-child {
         bottom: 0;
-        left: 0;
+        right: 0;
         z-index: 2;
       }
       &:last-child {
         top: 0;
-        right: 0;
+        left: 0;
       }
     }
   }
