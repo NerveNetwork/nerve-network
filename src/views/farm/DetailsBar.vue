@@ -5,9 +5,9 @@
         <p
           class="link"
           @click="toAddLiquidity"
-          v-if="isNerve && tokenInfo.name"
+          v-if="isNerve && tokenInfo.stakeTokenSymbol"
         >
-          {{ $t('farm.farm7') + ' ' + tokenInfo.name }}
+          {{ $t('farm.farm7') + ' ' + tokenInfo.stakeTokenSymbol }}
           <i class=""></i>
         </p>
         <!--        <p class="click">
@@ -186,9 +186,9 @@
       <div
         class="link mt-8"
         @click="toAddLiquidity"
-        v-if="isNerve && tokenInfo.name"
+        v-if="isNerve && tokenInfo.stakeTokenSymbol"
       >
-        {{ $t('farm.farm7') + ' ' + tokenInfo.name }}
+        {{ $t('farm.farm7') + ' ' + tokenInfo.stakeTokenSymbol }}
       </div>
     </div>
     <lp-dialog
@@ -196,7 +196,7 @@
       :loading="loading"
       :balance="balance"
       :addOrMinus="addOrMinus"
-      :lpName="tokenInfo.name"
+      :lpName="tokenInfo.stakeTokenSymbol"
       :decimal="tokenInfo.stakeTokenDecimals"
       @confirm="confirmAddOrMinus"
     ></lp-dialog>
