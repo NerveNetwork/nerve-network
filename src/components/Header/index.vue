@@ -20,34 +20,21 @@
             {{ $t('header.header3') }}
           </div>
           <AuthButton v-else-if="!nerveAddress"></AuthButton>
-          <div class="chain-wrap" @click="manageAccount = true" v-else>
-            <div class="l1-chain" v-if="!wrongChain">
-              <img :src="chainLogo" alt="" />
-              丨
+          <div v-else class="flex-center">
+            <div class="chain-wrap">
+              <SwitchChain v-model="showSwitchChain" :chainId="chainId">
+                <div class="l1-chain" @click="showSwitchChain = true">
+                  <img :src="chainLogo" alt="" v-if="!wrongChain" />
+                  <img src="../../assets/img/net-error.svg" alt="" @click="showSwitchChain = true" v-else />
+                  <el-icon style="margin-right: 5px"><caret-bottom /></el-icon>
+                </div>
+              </SwitchChain>
+              <img src="../../assets/img/nerveIcon.png" alt="" @click="manageAccount = true" />
+              <span @click="manageAccount = true">
+                {{ superLong(nerveAddress, 5) }}
+              </span>
             </div>
-            <img src="../../assets/img/nerveIcon.png" alt="" />
-            <span>
-              {{ superLong(nerveAddress, 5) }}
-            </span>
           </div>
-          <!--          <div class="address-wrap" v-else>
-                      <SwitchChain v-model="showSwitchChain" :chainId="chainId">
-                        <template v-if="wrongChain">
-                          <p class="wrong-chain" @click="showSwitchChain = true">
-                            {{ $t('public.public18') }}
-                          </p>
-                        </template>
-                        <template v-else>
-                          <div class="chain-wrap" @click="showSwitchChain = true">
-                            <img :src="chainLogo" alt="" />
-                            <el-icon style="margin-right: 5px"><caret-bottom /></el-icon>
-                            <span @click.stop="manageAccount = true">
-                              {{ superLong(nerveAddress, 5) }}
-                            </span>
-                          </div>
-                        </template>
-                      </SwitchChain>
-                    </div>-->
         </div>
         <span @click="switchLang" class="click pc" style="margin-left: 10px">
           {{ lang }}
@@ -83,6 +70,7 @@ import Menu from '../Menu.vue';
 import ConnectWallet from './ConnectWallet.vue';
 import AccountManage from './AccountManage.vue';
 import MobileMenu from '../MobileMenu.vue';
+import SwitchChain from '@/components/SwitchChain.vue';
 import useEthereum from '@/hooks/useEthereum';
 import useLang from '@/hooks/useLang';
 import AuthButton from '../AuthButton.vue';
@@ -103,6 +91,8 @@ const { nerveAddress, wrongChain: notL1Chain } = useStoreState();
 initProvider();
 
 const { lang, switchLang } = useLang();
+
+const showSwitchChain = ref(false);
 
 watch(
   () => address.value,
@@ -299,8 +289,8 @@ async function pollingTx(txs: TxInfo[]) {
     height: 36px;
     margin-left: 10px;
     //background: #fff;
-    background-color: #eef2fc;
-    border-radius: 18px;
+    //background-color: #eef2fc;
+    //border-radius: 18px;
     font-size: 15px;
     cursor: pointer;
     color: $txColor;
@@ -319,11 +309,17 @@ async function pollingTx(txs: TxInfo[]) {
         padding: 0 20px;
       }
     }
+    .wrong-chain {
+      color: #f56c6c;
+    }
     .chain-wrap {
       display: flex;
       align-items: center;
       padding: 0 10px;
       cursor: pointer;
+      background-color: #eef2fc;
+      border-radius: 18px;
+      margin-left: 10px;
       img {
         width: 25px;
         margin-right: 5px;
@@ -386,16 +382,21 @@ async function pollingTx(txs: TxInfo[]) {
       height: 60px;
     }
     .logo {
+      width: 96px;
       margin-right: 0;
     }
     .logo img {
-      width: 96px;
+      margin-right: 0;
     }
     .pc-menu {
       display: none;
     }
     .menu-icon {
       margin-left: 10px;
+    }
+    .account .chain-wrap {
+      margin-left: 0;
+      line-height: 32px;
     }
   }
 }

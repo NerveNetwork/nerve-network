@@ -6,7 +6,11 @@
     <el-empty :description="$t('public.public19')" v-if="!list.length" />
     <div class="lis" v-for="(item, index) of list" :key="index">
       <div class="title" @click="showId(item.farmHash)">
-        <farm-symbol :name="item.name"></farm-symbol>
+        <farm-symbol
+          :name="item.name"
+          :logo1="item.logo"
+          :logo2="item.logo2"
+        ></farm-symbol>
         <ul>
           <li class="fl">
             <p>{{ $t('farm.farm2') }}</p>
@@ -16,7 +20,9 @@
           </li>
           <li class="fl">
             <p>{{ $t('farm.farm3') }}</p>
-            <h2>{{ Number(item.apr) ? item.apr + '%' : '--' }}</h2>
+            <h2>
+              {{ isFinished ? '--' : Number(item.apr) ? item.apr + '%' : '--' }}
+            </h2>
           </li>
           <li class="fl">
             <p>{{ $t('farm.farm4') }}</p>
@@ -62,7 +68,11 @@
       <div class="farm-item_cont" @click="showId(item.farmHash)">
         <div class="farm-item_list">
           <div class="symbol-cont">
-            <farm-symbol :name="item.name"></farm-symbol>
+            <farm-symbol
+              :name="item.name"
+              :logo1="item.logo"
+              :logo2="item.logo2"
+            ></farm-symbol>
           </div>
           <div class="farm-info">
             <div class="farm-info_item">
@@ -74,7 +84,9 @@
             <div class="farm-info_item">
               <div>APR</div>
               <div class="mt-8 size-15">
-                {{ Number(item.apr) ? item.apr + '%' : '--' }}
+                {{
+                  isFinished ? '--' : Number(item.apr) ? item.apr + '%' : '--'
+                }}
               </div>
             </div>
           </div>

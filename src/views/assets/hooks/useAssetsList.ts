@@ -79,10 +79,17 @@ export default function useAssetsList() {
         })
       );
     } else {
-      const defaultSymbol = ['NVT'];
-      result = sortDataByValue.filter(
-        v => defaultSymbol.indexOf(v.symbol) > -1
-      );
+      // const defaultSymbol = ['NVT'];
+      // 默认显示各条链主资产
+      const defaultSymbol = {};
+      Object.values(_networkInfo).map(v => {
+        defaultSymbol[v.mainAsset] = v.assetKey;
+      });
+      result = sortDataByValue.filter(v => {
+        return (
+          defaultSymbol[v.symbol] && defaultSymbol[v.symbol] === v.assetKey
+        );
+      });
     }
     selectAssets.value = result;
   }

@@ -50,7 +50,8 @@ const cn = {
     public20: '高度',
     public21: '时间',
     public22: '状态',
-    public23: '最近20条交易将显示在下方'
+    public23: '最近20条交易将显示在下方',
+    public24: '连接网络错误'
   },
   error: {
     err_0001: '失败',
@@ -508,7 +509,8 @@ const cn = {
     trading18: '已确认',
     trading19: '仍然兑换',
     trading20: '价格影响很大',
-    trading21: '兑换失败'
+    trading21: '兑换失败',
+    trading22: '暂未开通该交易对智能路由，请兑换USDTN后再通过USDTN进行其余网络的USDT兑换'
   },
   liquidity: {
     liquidity1: '流动性',

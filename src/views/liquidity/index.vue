@@ -90,7 +90,7 @@ import useAsset from '@/views/swap/hooks/useAsset';
 import { LiquidityItem } from './types';
 
 const { nerveAddress } = useStoreState();
-const { assetsList, defaultAsset, hasQuery: addLiquidity } = useAsset();
+const { assetsList, defaultAsset, hasQuery: addLiquidity } = useAsset(true);
 let timer: number;
 onMounted(async () => {
   await getData();

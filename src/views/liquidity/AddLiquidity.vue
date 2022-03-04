@@ -21,7 +21,7 @@
     <custom-input
       v-model:inputVal="state.fromAmount"
       :icon="state.fromAsset && state.fromAsset.symbol"
-      :assetList="props.assetsList"
+      :assetList="fromAssetsList"
       :balance="state.fromAsset && state.fromAsset.available"
       :selectedAsset="state.fromAsset || null"
       @selectAsset="selectAsset($event, 'from')"
@@ -33,7 +33,7 @@
     <custom-input
       v-model:inputVal="state.toAmount"
       :icon="state.toAsset && state.toAsset.symbol"
-      :assetList="props.assetsList"
+      :assetList="toAssetsList"
       :balance="state.toAsset && state.toAsset.available"
       :selectedAsset="state.toAsset || null"
       @selectAsset="asset => selectAsset(asset, 'to')"
@@ -120,7 +120,8 @@ import {
   divisionAndFix,
   Times,
   divisionDecimals,
-  Plus
+  Plus,
+  isBeta
 } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
 import { getSwapPairInfo, calMinAmountOnSwapAddLiquidity } from '@/service/api';
@@ -130,6 +131,7 @@ import { useToast } from 'vue-toastification';
 import { AssetItem, AddLiquidityState } from './types';
 import { DefaultAsset, SwapPairInfo } from '@/views/swap/types';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
+import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 
 const props = defineProps({
   assetsList: {
@@ -163,6 +165,49 @@ const state = reactive<AddLiquidityState>({
   disableCreate: false
 });
 let customType = 'from'; // 输入的input是from还是to， 默认from
+
+// 所有链主资产assetKey
+const mainAssetsKey = Object.values(_networkInfo).map(v => v.assetKey);
+const USDTNKey = isBeta ? '5-102' : '9-220';
+mainAssetsKey.push(USDTNKey);
+const specialPair = ['1-276', '1-281']; // 遗留已添加流动性的交易对
+const fromAssetsList = computed(() => {
+  const toAssetKey = state.toAsset?.assetKey;
+  if (!toAssetKey) {
+    return props.assetsList;
+  } else if (mainAssetsKey.includes(toAssetKey)) {
+    return props.assetsList;
+  } else if (specialPair.includes(toAssetKey)) {
+    // 如果为遗留的交易对 可继续添加
+    const newAssetsKey = [...mainAssetsKey].concat(specialPair);
+    return props.assetsList?.filter(v => {
+      return newAssetsKey.includes(v.assetKey);
+    });
+  } else {
+    return props.assetsList?.filter(v => {
+      return mainAssetsKey.includes(v.assetKey);
+    });
+  }
+});
+
+const toAssetsList = computed(() => {
+  const fromAssetKey = state.fromAsset?.assetKey;
+  if (!fromAssetKey) {
+    return props.assetsList;
+  } else if (mainAssetsKey.includes(fromAssetKey)) {
+    return props.assetsList;
+  } else if (specialPair.includes(fromAssetKey)) {
+    // 如果为遗留的交易对 可继续添加
+    const newAssetsKey = [...mainAssetsKey].concat(specialPair);
+    return props.assetsList?.filter(v => {
+      return newAssetsKey.includes(v.assetKey);
+    });
+  } else {
+    return props.assetsList?.filter(v => {
+      return mainAssetsKey.includes(v.assetKey);
+    });
+  }
+});
 
 function handleLoading(status: boolean) {
   state.loading = status;

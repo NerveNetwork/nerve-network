@@ -40,6 +40,8 @@ export interface NerveFarmItem {
   lpPairAssetAChainId: number;
   lpPairAssetBAssetId: number;
   lpPairAssetBChainId: number;
+  logo: string;
+  logo2: string;
 }
 
 export interface UserStakeFarm {

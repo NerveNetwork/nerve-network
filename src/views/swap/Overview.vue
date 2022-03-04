@@ -11,7 +11,7 @@
     <div class="order-history">
       <div class="title">{{ $t('trading.trading1') }}</div>
       <el-table :data="list" max-height="435" v-loading="loading">
-        <el-table-column width="20px"></el-table-column>
+        <el-table-column width="10px"></el-table-column>
         <el-table-column :label="$t('trading.trading3')">
           <template #default="scope">
             {{ $thousands(scope.row.toAmount) }} {{ scope.row.toSymbol }}
@@ -26,7 +26,7 @@
           prop="time"
           :label="$t('trading.trading2')"
         ></el-table-column>
-        <el-table-column :label="$t('trading.trading5')" width="120px">
+        <el-table-column :label="$t('trading.trading5')" width="100px">
           <template #default="scope">
             <span class="iconfont icon-chenggong" :scope="scope"></span>
             <span

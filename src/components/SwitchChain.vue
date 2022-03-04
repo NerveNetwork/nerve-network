@@ -6,7 +6,7 @@
         v-for="item in supportChainList"
         :key="item.chainId"
         :class="{ active: item.chainId === chainId }"
-        @click="switchChain(item)"
+        @click.stop="switchChain(item)"
       >
         <img :src="item.logo" alt="" />
         {{ item.chainName }}
@@ -28,6 +28,7 @@ import config from '@/config';
 import useEthereum, { AddChain } from '@/hooks/useEthereum';
 import useClickOutside from '@/hooks/useClickOutside';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import { useStore } from '@/store';
 
 interface ChainItem extends AddChain {
   logo: string;
@@ -40,6 +41,8 @@ export default defineComponent({
     chainId: String
   },
   setup(props, { emit }) {
+    const store = useStore();
+
     const supportChainList: ChainItem[] = [];
     Object.values(_networkInfo).map((v: any) => {
       if (v.supported) {
@@ -70,7 +73,9 @@ export default defineComponent({
       if (item.chainId === props.chainId) return;
       show.value = false;
       try {
-        if (item.chainName !== 'Ethereum') {
+        if (item.chainId === '0x-1' || item.chainId === '0x-2') {
+          store.commit('changeChainId', item.chainId);
+        } else if (item.chainName !== 'Ethereum') {
           const { logo, ...rest } = item;
           await addEthereumChain(rest);
         } else {
@@ -121,7 +126,7 @@ export default defineComponent({
   position: absolute;
   top: 40px;
   left: -20px;
-  z-index: 1;
+  z-index: 111;
   width: 140px;
   padding: 6px 0;
   margin-top: 8px;

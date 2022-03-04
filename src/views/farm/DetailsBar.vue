@@ -5,10 +5,9 @@
         <p
           class="link"
           @click="toAddLiquidity"
-          v-if="isNerve && tokenInfo.name"
+          v-if="isNerve && tokenInfo.stakeTokenSymbol"
         >
-          {{ $t('farm.farm7') + ' ' + tokenInfo.name }}
-<!--          {{ !isPool ? ' LP' : '' }}-->
+          {{ $t('farm.farm7') + ' ' + tokenInfo.stakeTokenSymbol }}
           <i class=""></i>
         </p>
         <!--        <p class="click">
@@ -102,7 +101,7 @@
     <div class="mobile-cont">
       <div class="option-cont">
         <div class="text-90">
-          {{ $t('farm.farm23') }}{{ tokenInfo.syrupTokenSymbol }}
+          {{ tokenInfo.syrupTokenSymbol }}{{ $t('farm.farm2') }}
         </div>
         <div class="d-flex align-items-center space-between">
           <div class="count-cont">
@@ -172,7 +171,7 @@
         <span>
           {{
             Number(tokenInfo.tatalStakeTokenUSD)
-              ? $thousands(tokenInfo.tatalStakeTokenUSD)
+              ? '$' + $thousands(tokenInfo.tatalStakeTokenUSD)
               : '--'
           }}
         </span>
@@ -187,9 +186,9 @@
       <div
         class="link mt-8"
         @click="toAddLiquidity"
-        v-if="isNerve && tokenInfo.name"
+        v-if="isNerve && tokenInfo.stakeTokenSymbol"
       >
-        {{ $t('farm.farm7') + ' ' + tokenInfo.name }}
+        {{ $t('farm.farm7') + ' ' + tokenInfo.stakeTokenSymbol }}
       </div>
     </div>
     <lp-dialog
@@ -197,7 +196,7 @@
       :loading="loading"
       :balance="balance"
       :addOrMinus="addOrMinus"
-      :lpName="tokenInfo.name"
+      :lpName="tokenInfo.stakeTokenSymbol"
       :decimal="tokenInfo.stakeTokenDecimals"
       @confirm="confirmAddOrMinus"
     ></lp-dialog>
@@ -234,7 +233,6 @@ const props = defineProps({
   },
   isNerve: Boolean,
   nerveAddress: String,
-  isPool: Boolean,
   isFinished: Boolean
 });
 
@@ -472,16 +470,15 @@ async function handleHex(hex: string, type: number) {
 
 function toAddLiquidity() {
   const {
-    lpPairAssetAAssetId,
-    lpPairAssetAChainId,
-    lpPairAssetBAssetId,
-    lpPairAssetBChainId,
     stakeTokenChainId,
-    stakeTokenAssetId
+    stakeTokenAssetId,
+    swapPairAddress,
+    syrupTokenChainId,
+    syrupTokenAssetId
   } = props.tokenInfo as NerveFarmItem;
   let url;
-  if (!props.isPool) {
-    url = `/liquidity/${lpPairAssetAChainId}-${lpPairAssetAAssetId}/${lpPairAssetBChainId}-${lpPairAssetBAssetId}`;
+  if (!swapPairAddress) {
+    url = `/liquidity/${stakeTokenChainId}-${stakeTokenAssetId}/${syrupTokenChainId}-${syrupTokenAssetId}`;
   } else {
     const { chainId, assetId, NULSConfig } = config;
     if (stakeTokenChainId === chainId && stakeTokenAssetId === assetId) {

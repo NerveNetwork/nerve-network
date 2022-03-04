@@ -44,13 +44,14 @@ const en = {
     public14: 'Wrong Network',
     public15: 'Fee: ',
     public16: 'Balance: ',
-    public17: 'Insufficient Liquidity',
+    public17: ' Insufficient Liquidity',
     public18: 'Network Error',
     public19: 'No Data',
     public20: 'Height',
     public21: 'Create Date',
     public22: 'Status',
-    public23: 'The last 20 transactions will be displayed below'
+    public23: 'The last 20 transactions will be displayed below',
+    public24: 'Wrong network connected'
   },
   error: {
     err_0001: 'Failed',
@@ -477,7 +478,7 @@ const en = {
     assets10: 'Contract: '
   },
   transfer: {
-    transfer1: 'Cross Into',
+    transfer1: 'Cross In',
     transfer2: 'Transfer',
     transfer3: 'Cross Out',
     transfer4: 'From L1',
@@ -491,10 +492,10 @@ const en = {
     transfer12: 'Select',
     transfer13: 'Approve',
     transfer14: 'Pending confirmation',
-    transfer15: 'Insufficient balance',
+    transfer15: ' Insufficient Balance',
     transfer16: 'Wrong address',
     transfer17: 'Amount must be numeric with no more than digits',
-    transfer18: 'Insufficient balance',
+    transfer18: 'Insufficient Balance',
     transfer19: 'Amount',
     transfer20: 'Amount',
     transfer21: 'Ethereum',
@@ -520,11 +521,12 @@ const en = {
     trading14: 'mins',
     trading15: 'Max',
     trading16: 'Enter 0-100',
-    trading17: 'Insufficient Liquidity',
+    trading17: ' Insufficient Liquidity',
     trading18: 'Confirmed',
     trading19: 'Swap Anyway',
     trading20: 'Price Impact Too High',
-    trading21: 'Swap Failed'
+    trading21: 'Swap Failed',
+    trading22: 'The intelligent routing of this trading pair has not been opened yet. Please exchange USDTN and then exchange USDT through USDTN.'
   },
   liquidity: {
     liquidity1: 'Liquidity',
@@ -589,7 +591,7 @@ const en = {
     createFarm7: 'Please read and confirm',
     // createFarm8: "Please enter amount and digit limit",
     createFarm9: 'Please enter amount and digit limit',
-    createFarm10: 'Insufficient balance',
+    createFarm10: 'Insufficient Balance',
     createFarm11: 'Enter Amount',
     createFarm12: 'Advanced',
     createFarm13: 'My Pool/Farm:'
