@@ -21,7 +21,7 @@ import Polygon from '@/assets/img/partner/Polygon.png';
 import Cronos from '@/assets/img/partner/Cronos.png';
 import Arbitrum from '@/assets/img/partner/Arbitrum.png';
 import Heco from '@/assets/img/partner/Heco.png';
-import OKEXChain from '@/assets/img/partner/OKEXChain.png';
+import OKEXChain from '@/assets/img/partner/OEC.png';
 import Kcc from '@/assets/img/partner/Kcc.png';
 import Harmony from '@/assets/img/partner/Harmony.png';
 import NULS from '@/assets/img/partner/nuls.jpg';
