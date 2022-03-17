@@ -108,10 +108,12 @@ export async function getAssetList(address = store.state.destroyAddress) {
 
     // 禁止SNEGY, MC2, XTMC跨链
     res.map((asset: any) => {
+      const assetKey = asset.assetKey;
       if (
-        asset.assetKey === '9-76' ||
-        asset.assetKey === '9-211' ||
-        asset.assetKey === '9-240'
+        assetKey === '9-76' ||
+        assetKey === '9-211' ||
+        assetKey === '9-240' ||
+        assetKey === '9-302'
       ) {
         asset.source = 1;
       }

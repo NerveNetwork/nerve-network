@@ -10,6 +10,8 @@ const proxyUrl =
   process.env.BUILD_ENV === 'prod'
     ? 'https://wallet.nerve.network/'
     : 'http://seeda.nuls.io:8009';
+
+const port = process.env.BUILD_ENV === 'prod' ? 8031 : 8033;
 module.exports = {
   publicPath: '/',
   configureWebpack: config => {
@@ -70,8 +72,7 @@ module.exports = {
   },
 
   devServer: {
-    port: 8033, // dev-beta
-    // port: 8031, // dev-prod
+    port,
     host: '0.0.0.0',
     https: false,
     open: true,
