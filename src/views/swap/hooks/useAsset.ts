@@ -32,7 +32,9 @@ export default function useAsset(isLiquidity = false) {
     [assetsList, stableCoins],
     ([val, sCoins]) => {
       // 添加流动性页面资产列表不展示可swap稳定币资产
+      // if (val && val.length) {
       if (val && val.length && (!isLiquidity || Object.keys(sCoins).length)) {
+        // assetsList stableCoins都存在
         if (!isLiquidity) {
           liquidityAssets.value = val.filter(v => v);
         } else {

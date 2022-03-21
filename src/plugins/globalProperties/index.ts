@@ -1,5 +1,5 @@
 import { App } from 'vue';
-import { copys, toThousands } from '@/utils/util';
+import { copys, toThousands, formatNumber } from '@/utils/util';
 import { useToast } from 'vue-toastification';
 import { ToastOptions } from 'vue-toastification/src/types/index';
 
@@ -13,6 +13,10 @@ export function useGlobalProperties(app: App) {
 
   app.config.globalProperties.$thousands = function (str: string | number) {
     return toThousands(str);
+  };
+
+  app.config.globalProperties.$format = function (str: string | number) {
+    return formatNumber(str);
   };
 
   app.config.globalProperties.$toast = function (

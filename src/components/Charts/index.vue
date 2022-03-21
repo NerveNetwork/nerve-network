@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-wrap" ref="chartRef" :style="{ width, height }"></div>
+  <div class="n-chart-wrap" ref="chartRef" :style="{ width, height }"></div>
 </template>
 
 <script lang="ts" setup>
@@ -31,9 +31,11 @@ const chartInstance = ref<EChartsType>();
 onMounted(() => {
   const chartDOM = chartRef.value as HTMLElement;
   chartInstance.value = echarts.init(chartDOM, '', { renderer: 'svg' });
-  if (chartInstance.value) {
+  chartInstance.value.setOption(chartOptions.value);
+  addChartListener();
+  /*if (chartInstance.value) {
     addChartListener();
-  }
+  }*/
 });
 
 // chart options
@@ -50,8 +52,12 @@ const chartOptions = computed(() => {
 });
 
 function addChartListener() {
+  window.addEventListener('resize', resizeHandle);
   if (props.type === 'bar' || props.type === 'line') {
     chartInstance.value?.getZr().on('mousemove', chartMouseMove);
+    chartInstance.value?.getZr().on('mouseout', () => {
+      emit('chartMouseMove', null);
+    });
   }
   /*chartInstance.value.on('click', params => {
     emit('chartClick', params);
@@ -60,12 +66,14 @@ function addChartListener() {
 
 // 鼠标在画布上移动
 function chartMouseMove(params: any) {
+  if (!chartOptions.value?.series[0]?.data?.length) return;
   const pointInPixel = [params.offsetX, params.offsetY];
+  // console.log(chartOptions.value, 77);
   if (chartInstance.value?.containPixel('grid', pointInPixel)) {
-    // 将此区域的 鼠标样式变为 小手
+    // 将此区域的 鼠标样式变为 指针
     chartInstance.value.getZr().setCursorStyle('initial');
   }
-  // 使用 convertFromPixel方法 转换像素坐标值到逻辑坐标系上的点。获取点击位置对应的x轴数据的索引		 值，借助于索引值的获取到其它的信息
+  // 使用 convertFromPixel方法 转换像素坐标值到逻辑坐标系上的点。获取点击位置对应的x轴数据的索引值，借助于索引值的获取到其它的信息
   const pointInGrid = chartInstance.value?.convertFromPixel(
     { seriesIndex: 0 },
     pointInPixel
@@ -94,8 +102,6 @@ function resizeHandle() {
   }
 }
 
-window.addEventListener('resize', resizeHandle);
-
 onUnmounted(() => {
   window.removeEventListener('resize', resizeHandle);
 });
@@ -103,10 +109,11 @@ onUnmounted(() => {
 watch(
   () => chartOptions.value,
   val => {
-    // console.log(val);
+    // console.log(val, chartInstance.value);
     val && chartInstance.value && chartInstance.value.setOption(val);
   },
   {
+    immediate: true,
     deep: true
   }
 );

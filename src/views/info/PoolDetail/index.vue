@@ -1,19 +1,19 @@
 <template>
   <div class="pool-detail w1200">
     <Breadcrumb :items="breadItems"></Breadcrumb>
-    <KeyInfo name="NVT-BUSD" asset-key="5-1/5-28" />
+    <KeyInfo :info="poolInfo" is-pool />
     <div class="rate-into flex-between">
       <div class="left flex-center">
         <div class="symbol_1">
           <img src="" alt="" />
-          <span>1 NVT = 0.0678 BUSD</span>
+          <span>{{ rateInfo }}</span>
         </div>
         <div class="symbol_2">
           <img src="" alt="" />
-          <span>1 BUSD = 12.87 NVT</span>
+          <span>{{ rateInfoReverse }}</span>
         </div>
       </div>
-      <HandleBtn />
+      <HandleBtn :info="poolInfo" is-pool />
     </div>
     <div class="overview">
       <div class="left">
@@ -21,86 +21,148 @@
           <div class="flex">
             <div class="liq">
               <p class="label mb_5">{{ $t('info.info4') }}</p>
-              <p class="value">$ 278.78 M</p>
+              <p class="value fw">${{ $format(poolInfo.liq) }}</p>
             </div>
             <div class="apr">
               <p class="label mb_5">{{ $t('info.info14') }}</p>
-              <p class="value">37.89%</p>
+              <p class="value fw">{{ poolInfo.apr || 0 + '%' }}</p>
             </div>
           </div>
           <div class="lock-info">
             <p class="label">{{ $t('info.info19') }}</p>
             <div class="flex-between">
-              <div>
-                <img src="" alt="">
-                NVT
+              <div class="flex-center">
+                <SymbolIcon :icon="poolInfo.token0Symbol" />
+                {{ poolInfo.token0Symbol }}
               </div>
-              <span>478.89 M</span>
+              <span class="fw">${{ $format(poolInfo.reserve0) }}</span>
             </div>
             <div class="flex-between">
-              <div>
-                <img src="" alt="">
-                BUSD
+              <div class="flex-center">
+                <SymbolIcon :icon="poolInfo.token1Symbol" />
+                {{ poolInfo.token1Symbol }}
               </div>
-              <span>48.98K</span>
+              <span class="fw">${{ $format(poolInfo.reserve1) }}</span>
             </div>
           </div>
         </div>
         <div class="tx-info bg_white radius">
           <div class="tab">
-            <span class="active">24H</span>
-            <span>7D</span>
+            <span
+              :class="{ active: activeDataTab === '1' }"
+              @click="changeDataTab('1')"
+            >
+              24H
+            </span>
+            <span
+              :class="{ active: activeDataTab === '2' }"
+              @click="changeDataTab('2')"
+            >
+              7D
+            </span>
           </div>
           <div class="tab-content flex-between">
-            <div>
-              <p class="label">{{ $t('info.info11') }}</p>
-              <p class="value">$ 28.78 M</p>
-            </div>
-            <div>
-              <p class="label">{{ $t('info.info12') }}</p>
-              <p class="value">$ 0.78 K</p>
-            </div>
+            <template v-if="activeDataTab === '1'">
+              <div>
+                <p class="label">{{ $t('info.info11') }}</p>
+                <p class="value fw">${{ $format(poolInfo.tx_24) }}</p>
+              </div>
+              <div>
+                <p class="label">{{ $t('info.info13') }}</p>
+                <p class="value fw">${{ $format(poolInfo.lp_24) }}</p>
+              </div>
+            </template>
+            <template v-else>
+              <div>
+                <p class="label">{{ $t('info.info12') }}</p>
+                <p class="value fw">${{ $format(poolInfo.tx_7d) }}</p>
+              </div>
+            </template>
           </div>
         </div>
       </div>
       <div class="right radius">
-        <ChartTab v-model="activeChart" :tabs="chartTabData" />
+        <ChartTab is-pool :assetKey="poolInfo.address" />
       </div>
     </div>
-    <TxList />
+    <TxList :assetKey="assetKey" is-pool />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import Breadcrumb from '../Breadcrumb.vue';
 import KeyInfo from './KeyInfo.vue';
 import HandleBtn from './Handle.vue';
+import SymbolIcon from '@/components/SymbolIcon.vue';
 import ChartTab from './ChartTab.vue';
 import TxList from './TxList.vue';
+import { getPoolInfo } from '@/service/api';
+import { Division, divisionAndFix, fixNumber } from '@/utils/util';
+import { PoolDetail } from '../types';
 
 const { t } = useI18n();
 const route = useRoute();
 
-const assetKey = route.params.id;
+const assetKey = route.params.id as string;
+onMounted(() => {
+  getPoolDetail();
+});
+
+const poolInfo = ref<PoolDetail>({} as PoolDetail);
+async function getPoolDetail() {
+  const res = await getPoolInfo(assetKey);
+  if (res) {
+    poolInfo.value = {
+      name: res.tokenLPSymbol,
+      address: res.address,
+      tx_24: divisionAndFix(res.amountUsdtValue24H, 18, 2),
+      tx_7d: divisionAndFix(res.amountUsdtValue7D, 18, 2),
+      lp_24: divisionAndFix(res.feeUsdtValue, 18, 2),
+      apr: fixNumber(Division(res.feeUsdtValueARP, 100).toFixed(), 2),
+      liq: divisionAndFix(res.reserveUsdtValue, 18, 2),
+      token0: res.token0,
+      token0Decimals: res.token0Decimals,
+      token0Symbol: res.token0Symbol,
+      token1: res.token1,
+      token1Decimals: res.token1Decimals,
+      token1Symbol: res.token1Symbol,
+      tokenLP: res.tokenLP,
+      reserve0: divisionAndFix(res.reserve0, res.token0Decimals),
+      reserve1: divisionAndFix(res.reserve1, res.token1Decimals)
+    };
+  }
+}
 
 const breadItems = computed(() => {
   return [
     { label: t('header.header12'), path: '/info' },
     { label: t('info.info2'), path: '/info/pools' },
-    { label: assetKey }
+    { label: poolInfo.value.name }
   ];
 });
 
-const activeChart = ref('tx');
-const chartTabData = computed(() => {
-  return [
-    { label: t('info.info5'), type: 'bar', key: 'tx' },
-    { label: t('info.info4'), type: 'line', key: 'liq' }
-  ];
+const rateInfo = computed(() => {
+  if (!poolInfo.value.name) return '';
+  const { token0Symbol, token1Symbol, reserve0, reserve1 } = poolInfo.value;
+  const rate = fixNumber(Division(reserve1, reserve0).toFixed(), 4);
+  return `1 ${token0Symbol} = ${rate} ${token1Symbol}`;
 });
+
+const rateInfoReverse = computed(() => {
+  if (!poolInfo.value.name) return '';
+  const { token0Symbol, token1Symbol, reserve0, reserve1 } = poolInfo.value;
+  const rate = fixNumber(Division(reserve0, reserve1).toFixed(), 4);
+  return `1 ${token1Symbol} = ${rate} ${token0Symbol}`;
+});
+
+const activeDataTab = ref('1');
+
+function changeDataTab(tab: string) {
+  activeDataTab.value = tab;
+}
 </script>
 
 <style lang="scss">
@@ -120,7 +182,7 @@ const chartTabData = computed(() => {
   }
   .overview {
     display: flex;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     .left {
       width: 310px;
       margin-right: 30px;
@@ -133,8 +195,15 @@ const chartTabData = computed(() => {
       padding: 30px;
       margin-bottom: 30px;
     }
-    .liq,.apr {
-      flex: 1;
+    .liq {
+      width: 60%;
+    }
+    .apr {
+      width: 40%;
+    }
+    .liq,
+    .apr {
+      //flex: 1;
       .value {
         font-size: 20px;
       }
@@ -155,8 +224,8 @@ const chartTabData = computed(() => {
         margin-bottom: 10px;
       }
       img {
-        width: 35px;
-        border-radius: 50%;
+        width: 30px;
+        height: 30px;
         margin-right: 10px;
       }
     }
@@ -184,6 +253,36 @@ const chartTabData = computed(() => {
       }
       .value {
         font-size: 20px;
+      }
+    }
+  }
+  @media screen and (max-width: 1200px) {
+    .rate-into {
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      .handle-wrap {
+        width: 100%;
+        padding-top: 10px;
+      }
+    }
+    .overview {
+      flex-wrap: wrap;
+      .left {
+        width: 100%;
+        margin-right: 0;
+      }
+      .right {
+        width: 100%;
+      }
+      .base-info {
+        padding: 20px;
+        margin-bottom: 20px;
+        height: auto;
+      }
+      .tx-info {
+        height: 180px;
+        padding: 20px;
+        margin-bottom: 20px;
       }
     }
   }

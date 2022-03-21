@@ -1,19 +1,23 @@
 <template>
-  <Table :columns="columns" :data="props.data">
-    <template #handle="scope">
-      <span>{{ scope.row.handle }}</span>
+  <Table :columns="columns" v-bind="props" @sortChange="sortChange" @pageChange="pageChange">
+    <template #type="scope">
+      <span class="link" @click="openExplorer('hash', scope.row.hash)">
+        {{ scope.row.type }}
+      </span>
     </template>
-    <template #price="scope">
-      <span>{{ scope.row.price }}</span>
+    <template #totalVal="scope">
+      <span>${{ $format(scope.row.totalVal) }}</span>
+    </template>
+    <template #amount0="scope">
+      <span>{{ scope.row.amount0 }} {{ scope.row.token0 }}</span>
     </template>
     <template #amount1="scope">
-      <span>{{ scope.row.amount1 }}</span>
+      <span>{{ scope.row.amount1 }} {{ scope.row.token1 }}</span>
     </template>
-    <template #amount2="scope">
-      <span>{{ scope.row.amount2 }}</span>
-    </template>
-    <template #account="scope">
-      <span>{{ scope.row.account }}</span>
+    <template #address="scope">
+      <span class="link" @click="openExplorer('address', scope.row.address)">
+        {{ superLong(scope.row.address) }}
+      </span>
     </template>
     <template #time="scope">
       <span>{{ scope.row.time }}</span>
@@ -22,32 +26,62 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { openExplorer, superLong } from '@/utils/util';
 import Table from '@/components/Table/index.vue';
 
 const props = defineProps<{
   data: any[];
+  pageIndex: number;
+  total: number;
 }>();
+
+const emit = defineEmits(['pageChange']);
 
 const { t } = useI18n();
 
 const columns = computed(() => {
   return [
-    { width: 60 },
-    { prop: '', label: t('info.info24'), slotName: 'handle' },
-    { prop: 'price', label: t('info.info9'), width: 180, slotName: 'price' },
+    { width: 40 },
+    { prop: 'type', label: t('info.info24'), width: 160, slotName: 'type' },
+    {
+      prop: 'totalVal',
+      label: t('info.info25'),
+      width: 160,
+      slotName: 'totalVal'
+      // sortable: 'custom'
+    },
+    {
+      prop: 'amount0',
+      label: t('info.info26'),
+      width: 180,
+      slotName: 'amount0'
+      // sortable: 'custom'
+    },
     {
       prop: 'amount1',
-      label: t('info.info10'),
+      label: t('info.info26'),
       width: 180,
       slotName: 'amount1'
+      // sortable: 'custom'
     },
-    { prop: 'amount2', label: t('info.info11'), width: 180, slotName: 'amount2' },
-    { prop: 'account', label: t('info.info4'), width: 180, slotName: 'account' },
-    { prop: 'time', label: t('info.info4'), width: 180, slotName: 'time' }
-  ]
-})
+    { prop: 'address', label: t('info.info27'), slotName: 'address', 'min-width': 180, },
+    {
+      prop: 'time',
+      label: t('info.info28'),
+      width: 180,
+      slotName: 'time'
+      // sortable: 'custom'
+    }
+  ];
+});
+function sortChange(item) {
+  // console.log(item);
+}
+function pageChange(index: number) {
+  emit('pageChange', index)
+}
 </script>
 
 <style></style>

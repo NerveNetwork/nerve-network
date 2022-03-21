@@ -3,74 +3,112 @@
     <div class="head">
       <div class="head-left">
         <div v-if="props.label" class="label">{{ props.label }}</div>
-        <div class="value">
-          {{ props.type === 'line' ? liquidity : txTotal }} M
-        </div>
+        <div class="value fw">${{ $format(totalVal) }}</div>
       </div>
-      <div class="head-right">Dec 28, 2021</div>
+      <div class="head-right">{{ parsedDate }}</div>
     </div>
-    <div class="chart-wrap">
-      <template v-if="props.type === 'line'">
-        <Chart
-          type="line"
-          :options="lineOptions"
-          height="100%"
-          @chartMouseMove="lineHover"
-        />
-      </template>
-      <template v-else>
-        <Chart
-          type="bar"
-          :options="barOptions"
-          height="100%"
-          @chartMouseMove="barHover"
-        />
-      </template>
-    </div>
+    <template v-if="props.type === 'line'">
+      <Chart
+        type="line"
+        :options="lineOptions"
+        height="100%"
+        @chartMouseMove="chartHover"
+      />
+    </template>
+    <template v-else>
+      <Chart
+        type="bar"
+        :options="barOptions"
+        height="100%"
+        @chartMouseMove="chartHover"
+      />
+    </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Chart from '@/components/Charts/index.vue';
+import { useI18n } from 'vue-i18n';
+import { formatNumber } from '@/utils/util';
+import dayjs from 'dayjs';
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+import { ChartItem } from '../types';
+
+dayjs.extend(localizedFormat);
+require('dayjs/locale/zh-cn');
+
+// console.log(dayjs(dayjs('20220102').format()).format('ll'))
+// // console.log(dayjs().format('ll'))
 
 const props = defineProps<{
   type: 'line' | 'bar';
   label?: string;
-  // chartData: any;
+  data: ChartItem[];
 }>();
 
-const name = ref('hi');
-const lineData = ref<number[]>([]);
-const liquidity = ref(0);
+const { locale } = useI18n();
+/*watch(
+  () => locale.value,
+  val => {
+    dayjs.locale(val);
+  },
+  {
+    immediate: true
+  }
+);*/
 
-const barData = ref<number[]>([]);
-const txTotal = ref(0);
-setTimeout(() => {
-  lineData.value = new Array(10)
-    .fill(1)
-    .map(() => Math.floor(Math.random() * 80 + 20));
-  liquidity.value = lineData.value[lineData.value.length - 1];
-  barData.value = new Array(100)
-    .fill(1)
-    .map(() => Math.floor(Math.random() * 80 + 20));
-  txTotal.value = barData.value[barData.value.length - 1];
-}, 100);
+const defaultIndex = computed(() => {
+  return props.data.length - 1;
+});
+
+const activeIndex = ref(null);
+
+const totalVal = computed(() => {
+  if (!props.data?.length) return 0;
+  if (activeIndex.value !== null) {
+    return props.data[activeIndex.value!].value;
+  }
+  return props.data[defaultIndex.value].value;
+});
+
+const parsedDate = computed(() => {
+  if (!props.data?.length) return '';
+  const date =
+    activeIndex.value === null
+      ? props.data[defaultIndex.value].label
+      : props.data[activeIndex.value!].label;
+  const formatDate = dayjs(date + '').format();
+  return dayjs(formatDate).locale(locale.value).format('ll');
+});
+
 const lineOptions = computed(() => {
   return {
     xAxis: {
-      boundaryGap: false,
+      // boundaryGap: false,
       axisLine: {
         show: false
       },
       axisTick: {
         show: false
+      },
+      data: props.data.map(v => v.label),
+      axisLabel: {
+        formatter(value: number) {
+          // return Number(value.toString().slice(-2));
+          return dayjs(value).format('M.D');
+        }
       }
     },
     yAxis: {
       position: 'right',
       splitLine: {
         show: false
+      },
+      axisLabel: {
+        formatter(value: number) {
+          return '$' + formatNumber(value);
+        }
       }
     },
     tooltip: {
@@ -111,33 +149,38 @@ const lineOptions = computed(() => {
             width: 2
           }
         },
-        data: lineData.value
+        data: props.data.map(v => v.value)
       }
     ]
   };
 });
 
-function lineHover(index: any) {
-  if (lineData.value[index]) {
-    liquidity.value = lineData.value[index];
-  }
-}
-
 const barOptions = computed(() => {
   return {
     xAxis: {
-      boundaryGap: false,
+      // boundaryGap: false,
       axisLine: {
         show: false
       },
       axisTick: {
         show: false
-      }
+      },
+      axisLabel: {
+        formatter(value: number) {
+          return dayjs(value).format('M.D');
+        }
+      },
+      data: props.data.map(v => v.label)
     },
     yAxis: {
       position: 'right',
       splitLine: {
         show: false
+      },
+      axisLabel: {
+        formatter(value: number) {
+          return '$' + formatNumber(value);
+        }
       }
     },
     tooltip: {
@@ -154,15 +197,18 @@ const barOptions = computed(() => {
     series: [
       {
         // type: 'line',
-        data: barData.value,
+        data: props.data.map(v => v.value),
         cursor: 'initial'
       }
     ]
   };
 });
-function barHover(index: any) {
-  if (barData.value[index]) {
-    txTotal.value = barData.value[index];
+
+function chartHover(index: number | null) {
+  if (index === null || !props.data[index]) {
+    activeIndex.value = null;
+  } else {
+    activeIndex.value = index;
   }
 }
 </script>

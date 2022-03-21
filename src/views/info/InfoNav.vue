@@ -69,5 +69,16 @@ const activePath = computed(() => {
     background-color: #dfe4ef;
     z-index: -1;
   }
+  @media screen and (max-width: 1200px) {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    .nav-route {
+      margin-bottom: 20px;
+    }
+    .info-search .search-content .el-input .el-input__inner {
+      border-radius: 15px;
+    }
+  }
 }
 </style>

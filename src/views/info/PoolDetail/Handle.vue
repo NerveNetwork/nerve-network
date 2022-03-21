@@ -8,13 +8,28 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 
+const props = defineProps<{
+  info: any;
+  isPool?: boolean;
+}>();
+
 const router = useRouter();
 
 function addLiquidity() {
-  router.push('/liquidity');
+  if (props.isPool) {
+    const { token0, token1 } = props.info;
+    router.push(`/liquidity/${token0}/${token1}`);
+  } else {
+    router.push(`/liquidity/${props.info.assetKey}`);
+  }
 }
 function swap() {
-  router.push('/swap');
+  if (props.isPool) {
+    const { token0, token1 } = props.info;
+    router.push(`/swap/${token0}/${token1}`);
+  } else {
+    router.push(`/swap/${props.info.assetKey}`);
+  }
 }
 </script>
 

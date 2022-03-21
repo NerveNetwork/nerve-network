@@ -1,28 +1,36 @@
 <template>
   <div class="pools-table">
-    <Table v-bind="props" :columns="columns">
+    <Table v-bind="props" :columns="columns" @rowClick="rowClick" @pageChange="pageChange">
       <template #name="scope">
-        {{ scope.row.name }}
+        <div class="symbol-wrap flex-center">
+          <SymbolIcon :icon="scope.row.token0Symbol" />
+          <SymbolIcon :icon="scope.row.token1Symbol" />
+          {{ scope.row.name }}
+        </div>
       </template>
-      <template #tx_24="scope">$ {{ scope.row.tx_24 }} M</template>
-      <template #tx_7d="scope">$ {{ scope.row.tx_7d }} B</template>
-      <template #lp_24="scope">$ {{ scope.row.lp_24 }} K</template>
+      <template #tx_24="scope">${{ $format(scope.row.tx_24) }}</template>
+      <template #tx_7d="scope">${{ $format(scope.row.tx_7d) }}</template>
+      <template #lp_24="scope">${{ $format(scope.row.lp_24) }}</template>
       <template #apr="scope">{{ scope.row.apr }}%</template>
-      <template #liq="scope">$ {{ scope.row.liq }} M</template>
+      <template #liq="scope">${{ $format(scope.row.liq) }}</template>
     </Table>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, withDefaults } from 'vue';
+import { computed, withDefaults } from 'vue';
 import Table from '@/components/Table/index.vue';
+import SymbolIcon from '@/components/SymbolIcon.vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { PoolItem } from '../types';
 
 const props = withDefaults(
   defineProps<{
     title: string;
-    data: any[];
+    data: PoolItem[];
     total: number | string;
+    pageIndex?: number;
     pagination?: boolean;
     pageSize?: number | string;
   }>(),
@@ -30,13 +38,15 @@ const props = withDefaults(
     pagination: true
   }
 );
+const emit = defineEmits(['pageChange', 'rowClick']);
 
 const { t } = useI18n();
+const router = useRouter();
 
 const columns = computed(() => {
   return [
-    { width: 60 },
-    { prop: 'name', label: t('info.info2'), slotName: 'name' },
+    { width: 40 },
+    { prop: 'name', label: t('info.info2'), slotName: 'name', 'min-width': 140 },
     { prop: 'tx_24', label: t('info.info11'), width: 180, slotName: 'tx_24' },
     { prop: 'tx_7d', label: t('info.info12'), width: 180, slotName: 'tx_7d' },
     { prop: 'lp_24', label: t('info.info13'), width: 180, slotName: 'lp_24' },
@@ -44,10 +54,29 @@ const columns = computed(() => {
     { prop: 'liq', label: t('info.info4'), width: 180, slotName: 'liq' }
   ];
 });
+function rowClick(item: PoolItem) {
+  // console.log(item);
+  // emit('rowClick', item);
+  router.push('/info/pools/' + item.address);
+}
+function pageChange(index: number) {
+  // console.log(index);
+  emit('pageChange', index);
+}
 </script>
 
 <style lang="scss">
-.assets-table {
-  //
+.pools-table {
+  .symbol-wrap {
+    img {
+      width: 30px;
+      height: 30px;
+      background-color: #fff;
+    }
+    img:last-of-type {
+      margin-left: -10px;
+      margin-right: 8px;
+    }
+  }
 }
 </style>

@@ -1,17 +1,20 @@
 <template>
   <div class="assets-table">
-    <Table v-bind="props" :columns="columns">
-      <template #symbol="scope">
-        {{ scope.row.symbol }}
+    <Table v-bind="props" :columns="columns" @rowClick="rowClick" @pageChange="pageChange">
+      <template #name="scope">
+        <div class="symbol-wrap">
+          <SymbolIcon :icon="scope.row.name"></SymbolIcon>
+          {{ scope.row.name }}
+        </div>
       </template>
-      <template #price="scope">$ {{ scope.row.price }}</template>
+      <template #price="scope">${{ scope.row.price }}</template>
       <template #priceChange="scope">
         <span :class="scope.row.priceChange > 0 ? 'price-up' : 'price-down'">
           {{ scope.row.priceChange }}
         </span>
       </template>
-      <template #txs="scope">{{ scope.row.txs }} M</template>
-      <template #liq="scope">{{ scope.row.liq }} M</template>
+      <template #txs="scope">${{ $format(scope.row.txs) }}</template>
+      <template #liq="scope">${{ $format(scope.row.liq) }}</template>
     </Table>
   </div>
 </template>
@@ -19,13 +22,17 @@
 <script lang="ts" setup>
 import { computed, withDefaults } from 'vue';
 import Table from '@/components/Table/index.vue';
+import SymbolIcon from '@/components/SymbolIcon.vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { TokenItem } from '../types';
 
 const props = withDefaults(
   defineProps<{
     title: string;
-    data: any[];
+    data: TokenItem[];
     total: number | string;
+    pageIndex?: number;
     pagination?: boolean;
     pageSize?: number | string;
   }>(),
@@ -33,13 +40,15 @@ const props = withDefaults(
     pagination: true
   }
 );
+const emit = defineEmits(['pageChange', 'rowClick']);
 
 const { t } = useI18n();
+const router = useRouter();
 
 const columns = computed(() => {
   return [
-    { width: 60 },
-    { prop: 'symbol', label: t('info.info8'), slotName: 'symbol' },
+    { width: 40 },
+    { prop: 'name', label: t('info.info8'), 'min-width': 140, slotName: 'name' },
     { prop: 'price', label: t('info.info9'), width: 180, slotName: 'price' },
     {
       prop: 'priceChange',
@@ -51,10 +60,28 @@ const columns = computed(() => {
     { prop: 'liq', label: t('info.info4'), width: 180, slotName: 'liq' }
   ];
 });
+function rowClick(item: TokenItem) {
+  // console.log(item);
+  // emit('rowClick', item);
+  router.push('/info/tokens/' + item.assetKey);
+}
+function pageChange(index: number) {
+  // console.log(index);
+  emit('pageChange', index);
+}
 </script>
 
 <style lang="scss">
 .assets-table {
+  .symbol-wrap {
+    display: flex;
+    align-items: center;
+    img {
+      width: 30px;
+      height: 30px;
+      margin-right: 8px;
+    }
+  }
   .price-up {
     color: #47cd85;
   }

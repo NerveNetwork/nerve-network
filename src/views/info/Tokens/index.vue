@@ -1,29 +1,34 @@
 <template>
   <div class="info-assets">
-    <AssetsTable :title="$t('info.info15')" :data="observeList" />
-    <AssetsTable :title="$t('info.info32')" :data="allAssets" />
+    <!--  关注的资产  -->
+    <AssetsTable
+      :title="$t('info.info15')"
+      :data="focusTokens"
+      :total="focusTokens.length"
+      :page-size="focusTokens.length"
+    />
+    <!-- 全部资产   -->
+    <AssetsTable
+      :title="$t('info.info32')"
+      :data="tokens"
+      :total="tokenTotal"
+      @pageChange="getAssetsList"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted } from 'vue';
+import { useFocusTokens } from '../hooks/useFocusTokensAndPools';
+import useTokensAndPools from '../hooks/useTokensAndPools';
 import AssetsTable from '../Overview/AssetsTable.vue';
 
-const observeList = [
-  { symbol: 'NULS', price: '2', priceChange: 1, txs: 4, liq: 4 },
-  { symbol: 'NVT', price: '1', priceChange: -2, txs: 3, liq: 4 }
-];
+const { focusTokens } = useFocusTokens();
+const { tokens, tokenTotal, getAssetsList } = useTokensAndPools();
 
-const allAssets = [
-  { symbol: 'NVT', price: '1', priceChange: 2, txs: 3, liq: 4 },
-  { symbol: 'NULS', price: '2', priceChange: -1, txs: 4, liq: 4 },
-  { symbol: 'NVT', price: '1', priceChange: -2, txs: 3, liq: 4 },
-  { symbol: 'NULS', price: '2', priceChange: 1, txs: 4, liq: 4 },
-  { symbol: 'NVT', price: '1', priceChange: -2, txs: 3, liq: 4 },
-  { symbol: 'NULS', price: '2', priceChange: 1, txs: 4, liq: 4 }
-];
-
-const name = ref('hi');
+onMounted(() => {
+  getAssetsList();
+});
 </script>
 
 <style></style>

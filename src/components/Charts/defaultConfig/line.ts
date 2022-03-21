@@ -14,8 +14,8 @@ const lineConfig = {
     }
   },
   grid: {
-    left: '5',
-    right: '5',
+    left: '0',
+    right: '0',
     bottom: '5',
     top: '10',
     containLabel: true

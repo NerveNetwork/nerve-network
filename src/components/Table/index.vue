@@ -1,9 +1,9 @@
 <template>
   <div class="n-table">
     <h3 class="n-table-title" v-if="props.title">{{ props.title }}</h3>
-    <el-table :data="props.data" stripe>
+    <el-table :data="props.data" stripe @row-click="rowClick" @sort-change="sortChange">
       <template v-for="item in props.columns" :key="item.prop">
-        <el-table-column v-bind="item" show-overflow-tooltip>
+        <el-table-column v-bind="item">
           <template #default="scope">
             <slot :name="item.slotName" :row="scope.row">
               {{ scope.row[item.prop] }}
@@ -16,7 +16,9 @@
       <div class="icon-prev" :class="{ 'disable-btn': disablePrev }" @click="prev">
         <i class="iconfont icon-arrowleft"></i>
       </div>
-      <div class="page-number">{{ currentPage }}/{{ props.total }}</div>
+      <div class="page-number">
+        {{ props.pageIndex || currentPage }}/{{ totalPage }}
+      </div>
       <div class="icon-next" :class="{ 'disable-btn': disableNext }" @click="next">
         <i class="iconfont icon-arrowright"></i>
       </div>
@@ -42,16 +44,18 @@ const props = withDefaults(
     columns: Column[];
     pagination?: boolean;
     total?: number | string;
+    pageIndex?: number;
     pageSize?: number | string;
   }>(),
   {
     pagination: true,
+    pageIndex: 0,
     total: 0,
     pageSize: 10
   }
 );
 
-const emit = defineEmits(['pageChange']);
+const emit = defineEmits(['pageChange', 'rowClick', 'sortChange']);
 
 const currentPage = ref(1);
 
@@ -62,28 +66,61 @@ const showPagination = computed(() => {
     Number(props.total) > Number(props.pageSize)
   );
 });
+
+const totalPage = computed(() => {
+  return Math.ceil(props.total / props.pageSize);
+});
+
 const disablePrev = computed(() => {
-  return currentPage.value <= 1;
+  const page = props.pageIndex || currentPage.value;
+  return page <= 1;
 });
+
 const disableNext = computed(() => {
-  return currentPage.value >= props.total;
+  const page = props.pageIndex || currentPage.value;
+  return page >= totalPage.value;
 });
+
 function prev() {
   if (disablePrev.value) return;
-  currentPage.value--;
-  emit('pageChange', currentPage.value);
+  let page = props.pageIndex;
+  if (!page) {
+    currentPage.value--;
+    page = currentPage.value;
+  } else {
+    page--;
+  }
+  emit('pageChange', page);
 }
+
 function next() {
   if (disableNext.value) return;
-  currentPage.value++;
-  emit('pageChange', currentPage.value);
+  let page = props.pageIndex;
+  if (!page) {
+    currentPage.value++;
+    page = currentPage.value;
+  } else {
+    page++;
+  }
+  emit('pageChange', page);
+}
+
+function rowClick(item) {
+  emit('rowClick', item);
+}
+
+function sortChange(item) {
+  // console.log(item,55);
+  emit('sortChange', item);
 }
 </script>
 
 <style lang="scss">
 .n-table {
   margin-bottom: 38px;
-
+  .el-table__body-wrapper {
+    overflow-x: auto;
+  }
   .n-table-title {
     font-size: 18px;
     font-weight: 600;
@@ -114,6 +151,13 @@ function next() {
     }
     .page-number {
       padding: 0 5px;
+    }
+  }
+  @media screen and (max-width: 1200px) {
+    margin-bottom: 20px;
+    .n-table-title {
+      font-size: 18px;
+      margin-bottom: 15px;
     }
   }
 }

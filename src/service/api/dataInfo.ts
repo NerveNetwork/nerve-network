@@ -1,6 +1,18 @@
 import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
 import { genId } from '@/utils/util';
+import {
+  ChartItem,
+  ListRes,
+  PairListParam,
+  PoolItem,
+  SearchRes,
+  TokenItem,
+  TokenListParam,
+  TxParam,
+  TxRes,
+  TxType
+} from './types/dataInfo';
 
 const url = config.WS_URL;
 
@@ -10,14 +22,14 @@ const url = config.WS_URL;
  */
 
 export async function getFocusAssetsInfo(data: string[]) {
-  const keys = data.slice();
+  const keys = data.join();
   const channel = 'db_fav_tokens';
   const params = {
     method: channel,
     id: genId(),
     params: { array: keys }
   };
-  return await listen({
+  return await listen<TokenItem[]>({
     url,
     channel,
     id: params.id,
@@ -29,7 +41,7 @@ export async function getFocusAssetsInfo(data: string[]) {
 }
 
 /**
- * @desc 获取100天内资产的交易量、流动性、价格
+ * @desc 获取100天内某个资产的交易量、流动性、价格
  * @params tokenKey
  */
 
@@ -40,7 +52,7 @@ export async function getTokenAnalytics(tokenKey: string) {
     id: genId(),
     params: { tokenKey }
   };
-  return await listen({
+  return await listen<ChartItem[]>({
     url,
     channel,
     id: params.id,
@@ -55,15 +67,14 @@ export async function getTokenAnalytics(tokenKey: string) {
  * @desc 获取300天内的总流动量数据和24小时交易量数据，支持pool过滤
  * @params tokenKey
  */
-
-export async function get300DaysData() {
+export async function get300DaysData(address?: string) {
   const channel = 'db_analytics';
   const params = {
     method: channel,
     id: genId(),
-    params: {}
+    params: { address }
   };
-  return await listen({
+  return await listen<ChartItem[]>({
     url,
     channel,
     id: params.id,
@@ -78,24 +89,18 @@ export async function get300DaysData() {
  * @desc 资产排名列表
  * @params
  */
-interface TokenListParam {
-  pageIndex?: number;
-  pageSize?: number;
-  orderby?: string;
-  sorting?: 'asc' | 'desc';
-}
-export async function getTokenList(data: TokenListParam) {
-  const pageIndex = data.pageIndex || 1;
-  const pageSize = data.pageSize || 5;
-  const orderby = data.orderby || 'field';
-  const sorting = data.sorting || 'asc';
+export async function getTokenList(data?: TokenListParam) {
+  const pageIndex = data?.pageIndex || 1;
+  const pageSize = data?.pageSize || 10;
+  const orderby = data?.orderby || 'reserveUsdtValue';
+  const sorting = data?.sorting || 'desc';
   const channel = 'db_tokens';
   const params = {
     method: channel,
     id: genId(),
     params: { pageIndex, pageSize, orderby, sorting }
   };
-  return await listen({
+  return await listen<ListRes<TokenItem>>({
     url,
     channel,
     id: params.id,
@@ -110,22 +115,19 @@ export async function getTokenList(data: TokenListParam) {
  * @desc 交易对排名列表，支持根据token-key查询
  * @params
  */
-interface PairListParam extends TokenListParam {
-  tokenKey: string;
-}
-export async function getPairList(data: PairListParam) {
-  const pageIndex = data.pageIndex || 1;
-  const pageSize = data.pageSize || 5;
-  const orderby = data.orderby || 'field';
-  const sorting = data.sorting || 'asc';
-  const tokenKey = data.tokenKey || '';
+export async function getPairList(data?: PairListParam) {
+  const pageIndex = data?.pageIndex || 1;
+  const pageSize = data?.pageSize || 10;
+  const orderby = data?.orderby || 'reserveUsdtValue';
+  const sorting = data?.sorting || 'desc';
+  const tokenKey = data?.tokenKey || '';
   const channel = 'db_pools';
   const params = {
     method: channel,
     id: genId(),
     params: { pageIndex, pageSize, orderby, sorting, tokenKey }
   };
-  return await listen({
+  return await listen<ListRes<PoolItem>>({
     url,
     channel,
     id: params.id,
@@ -142,14 +144,14 @@ export async function getPairList(data: PairListParam) {
  */
 
 export async function getFocusPairsInfo(data: string[]) {
-  const keys = data.slice();
+  const keys = data.join();
   const channel = 'db_fav_pools';
   const params = {
     method: channel,
     id: genId(),
     params: { array: keys }
   };
-  return await listen({
+  return await listen<PoolItem[]>({
     url,
     channel,
     id: params.id,
@@ -172,7 +174,7 @@ export async function getTokenInfo(tokenKey: string) {
     id: genId(),
     params: { tokenKey }
   };
-  return await listen({
+  return await listen<TokenItem>({
     url,
     channel,
     id: params.id,
@@ -195,7 +197,7 @@ export async function getPoolInfo(address: string) {
     id: genId(),
     params: { address }
   };
-  return await listen({
+  return await listen<PoolItem>({
     url,
     channel,
     id: params.id,
@@ -210,22 +212,17 @@ export async function getPoolInfo(address: string) {
  * @desc 交易列表：支持过滤条件pool、token、operation
  * @params pairAddress
  */
-interface TxParam extends TokenListParam {
-  tokenKey?: string;
-  address?: string;
-  operation?: 'SWAP' | 'ADDLP' |'REOMVELP'
-}
-
 export async function getTxs(data: TxParam) {
   const pageIndex = data.pageIndex || 1;
-  const pageSize = data.pageSize || 5;
+  const pageSize = data.pageSize || 10;
   const channel = 'db_transactions';
+  if(data.operation === TxType.ALL) delete data.operation;
   const params = {
     method: channel,
     id: genId(),
     params: { ...data, pageIndex, pageSize }
   };
-  return await listen({
+  return await listen<ListRes<TxRes>>({
     url,
     channel,
     id: params.id,
@@ -240,7 +237,6 @@ export async function getTxs(data: TxParam) {
  * @desc 搜索token或者pool
  * @params text
  */
-
 export async function searchText(text: string) {
   const channel = 'db_search';
   const params = {
@@ -248,7 +244,7 @@ export async function searchText(text: string) {
     id: genId(),
     params: { text }
   };
-  return await listen({
+  return await listen<SearchRes>({
     url,
     channel,
     id: params.id,

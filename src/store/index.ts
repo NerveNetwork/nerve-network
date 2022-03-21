@@ -19,7 +19,9 @@ export default createStore<State>({
     feeAddress: config['destroyAddress'],
     assetList: storage.get('assetList', 'session') || [],
     nvtPrice: '',
-    height: 0
+    height: 0,
+    watchTokens: storage.get('watchTokens') || [],
+    watchPools: storage.get('watchPools') || []
   },
   getters: {
     // 异构链名称Ethereum..
@@ -81,6 +83,12 @@ export default createStore<State>({
     },
     changeHeight(state, height) {
       state.height = height;
+    },
+    changeWatchTokens(state, tokens) {
+      state.watchTokens = tokens;
+    },
+    changeWatchPools(state, pools) {
+      state.watchPools = pools;
     }
   },
   actions: {
