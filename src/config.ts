@@ -20,7 +20,8 @@ const config = {
   beta: {
     isBeta: true,
     API_URL: 'http://beta.public.nerve.network',
-    WS_URL: 'ws://beta.api.swap.nerve.network/ws',
+    // WS_URL: 'ws://beta.api.swap.nerve.network/ws',
+    WS_URL: 'ws://124.71.114.119:8009/ws',
     chainId: 5,
     assetId: 1,
     prefix: 'TNVT',

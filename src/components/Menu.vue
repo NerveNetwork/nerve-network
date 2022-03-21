@@ -85,6 +85,10 @@ const menus = computed(() => {
       key: 'liquidity'
     },
     {
+      label: t('header.header12'),
+      key: 'info'
+    },
+    {
       label: 'Bridge',
       key: 'Bridge',
       url: isBeta

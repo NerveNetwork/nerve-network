@@ -1,9 +1,9 @@
 <template>
-  <img class="symbol-icon" :src="getIconSrc(icon)" alt="" @error="replaceImg" />
+  <img class="symbol-icon" v-lazy="iconSrc" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { getIconSrc } from '@/utils/util';
 import defaultIcon from '@/assets/img/defaultIcon.svg';
 export default defineComponent({
@@ -11,13 +11,16 @@ export default defineComponent({
     icon: String
   },
   name: 'SymbolIcon',
-  setup() {
+  setup(props) {
+    const iconSrc = computed(() => {
+      return getIconSrc(props.icon || '');
+    });
     function replaceImg(e: Event) {
       const target = e.target as HTMLImageElement;
       target.src = defaultIcon;
     }
     return {
-      getIconSrc,
+      iconSrc,
       replaceImg
     };
   }

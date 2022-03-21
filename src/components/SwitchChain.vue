@@ -22,10 +22,11 @@ import {
   computed,
   onBeforeUnmount,
   onMounted,
-  ref
+  ref, watch
 } from 'vue';
 import config from '@/config';
 import useEthereum, { AddChain } from '@/hooks/useEthereum';
+import useClickOutside from '@/hooks/useClickOutside';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { useStore } from '@/store';
 
@@ -85,7 +86,16 @@ export default defineComponent({
       }
     }
     const wrapper = ref<HTMLElement>();
-    function clickHandler(e: MouseEvent) {
+    const { isClickOutside } = useClickOutside(wrapper);
+    watch(
+      () => isClickOutside.value,
+      val => {
+        if (val) {
+          show.value = false;
+        }
+      }
+    );
+    /*function clickHandler(e: MouseEvent) {
       const target = e.target;
       if (target instanceof Node && !wrapper.value?.contains(target)) {
         show.value = false;
@@ -96,7 +106,7 @@ export default defineComponent({
     });
     onBeforeUnmount(() => {
       document.removeEventListener('click', clickHandler);
-    });
+    });*/
     return {
       show,
       supportChainList,

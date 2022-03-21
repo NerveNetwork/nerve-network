@@ -67,9 +67,11 @@ export const divisionDecimals = (nu: Big, decimals = 8) => {
 };
 
 export function divisionAndFix(nu: Big, decimals = 8, fix = 6) {
+  if (!nu) return '0';
   const newFix = fix ? fix : Number(decimals);
   const str = new BigNumber(Division(nu, Power(decimals))).toFixed(newFix);
-  const pointIndex = str.indexOf('.');
+  return fixNumber(str, newFix);
+  /*const pointIndex = str.indexOf('.');
   let lastStr = str.substr(str.length - 1);
   let lastIndex = str.length;
   while (lastStr === '0' && lastIndex >= pointIndex) {
@@ -79,7 +81,7 @@ export function divisionAndFix(nu: Big, decimals = 8, fix = 6) {
     }
   }
   lastIndex = str.substr(lastIndex - 1, 1) === '.' ? lastIndex - 1 : lastIndex;
-  return str.substring(0, lastIndex);
+  return str.substring(0, lastIndex);*/
 }
 
 export function fixNumber(str: string | number, fix = 8) {
@@ -349,4 +351,31 @@ export function isValidNerveAddress(address: string) {
   } catch (e) {
     return false;
   }
+}
+
+export function getAssetByKey(assetKey: string) {
+  const assetList: AssetItem[] = storage.get('assetList', 'session');
+  return assetList.find(asset => asset.assetKey === assetKey);
+}
+
+// 数字格式转化
+export function formatNumber(num: string | number) {
+  if (!num) return num;
+  const B = divisionAndFix(num, 9, 2);
+  const M = divisionAndFix(num, 6, 2);
+  const K = divisionAndFix(num, 3, 2);
+  if (isBigger(B, 1)) {
+    return B + 'B';
+  } else if (isBigger(M, 1)) {
+    return M + 'M';
+  } else if (isBigger(K, 1)) {
+    return K + 'K';
+  } else {
+    return num;
+  }
+}
+
+export function isBigger(str1: string | number, str2: string | number) {
+  const b = new BigNumber(str1);
+  return b.gt(str2);
 }
