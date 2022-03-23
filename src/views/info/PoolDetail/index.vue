@@ -25,7 +25,7 @@
             </div>
             <div class="apr">
               <p class="label mb_5">{{ $t('info.info14') }}</p>
-              <p class="value fw">{{ poolInfo.apr || 0 + '%' }}</p>
+              <p class="value fw">{{ poolInfo.apr || 0 }}%</p>
             </div>
           </div>
           <div class="lock-info">

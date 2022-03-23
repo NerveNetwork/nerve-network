@@ -364,18 +364,19 @@ export function formatNumber(num: string | number) {
   const B = divisionAndFix(num, 9, 2);
   const M = divisionAndFix(num, 6, 2);
   const K = divisionAndFix(num, 3, 2);
-  if (isBigger(B, 1)) {
+  if (isBiggerOrEqual(B, 1)) {
     return B + 'B';
-  } else if (isBigger(M, 1)) {
+  } else if (isBiggerOrEqual(M, 1)) {
     return M + 'M';
-  } else if (isBigger(K, 1)) {
+  } else if (isBiggerOrEqual(K, 1)) {
     return K + 'K';
   } else {
     return num;
   }
 }
 
-export function isBigger(str1: string | number, str2: string | number) {
+//
+export function isBiggerOrEqual(str1: string | number, str2: string | number) {
   const b = new BigNumber(str1);
-  return b.gt(str2);
+  return b.gte(str2);
 }

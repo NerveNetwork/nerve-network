@@ -67,6 +67,9 @@ function pageChange(index: number) {
 
 <style lang="scss">
 .pools-table {
+  tr.el-table__row {
+    cursor: pointer;
+  }
   .symbol-wrap {
     img {
       width: 30px;

@@ -35,7 +35,7 @@ export interface SearchToken {
 }
 
 export interface SearchPool {
-  name: string;
+  // name: string;
   address: string;
   liq: string;
   isWatch: boolean;

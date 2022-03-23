@@ -20,56 +20,60 @@
         <div class="assets">
           <div class="head">
             <div>{{ $t('info.info3') }}</div>
-            <div>{{ $t('info.info9') }}</div>
-            <div>{{ $t('info.info4') }}</div>
+            <div class="xs-hide">{{ $t('info.info9') }}</div>
+            <div class="xs-hide">{{ $t('info.info4') }}</div>
           </div>
-          <div
-            class="content"
-            v-for="item in assets"
-            :key="item.assetKey"
-            @click="toUrl('token', item.assetKey)"
-          >
-            <div class="symbol-wrap">
-              <SymbolIcon :icon="item.symbol"></SymbolIcon>
-              {{ item.symbol }}
-              <CollectIcon
-                v-model="item.isWatch"
-                @change="changeCollect(item, $event, 'token')"
-              />
+          <div class="content-wrap">
+            <div
+              class="content"
+              v-for="item in assets"
+              :key="item.assetKey"
+              @click="toUrl('token', item.assetKey)"
+            >
+              <div class="symbol-wrap">
+                <SymbolIcon :icon="item.symbol"></SymbolIcon>
+                {{ item.symbol }}
+                <CollectIcon
+                  v-model="item.isWatch"
+                  @change="changeCollect(item, $event, 'token')"
+                />
+              </div>
+              <div class="xs-hide">${{ item.price }}</div>
+              <div class="xs-hide">${{ $format(item.liq) }}</div>
             </div>
-            <div>${{ item.price }}</div>
-            <div>{{ item.liq }}</div>
-          </div>
-          <div class="no-data" v-if="!assets.length">
-            {{ $t('public.public19') }}
+            <div class="no-data" v-if="!assets.length">
+              {{ $t('public.public19') }}
+            </div>
           </div>
         </div>
         <div class="pools">
           <div class="head">
             <div>{{ $t('info.info2') }}</div>
-            <div></div>
-            <div>{{ $t('info.info4') }}</div>
+            <div class="xs-hide"></div>
+            <div class="xs-hide">{{ $t('info.info4') }}</div>
           </div>
-          <div
-            class="content"
-            v-for="item in pools"
-            :key="item.address"
-            @click="toUrl('pool', item.address)"
-          >
-            <div class="symbol-wrap">
-              <SymbolIcon :icon="item.asset1.symbol"></SymbolIcon>
-              <SymbolIcon :icon="item.asset2.symbol"></SymbolIcon>
-              {{ item.lpName }}
-              <CollectIcon
-                v-model="item.isWatch"
-                @change="changeCollect(item, $event, 'pool')"
-              />
+          <div class="content-wrap">
+            <div
+              class="content"
+              v-for="item in pools"
+              :key="item.address"
+              @click="toUrl('pool', item.address)"
+            >
+              <div class="symbol-wrap">
+                <SymbolIcon :icon="item.asset1.symbol"></SymbolIcon>
+                <SymbolIcon :icon="item.asset2.symbol"></SymbolIcon>
+                {{ item.lpName }}
+                <CollectIcon
+                  v-model="item.isWatch"
+                  @change="changeCollect(item, $event, 'pool')"
+                />
+              </div>
+              <div class="xs-hide"></div>
+              <div class="xs-hide">${{ $format(item.liq) }}</div>
             </div>
-            <div></div>
-            <div>{{ item.liq }}</div>
-          </div>
-          <div class="no-data" v-if="!pools.length">
-            {{ $t('public.public19') }}
+            <div class="no-data" v-if="!pools.length">
+              {{ $t('public.public19') }}
+            </div>
           </div>
         </div>
       </div>
@@ -148,7 +152,7 @@ async function doSearch(key: string) {
         isWatch: watchPools.includes(v.address),
         asset1,
         asset2,
-        lpName: ''
+        lpName: v.token0Symbol + ' / ' + v.token1Symbol
       });
     });
     pools.value = list2;
@@ -233,10 +237,14 @@ function toUrl(type: string, query: string) {
   }
   .search-result {
     .assets {
-      margin-bottom: 35px;
+      margin-bottom: 25px;
     }
     .assets,
     .pools {
+      .content-wrap {
+        max-height: 200px;
+        overflow: auto;
+      }
       .head,
       .content {
         display: grid;
@@ -259,6 +267,7 @@ function toUrl(type: string, query: string) {
             width: 30px;
             height: 30px;
             margin-right: 8px;
+            background-color: #fff;
           }
           .collect-icon img {
             width: 25px;
@@ -303,7 +312,13 @@ function toUrl(type: string, query: string) {
   }
   @media screen and (max-width: 600px) {
     .search-content .search-result {
-      width: 360px;
+      width: 340px;
+      padding: 20px;
+      max-height: 400px;
+      overflow: auto;
+      .xs-hide {
+        display: none;
+      }
     }
   }
 }

@@ -10,7 +10,7 @@
       <template #price="scope">${{ scope.row.price }}</template>
       <template #priceChange="scope">
         <span :class="scope.row.priceChange > 0 ? 'price-up' : 'price-down'">
-          {{ scope.row.priceChange }}
+          {{ scope.row.priceChange > 0 ? '+' + scope.row.priceChange : scope.row.priceChange }}%
         </span>
       </template>
       <template #txs="scope">${{ $format(scope.row.txs) }}</template>
@@ -73,6 +73,9 @@ function pageChange(index: number) {
 
 <style lang="scss">
 .assets-table {
+  tr.el-table__row {
+    cursor: pointer;
+  }
   .symbol-wrap {
     display: flex;
     align-items: center;

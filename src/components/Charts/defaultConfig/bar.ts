@@ -8,7 +8,7 @@ const barConfig = {
     type: 'value'
   },
   grid: {
-    left: '0',
+    left: '10',
     right: '0',
     bottom: '5',
     top: '10',
