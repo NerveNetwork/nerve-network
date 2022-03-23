@@ -783,7 +783,8 @@ const en = {
     info29: 'View in explorer',
     info30: 'Transactions 24H',
     info31: 'Top Pools',
-    info32: 'All Tokens'
+    info32: 'All Tokens',
+    info33: 'Search pools or tokens'
   }
 };
 

@@ -39,8 +39,8 @@ export interface SearchPool {
   address: string;
   liq: string;
   isWatch: boolean;
-  asset1: any;
-  asset2: any;
+  token0: string;
+  token1: string;
   lpName: string;
 }
 

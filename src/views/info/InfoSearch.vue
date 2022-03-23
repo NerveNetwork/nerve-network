@@ -24,26 +24,31 @@
             <div class="xs-hide">{{ $t('info.info4') }}</div>
           </div>
           <div class="content-wrap">
-            <div
-              class="content"
-              v-for="item in assets"
-              :key="item.assetKey"
-              @click="toUrl('token', item.assetKey)"
-            >
-              <div class="symbol-wrap">
-                <SymbolIcon :icon="item.symbol"></SymbolIcon>
-                {{ item.symbol }}
-                <CollectIcon
-                  v-model="item.isWatch"
-                  @change="changeCollect(item, $event, 'token')"
-                />
+            <template v-if="!searchVal">
+              <div>{{ $t('info.info33') }}</div>
+            </template>
+            <template v-else>
+              <div
+                class="content"
+                v-for="item in assets"
+                :key="item.assetKey"
+                @click="toUrl('token', item.assetKey)"
+              >
+                <div class="symbol-wrap">
+                  <SymbolIcon :icon="item.symbol"></SymbolIcon>
+                  {{ item.symbol }}
+                  <CollectIcon
+                    v-model="item.isWatch"
+                    @change="changeCollect(item.assetKey, $event, 'token')"
+                  />
+                </div>
+                <div class="xs-hide">${{ item.price }}</div>
+                <div class="xs-hide">${{ $format(item.liq) }}</div>
               </div>
-              <div class="xs-hide">${{ item.price }}</div>
-              <div class="xs-hide">${{ $format(item.liq) }}</div>
-            </div>
-            <div class="no-data" v-if="!assets.length">
-              {{ $t('public.public19') }}
-            </div>
+              <div class="no-data" v-if="!assets.length">
+                {{ $t('public.public19') }}
+              </div>
+            </template>
           </div>
         </div>
         <div class="pools">
@@ -53,27 +58,32 @@
             <div class="xs-hide">{{ $t('info.info4') }}</div>
           </div>
           <div class="content-wrap">
-            <div
-              class="content"
-              v-for="item in pools"
-              :key="item.address"
-              @click="toUrl('pool', item.address)"
-            >
-              <div class="symbol-wrap">
-                <SymbolIcon :icon="item.asset1.symbol"></SymbolIcon>
-                <SymbolIcon :icon="item.asset2.symbol"></SymbolIcon>
-                {{ item.lpName }}
-                <CollectIcon
-                  v-model="item.isWatch"
-                  @change="changeCollect(item, $event, 'pool')"
-                />
+            <template v-if="!searchVal">
+              <div>{{ $t('info.info33') }}</div>
+            </template>
+            <template v-else>
+              <div
+                class="content"
+                v-for="item in pools"
+                :key="item.address"
+                @click="toUrl('pool', item.address)"
+              >
+                <div class="symbol-wrap">
+                  <SymbolIcon :icon="item.token0"></SymbolIcon>
+                  <SymbolIcon :icon="item.token1"></SymbolIcon>
+                  {{ item.lpName }}
+                  <CollectIcon
+                    v-model="item.isWatch"
+                    @change="changeCollect(item.address, $event, 'pool')"
+                  />
+                </div>
+                <div class="xs-hide"></div>
+                <div class="xs-hide">${{ $format(item.liq) }}</div>
               </div>
-              <div class="xs-hide"></div>
-              <div class="xs-hide">${{ $format(item.liq) }}</div>
-            </div>
-            <div class="no-data" v-if="!pools.length">
-              {{ $t('public.public19') }}
-            </div>
+              <div class="no-data" v-if="!pools.length">
+                {{ $t('public.public19') }}
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -121,7 +131,8 @@ watch(
     }
   }
 );
-const search = (key: string) => debounce(doSearch, 1000)(key);
+const debounceSearch = debounce(doSearch, 1000);
+const search = (key: string) => debounceSearch(key);
 
 async function doSearch(key: string) {
   const res = await searchText(key);
@@ -143,15 +154,13 @@ async function doSearch(key: string) {
     });
     assets.value = list1;
     res.pool.map(v => {
-      const asset1 = getAssetByKey(v.token0);
-      const asset2 = getAssetByKey(v.token1);
       // const assetLP = getAssetByKey(v.tokenLP);
       list2.push({
         address: v.address,
         liq: divisionAndFix(v.reserveUsdtValue, 18, 2),
         isWatch: watchPools.includes(v.address),
-        asset1,
-        asset2,
+        token0: v.token0Symbol,
+        token1: v.token1Symbol,
         lpName: v.token0Symbol + ' / ' + v.token1Symbol
       });
     });
