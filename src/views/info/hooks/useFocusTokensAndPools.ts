@@ -35,8 +35,8 @@ export function useFocusPools() {
           token1Symbol: v.token1Symbol,
           tx_24: divisionAndFix(v.amountUsdtValue24H, 18, 2),
           tx_7d: divisionAndFix(v.amountUsdtValue7D, 18, 2),
-          lp_24: divisionAndFix(v.amountUsdtValue24H, 18, 2),
-          apr: divisionAndFix(v.amountUsdtValue24H, 18, 2),
+          lp_24: divisionAndFix(v.feeUsdtValue, 18, 2),
+          apr: divisionAndFix(v.feeUsdtValueARP, 2, 2),
           liq: divisionAndFix(v.reserveUsdtValue, 18, 2)
         });
       });
