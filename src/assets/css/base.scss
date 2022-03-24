@@ -277,8 +277,9 @@ a.line {
 // 滚动条滑块样式
 ::-webkit-scrollbar-thumb {
   border-radius: 2px;
+  background: #d8d8d8;
   //-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-  background: transparent;
+  //background: transparent;
 }
 
 :hover::-webkit-scrollbar-thumb,body::-webkit-scrollbar-thumb {
