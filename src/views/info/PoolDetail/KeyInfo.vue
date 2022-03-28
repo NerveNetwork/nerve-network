@@ -10,7 +10,12 @@
       </div>
       <div class="symbol-info">
         <p class="name fw">{{ props.info.name }}</p>
-        <p class="key">ID: {{ props.info.assetKey || props.info.tokenLP }}</p>
+        <p class="key">
+          ID: {{ props.info.assetKey || props.info.tokenLP }}
+          <span v-if="!props.isPool" style="color: #475472; font-size: 16px">
+            ${{ props.info.price }}
+          </span>
+        </p>
       </div>
     </div>
     <CollectIcon v-model="isCollected" @change="change" />

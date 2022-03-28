@@ -63,7 +63,7 @@ async function getTokenDetail() {
     tokenInfo.value = {
       name: res.symbol,
       assetKey: res.assetChainId + '-' + res.assetId,
-      // price: divisionAndFix(res.price, 18, 2),
+      price: divisionAndFix(res.price, 18, 2),
       tx_24: divisionAndFix(res.amountUsdtValue24H, 18, 2),
       tx_7d: divisionAndFix(res.amountUsdtValue7D, 18, 2),
       tx_24_count: res.transactionCount24H,

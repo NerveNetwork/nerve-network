@@ -51,6 +51,7 @@ export interface TokenDetail {
   tx_7d: string;
   tx_24_count: string;
   liq: string;
+  price: string;
 }
 
 export interface PoolDetail extends PoolItem {

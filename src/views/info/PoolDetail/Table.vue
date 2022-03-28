@@ -1,9 +1,15 @@
 <template>
   <Table :columns="columns" v-bind="props" @sortChange="sortChange" @pageChange="pageChange">
     <template #type="scope">
-      <span class="link" @click="openExplorer('hash', scope.row.hash)">
+<!--      <span class="link" @click="openExplorer('hash', scope.row.hash)">
         {{ scope.row.type }}
-      </span>
+      </span>-->
+      <TxType
+        :type="scope.row.type"
+        :hash="scope.row.hash"
+        :token0="scope.row.token0"
+        :token1="scope.row.token1"
+      />
     </template>
     <template #totalVal="scope">
       <span>${{ $format(scope.row.totalVal) }}</span>
@@ -30,6 +36,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { openExplorer, superLong } from '@/utils/util';
 import Table from '@/components/Table/index.vue';
+import TxType from './TxType.vue';
 
 const props = defineProps<{
   data: any[];
@@ -43,8 +50,13 @@ const { t } = useI18n();
 
 const columns = computed(() => {
   return [
-    { width: 40 },
-    { prop: 'type', label: t('info.info24'), width: 160, slotName: 'type' },
+    { width: 30 },
+    {
+      prop: 'type',
+      label: t('info.info24'),
+      'min-width': 180,
+      slotName: 'type'
+    },
     {
       prop: 'totalVal',
       label: t('info.info25'),
@@ -55,22 +67,27 @@ const columns = computed(() => {
     {
       prop: 'amount0',
       label: t('info.info26'),
-      width: 180,
+      width: 200,
       slotName: 'amount0'
       // sortable: 'custom'
     },
     {
       prop: 'amount1',
       label: t('info.info26'),
-      width: 180,
+      width: 200,
       slotName: 'amount1'
       // sortable: 'custom'
     },
-    { prop: 'address', label: t('info.info27'), slotName: 'address', 'min-width': 180, },
+    {
+      prop: 'address',
+      label: t('info.info27'),
+      slotName: 'address',
+      width: 210
+    },
     {
       prop: 'time',
       label: t('info.info28'),
-      width: 180,
+      width: 140,
       slotName: 'time'
       // sortable: 'custom'
     }
