@@ -30,6 +30,12 @@
         <ChartTab :assetKey="tokenInfo.assetKey" />
       </div>
     </div>
+    <PoolsTable
+      :title="$t('info.info2')"
+      :data="pools"
+      :total="poolTotal"
+      @pageChange="getPoolsList"
+    />
     <TxList :assetKey="tokenInfo.assetKey" />
   </div>
 </template>
@@ -42,16 +48,20 @@ import Breadcrumb from '../Breadcrumb.vue';
 import KeyInfo from '../PoolDetail/KeyInfo.vue';
 import HandleBtn from '../PoolDetail/Handle.vue';
 import ChartTab from '../PoolDetail/ChartTab.vue';
+import PoolsTable from '../Overview/PoolsTable.vue';
 import TxList from '../PoolDetail/TxList.vue';
 import { getTokenInfo } from '@/service/api';
 import { TokenDetail } from '@/views/info/types';
 import { divisionAndFix } from '@/utils/util';
+import useTokensAndPools from '@/views/info/hooks/useTokensAndPools';
 
 const { t } = useI18n();
 const route = useRoute();
 
 const assetKey = route.params.id as string;
+const { pools, poolTotal, getPoolsList } = useTokensAndPools();
 onMounted(() => {
+  getPoolsList('', assetKey);
   getTokenDetail();
 });
 

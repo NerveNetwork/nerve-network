@@ -28,8 +28,8 @@ export default function useTokensAndPools() {
       tokenTotal.value = res.total;
     }
   }
-  async function getPoolsList(pageIndex?: number) {
-    const params = pageIndex ? { pageIndex } : {};
+  async function getPoolsList(pageIndex?: number, tokenKey?: string) {
+    const params = pageIndex ? { pageIndex, tokenKey } : { tokenKey };
     const res = await getPairList(params);
     if (res) {
       const list: PoolItem[] = [];
