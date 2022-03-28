@@ -34,7 +34,7 @@
       :title="$t('info.info2')"
       :data="pools"
       :total="poolTotal"
-      @pageChange="getPoolsList"
+      @pageChange="index => getPoolsList(index, assetKey)"
     />
     <TxList :assetKey="tokenInfo.assetKey" />
   </div>
