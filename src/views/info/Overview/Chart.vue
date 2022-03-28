@@ -97,6 +97,18 @@ const lineOptions = computed(() => {
         formatter(value: number) {
           // return Number(value.toString().slice(-2));
           return dayjs(value).format('M.D');
+        },
+        interval(index, value) {
+          const length = props.data.length;
+          if (length < 12) return true;
+          if (index === length - 1) {
+            return true;
+          } else {
+            const windowWidth = window.innerWidth;
+            const interval = windowWidth > 400 ? 10 : 5;
+            const gap = parseInt((length - 1) / interval);
+            return index % gap === 0 && length - 1 > gap + index;
+          }
         }
       }
     },
@@ -168,6 +180,18 @@ const barOptions = computed(() => {
       axisLabel: {
         formatter(value: number) {
           return dayjs(value).format('M.D');
+        },
+        interval(index, value) {
+          const length = props.data.length;
+          if (length < 12) return true;
+          if (index === length - 1) {
+            return true;
+          } else {
+            const windowWidth = window.innerWidth;
+            const interval = windowWidth > 400 ? 10 : 5;
+            const gap = parseInt((length - 1) / interval);
+            return index % gap === 0 && length - 1 > gap + index;
+          }
         }
       },
       data: props.data.map(v => v.label)
