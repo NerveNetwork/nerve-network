@@ -85,7 +85,7 @@ export interface TxRes {
   token1: string;
   tokenIn: string;
   tokenOut: string;
-  tokenOutPrice: string;
+  token0Price: string;
   type: string;
   userAddress: string;
   token0Decimals: number;

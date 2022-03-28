@@ -5,6 +5,7 @@
         {{ scope.row.type }}
       </span>-->
       <TxType
+        v-if="scope.row.type"
         :type="scope.row.type"
         :hash="scope.row.hash"
         :token0="scope.row.token0"

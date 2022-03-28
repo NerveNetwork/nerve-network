@@ -78,13 +78,13 @@ async function getTxData() {
       }
       amount0 = divisionAndFix(amount0, decimals0, 4);
       amount1 = divisionAndFix(amount1, decimals1, 4);
-      const tokenOutPrice = divisionAndFix(v.tokenOutPrice, 18);
-      const totalVal = fixNumber(tokenOutPrice * amount1, 2);
+      const token0Price = divisionAndFix(v.token0Price, 18);
+      const totalVal = fixNumber(token0Price * amount0, 2);
       list.push({
         type: v.type,
         hash: v.hash,
         time: dayjs(v.blockTime * 1000).format('MM-DD HH:mm'),
-        totalVal,
+        totalVal: v.type === 'SWAP' ? totalVal : totalVal * 2,
         token0,
         amount0,
         token1,

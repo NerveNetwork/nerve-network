@@ -29,7 +29,7 @@ import { ChartTabItem, ChartItem } from '../types';
 import { divisionAndFix } from '@/utils/util';
 
 const props = defineProps<{
-  assetKey: string;
+  assetKey?: string;
   isPool?: boolean;
 }>();
 
