@@ -141,6 +141,14 @@ async function doSearch(key: string) {
     const list2: SearchPool[] = [];
     const watchTokens = storage.get('watchTokens') || [];
     const watchPools = storage.get('watchPools') || [];
+    res.token.sort((a, b) => {
+      // @ts-ignore
+      return a.reserveUsdtValue - b.reserveUsdtValue < 0 ? 1 : -1;
+    });
+    res.pool.sort((a, b) => {
+      // @ts-ignore
+      return a.reserveUsdtValue - b.reserveUsdtValue < 0 ? 1 : -1;
+    });
     res.token.map(v => {
       const assetKey = v.assetChainId + '-' + v.assetId;
       list1.push({
@@ -290,6 +298,9 @@ function toUrl(type: string, query: string) {
       }
     }
     .pools {
+      .content {
+        grid-template-columns: 2.5fr 0fr 0.8fr; //repeat(2, 1fr);
+      }
       .symbol-wrap {
         .symbol-icon {
           margin-right: 0;

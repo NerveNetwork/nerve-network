@@ -148,14 +148,14 @@ const rateInfo = computed(() => {
   if (!poolInfo.value.name) return '';
   const { token0Symbol, token1Symbol, reserve0, reserve1 } = poolInfo.value;
   const rate = fixNumber(Division(reserve1, reserve0).toFixed(), 4);
-  return `1 ${token0Symbol} = ${rate} ${token1Symbol}`;
+  return `1 ${token0Symbol} ≈ ${rate} ${token1Symbol}`;
 });
 
 const rateInfoReverse = computed(() => {
   if (!poolInfo.value.name) return '';
   const { token0Symbol, token1Symbol, reserve0, reserve1 } = poolInfo.value;
   const rate = fixNumber(Division(reserve0, reserve1).toFixed(), 4);
-  return `1 ${token1Symbol} = ${rate} ${token0Symbol}`;
+  return `1 ${token1Symbol} ≈ ${rate} ${token0Symbol}`;
 });
 
 const activeDataTab = ref('1');
@@ -211,6 +211,7 @@ function changeDataTab(tab: string) {
     .label {
       font-size: 14px;
       color: #94a6ce;
+      white-space: nowrap;
     }
     .mb_5 {
       margin-bottom: 5px;

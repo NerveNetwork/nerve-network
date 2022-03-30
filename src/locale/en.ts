@@ -784,7 +784,8 @@ const en = {
     info30: 'Transactions 24H',
     info31: 'Top Pools',
     info32: 'All Tokens',
-    info33: 'Search pools or tokens'
+    info33: 'Search pools or tokens',
+    info34: 'Volume'
   }
 };
 

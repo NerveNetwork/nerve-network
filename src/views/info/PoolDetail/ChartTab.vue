@@ -87,12 +87,12 @@ const activeTab = ref('tx');
 const chartTab = computed(() => {
   if (props.isPool) {
     return {
-      tx: { label: t('info.info5'), type: 'bar', key: 'tx' },
+      tx: { label: t('info.info34'), type: 'bar', key: 'tx' },
       liq: { label: t('info.info4'), type: 'line', key: 'liq' }
     };
   }
   return {
-    tx: { label: t('info.info5'), type: 'bar', key: 'tx' },
+    tx: { label: t('info.info34'), type: 'bar', key: 'tx' },
     liq: { label: t('info.info4'), type: 'line', key: 'liq' },
     price: { label: t('info.info9'), type: 'line', key: 'price' }
   };
