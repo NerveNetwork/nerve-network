@@ -35,14 +35,14 @@
                 <SymbolIcon :icon="poolInfo.token0Symbol" />
                 {{ poolInfo.token0Symbol }}
               </div>
-              <span class="fw">${{ $format(poolInfo.reserve0) }}</span>
+              <span class="fw">{{ $format(poolInfo.reserve0) }}</span>
             </div>
             <div class="flex-between">
               <div class="flex-center">
                 <SymbolIcon :icon="poolInfo.token1Symbol" />
                 {{ poolInfo.token1Symbol }}
               </div>
-              <span class="fw">${{ $format(poolInfo.reserve1) }}</span>
+              <span class="fw">{{ $format(poolInfo.reserve1) }}</span>
             </div>
           </div>
         </div>
@@ -130,8 +130,8 @@ async function getPoolDetail() {
       token1Decimals: res.token1Decimals,
       token1Symbol: res.token1Symbol,
       tokenLP: res.tokenLP,
-      reserve0: divisionAndFix(res.reserve0, res.token0Decimals),
-      reserve1: divisionAndFix(res.reserve1, res.token1Decimals)
+      reserve0: divisionAndFix(res.reserve0, res.token0Decimals, 2),
+      reserve1: divisionAndFix(res.reserve1, res.token1Decimals, 2)
     };
   }
 }

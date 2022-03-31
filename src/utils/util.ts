@@ -380,3 +380,15 @@ export function isBiggerOrEqual(str1: string | number, str2: string | number) {
   const b = new BigNumber(str1);
   return b.gte(str2);
 }
+
+// 自适应保留小数位数 最多保留8位;
+export function adaptiveFix(str: string, maxFix = 8) {
+  let fix = 2;
+  str = str + '';
+  let res = '0';
+  while (fix <= maxFix && res === '0') {
+    res = fixNumber(str, fix);
+    fix += 2;
+  }
+  return res;
+}

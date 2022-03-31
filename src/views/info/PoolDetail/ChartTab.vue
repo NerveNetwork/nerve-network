@@ -26,7 +26,7 @@ import { useI18n } from 'vue-i18n';
 import Chart from '../Overview/Chart.vue';
 import { getTokenAnalytics, get300DaysData } from '@/service/api';
 import { ChartTabItem, ChartItem } from '../types';
-import { divisionAndFix } from '@/utils/util';
+import { adaptiveFix, divisionAndFix } from '@/utils/util';
 
 const props = defineProps<{
   assetKey?: string;
@@ -73,7 +73,7 @@ async function getChartData(key: string) {
       if (!props.isPool) {
         const priceItem = {
           label: v.period,
-          value: divisionAndFix(v.price, 18, 2)
+          value: adaptiveFix(divisionAndFix(v.price, 18, 18))
         };
         price.push(priceItem);
       }
