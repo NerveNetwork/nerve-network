@@ -5,7 +5,7 @@
         <div class="symbol-wrap flex-center">
           <SymbolIcon :icon="scope.row.token0Symbol" />
           <SymbolIcon :icon="scope.row.token1Symbol" />
-          {{ scope.row.name }}
+          {{ scope.row.token0Symbol }}/{{ scope.row.token1Symbol }}
         </div>
       </template>
       <template #tx_24="scope">${{ $format(scope.row.tx_24) }}</template>

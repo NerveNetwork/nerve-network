@@ -116,7 +116,7 @@ async function getPoolDetail() {
   const res = await getPoolInfo(assetKey);
   if (res) {
     poolInfo.value = {
-      name: res.tokenLPSymbol,
+      name: res.token0Symbol + '/' + res.token1Symbol,
       address: res.address,
       tx_24: divisionAndFix(res.amountUsdtValue24H, 18, 2),
       tx_7d: divisionAndFix(res.amountUsdtValue7D, 18, 2),
