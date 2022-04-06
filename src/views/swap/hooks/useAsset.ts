@@ -1,13 +1,21 @@
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import useStoreState from '@/hooks/useStoreState';
 import { DefaultAsset, AssetItem } from '../types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getStablePairListForSwapTrade } from '@/service/api';
 
+const LpSource = [10, 11, 12];
+
 export default function useAsset(isLiquidity = false) {
   const route = useRoute();
   const { assetsList, chain } = useStoreState();
+  // 兑换、添加流动性屏蔽LP资产
+  const filterLPAssets = computed(() => {
+    return assetsList.value.filter(item => {
+      return LpSource.indexOf(item.source) < 0 || !item.symbol.endsWith('_LP'); // 特殊处理usdtn
+    });
+  });
   const defaultAsset = ref<DefaultAsset>({} as DefaultAsset);
   // url是否带有交易对查询信息
   const hasQuery = ref(false);
@@ -29,10 +37,12 @@ export default function useAsset(isLiquidity = false) {
   });
 
   watch(
-    [assetsList, stableCoins],
+    [filterLPAssets, stableCoins],
     ([val, sCoins]) => {
       // 添加流动性页面资产列表不展示可swap稳定币资产
+      // if (val && val.length) {
       if (val && val.length && (!isLiquidity || Object.keys(sCoins).length)) {
+        // assetsList stableCoins都存在
         if (!isLiquidity) {
           liquidityAssets.value = val.filter(v => v);
         } else {

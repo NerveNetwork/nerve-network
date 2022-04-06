@@ -3,32 +3,47 @@
     <div class="info-item">
       <p>{{ $t('home.home7') }}</p>
       <p>
-        $
-        <CountUp :end-val="'367374375'" />
+        ${{ $format(summaryData.txAmount) }}
+<!--        $<CountUp :end-val="summaryData.txAmount" />-->
       </p>
     </div>
     <div class="info-item">
       <p>TVL</p>
       <p>
-        $
-        <CountUp :end-val="'7374375'" />
+        ${{ $format(summaryData.tvl) }}
+<!--        $<CountUp :end-val="summaryData.tvl" />-->
       </p>
     </div>
     <div class="info-item">
       <p>{{ $t('home.home8') }}</p>
       <p>
-        <CountUp :end-val="'3875'" :options="{ separator: '' }" />
-        %
+        {{ summaryData.apr }}%
+<!--        <CountUp :end-val="summaryData.apr" :options="{ separator: '' }" />%-->
       </p>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { getSummaryData } from '@/service/api';
+import { divisionAndFix } from '@/utils/util';
 import CountUp from '@/components/CountUp.vue';
 
-const name = ref('');
+const summaryData = ref({
+  txAmount: '',
+  tvl: '',
+  apr: ''
+});
+onMounted(() => {
+  getSummaryData().then(res => {
+    summaryData.value = {
+      txAmount: divisionAndFix(res.amountUsdtValue, 18, 2),
+      tvl: divisionAndFix(res.tvl, 18, 2),
+      apr: res.maxFarmApr
+    };
+  });
+});
 </script>
 
 <style lang="scss">

@@ -63,4 +63,6 @@ export interface State {
   assetList: AssetItem[] | [];
   nvtPrice: string;
   height: number;
+  watchTokens: string[];
+  watchPools: string[];
 }
