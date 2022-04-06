@@ -121,8 +121,8 @@ export const _networkInfo = {
       homestead: 'https://http-mainnet.hecochain.com'
     }
   },
-  OEC: {
-    name: 'OEC',
+  OKC: {
+    name: 'OKC',
     chainId: 104,
     assetKey: isBeta ? '5-12' : '9-87',
     origin: OECOrigin,

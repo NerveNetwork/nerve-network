@@ -80,8 +80,7 @@
             disableTx ||
             !!fromAmountError ||
             !!toAmountError ||
-            impactButton === 2 ||
-            isStableCoinForStableCoin
+            impactButton === 2
           "
           @click="swapTrade"
         >
@@ -98,9 +97,6 @@
           <AuthButton @loading="handleLoading" />
         </template>
       </div>
-    </div>
-    <div class="stable-coin-swap-tip" v-if="isStableCoinForStableCoin">
-      {{ $t('trading.trading22') }}
     </div>
     <div
       v-show="swapRate"
@@ -242,11 +238,12 @@ export default defineComponent({
       isStableCoinForOthers,
       isStableCoinSwap,
       checkIsStableCoinForStableCoin,
-      checkIsStableCoinForNVT,
+      checkIsStableCoinForOthers,
       checkIsStableCoinSwap,
       stableCoins,
       stablePairList,
-      getReceiveOrderIndex
+      getReceiveOrderIndex,
+      getStableCoinInfoAndIndex
     } = useSpecialSwap();
     const state = reactive<SwapState>({
       feeRate: '0.3', // 千三的手续费
@@ -339,7 +336,7 @@ export default defineComponent({
         return;
       }
 
-      checkIsStableCoinForNVT(
+      checkIsStableCoinForOthers(
         state?.fromAsset?.assetKey,
         state?.toAsset?.assetKey
       );
@@ -353,7 +350,7 @@ export default defineComponent({
         state.fromAsset.assetKey &&
         state.toAsset.assetKey
       ) {
-        if (!isStableCoinSwap.value) {
+        if (!isStableCoinSwap.value && !isStableCoinForStableCoin) {
           if (isStableCoinForOthers.value) {
             // 稳定币换NVT，缓存稳定币N兑换NVT交易对信息
             const routeCoin = getStableRouteCoin();
@@ -458,7 +455,7 @@ export default defineComponent({
       const tempFromAsset = { ...state.fromAsset };
       state.fromAsset = tempToAsset;
       state.toAsset = tempFromAsset;
-      checkIsStableCoinForNVT(
+      checkIsStableCoinForOthers(
         state?.fromAsset?.assetKey,
         state?.toAsset?.assetKey
       );
@@ -694,6 +691,11 @@ export default defineComponent({
       ) {
         // 稳定币、稳定币N互换
         if (isStableCoinSwap.value) {
+          state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+          return [amount, 0];
+        }
+        // 稳定币、稳定币互换
+        if (isStableCoinForStableCoin.value) {
           state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
           return [amount, 0];
         }
@@ -1034,6 +1036,7 @@ export default defineComponent({
         const deadline = nerve.swap.currentTime() + 300;
         const remark = '';
         let tx;
+        // 稳定币、稳定币N互换
         if (isStableCoinSwap.value) {
           // 稳定币、稳定币N互换
           const [chainId, assetId] = fromAssetKey.split('-');
@@ -1081,6 +1084,34 @@ export default defineComponent({
               remark
             );
           }
+        // 稳定币、稳定币互换
+        } else if (isStableCoinForStableCoin.value) {
+          const stableKey = stableCoins.value[fromAssetKey];
+          const stableN: any = stablePairList.value.find(
+            (v: any) => v.lpToken === stableKey
+          );
+          const stablePairAddress = stableN.address;
+          const [chainId, assetId] = fromAssetKey.split('-');
+          const amountIn = timesDecimals(state.fromAmount, fromDecimal);
+          const amountIns = [
+            nerve.swap.tokenAmount(+chainId, +assetId, amountIn)
+          ];
+          // toAsset在稳定池中的index
+          const { index: tokenOutIndex } = await getStableCoinInfoAndIndex(
+            toAssetKey,
+            stablePairAddress
+          );
+          const feeTo = null;
+          tx = await nerve.swap.stableSwapTrade(
+            fromAddress,
+            stablePairAddress,
+            amountIns,
+            tokenOutIndex,
+            feeTo,
+            deadline,
+            toAddress,
+            remark
+          );
         } else {
           const amountIn = timesDecimals(state.fromAmount, fromDecimal); // 卖出的资产数量
           const amountOutMin = timesDecimals(minReceive.value, toDecimal).split(
