@@ -1,7 +1,7 @@
 const webpack = require('webpack');
-// const CompressionWebpackPlugin = require("compression-webpack-plugin");
-// const productionGzipExtensions = ["js", "css"];
-// const isProduction = process.env.NODE_ENV === "production";
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const productionGzipExtensions = ['js', 'css'];
+const isProduction = process.env.NODE_ENV === 'production';
 // const AutoImport = require('unplugin-auto-import/webpack');
 const Components = require('unplugin-vue-components/webpack');
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers');
@@ -21,16 +21,16 @@ module.exports = {
       include: /node_modules/,
       type: 'javascript/auto'
     });
-    // if (isProduction) {
-    //   config.plugins.push(
-    //     new CompressionWebpackPlugin({
-    //       algorithm: "gzip",
-    //       test: new RegExp("\\.(" + productionGzipExtensions.join("|") + ")$"),
-    //       threshold: 10240,
-    //       minRatio: 0.8
-    //     })
-    //   );
-    // }
+    if (isProduction) {
+      config.plugins.push(
+        new CompressionWebpackPlugin({
+          algorithm: 'gzip',
+          test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+          threshold: 10240,
+          minRatio: 0.8
+        })
+      );
+    }
     config.plugins.push(
       new webpack.DefinePlugin({
         //定义全局变量
@@ -69,6 +69,12 @@ module.exports = {
       }
     };
     // config.plugins.push(new BundleAnalyzerPlugin());
+    // if (!isProduction) {
+    // config.devtool = 'cheap-module-source-map';
+    // }
+  },
+  css: {
+    sourceMap: !isProduction
   },
 
   devServer: {

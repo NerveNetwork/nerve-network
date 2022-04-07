@@ -477,7 +477,7 @@ function toAddLiquidity() {
     syrupTokenAssetId
   } = props.tokenInfo as NerveFarmItem;
   let url;
-  if (!swapPairAddress) {
+  if (swapPairAddress) {
     url = `/liquidity/${stakeTokenChainId}-${stakeTokenAssetId}/${syrupTokenChainId}-${syrupTokenAssetId}`;
   } else {
     const { chainId, assetId, NULSConfig } = config;
