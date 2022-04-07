@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="swap pd_40_rd_20 mobile-p"
-    v-loading="loading"
-  >
+  <div class="swap pd_40_rd_20 mobile-p" v-loading="loading">
     <div class="icon-wrap flex-between">
       <div class="left">
         <i
@@ -232,7 +229,7 @@ export default defineComponent({
     let storedSwapPairInfo = {}; // 缓存的交易对全量的兑换路径
     const { t } = useI18n();
     const toast = useToast();
-    const { nerveAddress, addressInfo } = useStoreState();
+    const { nerveAddress } = useStoreState();
     const {
       isStableCoinForStableCoin,
       isStableCoinForOthers,
@@ -791,7 +788,11 @@ export default defineComponent({
     }
 
     // 通过输入from获取最佳兑换信息
-    function bestTradeExactIn(amount: string, pairs: any, fromAsset = state.fromAsset) {
+    function bestTradeExactIn(
+      amount: string,
+      pairs: any,
+      fromAsset = state.fromAsset
+    ) {
       const tokenAmountIn = nerve.swap.tokenAmount(
         fromAsset?.chainId,
         fromAsset?.assetId,
@@ -816,7 +817,11 @@ export default defineComponent({
       }
     }
     // 通过输入to 获取最佳兑换信息
-    function bestTradeExactOut(amount: string, pairs: any, fromAsset = state.fromAsset) {
+    function bestTradeExactOut(
+      amount: string,
+      pairs: any,
+      fromAsset = state.fromAsset
+    ) {
       const tokenIn = nerve.swap.token(fromAsset?.chainId, fromAsset?.assetId);
       const tokenAmountOut = nerve.swap.tokenAmount(
         state.toAsset?.chainId,
@@ -879,7 +884,9 @@ export default defineComponent({
       // if (!state.protectPercent) {
       //   state.protectPercent = 0.5;
       // }
-      if (isStableCoinSwap.value) return state.toAmount;
+      if (isStableCoinSwap.value || isStableCoinForStableCoin.value) {
+        return state.toAmount;
+      }
       return fixNumber(
         Times(state.toAmount, 1 - Number(state.protectPercent) / 100).toFixed(),
         state.toAsset?.decimals
@@ -889,7 +896,9 @@ export default defineComponent({
     const maxSale = computed(() => {
       // 最多卖出
       if (!state.fromAmount) return '';
-      if (isStableCoinSwap.value) return state.fromAmount;
+      if (isStableCoinSwap.value || isStableCoinForStableCoin.value) {
+        return state.fromAmount;
+      }
       return fixNumber(
         Times(
           state.fromAmount,
@@ -901,7 +910,7 @@ export default defineComponent({
 
     const fee = computed(() => {
       if (!state.fromAsset) return '';
-      if (isStableCoinSwap.value) return '0'
+      if (isStableCoinSwap.value || isStableCoinForStableCoin.value) return '0';
       return fixNumber(
         Times(state.fromAmount, divisionDecimals('0.3', 2)).toFixed(),
         state.fromAsset?.decimals
@@ -1084,7 +1093,7 @@ export default defineComponent({
               remark
             );
           }
-        // 稳定币、稳定币互换
+          // 稳定币、稳定币互换
         } else if (isStableCoinForStableCoin.value) {
           const stableKey = stableCoins.value[fromAssetKey];
           const stableN: any = stablePairList.value.find(
@@ -1124,10 +1133,14 @@ export default defineComponent({
               state.fromAsset?.chainId,
               state.fromAsset?.assetId
             );
-            const check = nerve.swap.checkStableToken(tokenIn, stablePairList.value);
+            const check = nerve.swap.checkStableToken(
+              tokenIn,
+              stablePairList.value
+            );
             const stablePairAddress = check.address; // 稳定币交易对地址
             const lpToken = check.lpToken;
-            const key = lpToken.chainId + '-' + lpToken.assetId + '_' + toAssetKey;
+            const key =
+              lpToken.chainId + '-' + lpToken.assetId + '_' + toAssetKey;
             const pairsInfo = storedSwapPairInfo[key];
             const pairs = Object.values(pairsInfo);
             const tokenPath = bestTradeExactIn(amountIn, pairs, lpToken).path;
@@ -1384,13 +1397,13 @@ export default defineComponent({
           height: 44px;
           line-height: 44px;
           text-align: center;
-          color: #4A5EF2;
-          background-color: #E3EEFF;
+          color: #4a5ef2;
+          background-color: #e3eeff;
           margin-right: 20px;
           border-radius: 15px;
           &.active {
             color: #fff;
-            background-color: #4A5EF2;
+            background-color: #4a5ef2;
           }
         }
       }
