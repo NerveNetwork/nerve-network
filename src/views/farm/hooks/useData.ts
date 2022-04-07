@@ -1,7 +1,14 @@
 import { onBeforeUnmount, reactive, toRefs, watch } from 'vue';
 import * as subSocket from '@/service/socket/websocket';
 import config from '@/config';
-import { Division, divisionAndFix, divisionDecimals, fixNumber, Minus, Times } from '@/utils/util';
+import {
+  Division,
+  divisionAndFix,
+  divisionDecimals,
+  fixNumber,
+  Minus,
+  Times
+} from '@/utils/util';
 import { ETransfer } from '@/utils/api';
 import { ethers } from 'ethers';
 import useContractAddress from './useContractAddress';
@@ -12,7 +19,7 @@ import { FarmList, NerveFarmItem, UniFarmItem, UserStakeFarm } from '../types';
 
 const url = config.WS_URL;
 
-export default function useData(isPool: boolean) {
+export default function useData() {
   const state = reactive<FarmList>({
     nerveList: [],
     uniList: []
@@ -266,15 +273,14 @@ export default function useData(isPool: boolean) {
     }
   }
 
-  function filter(list: any, type: string, mortgage: boolean, isUni?: boolean, farmStatus = 'pending') {
+  function filter(
+    list: any,
+    type: string,
+    mortgage: boolean,
+    isUni?: boolean,
+    farmStatus = 'pending'
+  ) {
     let newList = [...list];
-    /*if (!isUni) {
-      if (isPool) {
-        newList = [...newList].filter(v => !v.swapPairAddress);
-      } else {
-        newList = [...newList].filter(v => v.swapPairAddress);
-      }
-    }*/
     if (farmStatus === 'pending') {
       newList = [...newList].filter(
         v => !v.stopHeight || v.stopHeight > height.value

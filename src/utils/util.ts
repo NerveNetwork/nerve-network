@@ -283,7 +283,10 @@ export function getChain() {
   if (!chainId) return null;
   let chain = '';
   Object.keys(_networkInfo).map(v => {
-    if (_networkInfo[v].ropsten === chainId || _networkInfo[v].homestead === chainId) {
+    if (
+      _networkInfo[v].ropsten === chainId ||
+      _networkInfo[v].homestead === chainId
+    ) {
       chain = _networkInfo[v].name;
     }
   });

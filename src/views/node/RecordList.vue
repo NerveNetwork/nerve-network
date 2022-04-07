@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="data" stripe class="node-record-table">
+  <el-table :data="props.data" stripe class="node-record-table">
     <!--<el-table-column width="30">
     </el-table-column>-->
     <el-table-column
@@ -36,16 +36,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
 import { openExplorer, superLong } from '@/utils/util';
 import { RecordItem } from '@/views/node/types';
 
 const props = defineProps<{
   data: RecordItem[];
 }>();
-
 </script>
 
 <style lang="scss">
-.node-record-table{}
+.node-record-table {
+}
 </style>

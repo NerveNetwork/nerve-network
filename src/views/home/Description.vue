@@ -34,14 +34,14 @@ const bgWrapper = ref({
   height: '550'
 });
 const defaultWidth = 1920;
-const defaultHeight = 937;
+// const defaultHeight = 937;
 const initialWidth = 850;
-const initialHeight = 550;
+// const initialHeight = 550;
 
 // const
 function calcContent() {
   const width = document.body.clientWidth;
-  const height = document.body.clientHeight;
+  // const height = document.body.clientHeight;
   bgWrapper.value.width = (width / defaultWidth) * initialWidth;
   // bgWrapper.value.height = (width / defaultWidth) * initialHeight;
 }

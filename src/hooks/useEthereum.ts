@@ -1,9 +1,9 @@
 import { reactive, toRefs } from 'vue';
 // import { Web3Provider } from "ethers";
 import MetaMask from '@/assets/img/metamask.svg';
-import CoinBase from '@/assets/img/coinbase.svg';
+// import CoinBase from '@/assets/img/coinbase.svg';
 import Nabox from '@/assets/img/nabox.svg';
-import OKEx from '@/assets/img/okexchain.png';
+// import OKEx from '@/assets/img/okexchain.png';
 
 import { ethers } from 'ethers';
 import nerve from 'nerve-sdk-js';
@@ -38,12 +38,12 @@ interface GenerateAddressConfig {
   prefix: string;
 }
 
-const isMobile = /Android|webOS|iPhone|iPod|BlackBerry/i.test(
-  navigator.userAgent
-);
+// const isMobile = /Android|webOS|iPhone|iPod|BlackBerry/i.test(
+//   navigator.userAgent
+// );
 const MetaMaskProvider = 'ethereum';
 const NaboxProvier = 'NaboxWallet';
-const OKExProvier = 'okexchain';
+// const OKExProvier = 'okexchain';
 
 export const providerList = [
   { name: 'MetaMask', src: MetaMask, provider: MetaMaskProvider },
@@ -105,10 +105,6 @@ export default function useEthereum() {
         // checkNetwork(chainId);
       }
     });
-  }
-
-  function checkNetwork(chainId: string) {
-    console.log(chainId);
   }
 
   // 连接provider

@@ -39,7 +39,9 @@
               </el-form-item>-->
       </el-form>
       <div class="dialog-footer">
-        <el-button @click="visible = false">{{ $t('public.public8') }}</el-button>
+        <el-button @click="visible = false">
+          {{ $t('public.public8') }}
+        </el-button>
         <el-button type="primary" @click="handleSubmit">
           {{ $t('public.public9') }}
         </el-button>
@@ -104,7 +106,9 @@ const checkAmount = (rule: any, value: any, callback: any) => {
     } else if (value - minAmount < 0) {
       return callback(new Error(t('nodeDetail.nodeDetail23')));
     } else if (value - maxNumber > 0) {
-      return callback(new Error(t('nodeDetail.nodeDetail24') + ' ' + maxNumber))
+      return callback(
+        new Error(t('nodeDetail.nodeDetail24') + ' ' + maxNumber)
+      );
     } else {
       callback();
     }

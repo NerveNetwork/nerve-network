@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="cross-in"
-    v-loading="loading"
-  >
+  <div class="cross-in" v-loading="loading">
     <div class="title">
       {{ 'From ' + $store.getters.chain }}
       <span class="click" @click="openUrl(father.address, father.network)">

@@ -4,21 +4,21 @@
       <p>{{ $t('home.home7') }}</p>
       <p>
         ${{ $format(summaryData.txAmount) }}
-<!--        $<CountUp :end-val="summaryData.txAmount" />-->
+        <!--        $<CountUp :end-val="summaryData.txAmount" />-->
       </p>
     </div>
     <div class="info-item">
       <p>TVL</p>
       <p>
         ${{ $format(summaryData.tvl) }}
-<!--        $<CountUp :end-val="summaryData.tvl" />-->
+        <!--        $<CountUp :end-val="summaryData.tvl" />-->
       </p>
     </div>
     <div class="info-item">
       <p>{{ $t('home.home8') }}</p>
       <p>
         {{ summaryData.apr }}%
-<!--        <CountUp :end-val="summaryData.apr" :options="{ separator: '' }" />%-->
+        <!--        <CountUp :end-val="summaryData.apr" :options="{ separator: '' }" />%-->
       </p>
     </div>
   </div>
@@ -28,7 +28,7 @@
 import { ref, onMounted } from 'vue';
 import { getSummaryData } from '@/service/api';
 import { divisionAndFix } from '@/utils/util';
-import CountUp from '@/components/CountUp.vue';
+// import CountUp from '@/components/CountUp.vue';
 
 const summaryData = ref({
   txAmount: '',

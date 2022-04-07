@@ -61,8 +61,12 @@ export default function useAsset(isLiquidity = false) {
             item => item.symbol === defaultSymbol
           ) as AssetItem;
           if (fromAsset || toAsset) {
-            const from = val.find(item => item.assetKey === fromAsset && !sCoins[fromAsset]);
-            const to = val.find(item => item.assetKey === toAsset && !sCoins[toAsset]);
+            const from = val.find(
+              item => item.assetKey === fromAsset && !sCoins[fromAsset]
+            );
+            const to = val.find(
+              item => item.assetKey === toAsset && !sCoins[toAsset]
+            );
             if (from || to) {
               hasQuery.value = true;
               defaultAsset.value = {

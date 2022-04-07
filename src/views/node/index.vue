@@ -1,7 +1,11 @@
 <template>
   <div class="node-page" v-loading="loading">
     <template v-if="!nodeHash || !nodeDeposit">
-      <CreateNode :address="nerveAddress" :nvtBalance="nvtBalance" @refresh="refreshInfo"/>
+      <CreateNode
+        :address="nerveAddress"
+        :nvtBalance="nvtBalance"
+        @refresh="refreshInfo"
+      />
     </template>
     <template v-else>
       <NodeDetail

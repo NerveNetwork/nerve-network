@@ -26,9 +26,9 @@ import { getCurrentAccount } from '@/utils/util';
 import storage from '@/utils/storage';
 import { Account } from '@/store/types';
 
-const props = defineProps({
-  label: String
-});
+// const props = defineProps<{
+//   label?: string;
+// }>();
 const emit = defineEmits(['loading']);
 
 const store = useStore();
@@ -69,8 +69,7 @@ async function derivedAddress() {
       },
       NULSConfig
     );
-    const accountList: Account[] =
-      storage.get('accountList') || [];
+    const accountList: Account[] = storage.get('accountList') || [];
     const existIndex = accountList.findIndex(v => v.pub === account.pub);
     // 原来存在就替换，找不到就push
     if (existIndex > -1) {
@@ -96,80 +95,6 @@ defineExpose({
   showConnectDialog,
   derivedAddress
 });
-
-/*export default defineComponent({
-  props: {
-    label: String
-  },
-  setup(_, { emit }) {
-    const store = useStore();
-    const { t } = useI18n();
-    const toast = useToast();
-    const { address, initProvider, generateAddress } = useEthereum();
-    initProvider();
-    function showConnectDialog(state: boolean) {
-      store.commit('changeConnectShow', state);
-    }
-    watch(
-      () => address.value,
-      val => {
-        if (val) {
-          const currentAccount = getCurrentAccount(val);
-          store.commit('setCurrentAddress', currentAccount || {});
-        }
-      },
-      {
-        deep: true
-      }
-    );
-    async function derivedAddress() {
-      let result = false;
-      emit('loading', true);
-      try {
-        if (!address.value) {
-          showConnect();
-          return;
-        }
-        const { chainId, assetId, prefix, NULSConfig } = config;
-        const account = await generateAddress(
-          address.value,
-          {
-            chainId,
-            assetId,
-            prefix
-          },
-          NULSConfig
-        );
-        const accountList: Account[] =
-          storage.get('accountList') || [];
-        const existIndex = accountList.findIndex(v => v.pub === account.pub);
-        // 原来存在就替换，找不到就push
-        if (existIndex > -1) {
-          accountList[existIndex] = account;
-        } else {
-          accountList.push(account);
-        }
-        storage.set('accountList', accountList);
-        store.commit('setCurrentAddress', account);
-        result = true;
-      } catch (e) {
-        // console.log(e, 4444)
-        toast.error(t('login.login3'));
-      }
-      emit('loading', false);
-      return result;
-    }
-    function showConnect() {
-      store.commit('changeConnectShow', true);
-    }
-    return {
-      showConnectDialog,
-      derivedAddress,
-      showConnect,
-      address
-    };
-  }
-});*/
 </script>
 
 <style lang="scss"></style>

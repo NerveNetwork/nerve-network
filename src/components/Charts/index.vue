@@ -3,12 +3,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, watch, withDefaults } from 'vue';
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+  withDefaults
+} from 'vue';
 import type { EChartsOption, EChartsType } from 'echarts';
 import * as echarts from 'echarts';
 import { pieConfig, lineConfig, barConfig } from './defaultConfig';
 import _ from 'lodash';
-
 
 type chartType = 'pie' | 'line' | 'bar';
 

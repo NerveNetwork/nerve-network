@@ -51,7 +51,9 @@
           <el-checkbox v-model="item.added" disabled></el-checkbox>
         </li>
       </ul>
-      <p v-else class="no-data" style="line-height: 30px">{{ $t('public.public19') }}</p>
+      <p v-else class="no-data" style="line-height: 30px">
+        {{ $t('public.public19') }}
+      </p>
       <div class="footer-wrap">
         <el-button @click="showDialog = false">
           {{ $t('public.public8') }}

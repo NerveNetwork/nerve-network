@@ -49,6 +49,7 @@ export default class ImageManager {
         cb && cb();
       })
       .catch(e => {
+        console.log(e);
         this.state = State.error;
         this.render(this.errorSrc);
         // console.warn(

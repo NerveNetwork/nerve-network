@@ -41,8 +41,8 @@ function swap() {
       font-size: 14px;
     }
     &:first-child {
-      color: #2688F7;
-      border-color: #2688F7;
+      color: #2688f7;
+      border-color: #2688f7;
     }
   }
 }

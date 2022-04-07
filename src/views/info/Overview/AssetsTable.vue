@@ -1,6 +1,11 @@
 <template>
   <div class="assets-table">
-    <Table v-bind="props" :columns="columns" @rowClick="rowClick" @pageChange="pageChange">
+    <Table
+      v-bind="props"
+      :columns="columns"
+      @rowClick="rowClick"
+      @pageChange="pageChange"
+    >
       <template #name="scope">
         <div class="symbol-wrap">
           <SymbolIcon :icon="scope.row.name"></SymbolIcon>
@@ -10,7 +15,11 @@
       <template #price="scope">${{ scope.row.price }}</template>
       <template #priceChange="scope">
         <span :class="scope.row.priceChange > 0 ? 'price-up' : 'price-down'">
-          {{ scope.row.priceChange > 0 ? '+' + scope.row.priceChange : scope.row.priceChange }}%
+          {{
+            scope.row.priceChange > 0
+              ? '+' + scope.row.priceChange
+              : scope.row.priceChange
+          }}%
         </span>
       </template>
       <template #txs="scope">${{ $format(scope.row.txs) }}</template>
@@ -48,7 +57,12 @@ const router = useRouter();
 const columns = computed(() => {
   return [
     { width: 40 },
-    { prop: 'name', label: t('info.info8'), 'min-width': 140, slotName: 'name' },
+    {
+      prop: 'name',
+      label: t('info.info8'),
+      'min-width': 140,
+      slotName: 'name'
+    },
     { prop: 'price', label: t('info.info9'), width: 180, slotName: 'price' },
     {
       prop: 'priceChange',

@@ -1,12 +1,12 @@
 import { ref, onMounted } from 'vue';
 import { Minus, divisionDecimals, isBeta } from '@/utils/util';
-import config from '@/config';
+// import config from '@/config';
 import {
   getStablePairListForSwapTrade,
   getStableSwapPairInfo
 } from '@/service/api';
 
-const NVT_KEY = config.chainId + '-' + config.assetId;
+// const NVT_KEY = config.chainId + '-' + config.assetId;
 
 const USDTN_kEY = isBeta ? '5-102' : '9-220';
 

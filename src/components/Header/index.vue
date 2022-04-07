@@ -25,11 +25,20 @@
               <SwitchChain v-model="showSwitchChain" :chainId="chainId">
                 <div class="l1-chain" @click="showSwitchChain = true">
                   <img :src="chainLogo" alt="" v-if="!wrongChain" />
-                  <img src="../../assets/img/net-error.svg" alt="" @click="showSwitchChain = true" v-else />
+                  <img
+                    src="../../assets/img/net-error.svg"
+                    alt=""
+                    @click="showSwitchChain = true"
+                    v-else
+                  />
                   <el-icon style="margin-right: 5px"><caret-bottom /></el-icon>
                 </div>
               </SwitchChain>
-              <img src="../../assets/img/nerveIcon.png" alt="" @click="manageAccount = true" />
+              <img
+                src="../../assets/img/nerveIcon.png"
+                alt=""
+                @click="manageAccount = true"
+              />
               <span @click="manageAccount = true">
                 {{ superLong(nerveAddress, 5) }}
               </span>
@@ -58,7 +67,11 @@
         :txList="accountTxs"
       />
     </div>
-    <MobileMenu v-model:show="showMenu" :address="address" :nerveAddress="nerveAddress" />
+    <MobileMenu
+      v-model:show="showMenu"
+      :address="address"
+      :nerveAddress="nerveAddress"
+    />
   </div>
 </template>
 
@@ -144,11 +157,11 @@ watch(
     activeIndex.value = val?.split('/')[1];
   }
 );
-function toAsset() {
-  router.push({
-    name: 'assets'
-  });
-}
+// function toAsset() {
+//   router.push({
+//     name: 'assets'
+//   });
+// }
 
 const wrongChain = computed(() => {
   const NULSOrNERVE = address.value && isNULSOrNERVE(address.value);
@@ -159,14 +172,14 @@ const wrongChain = computed(() => {
   }
 });
 
-const authRef = ref<InstanceType<typeof AuthButton>>();
-async function derivedAddress() {
-  // @ts-ignore
-  const result = await authRef.value.derivedAddress();
-  if (result) {
-    toAsset();
-  }
-}
+// const authRef = ref<InstanceType<typeof AuthButton>>();
+// async function derivedAddress() {
+//   // @ts-ignore
+//   const result = await authRef.value.derivedAddress();
+//   if (result) {
+//     toAsset();
+//   }
+// }
 
 const chainLogo = computed(() => {
   const network = store.getters.chain;
@@ -180,7 +193,6 @@ function toggleShowMenu() {
   showMenu.value = !showMenu.value;
 }
 
-let timer: number;
 let isQuery = false;
 onMounted(() => {
   window.setInterval(() => {

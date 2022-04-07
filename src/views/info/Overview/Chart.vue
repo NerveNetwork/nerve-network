@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import Chart from '@/components/Charts/index.vue';
 import { useI18n } from 'vue-i18n';
 import { formatNumber } from '@/utils/util';
@@ -99,6 +99,7 @@ const lineOptions = computed(() => {
           return dayjs(value).format('M.D');
         },
         interval(index, value) {
+          console.log(index, value);
           const length = props.data.length;
           if (length < 12) return true;
           if (index === length - 1) {
@@ -182,6 +183,7 @@ const barOptions = computed(() => {
           return dayjs(value).format('M.D');
         },
         interval(index, value) {
+          console.log(index, value);
           const length = props.data.length;
           if (length < 12) return true;
           if (index === length - 1) {

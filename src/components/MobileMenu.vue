@@ -4,7 +4,11 @@
       <transition name="model">
         <div class="mask" v-show="visible" @click="chooseMenu"></div>
       </transition>
-      <Menu :class="['menu', visible ? '' : 'hide-menu']" v-bind="$attrs" @clickMenu="chooseMenu" />
+      <Menu
+        :class="['menu', visible ? '' : 'hide-menu']"
+        v-bind="$attrs"
+        @clickMenu="chooseMenu"
+      />
     </div>
   </transition>
 </template>
@@ -80,19 +84,23 @@ function chooseMenu() {
     }
   }
 }
-.drawer-fade-enter-active, .drawer-fade-leave-active {
-  transition: opacity 0.3s
+.drawer-fade-enter-active,
+.drawer-fade-leave-active {
+  transition: opacity 0.3s;
 }
 
-.drawer-fade-enter, .drawer-fade-leave-to {
+.drawer-fade-enter,
+.drawer-fade-leave-to {
   opacity: 0;
 }
 
-.model-enter-active, .model-leave-active {
-  transition: opacity 0.2s
+.model-enter-active,
+.model-leave-active {
+  transition: opacity 0.2s;
 }
 
-.model-enter, .model-leave-to {
+.model-enter,
+.model-leave-to {
   opacity: 0;
 }
 @keyframes rtl-drawer-in {

@@ -100,7 +100,7 @@ import useClickOutside from '@/hooks/useClickOutside';
 import useMask from '@/hooks/useMask';
 import useCollect from './hooks/useCollect';
 import { searchText } from '@/service/api';
-import { debounce, getAssetByKey, divisionAndFix } from '@/utils/util';
+import { debounce, divisionAndFix } from '@/utils/util';
 import storage from '@/utils/storage';
 import { SearchToken, SearchPool } from './types';
 

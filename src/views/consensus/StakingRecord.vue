@@ -10,13 +10,6 @@
           :canStakingList="props.canStakingList"
         />
       </el-tab-pane>
-<!--      <el-tab-pane :label="$t('staking.staking14')" name="second">
-        <StakingList
-          :data="recordList"
-          :staking="staking"
-          :canStakingList="props.canStakingList"
-        />
-      </el-tab-pane>-->
     </el-tabs>
     <Pagination v-model:pager="pager" @change="changeList"></Pagination>
   </div>
@@ -28,17 +21,18 @@ import dayjs from 'dayjs';
 import StakingList from './StakingList.vue';
 import Pagination from '@/components/Pagination.vue';
 import { Pager } from '@/views/swap/types';
-import {
-  getStakingListByAddress,
-  getStakingRecordByAddress
-} from '@/service/api';
-import { divisionDecimals, superLong, Times, Plus, Minus } from '@/utils/util';
+import { getStakingListByAddress } from '@/service/api';
+import { divisionDecimals, Times, Plus, Minus } from '@/utils/util';
 import useStoreState from '@/hooks/useStoreState';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { useToast } from 'vue-toastification';
-import { useI18n } from 'vue-i18n';
 import config from '@/config';
-import { CanStakingListItem, StakingListItem, StakingInfo, BatchHandle } from './types';
+import {
+  CanStakingListItem,
+  StakingListItem,
+  StakingInfo,
+  BatchHandle
+} from './types';
 
 const props = defineProps<{
   address?: string;
@@ -46,7 +40,6 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['refresh']);
 
-const { t } = useI18n();
 const toast = useToast();
 const { handleTxInfo } = useBroadcastNerveHex();
 
@@ -99,38 +92,6 @@ async function getStakingList(isLoading = true) {
       }
       pager.total = result.totalCount;
       stakingList.value = result.list;
-    }
-  } catch (e) {
-    //
-  }
-  loading.value = false;
-}
-
-const recordList = ref([]);
-async function getStakingRecord() {
-  loading.value = true;
-  try {
-    const result: any = await getStakingRecordByAddress(
-      pager.index,
-      pager.size,
-      nerveAddress.value
-    );
-    if (result) {
-      const nowDate = Math.round(Number(new Date()) / 1000);
-      for (let item of result.list as StakingListItem[]) {
-        item.amount = divisionDecimals(item.amountStr, item.decimal);
-        item.createTime = dayjs(+item.createTime * 1000).format(
-          'YYYY-MM-DD HH:mm:ss'
-        );
-        item.endTime = item.endTime ? dayjs(+item.endTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-';
-        if (item.fixedType === 'NONE') {
-          item.status = 0; // 0:活期 1:定期（未到期）2：定期（已到期）
-        } else {
-          item.status = +item.endTime - nowDate > 0 ? 1 : 2;
-        }
-      }
-      pager.total = result.totalCount;
-      recordList.value = result.list;
     }
   } catch (e) {
     //

@@ -1,21 +1,9 @@
 <template>
   <div class="w1200 assets-wrap">
-    <!--    el-table resize卡顿问题-->
-<!--    <div
-      class="hack-table-resize"
-      v-if="!showTransfer"
-      style="position: relative"
-    >
-      <div style="position: absolute; width: 100%">-->
     <div v-if="!showTransfer">
       <div>
         <div class="assets box_wrapper">
           <div class="address-wrap">
-            <!--            <div class="address">
-              {{ $t('assets.assets3') }}
-              {{ nerveAddress }}
-              <i class="iconfont icon-fuzhi" @click="$copy(nerveAddress)" v-if="nerveAddress"></i>
-            </div>-->
             <i
               class="iconfont icon-tianjia"
               v-if="nerveAddress"
@@ -90,7 +78,9 @@
                   <el-button
                     type="text"
                     v-if="scope.row.canToL1"
-                    :disabled="disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)"
+                    :disabled="
+                      disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
+                    "
                     @click="transfer(scope.row, TransferType.CrossIn)"
                   >
                     {{ $t('transfer.transfer1') }}
@@ -104,7 +94,9 @@
                   <el-button
                     type="text"
                     v-if="scope.row.canToL1"
-                    :disabled="disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)"
+                    :disabled="
+                      disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
+                    "
                     @click="transfer(scope.row, TransferType.Withdrawal)"
                   >
                     {{ $t('transfer.transfer3') }}
@@ -118,13 +110,6 @@
     </div>
     <div class="mobile-cont pb-28" v-if="!showTransfer">
       <div class="p-24 address-wrap flex-center">
-        <!--        <div class="address">
-          {{ $t('assets.assets3') }}
-          <span class="size-14">
-            {{ superLong(nerveAddress, 9) }}
-          </span>
-          <i class="iconfont icon-fuzhi" @click="$copy(nerveAddress)" v-if="nerveAddress"></i>
-        </div>-->
         <i
           class="iconfont icon-tianjia"
           @click="showAssetManage = true"
@@ -197,7 +182,10 @@
                 class="btn"
                 @click="transfer(item, TransferType.CrossIn)"
                 v-if="item.canToL1"
-                :class="{ btn_disable: disableTx || !canToL1OnCurrent(item.canToL1OnCurrent) }"
+                :class="{
+                  btn_disable:
+                    disableTx || !canToL1OnCurrent(item.canToL1OnCurrent)
+                }"
               >
                 {{ $t('transfer.transfer1') }}
               </div>
@@ -208,7 +196,10 @@
                 class="btn"
                 @click="transfer(item, TransferType.Withdrawal)"
                 v-if="item.canToL1"
-                :class="{ btn_disable: disableTx || !canToL1OnCurrent(item.canToL1OnCurrent) }"
+                :class="{
+                  btn_disable:
+                    disableTx || !canToL1OnCurrent(item.canToL1OnCurrent)
+                }"
               >
                 {{ $t('transfer.transfer3') }}
               </div>
@@ -294,8 +285,15 @@ export default defineComponent({
     const assetCanCross = ref(true);
     function transfer(asset: AssetItemType, type: TransferType) {
       if (type !== TransferType.General && disableTx.value) return;
-      if (type !== TransferType.General && !canToL1OnCurrent(asset.canToL1OnCurrent)) return;
-      assetCanCross.value = !(disableTx.value || !canToL1OnCurrent(asset.canToL1OnCurrent));
+      if (
+        type !== TransferType.General &&
+        !canToL1OnCurrent(asset.canToL1OnCurrent)
+      ) {
+        return;
+      }
+      assetCanCross.value = !(
+        disableTx.value || !canToL1OnCurrent(asset.canToL1OnCurrent)
+      );
       currentTab.value = type;
       /*if (type === TransferType.CrossIn) {
         // L1到L2

@@ -480,7 +480,7 @@ const canBatchChange = computed(() => {
   const selectedItem = tableData.value.filter(v => v.checked);
   if (!selectedItem.length) return true;
   const notStable = checkShow(selectedItem[0]);
-  console.log(notStable, 123465789)
+  console.log(notStable, 123465789);
   return notStable;
 });
 
@@ -507,7 +507,7 @@ function handleChange(e: StakingListItem) {
 
 //退出
 function handleQuit(e: StakingListItem) {
-  console.log(e, 22)
+  console.log(e, 22);
   if (e.fixedType === 'NONE' && e.symbol === 'NVT') {
     ElMessageBox.confirm(t('staking.staking48'), t('staking.staking54'), {
       confirmButtonText: t('public.public9'),
@@ -676,7 +676,7 @@ function checkShow(item: StakingListItem) {
       .info-name {
         display: inline-block;
         width: 100px;
-        color: #8794B1;
+        color: #8794b1;
       }
 
       .select-items span {

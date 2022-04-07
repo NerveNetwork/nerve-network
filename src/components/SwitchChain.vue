@@ -17,13 +17,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref, watch
-} from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import config from '@/config';
 import useEthereum, { AddChain } from '@/hooks/useEthereum';
 import useClickOutside from '@/hooks/useClickOutside';
@@ -95,18 +89,6 @@ export default defineComponent({
         }
       }
     );
-    /*function clickHandler(e: MouseEvent) {
-      const target = e.target;
-      if (target instanceof Node && !wrapper.value?.contains(target)) {
-        show.value = false;
-      }
-    }
-    onMounted(() => {
-      document.addEventListener('click', clickHandler);
-    });
-    onBeforeUnmount(() => {
-      document.removeEventListener('click', clickHandler);
-    });*/
     return {
       show,
       supportChainList,

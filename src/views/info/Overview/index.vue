@@ -29,7 +29,7 @@ import Chart from './Chart.vue';
 import AssetsTable from './AssetsTable.vue';
 import PoolsTable from './PoolsTable.vue';
 import useTokensAndPools from '../hooks/useTokensAndPools';
-import { get300DaysData, getPoolInfo } from '@/service/api';
+import { get300DaysData } from '@/service/api';
 import { divisionAndFix } from '@/utils/util';
 import { ChartItem } from '../types';
 
@@ -42,7 +42,6 @@ onMounted(() => {
   getChartData();
   getAssetsList();
   getPoolsList();
-  getPoolInfo('TNVTdTSQJkuFpDm9j49KJBBuduuv3XsQCoeJQ')
 });
 
 async function getChartData() {
@@ -86,7 +85,7 @@ async function getChartData() {
       width: 100%;
       padding: 15px;
     }
-    .liquidity-chart{
+    .liquidity-chart {
       margin-bottom: 15px;
     }
   }

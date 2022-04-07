@@ -121,7 +121,7 @@
         </div>
       </div>
       <div class="option-cont mt-15">
-        <div class="text-90">{{ $t('farm.farm9') }} </div>
+        <div class="text-90">{{ $t('farm.farm9') }}</div>
         <div class="d-flex align-items-center space-between mt-15">
           <div class="count-cont">{{ $thousands(tokenInfo.stakeAmount) }}</div>
           <div class="btn-group">
@@ -217,7 +217,7 @@ import { ethers } from 'ethers';
 import { getAssetBalance } from '@/service/api';
 import nerve from 'nerve-sdk-js';
 import { ETransfer } from '@/utils/api';
-import { timesDecimals, divisionDecimals, isBeta } from '@/utils/util';
+import { timesDecimals, divisionDecimals } from '@/utils/util';
 import config from '@/config';
 
 import { UniFarmItem, NerveFarmItem, LpOperate, LpDialogType } from './types';
@@ -525,6 +525,13 @@ function toAddLiquidity() {
       font-size: 15px;
       border-radius: 10px;
       color: #fff;
+    }
+    .btn-group {
+      white-space: nowrap;
+    }
+    .el-button.el-button--primary {
+      min-height: 36px;
+      padding: 8px 18px;
     }
   }
   .mt-8 {

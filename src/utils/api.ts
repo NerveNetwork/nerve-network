@@ -321,7 +321,7 @@ export class NTransfer {
 
   // 加入staking
   async joinStakingTransaction(transferInfo: any) {
-    const { from, assetsChainId, assetsId, amount, fee } = transferInfo;
+    const { from, assetsChainId, assetsId, amount } = transferInfo;
     const nonce = await this.getNonce(from, assetsChainId, assetsId);
     const inputs = [
       {

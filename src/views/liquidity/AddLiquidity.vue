@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="add-liquidity"
-    v-loading="state.loading"
-  >
+  <div class="add-liquidity" v-loading="state.loading">
     <div class="head title-label">
       <el-icon class="back" @click="handleBack">
         <back style="font-weight: 600" />
@@ -710,7 +707,7 @@ onBeforeUnmount(() => {
     background-color: #e3eeff;
     margin: -20px 0 20px;
     border-radius: 10px;
-    color: #4A5EF2;
+    color: #4a5ef2;
   }
   .add {
     display: flex;

@@ -16,7 +16,7 @@ import Partner from './Partner.vue';
 
 <style lang="scss">
 .home {
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     padding: 0 16px;
   }
 }

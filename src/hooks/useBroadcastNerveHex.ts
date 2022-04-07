@@ -45,7 +45,7 @@ export default function useBroadcastNerveHex() {
       pub: addressInfo.value?.pub,
       signAddress: addressInfo.value?.address?.Ethereum
     });
-    console.log(txHex, '===txHex===');
+    // console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
     if (res && res.hash) {
       const txInfo: TxInfo = {
@@ -64,16 +64,16 @@ export default function useBroadcastNerveHex() {
   async function handleTxInfo(txInfo: any, type: number, txData: any) {
     const transfer = new NTransfer({ chain: 'NERVE', type });
     const inputOuput: any = await transfer.inputsOrOutputs(txInfo);
-    console.log(
-      {
-        inputs: inputOuput.inputs,
-        outputs: inputOuput.outputs,
-        txData,
-        pub: addressInfo.value?.pub,
-        signAddress: addressInfo.value?.address?.Ethereum
-      },
-      '====tx===='
-    );
+    // console.log(
+    //   {
+    //     inputs: inputOuput.inputs,
+    //     outputs: inputOuput.outputs,
+    //     txData,
+    //     pub: addressInfo.value?.pub,
+    //     signAddress: addressInfo.value?.address?.Ethereum
+    //   },
+    //   '====tx===='
+    // );
     const txHex = await transfer.getTxHex({
       inputs: inputOuput.inputs,
       outputs: inputOuput.outputs,
@@ -81,7 +81,7 @@ export default function useBroadcastNerveHex() {
       pub: addressInfo.value?.pub,
       signAddress: addressInfo.value?.address?.Ethereum
     });
-    console.log(txHex, '===txHex===');
+    // console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
     if (res && res.hash) {
       const txInfo: TxInfo = {

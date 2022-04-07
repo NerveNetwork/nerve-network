@@ -1,6 +1,11 @@
 <template>
   <div class="pools-table">
-    <Table v-bind="props" :columns="columns" @rowClick="rowClick" @pageChange="pageChange">
+    <Table
+      v-bind="props"
+      :columns="columns"
+      @rowClick="rowClick"
+      @pageChange="pageChange"
+    >
       <template #name="scope">
         <div class="symbol-wrap flex-center">
           <SymbolIcon :icon="scope.row.token0Symbol" />
@@ -46,7 +51,12 @@ const router = useRouter();
 const columns = computed(() => {
   return [
     { width: 40 },
-    { prop: 'name', label: t('info.info2'), slotName: 'name', 'min-width': 140 },
+    {
+      prop: 'name',
+      label: t('info.info2'),
+      slotName: 'name',
+      'min-width': 140
+    },
     { prop: 'tx_24', label: t('info.info11'), width: 180, slotName: 'tx_24' },
     { prop: 'tx_7d', label: t('info.info12'), width: 180, slotName: 'tx_7d' },
     { prop: 'lp_24', label: t('info.info13'), width: 180, slotName: 'lp_24' },

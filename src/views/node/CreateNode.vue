@@ -11,7 +11,10 @@
         <el-form-item :label="$t('createNode.createNode2')">
           <el-input :modelValue="address" disabled></el-input>
         </el-form-item>
-        <el-form-item :label="$t('createNode.createNode3')" prop="rewardAddress">
+        <el-form-item
+          :label="$t('createNode.createNode3')"
+          prop="rewardAddress"
+        >
           <el-input
             v-model.trim="formData.rewardAddress"
             maxlength="50"
@@ -66,7 +69,6 @@
 import { reactive, ref, onMounted } from 'vue';
 import AuthButton from '@/components/AuthButton.vue';
 import { ElForm } from 'element-plus';
-import nerve from 'nerve-sdk-js';
 import { useI18n } from 'vue-i18n';
 import { useToast } from 'vue-toastification';
 import { timesDecimals, isValidNerveAddress } from '@/utils/util';

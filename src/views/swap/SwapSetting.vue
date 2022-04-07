@@ -29,7 +29,6 @@
           />
           %
         </div>
-<!--        <div class="text-error" v-if="protectError">{{ protectError }}</div>-->
       </div>
     </div>
   </el-dialog>
