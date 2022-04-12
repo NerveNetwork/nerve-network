@@ -10,6 +10,7 @@
     ></Overview>
     <Swap
       :assetsList="assetsList"
+      :hotAssets="hotAssets"
       :defaultAsset="defaultAsset"
       @toggleExpand="toggleOverview"
       @selectAsset="changeOrderList"
@@ -53,7 +54,7 @@ export default defineComponent({
     const { showOverview, toggleOverview, isMobile, showMobileOverview } =
       useOverview();
 
-    const { assetsList, defaultAsset } = useAsset();
+    const { assetsList, defaultAsset, hotAssets } = useAsset();
 
     const { swapSymbol, orderList, pager, selectAsset, selectedAsset } =
       useSelectAsset();
@@ -106,6 +107,7 @@ export default defineComponent({
       isMobile,
       showMobileOverview,
       assetsList,
+      hotAssets,
       defaultAsset,
       swapSymbol,
       orderList,

@@ -463,7 +463,9 @@ const en = {
     home9: 'Investors & Partners',
     home10: 'Circulating',
     home11: 'Market Cap',
-    home12: 'Staking'
+    home12: 'Staking',
+    home13: 'Total Assets on Nerve',
+    home14: 'Total Flow on Nerve / 24H'
   },
   assets: {
     assets1: 'Layer2 Asset',
@@ -475,7 +477,10 @@ const en = {
     assets7: 'Assets',
     assets8: 'Search by asset name or ID',
     assets9: 'Search by asset name or contract address',
-    assets10: 'Contract: '
+    assets10: 'Contract: ',
+    assets11: 'Assets',
+    assets12: 'Hide small balance',
+    assets13: 'Submit Token'
   },
   transfer: {
     transfer1: 'Cross In',

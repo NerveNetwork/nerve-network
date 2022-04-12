@@ -62,3 +62,11 @@ export interface SwapPairInfo {
   reserve0: string;
   reserve1: string;
 }
+
+export interface HotAsset {
+  chainId: number;
+  assetId: number;
+  symbol: string;
+  registerChain: string;
+  assetKey: string;
+}

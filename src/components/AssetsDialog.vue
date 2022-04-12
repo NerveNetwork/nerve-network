@@ -12,6 +12,19 @@
       v-model="searchVal"
       :placeholder="$t(showAmount ? 'assets.assets8' : 'assets.assets9')"
     ></el-input>
+    <ul class="hot-assets">
+      <li
+        v-for="item in hotAssets"
+        :key="item.assetKey"
+        :class="{ active: item.assetKey === selectedAsset.assetKey }"
+        @click="selectHotAsset(item.assetKey)"
+      >
+        {{ item.symbol }}
+        <template v-if="item.registerChain">
+          ({{ item.registerChain }})
+        </template>
+      </li>
+    </ul>
     <ul class="list-wrap">
       <li
         v-for="item in assetList"
@@ -56,6 +69,7 @@ import { superLong } from '@/utils/util';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 
 import { AssetItem } from '@/store/types';
+import { HotAsset } from '@/views/swap/types';
 
 export default defineComponent({
   name: 'AssetsDialog',
@@ -66,6 +80,10 @@ export default defineComponent({
     showDialog: Boolean,
     assetList: {
       type: Array as PropType<AssetItem[]>,
+      default: () => []
+    },
+    hotAssets: {
+      type: Array as PropType<HotAsset[]>,
       default: () => []
     },
     showAmount: {
@@ -106,12 +124,18 @@ export default defineComponent({
     function changeSelect(asset: AssetItem) {
       emit('changeSelect', asset);
     }
+    function selectHotAsset(key: string) {
+      const asset = props.assetList.find(v => v.assetKey === key);
+      console.log(key, 88);
+      emit('changeSelect', asset);
+    }
 
     return {
       show,
       searchVal,
       superLong,
-      changeSelect
+      changeSelect,
+      selectHotAsset
     };
   }
 });
@@ -127,6 +151,22 @@ export default defineComponent({
       height: 45px;
     }
     margin-bottom: 15px;
+  }
+  .hot-assets {
+    display: flex;
+    flex-wrap: wrap;
+    li {
+      padding: 10px;
+      background: #f3f6fd;
+      color: #475472;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      &.active {
+        opacity: 0.6;
+      }
+    }
   }
   .list-wrap {
     max-height: 50vh;
@@ -177,6 +217,13 @@ export default defineComponent({
     }
   }
   @media screen and (max-width: 1200px) {
+    .hot-assets {
+      li {
+        font-size: 14px;
+        padding: 6px;
+        border-radius: 6px;
+      }
+    }
     .list-wrap {
       li {
         .asset-base-info {

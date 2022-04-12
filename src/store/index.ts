@@ -60,7 +60,7 @@ export default createStore<State>({
   },
   mutations: {
     setCurrentAddress(state, data) {
-      // console.log(data, 7777)
+      console.log(data, 7777)
       state.addressInfo = data;
     },
     changeChainId(state, data) {

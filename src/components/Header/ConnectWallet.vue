@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="Connect to a wallet"
+    title="Connect Wallet"
     custom-class="connect-dialog"
     :show-close="false"
     v-model="visible"

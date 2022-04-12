@@ -38,7 +38,8 @@ export interface Account {
   address: any;
   pub: string;
   farms?: AccountFarm[];
-  visiableAssets?: string[];
+  focusAssets?: string[];
+  hideSmall?: boolean;
   txs?: TxInfo[];
   slippageTolerance?: string;
 }

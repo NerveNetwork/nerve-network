@@ -35,6 +35,7 @@
     <AssetsDialog
       v-model:showDialog="showDialog"
       :assetList="list"
+      :hotAssets="hotAssets"
       :showBalance="!!nerveAddress"
       :showAmount="showAmount"
       :selectedAsset="selectedAsset"
@@ -53,6 +54,7 @@ import _ from 'lodash';
 import useStoreState from '@/hooks/useStoreState';
 
 import { AssetItem } from '@/store/types';
+import { HotAsset } from '@/views/swap/types';
 
 export default defineComponent({
   props: {
@@ -63,6 +65,10 @@ export default defineComponent({
     icon: String,
     assetList: {
       type: Array as PropType<AssetItem[]>,
+      default: () => []
+    },
+    hotAssets: {
+      type: Array as PropType<HotAsset[]>,
       default: () => []
     },
     inputVal: String,

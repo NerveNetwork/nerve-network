@@ -1,5 +1,5 @@
 <template>
-  <div class="horizon-menu">
+  <div class="horizon-menu" @click.stop="">
     <template v-for="item in menus" :key="item.key">
       <div
         class="menu-item"

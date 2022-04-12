@@ -30,6 +30,7 @@
           :label="$t('trading.trading4')"
           :icon="fromAsset && fromAsset.symbol"
           :assetList="assetsList"
+          :hotAssets="hotAssets"
           :balance="fromAsset && fromAsset.available"
           :selectedAsset="fromAsset || null"
           @selectAsset="selectAsset($event, 'from')"
@@ -50,6 +51,7 @@
           :label="$t('trading.trading3')"
           :icon="toAsset && toAsset.symbol"
           :assetList="assetsList"
+          :hotAssets="hotAssets"
           :balance="toAsset && toAsset.available"
           :selectedAsset="toAsset || null"
           @selectAsset="asset => selectAsset(asset, 'to')"
@@ -202,7 +204,13 @@ import useSpecialSwap from './hooks/useSpecialSwap';
 import useStoreState from '@/hooks/useStoreState';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { ComponentInternalInstance } from '@vue/runtime-core';
-import { AssetItem, DefaultAsset, SwapState, SwapPairInfo } from './types';
+import {
+  AssetItem,
+  DefaultAsset,
+  SwapState,
+  SwapPairInfo,
+  HotAsset
+} from './types';
 import { Account } from '@/store/types';
 import storage from '@/utils/storage';
 
@@ -217,6 +225,10 @@ export default defineComponent({
   props: {
     assetsList: {
       type: Array as PropType<AssetItem[]>,
+      default: () => []
+    },
+    hotAssets: {
+      type: Array as PropType<HotAsset[]>,
       default: () => []
     },
     defaultAsset: {

@@ -1,39 +1,55 @@
 <template>
   <div class="overview-data-info">
-    <div class="info-item">
-      <p>{{ $t('home.home7') }}</p>
-      <p>
-        ${{ $format(summaryData.txAmount) }}
-        <!--        $<CountUp :end-val="summaryData.txAmount" />-->
-      </p>
+    <div class="total-data">
+      <div class="info-item">
+        <p>{{ $t('home.home13') }}</p>
+        <p>${{ $format(chainData.total) }}</p>
+      </div>
+      <div class="info-item">
+        <p>{{ $t('home.home14') }}</p>
+        <p>${{ $format(chainData.tx_24h) }}</p>
+      </div>
     </div>
-    <div class="info-item">
-      <p>TVL</p>
-      <p>
-        ${{ $format(summaryData.tvl) }}
-        <!--        $<CountUp :end-val="summaryData.tvl" />-->
-      </p>
-    </div>
-    <div class="info-item">
-      <p>{{ $t('home.home8') }}</p>
-      <p>
-        {{ summaryData.apr }}%
-        <!--        <CountUp :end-val="summaryData.apr" :options="{ separator: '' }" />%-->
-      </p>
+    <div class="trading-data">
+      <div class="info-item">
+        <p>{{ $t('home.home7') }}</p>
+        <p>
+          ${{ $format(summaryData.txAmount) }}
+          <!--        $<CountUp :end-val="summaryData.txAmount" />-->
+        </p>
+      </div>
+      <div class="info-item">
+        <p>TVL</p>
+        <p>
+          ${{ $format(summaryData.tvl) }}
+          <!--        $<CountUp :end-val="summaryData.tvl" />-->
+        </p>
+      </div>
+      <div class="info-item">
+        <p>{{ $t('home.home8') }}</p>
+        <p>
+          {{ summaryData.apr }}%
+          <!--        <CountUp :end-val="summaryData.apr" :options="{ separator: '' }" />%-->
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import { getSummaryData } from '@/service/api';
-import { divisionAndFix } from '@/utils/util';
+import { getSummaryData, getSymbolReport } from '@/service/api';
+import { divisionAndFix, Plus } from '@/utils/util';
 // import CountUp from '@/components/CountUp.vue';
 
 const summaryData = ref({
   txAmount: '',
   tvl: '',
   apr: ''
+});
+const chainData = ref({
+  total: '',
+  tx_24h: ''
 });
 onMounted(() => {
   getSummaryData().then(res => {
@@ -43,15 +59,40 @@ onMounted(() => {
       apr: res.maxFarmApr
     };
   });
+
+  getSymbolReport().then(res => {
+    let total = '',
+      tx_24h = '';
+    res.map(v => {
+      total = Plus(v.totalUsdVal, total).toFixed();
+      tx_24h = Plus(
+        Plus(v.convert24UsdVal, v.redeem24UsdVal),
+        tx_24h
+      ).toFixed();
+    });
+    chainData.value = {
+      total,
+      tx_24h
+    };
+  });
 });
 </script>
 
 <style lang="scss">
 .overview-data-info {
-  display: flex;
   background-color: #fff;
-  padding: 50px 0;
   border-radius: 15px;
+  .total-data,
+  .trading-data {
+    display: flex;
+    padding: 50px 0;
+  }
+  .total-data {
+    border-bottom: 1px solid #f3f6fd;
+    .info-item:last-of-type {
+      border-right: none;
+    }
+  }
 
   .info-item {
     flex: 1;
@@ -70,15 +111,18 @@ onMounted(() => {
     }
 
     &:nth-child(2) {
-      border-left: 1px solid #5d6779;
-      border-right: 1px solid #5d6779;
+      border-left: 1px solid #f3f6fd;
+      border-right: 1px solid #f3f6fd;
     }
   }
 
   @media screen and (max-width: 1200px) {
-    padding: 15px 10px;
-    display: block;
     border: 1px solid #e4e9f4;
+    .total-data,
+    .trading-data {
+      display: block;
+      padding: 15px 10px;
+    }
     .info-item {
       display: flex;
       justify-content: space-between;
@@ -86,8 +130,9 @@ onMounted(() => {
       margin-bottom: 20px;
 
       p {
+        font-size: 14px;
         &:last-of-type {
-          font-size: 18px;
+          font-size: 16px;
           padding-top: 0;
         }
       }

@@ -447,7 +447,9 @@ const cn = {
     home9: '投资机构&合作伙伴',
     home10: '总流通量',
     home11: '总市值',
-    home12: '质押量'
+    home12: '质押量',
+    home13: '链上资金总量',
+    home14: '链上资金流动/24H'
   },
   assets: {
     assets1: 'Layer2资产',
@@ -459,7 +461,10 @@ const cn = {
     assets7: '资产管理',
     assets8: '使用资产名称或ID进行查询',
     assets9: '使用资产名称或合约地址进行查询',
-    assets10: '合约地址: '
+    assets10: '合约地址: ',
+    assets11: '资产列表',
+    assets12: '隐藏小额资产',
+    assets13: '上架Token'
   },
   transfer: {
     transfer1: '跨链转入',
@@ -486,7 +491,8 @@ const cn = {
     transfer22: '使用其他资产',
     transfer23: '广播交易失败',
     transfer24: '请输入正确的NERVE/NULS地址',
-    transfer25: '手续费不足'
+    transfer25: '手续费不足',
+
   },
   trading: {
     trading1: '订单历史',

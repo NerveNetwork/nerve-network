@@ -101,10 +101,10 @@ export async function getAssetList(address = store.state.destroyAddress) {
   // 主网隐藏tron相关内容
   if (!isBeta) {
     // 过滤tron资产
-    res = res.filter((asset: any) => {
+    /*res = res.filter((asset: any) => {
       // return asset.assetKey !== '9-218' && asset.assetKey !== '9-219' && asset.registerChainId !== 108
       return asset.assetKey !== '9-219';
-    });
+    });*/
 
     // 禁止SNEGY, MC2, XTMC跨链
     res.map((asset: any) => {

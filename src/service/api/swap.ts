@@ -1,6 +1,7 @@
 import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
 import { genId } from '@/utils/util';
+import { HotAsset } from './types/swap';
 
 const url = config.WS_URL;
 
@@ -137,6 +138,25 @@ export async function getStableSwapPairInfo(pairAddress: string) {
     }
   };
   return await listen({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
+// 查询热门swap资产
+export async function getHotAssets() {
+  const channel = 'hotAssets';
+  const params = {
+    method: channel,
+    id: genId(),
+    params: {}
+  };
+  return await listen<HotAsset[]>({
     url,
     channel,
     id: params.id,

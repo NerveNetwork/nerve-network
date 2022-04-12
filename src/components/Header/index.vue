@@ -8,7 +8,7 @@
         <div class="logo" @click="router.push('/')">
           <img src="../../assets/img/nervelogo.svg" alt="" />
         </div>
-        <Menu class="pc-menu" :address="address" :nerveAddress="nerveAddress" />
+        <Menu class="pc-menu" />
       </div>
       <div class="account-wrap">
         <div class="account">
@@ -67,11 +67,7 @@
         :txList="accountTxs"
       />
     </div>
-    <MobileMenu
-      v-model:show="showMenu"
-      :address="address"
-      :nerveAddress="nerveAddress"
-    />
+    <MobileMenu v-model:show="showMenu" />
   </div>
 </template>
 
@@ -190,6 +186,7 @@ const chainLogo = computed(() => {
 
 const showMenu = ref(false);
 function toggleShowMenu() {
+  showSwitchChain.value = false;
   showMenu.value = !showMenu.value;
 }
 
