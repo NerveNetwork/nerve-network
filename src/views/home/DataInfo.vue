@@ -48,8 +48,8 @@ const summaryData = ref({
   apr: ''
 });
 const chainData = ref({
-  total: '',
-  tx_24h: ''
+  total: '0',
+  tx_24h: '0'
 });
 onMounted(() => {
   getSummaryData().then(res => {
@@ -61,8 +61,8 @@ onMounted(() => {
   });
 
   getSymbolReport().then(res => {
-    let total = '',
-      tx_24h = '';
+    let total = '0',
+      tx_24h = '0';
     res.map(v => {
       total = Plus(v.totalUsdVal, total).toFixed();
       tx_24h = Plus(
