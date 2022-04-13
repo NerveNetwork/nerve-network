@@ -1,9 +1,17 @@
 import { reactive, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 // import { Web3Provider } from "ethers";
-import MetaMask from '@/assets/img/metamask.svg';
-// import CoinBase from '@/assets/img/coinbase.svg';
-import Nabox from '@/assets/img/nabox.svg';
-// import OKEx from '@/assets/img/okexchain.png';
+
+import MetaMask from '@/assets/img/provider/metamask.svg';
+import Nabox from '@/assets/img/provider/nabox.svg';
+import TrustWallet from '@/assets/img/provider/trustwallet.svg';
+import Tokenpocket from '@/assets/img/provider/Tokenpocket.svg';
+import Mathwallet from '@/assets/img/provider/mathwallet.svg';
+import binancechain from '@/assets/img/provider/binancechain.svg';
+import OKEx from '@/assets/img/provider/metax.jpg';
+import safepal from '@/assets/img/provider/safepal.svg';
+import coin98 from '@/assets/img/provider/coin98.svg';
+import bitkeep from '@/assets/img/provider/bitkeep.jpg';
 
 import { ethers } from 'ethers';
 import nerve from 'nerve-sdk-js';
@@ -20,6 +28,7 @@ interface NativeCurrency {
   symbol: string;
   decimals: number;
 }
+
 export interface AddChain {
   chainId: string;
   rpcUrls: string[];
@@ -41,14 +50,23 @@ interface GenerateAddressConfig {
 // const isMobile = /Android|webOS|iPhone|iPod|BlackBerry/i.test(
 //   navigator.userAgent
 // );
+
 const MetaMaskProvider = 'ethereum';
-const NaboxProvier = 'NaboxWallet';
-// const OKExProvier = 'okexchain';
+const NaboxProvider = 'NaboxWallet';
+const OKExProvider = 'okexchain';
+const BSCProvider = 'BinanceChain';
 
 export const providerList = [
   { name: 'MetaMask', src: MetaMask, provider: MetaMaskProvider },
-  { name: 'Nabox', src: Nabox, provider: NaboxProvier }
-  // { name: "OKEx Wallet", src: OKEx, provider: OKExProvier },
+  { name: 'Nabox', src: Nabox, provider: NaboxProvider },
+  { name: 'Trust Wallet', src: TrustWallet, provider: MetaMaskProvider },
+  { name: 'TokenPocket', src: Tokenpocket, provider: MetaMaskProvider },
+  { name: 'MathWallet', src: Mathwallet, provider: MetaMaskProvider },
+  { name: 'Binance Wallet', src: binancechain, provider: BSCProvider },
+  { name: 'MetaX', src: OKEx, provider: OKExProvider },
+  { name: 'SafePal', src: safepal, provider: MetaMaskProvider },
+  { name: 'Coin98', src: coin98, provider: MetaMaskProvider },
+  { name: 'BitKeep', src: bitkeep, provider: MetaMaskProvider }
 ];
 
 export function getProvider(type?: string) {
@@ -63,6 +81,7 @@ export function getAddress() {
 }
 
 export default function useEthereum() {
+  const { t } = useI18n();
   const state: State = reactive({
     address: '',
     chainId: '',
@@ -110,6 +129,9 @@ export default function useEthereum() {
   // 连接provider
   async function connect(providerType: string) {
     const provider = getProvider(providerType);
+    if (!provider) {
+      throw new Error(t('public.public25'));
+    }
     await provider?.request({ method: 'eth_requestAccounts' });
     state.address = provider?.selectedAddress;
     state.chainId = provider?.chainId;
@@ -136,6 +158,7 @@ export default function useEthereum() {
       params: [params]
     });
   }
+
   async function switchEthereumChain(params: SwitchChain) {
     const provider = getProvider();
     await provider.request({

@@ -49,8 +49,11 @@ const visible = computed({
   .el-dialog__body {
     padding: 0;
     .list {
-      padding: 0 25px 10px;
+      //padding: 0 25px 10px;
+      display: flex;
+      flex-wrap: wrap;
       .connect-btn {
+        width: 48%;
         height: 50px;
         line-height: 50px;
         font-size: 14px;
@@ -65,6 +68,9 @@ const visible = computed({
         &:hover {
           border-color: $linkColor;
           color: $linkColor;
+        }
+        &:nth-child(2n + 1) {
+          margin-right: 4%;
         }
         img {
           margin-top: 7px;

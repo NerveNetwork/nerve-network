@@ -51,7 +51,8 @@ const en = {
     public21: 'Create Date',
     public22: 'Status',
     public23: 'The last 20 transactions will be displayed below',
-    public24: 'Wrong network connected'
+    public24: 'Wrong network connected',
+    public25: 'Provider not found'
   },
   error: {
     err_0001: 'Failed',

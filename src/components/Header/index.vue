@@ -75,6 +75,7 @@
 import { ref, watch, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
+import { useToast } from 'vue-toastification';
 import Menu from '../Menu.vue';
 import ConnectWallet from './ConnectWallet.vue';
 import AccountManage from './AccountManage.vue';
@@ -94,6 +95,7 @@ import { ETransfer } from '@/utils/api';
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
+const toast = useToast();
 
 const { address, chainId, initProvider, connect, disconnect } = useEthereum();
 const { nerveAddress, wrongChain: notL1Chain } = useStoreState();
@@ -136,7 +138,8 @@ async function connectProvider(provider: string) {
   try {
     await connect(provider);
   } catch (e) {
-    //
+    // console.log(e, typeof e, e.message);
+    toast.error(e.message || e);
   }
   store.commit('changeConnectShow', false);
 }

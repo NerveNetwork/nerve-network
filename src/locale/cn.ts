@@ -51,7 +51,8 @@ const cn = {
     public21: '时间',
     public22: '状态',
     public23: '最近20条交易将显示在下方',
-    public24: '连接网络错误'
+    public24: '连接网络错误',
+    public25: '请先安装该插件'
   },
   error: {
     err_0001: '失败',
