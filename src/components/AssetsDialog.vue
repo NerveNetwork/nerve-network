@@ -16,7 +16,7 @@
       <li
         v-for="item in hotAssets"
         :key="item.assetKey"
-        :class="{ active: item.assetKey === selectedAsset.assetKey }"
+        :class="{ active: item.assetKey === selectedAsset?.assetKey }"
         @click="selectHotAsset(item.assetKey)"
       >
         {{ item.symbol }}
