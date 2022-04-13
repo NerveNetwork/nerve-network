@@ -1,214 +1,219 @@
 <template>
   <div class="w1200 assets-wrap">
-    <h3 class="assets-title">{{ $t('assets.assets11') }}</h3>
-    <AssetsControl
-      :address="address"
-      v-model:searchVal="searchVal"
-      v-model:hideSmall="hideSmall"
-      @showDialog="showAssetManage = true"
-    />
-    <div class="assets-list" v-if="!showTransfer">
-      <el-table
-        :data="filteredAssets"
-        class="show_table"
-        v-loading="loading"
-        stripe
-      >
-        <el-table-column width="20px"></el-table-column>
-        <el-table-column :label="$t('public.public1')">
-          <template v-slot="scope">
-            <div class="flex-center">
-              <symbol-icon :icon="scope.row.symbol"></symbol-icon>
-              <el-tooltip placement="top">
-                <template #content>
-                  <div>
-                    ID: {{ scope.row.assetKey }}
-                    <br />
-                    <span
-                      v-if="
+    <template v-if="!showTransfer">
+      <h3 class="assets-title">{{ $t('assets.assets11') }}</h3>
+      <AssetsControl
+        :address="address"
+        v-model:searchVal="searchVal"
+        v-model:hideSmall="hideSmall"
+        @showDialog="showAssetManage = true"
+      />
+      <div class="assets-list">
+        <el-table
+          :data="filteredAssets"
+          class="show_table"
+          v-loading="loading"
+          stripe
+        >
+          <el-table-column width="20px"></el-table-column>
+          <el-table-column :label="$t('public.public1')">
+            <template v-slot="scope">
+              <div class="flex-center">
+                <symbol-icon :icon="scope.row.symbol"></symbol-icon>
+                <el-tooltip placement="top">
+                  <template #content>
+                    <div>
+                      ID: {{ scope.row.assetKey }}
+                      <br />
+                      <span
+                        v-if="
                         getContractAddress(
                           scope.row.heterogeneousList,
                           scope.row.registerChainId
                         )
                       "
-                    >
+                      >
                       {{ $t('assets.assets10')
-                      }}{{
-                        getContractAddress(
-                          scope.row.heterogeneousList,
-                          scope.row.registerChainId
-                        )
-                      }}
+                        }}{{
+                          getContractAddress(
+                            scope.row.heterogeneousList,
+                            scope.row.registerChainId
+                          )
+                        }}
                     </span>
+                    </div>
+                  </template>
+                  <div class="t_info">
+                    <span>{{ scope.row.symbol }}</span>
+                    <p>{{ '(' + scope.row.originNetwork + ')' }}</p>
                   </div>
-                </template>
-                <div class="t_info">
-                  <span>{{ scope.row.symbol }}</span>
-                  <p>{{ '(' + scope.row.originNetwork + ')' }}</p>
-                </div>
-              </el-tooltip>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('public.public2')">
-          <template v-slot="scope">
-            {{ $thousands(scope.row.available) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="locking" :label="$t('public.public3')">
-          <template v-slot="scope">
-            {{ $thousands(scope.row.locking) }}
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('public.public4')">
-          <template v-slot="scope">
-            {{ $thousands(scope.row.number) }}
-            <p class="ydy">≈${{ $thousands(scope.row.valuation) }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column
-          :label="$t('public.public5')"
-          align="center"
-          width="260px"
-        >
-          <template v-slot="scope">
-            <div class="handle-column" v-if="scope.row">
-              <el-button
-                type="text"
-                v-if="scope.row.canToL1"
-                :disabled="
-                  disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
-                "
-                @click="transfer(scope.row, TransferType.CrossIn)"
-              >
-                {{ $t('transfer.transfer1') }}
-              </el-button>
-              <el-button
-                type="text"
-                @click="transfer(scope.row, TransferType.General)"
-              >
-                {{ $t('transfer.transfer2') }}
-              </el-button>
-              <el-button
-                type="text"
-                v-if="scope.row.canToL1"
-                :disabled="
-                  disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
-                "
-                @click="transfer(scope.row, TransferType.Withdrawal)"
-              >
-                {{ $t('transfer.transfer3') }}
-              </el-button>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div class="mobile-cont pb-28" v-if="!showTransfer">
-      <el-empty
-        :description="$t('public.public19')"
-        v-loading="loading"
-        v-if="!filteredAssets.length"
-      />
-      <div v-for="(item, index) in filteredAssets" v-else :key="index">
-        <div class="p-24 asset-cont-wrap" @click="assetClick(item)">
-          <div class="asset-cont">
-            <div class="asset-item">
-              <span class="asset-img">
-                <symbol-icon :icon="item.symbol"></symbol-icon>
-              </span>
-              <span class="font-bold" style="font-size: 14px; line-height: 1">
-                {{ item.symbol }}
-                <br />
-                <span>({{ item.originNetwork }})</span>
-              </span>
-            </div>
-            <div class="asset-amount flex-center">
-              <div class="left">
-                <div class="font-bold align-right" style="font-size: 15px">
-                  {{ $thousands(item.number) }}
-                </div>
-                <div class="size-13 align-right">
-                  ≈{{ $thousands(item.valuation) }}
-                </div>
+                </el-tooltip>
               </div>
-              <el-icon
-                :class="[
-                  'icon-caret-right',
-                  item.showDetail ? 'rotate-icon' : ''
-                ]"
-              >
-                <CaretRight />
-              </el-icon>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('public.public2')">
+            <template v-slot="scope">
+              {{ $thousands(scope.row.available) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="locking" :label="$t('public.public3')">
+            <template v-slot="scope">
+              {{ $thousands(scope.row.locking) }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('public.public4')">
+            <template v-slot="scope">
+              {{ $thousands(scope.row.number) }}
+              <p class="ydy">≈${{ $thousands(scope.row.valuation) }}</p>
+            </template>
+          </el-table-column>
+          <el-table-column
+            :label="$t('public.public5')"
+            align="center"
+            width="260px"
+          >
+            <template v-slot="scope">
+              <div class="handle-column" v-if="scope.row">
+                <el-button
+                  type="text"
+                  v-if="scope.row.canToL1"
+                  :disabled="
+                  disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
+                "
+                  @click="transfer(scope.row, TransferType.CrossIn)"
+                >
+                  {{ $t('transfer.transfer1') }}
+                </el-button>
+                <el-button
+                  type="text"
+                  @click="transfer(scope.row, TransferType.General)"
+                >
+                  {{ $t('transfer.transfer2') }}
+                </el-button>
+                <el-button
+                  type="text"
+                  v-if="scope.row.canToL1"
+                  :disabled="
+                  disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
+                "
+                  @click="transfer(scope.row, TransferType.Withdrawal)"
+                >
+                  {{ $t('transfer.transfer3') }}
+                </el-button>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="mobile-cont pb-28">
+        <el-empty
+          :description="$t('public.public19')"
+          v-loading="loading"
+          v-if="!filteredAssets.length"
+        />
+        <div v-for="(item, index) in filteredAssets" v-else :key="index">
+          <div class="p-24 asset-cont-wrap" @click="assetClick(item)">
+            <div class="asset-cont">
+              <div class="asset-item">
+                <span class="asset-img">
+                  <symbol-icon :icon="item.symbol"></symbol-icon>
+                </span>
+                <span class="font-bold" style="font-size: 14px; line-height: 1">
+                  {{ item.symbol }}
+                  <br />
+                  <span>({{ item.originNetwork }})</span>
+                </span>
+              </div>
+              <div class="asset-amount flex-center">
+                <div class="left">
+                  <div class="font-bold align-right" style="font-size: 15px">
+                    {{ $thousands(item.number) }}
+                  </div>
+                  <div class="size-13 align-right">
+                    ≈{{ $thousands(item.valuation) }}
+                  </div>
+                </div>
+                <el-icon
+                  :class="[
+                    'icon-caret-right',
+                    item.showDetail ? 'rotate-icon' : ''
+                  ]"
+                >
+                  <CaretRight />
+                </el-icon>
+              </div>
             </div>
-          </div>
-          <div class="t_info">
-            <span>ID: {{ item.assetKey }}</span>
-            <br />
-            <span
-              v-if="
-                getContractAddress(item.heterogeneousList, item.registerChainId)
-              "
-            >
-              {{ $t('assets.assets10')
-              }}{{
-                superLong(
+            <div class="t_info">
+              <span>ID: {{ item.assetKey }}</span>
+              <br />
+              <span
+                v-if="
                   getContractAddress(
                     item.heterogeneousList,
                     item.registerChainId
-                  ),
-                  10
-                )
-              }}
-            </span>
-          </div>
-        </div>
-
-        <CollapseTransition>
-          <div class="option-btn" v-if="item.showDetail">
-            <div class="btn-cont">
-              <div
-                class="btn"
-                @click="transfer(item, TransferType.CrossIn)"
-                v-if="item.canToL1"
-                :class="{
-                  btn_disable:
-                    disableTx || !canToL1OnCurrent(item.canToL1OnCurrent)
-                }"
+                  )
+                "
               >
-                {{ $t('transfer.transfer1') }}
-              </div>
-              <div class="btn" @click="transfer(item, TransferType.General)">
-                {{ $t('transfer.transfer2') }}
-              </div>
-              <div
-                class="btn"
-                @click="transfer(item, TransferType.Withdrawal)"
-                v-if="item.canToL1"
-                :class="{
-                  btn_disable:
-                    disableTx || !canToL1OnCurrent(item.canToL1OnCurrent)
-                }"
-              >
-                {{ $t('transfer.transfer3') }}
-              </div>
+                {{ $t('assets.assets10')
+                }}{{
+                  superLong(
+                    getContractAddress(
+                      item.heterogeneousList,
+                      item.registerChainId
+                    ),
+                    10
+                  )
+                }}
+              </span>
             </div>
           </div>
-        </CollapseTransition>
+
+          <CollapseTransition>
+            <div class="option-btn" v-if="item.showDetail">
+              <div class="btn-cont">
+                <div
+                  class="btn"
+                  @click="transfer(item, TransferType.CrossIn)"
+                  v-if="item.canToL1"
+                  :class="{
+                    btn_disable:
+                      disableTx || !canToL1OnCurrent(item.canToL1OnCurrent)
+                  }"
+                >
+                  {{ $t('transfer.transfer1') }}
+                </div>
+                <div class="btn" @click="transfer(item, TransferType.General)">
+                  {{ $t('transfer.transfer2') }}
+                </div>
+                <div
+                  class="btn"
+                  @click="transfer(item, TransferType.Withdrawal)"
+                  v-if="item.canToL1"
+                  :class="{
+                    btn_disable:
+                      disableTx || !canToL1OnCurrent(item.canToL1OnCurrent)
+                  }"
+                >
+                  {{ $t('transfer.transfer3') }}
+                </div>
+              </div>
+            </div>
+          </CollapseTransition>
+        </div>
       </div>
-    </div>
+    </template>
+    <transfer
+      v-else
+      v-model:currentTab="currentTab"
+      v-model:show="showTransfer"
+      :disableTx="disableTx || !assetCanCross"
+    />
     <assets-manage
       v-model:showAssetManage="showAssetManage"
       :assetList="allAssetsList"
       :selectAssets="selectAssets"
       @addAssets="addAssets"
     ></assets-manage>
-    <transfer
-      v-if="showTransfer"
-      v-model:currentTab="currentTab"
-      v-model:show="showTransfer"
-      :disableTx="disableTx || !assetCanCross"
-    />
   </div>
 </template>
 
@@ -277,6 +282,7 @@ export default defineComponent({
     const showTransfer = ref(false);
     const transferAsset = ref<AssetItemType>({} as AssetItemType); // 当前交易的资产
     const assetCanCross = ref(true);
+
     function transfer(asset: AssetItemType, type: TransferType) {
       if (type !== TransferType.General && disableTx.value) return;
       if (
@@ -357,9 +363,11 @@ export default defineComponent({
 
 <style lang="scss">
 @import '../../assets/css/style.scss';
+
 .assets-wrap {
   padding: 0 20px 30px;
   min-height: calc(100vh - 160px);
+
   .assets-title {
     font-size: 18px;
     font-weight: 600;
@@ -368,27 +376,33 @@ export default defineComponent({
     margin-bottom: 20px;
   }
 }
+
 .show_table.el-table--scrollable-y .el-table__body-wrapper {
   overflow: scroll;
 }
+
 .handle-column {
   line-height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
+
   .iconfont {
     font-size: 24px;
     color: $linkColor;
     margin: 0 10px;
     cursor: pointer;
+
     &.disable {
       cursor: not-allowed;
     }
   }
+
   .el-divider {
     background-color: $labelColor;
   }
 }
+
 .mobile-cont {
   display: none;
   //padding: 24px 15px 28px 15px;
@@ -402,6 +416,7 @@ export default defineComponent({
     font-size: 16px;
     //color: #333;
     margin: 20px 0 10px;
+
     i {
       color: $linkColor;
       font-size: 20px;
@@ -409,9 +424,11 @@ export default defineComponent({
       margin-left: 10px;
     }
   }
+
   .asset-cont-wrap {
     padding: 10px 15px;
     border-bottom: 1px solid #e4e9f4;
+
     .t_info {
       font-size: 12px;
       color: $labelColor;
@@ -420,46 +437,55 @@ export default defineComponent({
       //padding-top: 2px;
     }
   }
+
   .asset-cont {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 3px 0;
+
     .asset-item {
       display: flex;
       align-items: center;
       max-width: 40%;
+
       .asset-img {
         height: 25px;
         width: 25px;
         overflow: hidden;
         margin-right: 6px;
         flex-shrink: 0;
+
         .symbol-icon {
           height: 100%;
           width: 100%;
           border-radius: 50%;
         }
       }
+
       .font-bold span {
         color: $labelColor;
         font-weight: 400;
         font-size: 12px;
       }
     }
+
     .asset-amount {
       flex: 1;
       justify-content: flex-end;
     }
+
     .icon-caret-right {
       font-size: 16px;
       margin-left: 5px;
       transition: transform 0.1s ease;
     }
+
     .rotate-icon {
       transform: rotate(-90deg);
     }
   }
+
   .option-btn {
     padding: 20px 0;
     border-bottom: 1px solid #e4e9f4;
@@ -468,6 +494,7 @@ export default defineComponent({
       display: flex;
       align-items: center;
       justify-content: center;
+
       .btn {
         cursor: pointer;
         height: 36px;
@@ -483,55 +510,71 @@ export default defineComponent({
     }
   }
 }
+
 .font-bold {
   //font-weight: bolder;
 }
+
 .p-24 {
   padding: 0 15px 0 15px;
 }
+
 .pt-25 {
   padding: 25px 15px 0 15px;
 }
+
 .pb-28 {
   padding-bottom: 28px;
 }
+
 .align-right {
   text-align: right;
 }
+
 .btn_disable {
   background-color: #a0cfff !important;
   cursor: not-allowed;
 }
+
 .assets-list {
   .font_20 {
     font-size: 20px;
   }
+
   .el-table {
     border: none !important;
+
     th.el-table__cell {
       padding: 12px 0;
     }
+
     .el-table__cell {
       padding: 10px 0;
     }
+
     th .cell {
       font-size: 16px;
     }
+
     tr .cell {
       font-size: 16px;
     }
+
     tr .flex-center {
       span {
         //font-weight: 600;
         //margin-left: 10px;
       }
+
       .t_info {
         margin-left: 10px;
+
         span {
           //font-weight: 600;
           line-height: 1;
           margin-bottom: 5px;
         }
+
         p {
           font-size: 14px;
           text-align: left;
@@ -540,17 +583,21 @@ export default defineComponent({
         }
       }
     }
+
     .el-button--text {
       color: #2688f7;
+
       span {
         font-size: 14px;
       }
     }
+
     .ydy {
       color: $labelColor;
     }
   }
 }
+
 @media screen and (max-width: 1024px) {
   .assets-wrap .assets-title {
     margin-bottom: 15px;
@@ -562,6 +609,7 @@ export default defineComponent({
     display: none;
   }
 }
+
 @media screen and (max-width: 1200px) {
   //.show_table {
   //  display: none;
