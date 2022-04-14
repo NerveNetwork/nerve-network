@@ -84,6 +84,8 @@ const visible = computed({
     .el-dialog__body {
       .list {
         .connect-btn {
+          font-size: 13px;
+          padding: 0 8px;
           height: 45px;
           line-height: 45px;
           margin-bottom: 10px;

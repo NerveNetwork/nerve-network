@@ -208,12 +208,21 @@ function createForm() {
   }
 
   .form-next {
-    text-align: center;
     padding-top: 20px;
-
+    padding-bottom: 20px;
+    .el-form-item__content {
+      display: flex;
+      justify-content: center;
+    }
     .el-button {
       width: 68%;
       border-radius: 6px;
+    }
+    .auth-button {
+      width: 68%;
+      .el-button {
+        width: 100%;
+      }
     }
   }
   @media screen and (max-width: 1200px) {
