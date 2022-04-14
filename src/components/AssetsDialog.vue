@@ -19,9 +19,10 @@
         :class="{ active: item.assetKey === selectedAsset?.assetKey }"
         @click="selectHotAsset(item.assetKey)"
       >
+        <SymbolIcon :icon="item.symbol"></SymbolIcon>
         {{ item.symbol }}
         <template v-if="item.registerChain">
-          ({{ item.registerChain }})
+          <span>({{ item.registerChain }})</span>
         </template>
       </li>
     </ul>
@@ -156,13 +157,23 @@ export default defineComponent({
     display: flex;
     flex-wrap: wrap;
     li {
-      padding: 10px;
+      display: flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 10px;
+      border: 1px solid #e3eeff;
       background: #f3f6fd;
       color: #475472;
       margin-right: 10px;
       margin-bottom: 10px;
       border-radius: 10px;
       cursor: pointer;
+      img {
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+        background-color: #fff;
+      }
       &.active {
         opacity: 0.6;
       }
@@ -219,8 +230,9 @@ export default defineComponent({
   @media screen and (max-width: 1200px) {
     .hot-assets {
       li {
+        height: 36px;
         font-size: 14px;
-        padding: 6px;
+        padding: 0 6px;
         border-radius: 6px;
       }
     }
