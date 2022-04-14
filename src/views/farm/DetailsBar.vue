@@ -247,7 +247,7 @@ const addOrMinus = ref<LpDialogType>(LpDialogType.Add);
 const loading = ref(false);
 const needAuth = ref(true);
 const refreshAuth = ref(false);
-const { addressInfo } = useStoreState();
+const { currentAccount } = useStoreState();
 const balance = ref('0');
 const contractAddress = useContractAddress().value;
 onMounted(() => {
@@ -263,7 +263,7 @@ async function getERC20Allowance() {
     needAuth.value = await transfer.getERC20Allowance(
       tokenInfo.lpToken,
       contractAddress,
-      addressInfo.value?.address?.Ethereum
+      currentAccount.value?.address?.Ethereum
     );
     if (!needAuth.value) {
       refreshAuth.value = false;
@@ -285,7 +285,7 @@ async function authToken() {
     const res = await transfer.approveERC20(
       tokenInfo.lpToken,
       contractAddress,
-      addressInfo.value?.address?.Ethereum
+      currentAccount.value?.address?.Ethereum
     );
     if (res.hash) {
       toast.success(t('transfer.transfer14'));
@@ -320,7 +320,7 @@ async function farmStake(number: string) {
     const farmHash = props.tokenInfo.farmHash || route.params?.hash;
     const amount = timesDecimals(number, stakeTokenDecimals);
     const tx = await nerve.swap.farmStake(
-      addressInfo.value?.address?.NERVE,
+      currentAccount.value?.address?.NERVE,
       nerve.swap.token(stakeTokenChainId, stakeTokenAssetId),
       config.chainId,
       config.prefix,
@@ -358,14 +358,14 @@ async function getBalance() {
     const res: any = await getAssetBalance(
       stakeTokenChainId,
       stakeTokenAssetId,
-      addressInfo.value?.address?.NERVE
+      currentAccount.value?.address?.NERVE
     );
     balance.value = divisionDecimals(res.balance, stakeTokenDecimals);
   } else {
     const transfer = new ETransfer();
     const tokenInfo = props.tokenInfo as UniFarmItem;
     const contractAddress = tokenInfo.lpToken;
-    const address = addressInfo.value?.address?.Ethereum;
+    const address = currentAccount.value?.address?.Ethereum;
     if (contractAddress) {
       const decimal = tokenInfo.stakeTokenDecimals;
       balance.value = await transfer.getERC20Balance(
@@ -413,7 +413,7 @@ async function farmWithdrawal(number: string) {
     } = tokenInfo;
     const amount = timesDecimals(number, stakeTokenDecimals);
     const tx = await nerve.swap.farmWithdraw(
-      addressInfo.value?.address?.NERVE,
+      currentAccount.value?.address?.NERVE,
       nerve.swap.token(stakeTokenChainId, stakeTokenAssetId),
       // config.chainId,
       // config.prefix,

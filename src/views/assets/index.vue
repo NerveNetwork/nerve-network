@@ -3,7 +3,7 @@
     <template v-if="!showTransfer">
       <h3 class="assets-title">{{ $t('assets.assets11') }}</h3>
       <AssetsControl
-        :address="address"
+        v-if="address"
         v-model:searchVal="searchVal"
         v-model:hideSmall="hideSmall"
         @showDialog="showAssetManage = true"
@@ -27,20 +27,20 @@
                       <br />
                       <span
                         v-if="
-                        getContractAddress(
-                          scope.row.heterogeneousList,
-                          scope.row.registerChainId
-                        )
-                      "
+                          getContractAddress(
+                            scope.row.heterogeneousList,
+                            scope.row.registerChainId
+                          )
+                        "
                       >
-                      {{ $t('assets.assets10')
-                        }}{{
+                        {{ $t('assets.assets10') }}
+                        {{
                           getContractAddress(
                             scope.row.heterogeneousList,
                             scope.row.registerChainId
                           )
                         }}
-                    </span>
+                      </span>
                     </div>
                   </template>
                   <div class="t_info">
@@ -78,8 +78,8 @@
                   type="text"
                   v-if="scope.row.canToL1"
                   :disabled="
-                  disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
-                "
+                    disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
+                  "
                   @click="transfer(scope.row, TransferType.CrossIn)"
                 >
                   {{ $t('transfer.transfer1') }}
@@ -94,8 +94,8 @@
                   type="text"
                   v-if="scope.row.canToL1"
                   :disabled="
-                  disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
-                "
+                    disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
+                  "
                   @click="transfer(scope.row, TransferType.Withdrawal)"
                 >
                   {{ $t('transfer.transfer3') }}
@@ -225,7 +225,6 @@ import {
   ref,
   reactive
 } from 'vue';
-import { useStore } from '@/store';
 import AssetsControl from './AssetsControl.vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import AssetsManage from './AssetsManage.vue';
@@ -236,8 +235,7 @@ import useStoreState from '@/hooks/useStoreState';
 import useAssetsList from './hooks/useAssetsList';
 
 import { AssetItemType, rootCmpKey, TransferType } from './types';
-import storage from '@/utils/storage';
-import { Account, HeterogeneousInfo } from '@/store/types';
+import { HeterogeneousInfo } from '@/store/types';
 
 export default defineComponent({
   name: 'assets',
@@ -253,13 +251,11 @@ export default defineComponent({
     // provide<InstanceType<typeof internalInstance?.proxy>>("father", internalInstance?.proxy);
     provide('father', internalInstance?.proxy);
 
-    const store = useStore();
-
     const {
       nerveAddress,
       chain: network,
       wrongChain: disableTx,
-      addressInfo: currentAccount,
+      currentAccount,
       currentAddress: address
     } = useStoreState();
 
@@ -628,7 +624,7 @@ export default defineComponent({
     font-size: 16px;
   }
   .transfer-page .bottom {
-    padding: 10px;
+    //padding: 10px;
   }
 }
 </style>

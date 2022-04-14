@@ -9,7 +9,6 @@ import {
 } from '@/utils/util';
 import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
-import store from '@/store';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import http from '@/service';
 
@@ -94,7 +93,7 @@ export async function getAssetBalance(
  * @desc 获取账户资产列表
  * @param address 账户nerve地址
  */
-export async function getAssetList(address = store.state.destroyAddress) {
+export async function getAssetList(address = config.destroyAddress) {
   const result = await http.rPost('getAccountLedgerList', address);
   let res = result?.result;
   if (!res) return [];

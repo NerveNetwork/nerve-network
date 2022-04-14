@@ -8,11 +8,7 @@
       ></el-input>
       <el-checkbox v-model="checkboxVal" :label="$t('assets.assets12')" />
     </div>
-    <i
-      class="iconfont icon-tianjia"
-      v-if="props.address"
-      @click="emit('showDialog')"
-    ></i>
+    <i class="iconfont icon-tianjia" @click="emit('showDialog')"></i>
   </div>
 </template>
 
@@ -21,7 +17,6 @@ import { computed } from 'vue';
 import { Search } from '@element-plus/icons-vue';
 
 const props = defineProps<{
-  address: string;
   searchVal: string;
   hideSmall: boolean;
 }>();

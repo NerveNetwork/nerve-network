@@ -200,7 +200,7 @@ export function debounce(fn: any, delay: number) {
   };
 }
 
-export const isBeta = config.ETHNET === 'ropsten';
+export const isBeta = config.isBeta;
 
 // assetKey -> [chainId, assetId]
 export function parseChainInfo(key: string) {
@@ -276,17 +276,14 @@ export function isNULSOrNERVE(address: string | null) {
   }
 }
 
-// 获取当前metamask连接的网络名称 不管是正式网还是测试网
+// 获取当前metamask连接的网络名称
 export function getChain() {
   const provider = getProvider();
   const chainId = provider?.chainId;
   if (!chainId) return null;
   let chain = '';
   Object.keys(_networkInfo).map(v => {
-    if (
-      _networkInfo[v].ropsten === chainId ||
-      _networkInfo[v].homestead === chainId
-    ) {
+    if (_networkInfo[v].nativeId === chainId) {
       chain = _networkInfo[v].name;
     }
   });
@@ -296,6 +293,7 @@ export function getChain() {
 // 检查资产是否能在L1-L2间跨链
 export function checkCanToL1(asset: AssetItem): boolean {
   if (!asset.heterogeneousList) return false;
+  // 允许跨链资产 source值
   const allowedSource = [4, 5, 6, 7, 8, 9, 11, 12];
   if (allowedSource.indexOf(asset.source) < 0) return false;
   return !!asset.heterogeneousList.find((v: HeterogeneousInfo) => {
@@ -314,10 +312,13 @@ export function checkCanToL1(asset: AssetItem): boolean {
 export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
   const canToL1 = checkCanToL1(asset);
   if (!canToL1) return false;
-  const currentChain = getChain() as string;
-  return !!asset.heterogeneousList?.find((v: HeterogeneousInfo) => {
-    return _networkInfo[currentChain].chainId === v.heterogeneousChainId;
-  });
+  const currentChain = getChain();
+  if (currentChain) {
+    return !!asset.heterogeneousList?.find((v: HeterogeneousInfo) => {
+      return _networkInfo[currentChain].chainId === v.heterogeneousChainId;
+    });
+  }
+  return false;
 }
 
 // 打开nerve浏览器

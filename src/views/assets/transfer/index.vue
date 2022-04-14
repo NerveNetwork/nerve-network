@@ -126,12 +126,22 @@ export default defineComponent({
   }
   @media screen and (max-width: 500px) {
     .top {
-      height: 110px;
+      height: 100px;
       padding: 20px 20px 0;
       .back {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         .iconfont {
           font-size: 20px;
+        }
+      }
+      .el-tabs {
+        .el-tabs__header {
+          margin-bottom: 8px;
+        }
+        .el-tabs__item {
+          height: 30px;
+          line-height: 30px;
+          font-size: 17px;
         }
       }
     }

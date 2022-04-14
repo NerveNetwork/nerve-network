@@ -1,5 +1,6 @@
 import { reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useStore } from '@/store';
 // import { Web3Provider } from "ethers";
 
 import MetaMask from '@/assets/img/provider/metamask.svg';
@@ -16,10 +17,11 @@ import bitkeep from '@/assets/img/provider/bitkeep.jpg';
 import { ethers } from 'ethers';
 import nerve from 'nerve-sdk-js';
 import storage from '@/utils/storage';
+import { getCurrentAccount } from '@/utils/util';
+import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 
 interface State {
   address: string | null;
-  chainId: string;
   networkError: string;
 }
 
@@ -80,11 +82,67 @@ export function getAddress() {
   return provider?.selectedAddress;
 }
 
+export async function generateAddress(
+  address: string,
+  NerveConfig: GenerateAddressConfig,
+  NULSConfig: GenerateAddressConfig
+) {
+  let heterogeneousAddress = '',
+    pub = '';
+  if (!address.startsWith('0x')) {
+    if (!window.nabox) {
+      throw 'Unknown error';
+    }
+    pub = await window.nabox.getPub({
+      address: address
+    });
+    heterogeneousAddress = ethers.utils.computeAddress(
+      ethers.utils.hexZeroPad(ethers.utils.hexStripZeros('0x' + pub), 33)
+    );
+  } else {
+    const provider = getProvider();
+    const EProvider = new ethers.providers.Web3Provider(provider);
+    const jsonRpcSigner = EProvider.getSigner();
+    let message = 'Generate L2 address';
+    const signature = await jsonRpcSigner.signMessage(message);
+    const msgHash = ethers.utils.hashMessage(message);
+    const msgHashBytes = ethers.utils.arrayify(msgHash);
+    const recoveredPubKey = ethers.utils.recoverPublicKey(
+      msgHashBytes,
+      signature
+    );
+    if (recoveredPubKey.startsWith('0x04')) {
+      const compressPub = ethers.utils.computePublicKey(recoveredPubKey, true);
+      heterogeneousAddress = address;
+      pub = compressPub.slice(2);
+    } else {
+      throw 'Sign error';
+    }
+  }
+  const { chainId, assetId = 1, prefix } = NerveConfig;
+  const nerveAddress = nerve.getAddressByPub(chainId, assetId, pub, prefix);
+  const NULSAddress = nerve.getAddressByPub(
+    NULSConfig.chainId,
+    NULSConfig.assetId,
+    pub,
+    NULSConfig.prefix
+  );
+  return {
+    address: {
+      Ethereum: heterogeneousAddress,
+      NERVE: nerveAddress,
+      NULS: NULSAddress
+    },
+    pub
+  };
+}
+
 export default function useEthereum() {
+  const store = useStore();
   const { t } = useI18n();
+
   const state: State = reactive({
     address: '',
-    chainId: '',
     networkError: ''
   });
 
@@ -92,11 +150,40 @@ export default function useEthereum() {
     const provider = getProvider();
     if (provider && provider.selectedAddress) {
       state.address = provider.selectedAddress;
-      state.chainId = provider.chainId;
+      initChainInfo(provider.selectedAddress);
       // console.log(state.address, 8)
       listenAccountChange();
       listenNetworkChange();
     }
+  }
+
+  function initChainInfo(address: string) {
+    const currentAccount = getCurrentAccount(address);
+    const provider = getProvider();
+    let chainId = provider.chainId;
+    chainId = chainId.startsWith('0x')
+      ? chainId
+      : '0x' + Number(chainId).toString(16);
+    const chainInfo = Object.values(_networkInfo).find(
+      v => v.nativeId === chainId
+    );
+    let isWrongChain = !chainInfo;
+    let currentAddress = address;
+    let network = storage.get('network', 'session');
+    if (network && network !== 'undefined') {
+      if (network === 'NULS' || network === 'NERVE') {
+        isWrongChain = false;
+        // 新账户、且bridge之前在NULS链，会导致currentAccount为null
+        currentAddress = currentAccount
+          ? currentAccount.address[network]
+          : address;
+      }
+    } else {
+      network = chainInfo?.name || '';
+    }
+    store.commit('changeIsWrongChain', isWrongChain);
+    store.commit('changeAddress', currentAddress);
+    store.commit('changeNetwork', network);
   }
 
   // 监听插件账户变动
@@ -105,11 +192,11 @@ export default function useEthereum() {
     provider?.on('accountsChanged', (accounts: string) => {
       console.log(accounts, '=======accountsChanged');
       reload();
-      if (accounts.length) {
+      /*if (accounts.length) {
         state.address = accounts[0];
       } else {
         state.address = '';
-      }
+      }*/
     });
   }
 
@@ -119,9 +206,12 @@ export default function useEthereum() {
     provider?.on('chainChanged', (chainId: string) => {
       console.log(chainId, '=======chainId');
       if (chainId) {
-        state.chainId = provider.chainId;
+        const chainInfo = Object.values(_networkInfo).find(
+          v => v.nativeId === chainId
+        );
+        const network = chainInfo?.name || null;
+        store.commit('changeNetwork', network);
         reload();
-        // checkNetwork(chainId);
       }
     });
   }
@@ -134,7 +224,6 @@ export default function useEthereum() {
     }
     await provider?.request({ method: 'eth_requestAccounts' });
     state.address = provider?.selectedAddress;
-    state.chainId = provider?.chainId;
     storage.set('providerType', providerType);
     listenAccountChange();
     listenNetworkChange();
@@ -165,64 +254,6 @@ export default function useEthereum() {
       method: 'wallet_switchEthereumChain',
       params: [params]
     });
-  }
-
-  async function generateAddress(
-    address: string,
-    NerveConfig: GenerateAddressConfig,
-    NULSConfig: GenerateAddressConfig
-  ) {
-    let heterogeneousAddress = '',
-      pub = '';
-    if (!address.startsWith('0x')) {
-      if (!window.nabox) {
-        throw 'Unknown error';
-      }
-      pub = await window.nabox.getPub({
-        address: address
-      });
-      heterogeneousAddress = ethers.utils.computeAddress(
-        ethers.utils.hexZeroPad(ethers.utils.hexStripZeros('0x' + pub), 33)
-      );
-    } else {
-      const provider = getProvider();
-      const EProvider = new ethers.providers.Web3Provider(provider);
-      const jsonRpcSigner = EProvider.getSigner();
-      let message = 'Generate L2 address';
-      const signature = await jsonRpcSigner.signMessage(message);
-      const msgHash = ethers.utils.hashMessage(message);
-      const msgHashBytes = ethers.utils.arrayify(msgHash);
-      const recoveredPubKey = ethers.utils.recoverPublicKey(
-        msgHashBytes,
-        signature
-      );
-      if (recoveredPubKey.startsWith('0x04')) {
-        const compressPub = ethers.utils.computePublicKey(
-          recoveredPubKey,
-          true
-        );
-        heterogeneousAddress = address;
-        pub = compressPub.slice(2);
-      } else {
-        throw 'Sign error';
-      }
-    }
-    const { chainId, assetId = 1, prefix } = NerveConfig;
-    const nerveAddress = nerve.getAddressByPub(chainId, assetId, pub, prefix);
-    const NULSAddress = nerve.getAddressByPub(
-      NULSConfig.chainId,
-      NULSConfig.assetId,
-      pub,
-      NULSConfig.prefix
-    );
-    return {
-      address: {
-        Ethereum: heterogeneousAddress,
-        NERVE: nerveAddress,
-        NULS: NULSAddress
-      },
-      pub
-    };
   }
 
   return {

@@ -22,7 +22,11 @@
           <AuthButton v-else-if="!nerveAddress"></AuthButton>
           <div v-else class="flex-center">
             <div class="chain-wrap">
-              <SwitchChain v-model="showSwitchChain" :chainId="chainId">
+              <SwitchChain
+                v-model="showSwitchChain"
+                :currentChain="chain"
+                :address="address"
+              >
                 <div class="l1-chain" @click="showSwitchChain = true">
                   <img :src="chainLogo" alt="" v-if="!wrongChain" />
                   <img
@@ -87,7 +91,7 @@ import AuthButton from '../AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getTx } from '@/service/api';
-import { superLong, getCurrentAccount, isNULSOrNERVE } from '@/utils/util';
+import { superLong, getCurrentAccount } from '@/utils/util';
 import { Account, TxInfo } from '@/store/types';
 import storage from '@/utils/storage';
 import { ETransfer } from '@/utils/api';
@@ -97,8 +101,8 @@ const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 
-const { address, chainId, initProvider, connect, disconnect } = useEthereum();
-const { nerveAddress, wrongChain: notL1Chain } = useStoreState();
+const { address, initProvider, connect, disconnect } = useEthereum();
+const { nerveAddress, wrongChain, chain } = useStoreState();
 initProvider();
 
 const { lang, switchLang } = useLang();
@@ -108,21 +112,8 @@ const showSwitchChain = ref(false);
 watch(
   () => address.value,
   val => {
-    if (val) {
-      const currentAccount = getCurrentAccount(val);
-      store.commit('setCurrentAddress', currentAccount || {});
-    }
-  },
-  {
-    immediate: true
-  }
-);
-watch(
-  () => chainId.value,
-  val => {
-    if (val) {
-      store.commit('changeChainId', val);
-    }
+    const currentAccount = getCurrentAccount(val);
+    store.commit('setCurrentAddress', currentAccount || {});
   },
   {
     immediate: true
@@ -156,20 +147,15 @@ watch(
     activeIndex.value = val?.split('/')[1];
   }
 );
-// function toAsset() {
-//   router.push({
-//     name: 'assets'
-//   });
-// }
 
-const wrongChain = computed(() => {
+/*const wrongChain = computed(() => {
   const NULSOrNERVE = address.value && isNULSOrNERVE(address.value);
   if (NULSOrNERVE) {
     return false;
   } else {
     return notL1Chain.value;
   }
-});
+});*/
 
 // const authRef = ref<InstanceType<typeof AuthButton>>();
 // async function derivedAddress() {
@@ -181,9 +167,7 @@ const wrongChain = computed(() => {
 // }
 
 const chainLogo = computed(() => {
-  const network = store.getters.chain;
-  // console.log(network, 666)
-  const { logo } = _networkInfo[network];
+  const { logo } = _networkInfo[chain.value];
   return logo;
 });
 

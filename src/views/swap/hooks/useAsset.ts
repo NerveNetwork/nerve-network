@@ -12,7 +12,7 @@ const LpSource = [10, 11, 12];
 
 export default function useAsset(isLiquidity = false) {
   const route = useRoute();
-  const { assetsList, chain } = useStoreState();
+  const { assetsList } = useStoreState();
   // 兑换、添加流动性屏蔽LP资产
   const filterLPAssets = computed(() => {
     return assetsList.value.filter(item => {
@@ -90,11 +90,7 @@ export default function useAsset(isLiquidity = false) {
         }
         if (!isLoaded) {
           const { fromAsset, toAsset } = route.params;
-          const L1Info = _networkInfo[chain.value];
           let defaultSymbol = 'NVT';
-          if (L1Info?.supported) {
-            // defaultSymbol = L1Info.mainAsset;
-          }
           const default_eth = val.find(
             item => item.symbol === defaultSymbol
           ) as AssetItem;

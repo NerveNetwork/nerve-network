@@ -32,7 +32,7 @@ export function setAccountTxs(pub: string, tx: TxInfo) {
 }
 
 export default function useBroadcastNerveHex() {
-  const { addressInfo } = useStoreState();
+  const { currentAccount } = useStoreState();
   const { t } = useI18n();
   const toast = useToast();
 
@@ -42,8 +42,8 @@ export default function useBroadcastNerveHex() {
     const transfer = new NTransfer({ chain: 'NERVE' });
     const txHex = await transfer.getTxHex({
       tAssemble,
-      pub: addressInfo.value?.pub,
-      signAddress: addressInfo.value?.address?.Ethereum
+      pub: currentAccount.value?.pub,
+      signAddress: currentAccount.value?.address?.Ethereum
     });
     // console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
@@ -54,7 +54,7 @@ export default function useBroadcastNerveHex() {
         time: new Date().getTime(),
         status: 0
       };
-      setAccountTxs(addressInfo.value?.pub, txInfo);
+      setAccountTxs(currentAccount.value?.pub, txInfo);
     }
     handleMessage(res);
     return res;
@@ -69,8 +69,8 @@ export default function useBroadcastNerveHex() {
     //     inputs: inputOuput.inputs,
     //     outputs: inputOuput.outputs,
     //     txData,
-    //     pub: addressInfo.value?.pub,
-    //     signAddress: addressInfo.value?.address?.Ethereum
+    //     pub: currentAccount.value?.pub,
+    //     signAddress: currentAccount.value?.address?.Ethereum
     //   },
     //   '====tx===='
     // );
@@ -78,8 +78,8 @@ export default function useBroadcastNerveHex() {
       inputs: inputOuput.inputs,
       outputs: inputOuput.outputs,
       txData,
-      pub: addressInfo.value?.pub,
-      signAddress: addressInfo.value?.address?.Ethereum
+      pub: currentAccount.value?.pub,
+      signAddress: currentAccount.value?.address?.Ethereum
     });
     // console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
@@ -90,7 +90,7 @@ export default function useBroadcastNerveHex() {
         time: new Date().getTime(),
         status: 0
       };
-      setAccountTxs(addressInfo.value?.pub, txInfo);
+      setAccountTxs(currentAccount.value?.pub, txInfo);
     }
     handleMessage(res);
     return res;

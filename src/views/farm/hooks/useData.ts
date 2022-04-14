@@ -48,11 +48,11 @@ export default function useData() {
     state.nerveList = filter(data, filterType, onlySeeMortgage);
   }
 
-  const { addressInfo, wrongChain: disableTx, height } = useStoreState();
+  const { currentAccount, wrongChain: disableTx, height } = useStoreState();
 
   // 用户参与的farm
   function getUserFarm(farmHash?: string) {
-    const address = addressInfo.value?.address?.NERVE;
+    const address = currentAccount.value?.address?.NERVE;
     if (!address) return;
     const channel = 'farmListSub';
     subSocket.listen({
@@ -207,7 +207,7 @@ export default function useData() {
         divisionDecimals(poolInfoValue[5], tokenInfo.stakeTokenDecimals)
       ).toString();
 
-      const address = addressInfo.value?.address?.Ethereum;
+      const address = currentAccount.value?.address?.Ethereum;
       if (address) {
         // 待领取收益数量
         const pendingTokenValue = await contract.pendingToken(item, address);

@@ -57,6 +57,37 @@ const FantomOrigin = isBeta
   ? 'https://testnet.ftmscan.com'
   : 'https://ftmscan.com';
 
+export const RPC_URL = {
+  BSC: isBeta
+    ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
+    : 'https://bsc-dataseed.binance.org/',
+  Polygon: isBeta
+    ? 'https://rpc-mumbai.maticvigil.com'
+    : 'https://matic-mainnet.chainstacklabs.com',
+  Heco: isBeta
+    ? 'https://http-testnet.hecochain.com'
+    : 'https://http-mainnet.hecochain.com',
+  OKC: isBeta
+    ? 'https://exchaintestrpc.okex.org'
+    : 'https://exchainrpc.okex.org',
+  Avalanche: isBeta
+    ? 'https://api.avax-test.network/ext/bc/C/rpc'
+    : 'https://api.avax.network/ext/bc/C/rpc',
+  Harmony: isBeta ? 'https://api.s0.b.hmny.io' : 'https://api.harmony.one',
+  KCC: isBeta
+    ? 'https://rpc-testnet.kcc.network'
+    : 'https://rpc-mainnet.kcc.network',
+  Cronos: isBeta
+    ? 'https://cronos-testnet-3.crypto.org:8545'
+    : 'https://evm-cronos.crypto.org',
+  Arbitrum: isBeta
+    ? 'https://rinkeby.arbitrum.io/rpc'
+    : 'https://arb1.arbitrum.io/rpc',
+  Fantom: isBeta
+    ? 'https://rpc.testnet.fantom.network'
+    : 'https://rpc.ftm.tools'
+};
+
 export const _networkInfo = {
   Ethereum: {
     name: 'Ethereum',
@@ -65,8 +96,7 @@ export const _networkInfo = {
     origin: ETHOrigin,
     color: '#5e5e5e',
     mainAsset: 'ETH',
-    ropsten: '0x3',
-    homestead: '0x1',
+    nativeId: isBeta ? '0x3' : '0x1',
     supported: true,
     logo: ETHLogo
   },
@@ -77,15 +107,11 @@ export const _networkInfo = {
     origin: BSCOrigin,
     color: '#e7b941',
     mainAsset: 'BNB',
-    ropsten: '0x61',
-    homestead: '0x38',
+    nativeId: isBeta ? '0x61' : '0x38',
     supported: true,
     logo: BSCLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
-      homestead: 'https://bsc-dataseed.binance.org/'
-    }
+    rpcUrl: RPC_URL.BSC
   },
   Polygon: {
     name: 'Polygon',
@@ -94,15 +120,11 @@ export const _networkInfo = {
     origin: PolygonOrigin,
     color: '#7449df',
     mainAsset: 'MATIC',
-    ropsten: '0x13881',
-    homestead: '0x89',
+    nativeId: isBeta ? '0x13881' : '0x89',
     supported: true,
     logo: PolygonLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://rpc-mumbai.maticvigil.com',
-      homestead: 'https://matic-mainnet.chainstacklabs.com'
-    }
+    rpcUrl: RPC_URL.Polygon
   },
   Heco: {
     name: 'Heco',
@@ -111,15 +133,11 @@ export const _networkInfo = {
     origin: HecoOrigin,
     color: '#336adb',
     mainAsset: 'HT',
-    ropsten: '0x100',
-    homestead: '0x80',
+    nativeId: isBeta ? '0x100' : '0x80',
     supported: true,
     logo: HecoLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://http-testnet.hecochain.com',
-      homestead: 'https://http-mainnet.hecochain.com'
-    }
+    rpcUrl: RPC_URL.Heco
   },
   OKC: {
     name: 'OKC',
@@ -128,15 +146,11 @@ export const _networkInfo = {
     origin: OECOrigin,
     color: '#4883ed',
     mainAsset: 'OKT',
-    ropsten: '0x41',
-    homestead: '0x42',
+    nativeId: isBeta ? '0x41' : '0x42',
     supported: true,
     logo: OECLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://exchaintestrpc.okex.org',
-      homestead: 'https://exchainrpc.okex.org'
-    }
+    rpcUrl: RPC_URL.OKC
   },
   Avalanche: {
     name: 'Avalanche',
@@ -145,15 +159,11 @@ export const _networkInfo = {
     origin: AvalancheOrigin,
     color: '#d64f49',
     mainAsset: 'AVAX',
-    ropsten: '0xa869',
-    homestead: '0xa86a',
+    nativeId: isBeta ? '0xa869' : '0xa86a',
     supported: true,
     logo: AVAVLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://api.avax-test.network/ext/bc/C/rpc',
-      homestead: 'https://api.avax.network/ext/bc/C/rpc'
-    }
+    rpcUrl: RPC_URL.Avalanche
   },
   Harmony: {
     name: 'Harmony',
@@ -162,15 +172,11 @@ export const _networkInfo = {
     origin: HarmonyOrigin,
     color: '#5cc9c0',
     mainAsset: 'ONE',
-    ropsten: '0x6357d2e0',
-    homestead: '0x63564c40',
+    nativeId: isBeta ? '0x6357d2e0' : '0x63564c40',
     supported: true,
     logo: HarmonyLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://api.s0.b.hmny.io',
-      homestead: 'https://api.harmony.one'
-    }
+    rpcUrl: RPC_URL.Harmony
   },
   KCC: {
     name: 'KCC',
@@ -179,15 +185,11 @@ export const _networkInfo = {
     origin: KCCOrigin,
     color: '#66ac90',
     mainAsset: 'KCS',
-    ropsten: '0x142',
-    homestead: '0x141',
+    nativeId: isBeta ? '0x142' : '0x141',
     supported: true,
     logo: KCCLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://rpc-testnet.kcc.network',
-      homestead: 'https://rpc-mainnet.kcc.network'
-    }
+    rpcUrl: RPC_URL.KCC
   },
   TRON: {
     name: 'TRON',
@@ -196,8 +198,7 @@ export const _networkInfo = {
     origin: TRXOrigin,
     color: '#c23631',
     mainAsset: 'TRX',
-    ropsten: '',
-    homestead: '',
+    nativeId: '',
     decimals: 6
   },
   Cronos: {
@@ -207,15 +208,11 @@ export const _networkInfo = {
     origin: CronosOrigin,
     color: '#142d4a',
     mainAsset: 'CRO',
-    ropsten: '0x152',
-    homestead: '0x19',
+    nativeId: isBeta ? '0x152' : '0x19',
     supported: true,
     logo: CROLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://cronos-testnet-3.crypto.org:8545',
-      homestead: 'https://evm-cronos.crypto.org'
-    }
+    rpcUrl: RPC_URL.Cronos
   },
   Arbitrum: {
     name: 'Arbitrum',
@@ -224,15 +221,11 @@ export const _networkInfo = {
     origin: ArbitrumOrigin,
     color: '#526077',
     mainAsset: 'AETH',
-    ropsten: '0x66eeb',
-    homestead: '0xa4b1',
+    nativeId: isBeta ? '0x66eeb' : '0xa4b1',
     supported: true,
     logo: ARBILogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://rinkeby.arbitrum.io/rpc',
-      homestead: 'https://arb1.arbitrum.io/rpc'
-    }
+    rpcUrl: RPC_URL.Arbitrum
   },
   Fantom: {
     name: 'Fantom',
@@ -241,15 +234,11 @@ export const _networkInfo = {
     origin: FantomOrigin,
     color: '#0529ec',
     mainAsset: 'FTM',
-    ropsten: '0xfa2',
-    homestead: '0xfa',
+    nativeId: isBeta ? '0xfa2' : '0xfa',
     supported: true,
     logo: FTMLogo,
     decimals: 18,
-    rpcUrl: {
-      ropsten: 'https://rpc.testnet.fantom.network',
-      homestead: 'https://rpc.ftm.tools'
-    }
+    rpcUrl: RPC_URL.Fantom
   },
   NULS: {
     name: 'NULS',
@@ -258,8 +247,7 @@ export const _networkInfo = {
     origin: NULSOrigin,
     color: '#00da9d',
     mainAsset: 'NULS',
-    ropsten: '0x-1',
-    homestead: '0x-1',
+    nativeId: '0x-1',
     supported: true,
     logo: NULSLogo
   },
@@ -270,52 +258,8 @@ export const _networkInfo = {
     origin: NERVEOrigin,
     color: '#56bff3',
     mainAsset: 'NVT',
-    ropsten: '0x-2',
-    homestead: '0x-2',
+    nativeId: '0x-2',
     supported: true,
     logo: NERVELogo
-  }
-};
-
-export const RPC_URL = {
-  BSC: {
-    ropsten: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
-    homestead: 'https://bsc-dataseed.binance.org/'
-  },
-  Heco: {
-    ropsten: 'https://http-testnet.hecochain.com',
-    homestead: 'https://http-mainnet.hecochain.com'
-  },
-  OKExChain: {
-    ropsten: 'https://exchaintestrpc.okex.org',
-    homestead: 'https://exchainrpc.okex.org'
-  },
-  Harmony: {
-    ropsten: 'https://api.s0.b.hmny.io',
-    homestead: 'https://api.harmony.one'
-  },
-  Polygon: {
-    ropsten: 'https://rpc-mumbai.maticvigil.com',
-    homestead: 'https://rpc-mainnet.maticvigil.com'
-  },
-  KCC: {
-    ropsten: 'https://rpc-testnet.kcc.network',
-    homestead: 'https://rpc-mainnet.kcc.network'
-  },
-  Cronos: {
-    ropsten: 'https://cronos-testnet-3.crypto.org:8545',
-    homestead: 'https://evm-cronos.crypto.org'
-  },
-  Avalanche: {
-    ropsten: 'https://api.avax-test.network/ext/bc/C/rpc',
-    homestead: 'https://api.avax.network/ext/bc/C/rpc'
-  },
-  Arbitrum: {
-    ropsten: 'https://rinkeby.arbitrum.io/rpc',
-    homestead: 'https://arb1.arbitrum.io/rpc'
-  },
-  Fantom: {
-    ropsten: 'https://rpc.testnet.fantom.network',
-    homestead: 'https://rpc.ftm.tools'
   }
 };

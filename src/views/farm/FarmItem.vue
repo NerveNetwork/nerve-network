@@ -59,7 +59,7 @@
       </collapse-transition>
     </div>
   </div>
-  <div class="mobile-cont">
+  <div class="mobile-cont-wrap">
     <el-empty
       :description="$t('public.public19')"
       v-if="!list.length"
@@ -149,7 +149,7 @@ function handleLoading(status: boolean) {
 
 <style lang="scss" scoped>
 @import '../../assets/css/style.scss';
-.mobile-cont {
+.mobile-cont-wrap {
   display: none;
   border-radius: 10px;
   background-color: $BgColor;
@@ -269,7 +269,7 @@ function handleLoading(status: boolean) {
   .farm-item {
     display: none !important;
   }
-  .mobile-cont {
+  .mobile-cont-wrap {
     display: block;
   }
   .farm-item {

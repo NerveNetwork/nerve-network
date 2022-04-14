@@ -56,11 +56,11 @@ export interface TxInfo {
 // 手动声明 state 类型
 export interface State {
   addressInfo: Account;
-  chainId: string;
+  address: string;
+  network: string;
+  isWrongChain: boolean;
   showConnect: boolean;
   lang: string | null;
-  destroyAddress: string | undefined;
-  feeAddress: string | undefined;
   assetList: AssetItem[] | [];
   nvtPrice: string;
   height: number;

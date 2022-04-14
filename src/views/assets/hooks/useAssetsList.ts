@@ -6,6 +6,7 @@ import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { Account } from '@/store/types';
 import storage from '@/utils/storage';
 import { useStore } from '@/store';
+import config from '@/config';
 
 export default function useAssetsList() {
   const store = useStore();
@@ -15,15 +16,11 @@ export default function useAssetsList() {
   const hideSmall = ref(false);
   const allAssetsList = ref<AssetItemType[]>([]); // L2 所有资产
   const selectAssets = ref<AssetItemType[]>([]); // 已勾选显示的资产
-  const filteredAssets = ref<AssetItemType[]>([]); // 已筛选的资产
+  const filteredAssets = ref<AssetItemType[]>([]); // 已勾选并且已筛选的资产
   const crossInOutSymbol = ref<AssetItemType[]>([]); // 支持的L1-L2间跨链的资产
   let sortDataByValue: AssetItemType[] = [];
   // const tableData = ref<AssetItemType[]>([]); // 支持的L1-L2间跨链的资产
-  const {
-    assetsList,
-    addressInfo: currentAccount,
-    chain: network
-  } = useStoreState();
+  const { assetsList, currentAccount, chain: network } = useStoreState();
 
   hideSmall.value = !!currentAccount.value.hideSmall;
 
@@ -92,7 +89,7 @@ export default function useAssetsList() {
     const focusAssets = currentAccount.value.focusAssets;
     if (focusAssets && focusAssets.length) {
       sortDataByValue.map(v =>
-        currentAccount.value.focusAssets?.map(item => {
+        currentAccount.value.focusAssets?.map((item: string) => {
           if (item === v.assetKey) {
             result.push(v);
           }
@@ -102,6 +99,12 @@ export default function useAssetsList() {
       result = sortDataByValue.filter(v => {
         return Number(v.available) > 0;
       });
+      // 账户资产全都没有余额，默认显示nvt
+      if (!result.length) {
+        result = sortDataByValue.filter(v => {
+          return v.chainId === config.chainId && v.assetId === config.assetId;
+        });
+      }
     }
     selectAssets.value = [...result];
     result = result

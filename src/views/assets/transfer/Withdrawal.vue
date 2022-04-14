@@ -1,7 +1,7 @@
 <template>
   <div class="cross-out" v-loading="loading">
     <div class="title">
-      {{ 'To ' + $store.getters.chain }}
+      {{ 'To ' + father.network }}
       <span class="click" @click="openUrl(father.address, father.network)">
         {{ superLong(father.address) }}
         <i class="iconfont icon-tiaozhuanlianjie"></i>
