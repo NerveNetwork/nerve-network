@@ -6,7 +6,7 @@
         v-model.trim="toAddress"
       ></el-input>
       <span class="address-error" v-if="addressError">
-        {{ $t('transfer.transfer24') }}
+        {{ addressError }}
       </span>
     </div>
     <div class="transfer-content">
@@ -160,7 +160,7 @@ export default defineComponent({
     });
 
     const toAddress = ref('');
-    const addressError = ref(false);
+    const addressError = ref('');
     const type = ref(2); // 交易类型 2-普通转账 10-跨链到nuls
     watch(
       () => toAddress.value,
@@ -178,7 +178,14 @@ export default defineComponent({
           } catch (e) {
             type.value = 2;
           }
-          addressError.value = !res || !res.right;
+          if (!res || !res.right) {
+            addressError.value = t('transfer.transfer24');
+          } else if (res.type === 2) {
+            // type 1:主网地址 2：合约地址 3:多签地址
+            addressError.value = t('transfer.transfer26');
+          } else {
+            addressError.value = '';
+          }
         }
       }
     );
@@ -275,6 +282,13 @@ export default defineComponent({
     .fee-wrap {
       padding-top: 10px;
       font-size: 14px;
+    }
+  }
+  @media screen and (max-width: 800px) {
+    .to-input {
+      .address-error {
+        font-size: 12px;
+      }
     }
   }
 }

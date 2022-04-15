@@ -493,7 +493,7 @@ const cn = {
     transfer23: '广播交易失败',
     transfer24: '请输入正确的NERVE/NULS地址',
     transfer25: '手续费不足',
-
+    transfer26: '请勿直接向NULS合约地址转账，可能造成资产丢失'
   },
   trading: {
     trading1: '订单历史',
