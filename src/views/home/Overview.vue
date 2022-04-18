@@ -54,8 +54,6 @@ onMounted(() => {
     }
   });
 });
-
-const name = ref('');
 </script>
 
 <style lang="scss">

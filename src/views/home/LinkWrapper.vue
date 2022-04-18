@@ -18,13 +18,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
 import LinkCard from './LinkCard.vue';
 import swap from '@/assets/img/swap.svg';
 import bridge from '@/assets/img/bridge.svg';
 import config from '@/config';
-
-const name = ref('');
 </script>
 
 <style lang="scss">

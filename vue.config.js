@@ -1,7 +1,7 @@
 const webpack = require('webpack');
-// const CompressionWebpackPlugin = require("compression-webpack-plugin");
-// const productionGzipExtensions = ["js", "css"];
-// const isProduction = process.env.NODE_ENV === "production";
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const productionGzipExtensions = ['js', 'css'];
+const isProduction = process.env.NODE_ENV === 'production';
 // const AutoImport = require('unplugin-auto-import/webpack');
 const Components = require('unplugin-vue-components/webpack');
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers');
@@ -21,16 +21,16 @@ module.exports = {
       include: /node_modules/,
       type: 'javascript/auto'
     });
-    // if (isProduction) {
-    //   config.plugins.push(
-    //     new CompressionWebpackPlugin({
-    //       algorithm: "gzip",
-    //       test: new RegExp("\\.(" + productionGzipExtensions.join("|") + ")$"),
-    //       threshold: 10240,
-    //       minRatio: 0.8
-    //     })
-    //   );
-    // }
+    if (isProduction) {
+      config.plugins.push(
+        new CompressionWebpackPlugin({
+          algorithm: 'gzip',
+          test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+          threshold: 10240,
+          minRatio: 0.8
+        })
+      );
+    }
     config.plugins.push(
       new webpack.DefinePlugin({
         //定义全局变量
@@ -54,21 +54,44 @@ module.exports = {
       // 添加分包
       splitChunks: {
         chunks: 'all',
+        maxAsyncRequests: 5, // 每个异步加载模块最多能被拆分的数量
+        maxInitialRequests: 5, // 每个入口和它的同步依赖最多能被拆分的数量
         cacheGroups: {
+          'nerve-sdk-js': {
+            name: 'sdk-chunk',
+            // test: /[\\/]node_modules[\\/](jsrsasign|nerve-sdk-js)/,
+            test: /[\\/]node_modules[\\/](nerve-sdk-js|jsrsasign)/,
+            priority: -7
+          },
+          'element-plus': {
+            name: 'ui-chunk',
+            test: /[\\/]node_modules[\\/](element-plus)/,
+            priority: -8
+          },
+          echarts: {
+            name: 'echarts-chunk',
+            test: /[\\/]node_modules[\\/](echarts|zrender)/,
+            priority: -9
+          },
           ethers: {
-            name: 'chunk',
-            test: /[\\/]node_modules[\\/](ethers|@element-plus|jsrsasign|nerve-sdk-js)/,
+            name: 'ethers-chunk',
+            test: /[\\/]node_modules[\\/](ethers|web3)/,
             priority: -10
           },
-          vendors: {
+          /*vendors: {
             name: 'vendors',
-            test: /[\\/]node_modules[\\/]^(element-plus)/,
+            test: /[\\/]node_modules[\\/]/,
             priority: -20
-          }
+          }*/
         }
       }
     };
+    config.devtool = !isProduction ? 'cheap-module-source-map' : false;
     // config.plugins.push(new BundleAnalyzerPlugin());
+  },
+  css: {
+    extract: { ignoreOrder: true },
+    sourceMap: !isProduction
   },
 
   devServer: {

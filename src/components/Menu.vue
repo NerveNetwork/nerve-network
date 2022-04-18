@@ -1,5 +1,5 @@
 <template>
-  <div class="horizon-menu">
+  <div class="horizon-menu" @click.stop="">
     <template v-for="item in menus" :key="item.key">
       <div
         class="menu-item"
@@ -10,22 +10,6 @@
         <router-link v-else :to="'/' + item.key">
           {{ item.label }}
         </router-link>
-<!--        <template v-else>
-          <router-link v-if="!item.needAuth" :to="'/' + item.key">
-            {{ item.label }}
-          </router-link>
-          <template v-else>
-            <router-link
-              v-if="props.address && props.nerveAddress"
-              :to="'/' + item.key"
-            >
-              {{ item.label }}
-            </router-link>
-            <auth-button :ref="setAuthRef" v-else>
-              <a href="javascript:" @click="authClick">{{ item.label }}</a>
-            </auth-button>
-          </template>
-        </template>-->
       </div>
     </template>
     <div class="lang-warp mobile" @click="changeLang">
@@ -36,19 +20,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { isBeta } from '@/utils/util';
-import AuthButton from '@/components/AuthButton.vue';
 import useLang from '@/hooks/useLang';
-
-type AuthBtn = InstanceType<typeof AuthButton>;
-
-const props = defineProps({
-  address: String,
-  nerveAddress: String
-});
 
 const emit = defineEmits(['clickMenu']);
 
@@ -104,24 +80,6 @@ const menus = computed(() => {
     }
   ];
 });
-
-const authRef = ref<AuthBtn[]>([]);
-function setAuthRef(el: AuthBtn) {
-  authRef.value.push(el);
-}
-
-function authClick() {
-  // console.log(authRef, 456);
-  // console.log(props, 132456)
-  if (authRef.value.length) {
-    const authBtn = authRef.value[0];
-    if (props.address) {
-      authBtn.derivedAddress();
-    } else {
-      authBtn.showConnectDialog(true);
-    }
-  }
-}
 
 const { lang, switchLang } = useLang();
 function changeLang() {

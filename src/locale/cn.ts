@@ -51,7 +51,8 @@ const cn = {
     public21: '时间',
     public22: '状态',
     public23: '最近20条交易将显示在下方',
-    public24: '连接网络错误'
+    public24: '连接网络错误',
+    public25: '请先安装该插件'
   },
   error: {
     err_0001: '失败',
@@ -447,7 +448,9 @@ const cn = {
     home9: '投资机构&合作伙伴',
     home10: '总流通量',
     home11: '总市值',
-    home12: '质押量'
+    home12: '质押量',
+    home13: '链上资金总量',
+    home14: '链上资金流动/24H'
   },
   assets: {
     assets1: 'Layer2资产',
@@ -459,7 +462,10 @@ const cn = {
     assets7: '资产管理',
     assets8: '使用资产名称或ID进行查询',
     assets9: '使用资产名称或合约地址进行查询',
-    assets10: '合约地址: '
+    assets10: '合约地址: ',
+    assets11: '资产列表',
+    assets12: '隐藏小额资产',
+    assets13: '上架Token'
   },
   transfer: {
     transfer1: '跨链转入',
@@ -486,7 +492,8 @@ const cn = {
     transfer22: '使用其他资产',
     transfer23: '广播交易失败',
     transfer24: '请输入正确的NERVE/NULS地址',
-    transfer25: '手续费不足'
+    transfer25: '手续费不足',
+    transfer26: '请勿直接向NULS合约地址转账，可能造成资产丢失'
   },
   trading: {
     trading1: '订单历史',
@@ -510,7 +517,8 @@ const cn = {
     trading19: '仍然兑换',
     trading20: '价格影响很大',
     trading21: '兑换失败',
-    trading22: '暂未开通该交易对智能路由，请兑换USDTN后再通过USDTN进行其余网络的USDT兑换'
+    trading22:
+      '暂未开通该交易对智能路由，请兑换USDTN后再通过USDTN进行其余网络的USDT兑换'
   },
   liquidity: {
     liquidity1: '流动性',

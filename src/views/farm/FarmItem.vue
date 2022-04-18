@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="farm-item"
-    v-loading="loading"
-  >
+  <div class="farm-item" v-loading="loading">
     <el-empty :description="$t('public.public19')" v-if="!list.length" />
     <div class="lis" v-for="(item, index) of list" :key="index">
       <div class="title" @click="showId(item.farmHash)">
@@ -62,8 +59,11 @@
       </collapse-transition>
     </div>
   </div>
-  <div class="mobile-cont">
-    <el-empty :description="$t('public.public19')" v-if="!list.length"></el-empty>
+  <div class="mobile-cont-wrap">
+    <el-empty
+      :description="$t('public.public19')"
+      v-if="!list.length"
+    ></el-empty>
     <div v-for="(item, index) in list" v-else :key="item.farmHash">
       <div class="farm-item_cont" @click="showId(item.farmHash)">
         <div class="farm-item_list">
@@ -115,7 +115,6 @@ import { PropType } from 'vue';
 import DetailsBar from './DetailsBar.vue';
 import CollapseTransition from '@/components/CollapseTransition.vue';
 import FarmSymbol from './FarmSymbol.vue';
-import { useRouter } from 'vue-router';
 import useStoreState from '@/hooks/useStoreState';
 import { NerveFarmItem, UniFarmItem } from './types';
 
@@ -130,8 +129,6 @@ const props = defineProps({
   isFinished: Boolean
 });
 const emit = defineEmits(['handleLoading']);
-
-const router = useRouter();
 
 const { nerveAddress } = useStoreState();
 
@@ -152,7 +149,7 @@ function handleLoading(status: boolean) {
 
 <style lang="scss" scoped>
 @import '../../assets/css/style.scss';
-.mobile-cont {
+.mobile-cont-wrap {
   display: none;
   border-radius: 10px;
   background-color: $BgColor;
@@ -272,7 +269,7 @@ function handleLoading(status: boolean) {
   .farm-item {
     display: none !important;
   }
-  .mobile-cont {
+  .mobile-cont-wrap {
     display: block;
   }
   .farm-item {

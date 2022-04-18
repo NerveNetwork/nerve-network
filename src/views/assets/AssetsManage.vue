@@ -2,12 +2,19 @@
   <div class="custom-overlay">
     <el-dialog
       custom-class="add-assets-dialog"
-      :title="$t('assets.assets7')"
       :show-close="false"
       top="10vh"
       v-model="showDialog"
       @closed="closed"
     >
+      <template #title>
+        <div class="title-slot flex-between">
+          <span class="title">{{ $t('assets.assets7') }}</span>
+          <span class="link" @click="submitToken">
+            {{ $t('assets.assets13') }}
+          </span>
+        </div>
+      </template>
       <el-input
         v-model="searchVal"
         :placeholder="$t('assets.assets8')"
@@ -51,7 +58,9 @@
           <el-checkbox v-model="item.added" disabled></el-checkbox>
         </li>
       </ul>
-      <p v-else class="no-data" style="line-height: 30px">{{ $t('public.public19') }}</p>
+      <p v-else class="no-data" style="line-height: 30px">
+        {{ $t('public.public19') }}
+      </p>
       <div class="footer-wrap">
         <el-button @click="showDialog = false">
           {{ $t('public.public8') }}
@@ -188,6 +197,12 @@ export default defineComponent({
       return config.chainId === assetChainId && config.assetId === assetsId;
     }
 
+    function submitToken() {
+      window.open(
+        'https://docs.google.com/forms/d/e/1FAIpQLSdPXX4EDtzxqBg3OBMIq7EtoiBxnxcqokIeVzAqyXQFYbmf4w/viewform'
+      );
+    }
+
     return {
       list,
       showDialog,
@@ -195,7 +210,8 @@ export default defineComponent({
       searchVal,
       closed,
       confirm,
-      noCancel
+      noCancel,
+      submitToken
     };
   }
 });
@@ -204,11 +220,21 @@ export default defineComponent({
 @import '../../assets/css/style.scss';
 .add-assets-dialog {
   max-width: 470px !important;
+  .title-slot {
+    span {
+      font-size: 16px;
+      &:first-child {
+        font-size: 20px;
+        font-weight: 600;
+        color: #475472;
+      }
+    }
+  }
   .el-input {
     .el-input__inner {
       border-radius: 10px;
-      line-height: 58px;
-      height: 58px;
+      line-height: 52px;
+      height: 52px;
     }
     margin-bottom: 15px;
   }
@@ -349,6 +375,14 @@ export default defineComponent({
     }
   }
   @media screen and (max-width: 500px) {
+    .title-slot {
+      span {
+        font-size: 14px;
+        &:first-child {
+          font-size: 18px;
+        }
+      }
+    }
     .el-input {
       .el-input__inner {
         border-radius: 10px;

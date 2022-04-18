@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
 import useCollect from '../hooks/useCollect';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import CollectIcon from '@/components/CollectIcon.vue';
@@ -82,7 +82,7 @@ function change(status: boolean) {
       font-size: 20px;
     }
     .key {
-      color: #94A6CE;
+      color: #94a6ce;
       font-size: 14px;
     }
   }

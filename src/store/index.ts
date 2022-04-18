@@ -1,22 +1,16 @@
 import { createStore, useStore as useVuexStore } from 'vuex';
-import { isNULSOrNERVE } from '@/utils/util';
 import storage from '@/utils/storage';
-import { getAddress } from '@/hooks/useEthereum';
-import config from '@/config';
-// @ts-ignore
 import { getAssetList } from '@/service/api';
 import { Account, State } from '@/store/types';
-import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 
 export default createStore<State>({
   state: {
-    // hasNerveAddress: false,
     addressInfo: {} as Account,
-    chainId: '',
+    address: '',
+    network: storage.get('network', 'session') || '',
+    isWrongChain: false,
     showConnect: false,
     lang: storage.get('lang'),
-    destroyAddress: config['destroyAddress'],
-    feeAddress: config['destroyAddress'],
     assetList: storage.get('assetList', 'session') || [],
     nvtPrice: '',
     height: 0,
@@ -24,48 +18,28 @@ export default createStore<State>({
     watchPools: storage.get('watchPools') || []
   },
   getters: {
-    // 异构链名称Ethereum..
-    chain(state) {
-      const chainId = state.chainId;
-      const L1Address = getAddress();
-      const NULSOrNERVE = isNULSOrNERVE(L1Address);
-      // console.log(L1Address, NULSOrNERVE, 333)
-      if (!chainId && !NULSOrNERVE) return '';
-      let chain = '';
-      if (NULSOrNERVE) {
-        chain = NULSOrNERVE;
-      } else {
-        Object.keys(_networkInfo).map(v => {
-          if (_networkInfo[v][config.ETHNET] === chainId) {
-            chain = _networkInfo[v].name;
-          }
-        });
-      }
-      return chain;
-    },
-    // metamask L1网络错误
-    wrongChain(state) {
-      const chainId = state.chainId;
-      return Object.keys(_networkInfo).every(v => {
-        const chain = _networkInfo[v];
-        return chain[config.ETHNET] !== chainId || !chain.supported;
-      });
-    },
-    currentAddress(state) {
-      return state.addressInfo?.address?.Ethereum;
-    },
     nerveAddress(state) {
       return state.addressInfo?.address?.NERVE;
     }
   },
   mutations: {
     setCurrentAddress(state, data) {
-      // console.log(data, 7777)
+      console.log(data, 7777);
       state.addressInfo = data;
     },
-    changeChainId(state, data) {
-      // console.log(data, 55)
-      state.chainId = data;
+    changeAddress(state, data) {
+      state.address = data;
+    },
+    changeNetwork(state, data) {
+      state.network = data;
+      if (data) {
+        storage.set('network', data, 'session');
+      } else {
+        storage.remove('network', 'session');
+      }
+    },
+    changeIsWrongChain(state, isWrongChain) {
+      state.isWrongChain = isWrongChain;
     },
     changeConnectShow(state, data) {
       state.showConnect = data;

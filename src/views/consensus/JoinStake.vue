@@ -132,7 +132,7 @@ const validateJoinCurrency = (rule: any, value: any, callback: any) => {
 const validateJoinAmount = async (rule: any, value: any, callback: any) => {
   const baseNumber = 1000;
   const currencyNumber = Division(baseNumber, nvtPrice).toFixed();
-  const maxAvailable = currentCurrency.value.available
+  const maxAvailable = currentCurrency.value.available;
   const decimals = currentCurrency.value.decimals; //8;
   const reg = new RegExp(
     '^([1-9][\\d]{0,20}|0)(\\.[\\d]{0,' + decimals + '})?$'
@@ -354,7 +354,7 @@ function resetState() {
     .el-form-item__content {
       line-height: 1;
       .font12 {
-        color: #8794B1;
+        color: #8794b1;
       }
     }
   }

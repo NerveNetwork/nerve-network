@@ -14,7 +14,7 @@ import txs from 'nerve-sdk-js/lib/model/txs';
 import config from '@/config';
 import { getProvider } from '@/hooks/useEthereum';
 import { broadcastHex, getAssetBalance } from '@/service/api';
-import { RPC_URL } from '@/utils/heterogeneousChainConfig';
+import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 
 interface NProps {
   chain: 'NERVE' | 'NULS';
@@ -321,7 +321,7 @@ export class NTransfer {
 
   // 加入staking
   async joinStakingTransaction(transferInfo: any) {
-    const { from, assetsChainId, assetsId, amount, fee } = transferInfo;
+    const { from, assetsChainId, assetsId, amount } = transferInfo;
     const nonce = await this.getNonce(from, assetsChainId, assetsId);
     const inputs = [
       {
@@ -697,10 +697,11 @@ export class ETransfer {
       this.provider = new ethers.providers.Web3Provider(provider);
     } else {
       if (chain === 'Ethereum') {
-        this.provider = ethers.getDefaultProvider(config.ETHNET);
+        const network = config.isBeta ? 'ropsten' : 'homestead';
+        this.provider = ethers.getDefaultProvider(network);
       } else {
         this.provider = new ethers.providers.JsonRpcProvider(
-          RPC_URL[chain][config.ETHNET]
+          _networkInfo[chain].rpcUrl
         );
       }
     }

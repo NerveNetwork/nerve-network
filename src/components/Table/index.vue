@@ -1,7 +1,12 @@
 <template>
   <div class="n-table">
     <h3 class="n-table-title" v-if="props.title">{{ props.title }}</h3>
-    <el-table :data="props.data" stripe @row-click="rowClick" @sort-change="sortChange">
+    <el-table
+      :data="props.data"
+      stripe
+      @row-click="rowClick"
+      @sort-change="sortChange"
+    >
       <template v-for="item in props.columns" :key="item.prop">
         <el-table-column v-bind="item">
           <template #default="scope">
@@ -13,13 +18,21 @@
       </template>
     </el-table>
     <div class="n-table-pagination" v-if="showPagination">
-      <div class="icon-prev" :class="{ 'disable-btn': disablePrev }" @click="prev">
+      <div
+        class="icon-prev"
+        :class="{ 'disable-btn': disablePrev }"
+        @click="prev"
+      >
         <i class="iconfont icon-arrowleft"></i>
       </div>
       <div class="page-number">
         {{ props.pageIndex || currentPage }}/{{ totalPage }}
       </div>
-      <div class="icon-next" :class="{ 'disable-btn': disableNext }" @click="next">
+      <div
+        class="icon-next"
+        :class="{ 'disable-btn': disableNext }"
+        @click="next"
+      >
         <i class="iconfont icon-arrowright"></i>
       </div>
     </div>

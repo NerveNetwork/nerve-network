@@ -3,7 +3,7 @@
     <div class="head flex-between">
       <div class="left">
         <span class="tx-uppercase font18">ID: {{ nodeInfo.agentId }}</span>
-        <template v-if="address === nodeInfo.agentAddress">
+        <template v-if="props.address === nodeInfo.agentAddress">
           &nbsp;|&nbsp;
           <span class="click font14" style="color: #f1313c" @click="stopNode">
             {{ $t('nodeDetail.nodeDetail1') }}
@@ -131,7 +131,7 @@ function judgeNodeType(bankNode: boolean, isConsensus: number) {
 
 // 注销节点
 function stopNode() {
-  emit('stopNode')
+  emit('stopNode');
 }
 </script>
 

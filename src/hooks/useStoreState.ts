@@ -8,13 +8,13 @@ export default function useStoreState() {
   // 账户资产列表
   const assetsList = computed(() => store.state.assetList);
   // 账户信息
-  const addressInfo = computed(() => store.state.addressInfo);
-  // 当前L1网络名称
-  const chain = computed(() => store.getters.chain);
-  // L1网络是否错误
-  const wrongChain = computed(() => store.getters.wrongChain);
+  const currentAccount = computed(() => store.state.addressInfo);
+  // 当前插件网络
+  const chain = computed(() => store.state.network);
+  // 插件网络是否错误
+  const wrongChain = computed(() => store.state.isWrongChain);
   // L1网络地址
-  const currentAddress = computed(() => store.getters.currentAddress);
+  const currentAddress = computed(() => store.state.address);
   // nvt价格
   const nvtPrice = computed(() => store.state.nvtPrice);
   // 区块高度
@@ -22,7 +22,7 @@ export default function useStoreState() {
   return {
     nerveAddress,
     assetsList,
-    addressInfo,
+    currentAccount,
     chain,
     wrongChain,
     currentAddress,

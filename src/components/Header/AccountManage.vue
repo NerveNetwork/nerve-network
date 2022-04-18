@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="txs">
-<!--      <p>{{ $t('public.public23') }}</p>-->
+      <!--      <p>{{ $t('public.public23') }}</p>-->
       <template v-if="txList.length">
         <div class="tx-item flex" v-for="item in txList" :key="item.hash">
           <span class="hash link" @click="openUrl(item)">

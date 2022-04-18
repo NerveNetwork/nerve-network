@@ -45,7 +45,6 @@ const typeText = computed(() => {
   }
   return txt;
 });
-
 </script>
 
 <style></style>

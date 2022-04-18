@@ -216,7 +216,7 @@ export async function getTxs(data: TxParam) {
   const pageIndex = data.pageIndex || 1;
   const pageSize = data.pageSize || 10;
   const channel = 'db_transactions';
-  if(data.operation === TxType.ALL) delete data.operation;
+  if (data.operation === TxType.ALL) delete data.operation;
   const params = {
     method: channel,
     id: genId(),

@@ -32,7 +32,7 @@ export function setAccountTxs(pub: string, tx: TxInfo) {
 }
 
 export default function useBroadcastNerveHex() {
-  const { addressInfo } = useStoreState();
+  const { currentAccount } = useStoreState();
   const { t } = useI18n();
   const toast = useToast();
 
@@ -42,10 +42,10 @@ export default function useBroadcastNerveHex() {
     const transfer = new NTransfer({ chain: 'NERVE' });
     const txHex = await transfer.getTxHex({
       tAssemble,
-      pub: addressInfo.value?.pub,
-      signAddress: addressInfo.value?.address?.Ethereum
+      pub: currentAccount.value?.pub,
+      signAddress: currentAccount.value?.address?.Ethereum
     });
-    console.log(txHex, '===txHex===');
+    // console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
     if (res && res.hash) {
       const txInfo: TxInfo = {
@@ -54,7 +54,7 @@ export default function useBroadcastNerveHex() {
         time: new Date().getTime(),
         status: 0
       };
-      setAccountTxs(addressInfo.value?.pub, txInfo);
+      setAccountTxs(currentAccount.value?.pub, txInfo);
     }
     handleMessage(res);
     return res;
@@ -64,24 +64,24 @@ export default function useBroadcastNerveHex() {
   async function handleTxInfo(txInfo: any, type: number, txData: any) {
     const transfer = new NTransfer({ chain: 'NERVE', type });
     const inputOuput: any = await transfer.inputsOrOutputs(txInfo);
-    console.log(
-      {
-        inputs: inputOuput.inputs,
-        outputs: inputOuput.outputs,
-        txData,
-        pub: addressInfo.value?.pub,
-        signAddress: addressInfo.value?.address?.Ethereum
-      },
-      '====tx===='
-    );
+    // console.log(
+    //   {
+    //     inputs: inputOuput.inputs,
+    //     outputs: inputOuput.outputs,
+    //     txData,
+    //     pub: currentAccount.value?.pub,
+    //     signAddress: currentAccount.value?.address?.Ethereum
+    //   },
+    //   '====tx===='
+    // );
     const txHex = await transfer.getTxHex({
       inputs: inputOuput.inputs,
       outputs: inputOuput.outputs,
       txData,
-      pub: addressInfo.value?.pub,
-      signAddress: addressInfo.value?.address?.Ethereum
+      pub: currentAccount.value?.pub,
+      signAddress: currentAccount.value?.address?.Ethereum
     });
-    console.log(txHex, '===txHex===');
+    // console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
     if (res && res.hash) {
       const txInfo: TxInfo = {
@@ -90,7 +90,7 @@ export default function useBroadcastNerveHex() {
         time: new Date().getTime(),
         status: 0
       };
-      setAccountTxs(addressInfo.value?.pub, txInfo);
+      setAccountTxs(currentAccount.value?.pub, txInfo);
     }
     handleMessage(res);
     return res;

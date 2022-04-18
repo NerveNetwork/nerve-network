@@ -25,7 +25,9 @@
           </li>
         </ul>
       </div>
-      <p class="copy-right mobile">Copyright 2022 © All rights Reserved. Nerve</p>
+      <p class="copy-right mobile">
+        Copyright 2022 © All rights Reserved. Nerve
+      </p>
     </div>
   </div>
 </template>
@@ -209,7 +211,8 @@ const { nvtPrice } = useStoreState();
       flex-wrap: wrap;
       padding: 0 20px;
     }
-    .left, .right {
+    .left,
+    .right {
       width: 100%;
       padding: 0;
     }

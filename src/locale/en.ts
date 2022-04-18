@@ -51,7 +51,8 @@ const en = {
     public21: 'Create Date',
     public22: 'Status',
     public23: 'The last 20 transactions will be displayed below',
-    public24: 'Wrong network connected'
+    public24: 'Wrong network connected',
+    public25: 'Provider not found'
   },
   error: {
     err_0001: 'Failed',
@@ -463,7 +464,9 @@ const en = {
     home9: 'Investors & Partners',
     home10: 'Circulating',
     home11: 'Market Cap',
-    home12: 'Staking'
+    home12: 'Staking',
+    home13: 'Total Assets on Nerve',
+    home14: 'Total Flow on Nerve / 24H'
   },
   assets: {
     assets1: 'Layer2 Asset',
@@ -475,7 +478,10 @@ const en = {
     assets7: 'Assets',
     assets8: 'Search by asset name or ID',
     assets9: 'Search by asset name or contract address',
-    assets10: 'Contract: '
+    assets10: 'Contract: ',
+    assets11: 'Assets',
+    assets12: 'Hide small balance',
+    assets13: 'Submit Token'
   },
   transfer: {
     transfer1: 'Cross In',
@@ -502,7 +508,8 @@ const en = {
     transfer22: 'Use other asset',
     transfer23: 'Broadcast tx failed',
     transfer24: 'Please enter correct NERVE/NULS address',
-    transfer25: 'Insufficient handling fees'
+    transfer25: 'Insufficient handling fees',
+    transfer26: 'Do not transfer aasets directly to the NULS contract address, it may cause asset loss'
   },
   trading: {
     trading1: 'Order History',
@@ -526,7 +533,8 @@ const en = {
     trading19: 'Swap Anyway',
     trading20: 'Price Impact Too High',
     trading21: 'Swap Failed',
-    trading22: 'The intelligent routing of this trading pair has not been opened yet. Please exchange USDTN and then exchange USDT through USDTN.'
+    trading22:
+      'The intelligent routing of this trading pair has not been opened yet. Please exchange USDTN and then exchange USDT through USDTN.'
   },
   liquidity: {
     liquidity1: 'Liquidity',

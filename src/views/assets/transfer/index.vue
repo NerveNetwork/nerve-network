@@ -18,27 +18,6 @@
             :disabled="disableTx"
             :label="$t('transfer.transfer3')"
           ></el-tab-pane>
-<!--          <el-tab-pane :name="TransferType.CrossIn" :disabled="disableTx">
-            <template #label>
-              <el-tooltip :content="$t('assets.assets4')" placement="top">
-                <i class="iconfont icon-chongzhidaoL2"></i>
-              </el-tooltip>
-            </template>
-          </el-tab-pane>
-          <el-tab-pane :name="TransferType.General">
-            <template #label>
-              <el-tooltip :content="$t('assets.assets5')" placement="top">
-                <i class="iconfont icon-L2zhuanzhang"></i>
-              </el-tooltip>
-            </template>
-          </el-tab-pane>
-          <el-tab-pane :name="TransferType.Withdrawal" :disabled="disableTx">
-            <template #label>
-              <el-tooltip :content="$t('assets.assets6')" placement="top">
-                <i class="iconfont icon-tixiandaoL1"></i>
-              </el-tooltip>
-            </template>
-          </el-tab-pane>-->
         </el-tabs>
       </div>
     </div>
@@ -147,12 +126,22 @@ export default defineComponent({
   }
   @media screen and (max-width: 500px) {
     .top {
-      height: 110px;
+      height: 100px;
       padding: 20px 20px 0;
       .back {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         .iconfont {
           font-size: 20px;
+        }
+      }
+      .el-tabs {
+        .el-tabs__header {
+          margin-bottom: 8px;
+        }
+        .el-tabs__item {
+          height: 30px;
+          line-height: 30px;
+          font-size: 17px;
         }
       }
     }

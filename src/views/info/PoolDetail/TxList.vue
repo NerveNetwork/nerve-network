@@ -11,7 +11,12 @@
         :label="$t('info.info23')"
         :name="TxType.REOMVELP"
       ></el-tab-pane>
-      <Table :data="txList" :page-index="currentPage" :total="txTotal" @pageChange="pageChange" />
+      <Table
+        :data="txList"
+        :page-index="currentPage"
+        :total="txTotal"
+        @pageChange="pageChange"
+      />
     </el-tabs>
   </div>
 </template>
@@ -21,15 +26,13 @@ import { ref, watch } from 'vue';
 import Table from './Table.vue';
 import { getTxs } from '@/service/api';
 import dayjs from 'dayjs';
-import { adaptiveFix, divisionAndFix, fixNumber } from '@/utils/util';
+import { adaptiveFix, divisionAndFix } from '@/utils/util';
 import { TxItem, TxType } from '../types';
 
 const props = defineProps<{
   assetKey: string;
   isPool?: boolean;
 }>();
-
-const emit = defineEmits(['pageChange']);
 
 const activeTab = ref(TxType.ALL);
 const txList = ref<TxItem[]>([]);

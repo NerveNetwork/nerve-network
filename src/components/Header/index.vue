@@ -8,7 +8,7 @@
         <div class="logo" @click="router.push('/')">
           <img src="../../assets/img/nervelogo.svg" alt="" />
         </div>
-        <Menu class="pc-menu" :address="address" :nerveAddress="nerveAddress" />
+        <Menu class="pc-menu" />
       </div>
       <div class="account-wrap">
         <div class="account">
@@ -22,14 +22,27 @@
           <AuthButton v-else-if="!nerveAddress"></AuthButton>
           <div v-else class="flex-center">
             <div class="chain-wrap">
-              <SwitchChain v-model="showSwitchChain" :chainId="chainId">
+              <SwitchChain
+                v-model="showSwitchChain"
+                :currentChain="chain"
+                :address="address"
+              >
                 <div class="l1-chain" @click="showSwitchChain = true">
                   <img :src="chainLogo" alt="" v-if="!wrongChain" />
-                  <img src="../../assets/img/net-error.svg" alt="" @click="showSwitchChain = true" v-else />
+                  <img
+                    src="../../assets/img/net-error.svg"
+                    alt=""
+                    @click="showSwitchChain = true"
+                    v-else
+                  />
                   <el-icon style="margin-right: 5px"><caret-bottom /></el-icon>
                 </div>
               </SwitchChain>
-              <img src="../../assets/img/nerveIcon.png" alt="" @click="manageAccount = true" />
+              <img
+                src="../../assets/img/nerveIcon.png"
+                alt=""
+                @click="manageAccount = true"
+              />
               <span @click="manageAccount = true">
                 {{ superLong(nerveAddress, 5) }}
               </span>
@@ -58,7 +71,7 @@
         :txList="accountTxs"
       />
     </div>
-    <MobileMenu v-model:show="showMenu" :address="address" :nerveAddress="nerveAddress" />
+    <MobileMenu v-model:show="showMenu" />
   </div>
 </template>
 
@@ -66,6 +79,7 @@
 import { ref, watch, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
+import { useToast } from 'vue-toastification';
 import Menu from '../Menu.vue';
 import ConnectWallet from './ConnectWallet.vue';
 import AccountManage from './AccountManage.vue';
@@ -77,7 +91,7 @@ import AuthButton from '../AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getTx } from '@/service/api';
-import { superLong, getCurrentAccount, isNULSOrNERVE } from '@/utils/util';
+import { superLong, getCurrentAccount } from '@/utils/util';
 import { Account, TxInfo } from '@/store/types';
 import storage from '@/utils/storage';
 import { ETransfer } from '@/utils/api';
@@ -85,9 +99,10 @@ import { ETransfer } from '@/utils/api';
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
+const toast = useToast();
 
-const { address, chainId, initProvider, connect, disconnect } = useEthereum();
-const { nerveAddress, wrongChain: notL1Chain } = useStoreState();
+const { address, initProvider, connect, disconnect } = useEthereum();
+const { nerveAddress, wrongChain, chain } = useStoreState();
 initProvider();
 
 const { lang, switchLang } = useLang();
@@ -97,21 +112,8 @@ const showSwitchChain = ref(false);
 watch(
   () => address.value,
   val => {
-    if (val) {
-      const currentAccount = getCurrentAccount(val);
-      store.commit('setCurrentAddress', currentAccount || {});
-    }
-  },
-  {
-    immediate: true
-  }
-);
-watch(
-  () => chainId.value,
-  val => {
-    if (val) {
-      store.commit('changeChainId', val);
-    }
+    const currentAccount = getCurrentAccount(val);
+    store.commit('setCurrentAddress', currentAccount || {});
   },
   {
     immediate: true
@@ -127,7 +129,8 @@ async function connectProvider(provider: string) {
   try {
     await connect(provider);
   } catch (e) {
-    //
+    // console.log(e, typeof e, e.message);
+    toast.error(e.message || e);
   }
   store.commit('changeConnectShow', false);
 }
@@ -144,43 +147,36 @@ watch(
     activeIndex.value = val?.split('/')[1];
   }
 );
-function toAsset() {
-  router.push({
-    name: 'assets'
-  });
-}
 
-const wrongChain = computed(() => {
+/*const wrongChain = computed(() => {
   const NULSOrNERVE = address.value && isNULSOrNERVE(address.value);
   if (NULSOrNERVE) {
     return false;
   } else {
     return notL1Chain.value;
   }
-});
+});*/
 
-const authRef = ref<InstanceType<typeof AuthButton>>();
-async function derivedAddress() {
-  // @ts-ignore
-  const result = await authRef.value.derivedAddress();
-  if (result) {
-    toAsset();
-  }
-}
+// const authRef = ref<InstanceType<typeof AuthButton>>();
+// async function derivedAddress() {
+//   // @ts-ignore
+//   const result = await authRef.value.derivedAddress();
+//   if (result) {
+//     toAsset();
+//   }
+// }
 
 const chainLogo = computed(() => {
-  const network = store.getters.chain;
-  // console.log(network, 666)
-  const { logo } = _networkInfo[network];
+  const { logo } = _networkInfo[chain.value];
   return logo;
 });
 
 const showMenu = ref(false);
 function toggleShowMenu() {
+  showSwitchChain.value = false;
   showMenu.value = !showMenu.value;
 }
 
-let timer: number;
 let isQuery = false;
 onMounted(() => {
   window.setInterval(() => {

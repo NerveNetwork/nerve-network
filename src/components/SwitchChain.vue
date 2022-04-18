@@ -5,7 +5,7 @@
       <li
         v-for="item in supportChainList"
         :key="item.chainId"
-        :class="{ active: item.chainId === chainId }"
+        :class="{ active: item.chainName === currentChain }"
         @click.stop="switchChain(item)"
       >
         <img :src="item.logo" alt="" />
@@ -17,18 +17,12 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref, watch
-} from 'vue';
-import config from '@/config';
-import useEthereum, { AddChain } from '@/hooks/useEthereum';
+import { defineComponent, computed, ref, watch } from 'vue';
+import { useStore } from '@/store';
+import useEthereum, { getProvider, AddChain } from '@/hooks/useEthereum';
 import useClickOutside from '@/hooks/useClickOutside';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-import { useStore } from '@/store';
+import { getCurrentAccount } from '@/utils/util';
 
 interface ChainItem extends AddChain {
   logo: string;
@@ -38,7 +32,8 @@ export default defineComponent({
   name: 'SwitchChain',
   props: {
     modelValue: Boolean,
-    chainId: String
+    currentChain: String,
+    address: String
   },
   setup(props, { emit }) {
     const store = useStore();
@@ -47,8 +42,8 @@ export default defineComponent({
     Object.values(_networkInfo).map((v: any) => {
       if (v.supported) {
         supportChainList.push({
-          chainId: v[config.ETHNET],
-          rpcUrls: v.rpcUrl ? [v.rpcUrl[config.ETHNET]] : [],
+          chainId: v.nativeId,
+          rpcUrls: v.rpcUrl ? [v.rpcUrl] : [],
           chainName: v.name,
           nativeCurrency: {
             name: v.name,
@@ -70,11 +65,24 @@ export default defineComponent({
     });
     const { addEthereumChain, switchEthereumChain } = useEthereum();
     async function switchChain(item: ChainItem) {
-      if (item.chainId === props.chainId) return;
+      if (item.chainName === props.currentChain) return;
       show.value = false;
+      const provider = getProvider();
       try {
-        if (item.chainId === '0x-1' || item.chainId === '0x-2') {
-          store.commit('changeChainId', item.chainId);
+        if (
+          item.chainName === 'NULS' ||
+          item.chainName === 'NERVE' ||
+          item.chainId === provider.chainId
+        ) {
+          store.commit('changeNetwork', item.chainName);
+          const currentAccount = getCurrentAccount(props.address || '');
+          const chain =
+            item.chainName === 'NULS' || item.chainName === 'NERVE'
+              ? item.chainName
+              : 'Ethereum';
+          const newAddress = currentAccount.address[chain];
+          store.commit('changeAddress', newAddress);
+          store.commit('changeIsWrongChain', false);
         } else if (item.chainName !== 'Ethereum') {
           const { logo, ...rest } = item;
           await addEthereumChain(rest);
@@ -95,18 +103,6 @@ export default defineComponent({
         }
       }
     );
-    /*function clickHandler(e: MouseEvent) {
-      const target = e.target;
-      if (target instanceof Node && !wrapper.value?.contains(target)) {
-        show.value = false;
-      }
-    }
-    onMounted(() => {
-      document.addEventListener('click', clickHandler);
-    });
-    onBeforeUnmount(() => {
-      document.removeEventListener('click', clickHandler);
-    });*/
     return {
       show,
       supportChainList,

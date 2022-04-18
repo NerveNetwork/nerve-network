@@ -1,10 +1,7 @@
 <template>
-  <div
-    class="cross-out"
-    v-loading="loading"
-  >
+  <div class="cross-out" v-loading="loading">
     <div class="title">
-      {{ 'To ' + $store.getters.chain }}
+      {{ 'To ' + father.network }}
       <span class="click" @click="openUrl(father.address, father.network)">
         {{ superLong(father.address) }}
         <i class="iconfont icon-tiaozhuanlianjie"></i>
@@ -140,7 +137,8 @@ export default defineComponent({
           }
         });
       });
-      const defaultFeeAsset = config.htgMainAsset[network] || config.htgMainAsset.NERVE;
+      const defaultFeeAsset =
+        config.htgMainAsset[network] || config.htgMainAsset.NERVE;
       selectedFeeAsset.value = father.allAssetsList.find(asset => {
         return (
           asset.chainId === defaultFeeAsset.chainId &&

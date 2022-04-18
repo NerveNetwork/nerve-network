@@ -1,15 +1,18 @@
 import { ref, watch, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import useStoreState from '@/hooks/useStoreState';
-import { DefaultAsset, AssetItem } from '../types';
+import { DefaultAsset, AssetItem, HotAsset } from '../types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-import { getStablePairListForSwapTrade } from '@/service/api';
+import {
+  getStablePairListForSwapTrade,
+  getHotAssets as getHotAssetsApi
+} from '@/service/api';
 
 const LpSource = [10, 11, 12];
 
 export default function useAsset(isLiquidity = false) {
   const route = useRoute();
-  const { assetsList, chain } = useStoreState();
+  const { assetsList } = useStoreState();
   // 兑换、添加流动性屏蔽LP资产
   const filterLPAssets = computed(() => {
     return assetsList.value.filter(item => {
@@ -25,7 +28,12 @@ export default function useAsset(isLiquidity = false) {
   const liquidityAssets = ref<AssetItem[]>([]);
   // 不能添加流动性的稳定币资产
   const stableCoins = ref({});
-  onMounted(async () => {
+  onMounted(() => {
+    getStableCoins();
+    getHotAssets();
+  });
+
+  async function getStableCoins() {
     const res = await getStablePairListForSwapTrade();
     if (res) {
       res.map((v: any) => {
@@ -34,7 +42,37 @@ export default function useAsset(isLiquidity = false) {
         });
       });
     }
-  });
+  }
+
+  const hotAssets = ref<HotAsset[]>([]);
+  async function getHotAssets() {
+    if (isLiquidity) return;
+    const res = await getHotAssetsApi();
+    if (res && res.length) {
+      const list: HotAsset[] = [];
+      console.log(res, 888);
+      res.map(v => {
+        list.push({
+          chainId: v.chainId,
+          assetId: v.assetId,
+          assetKey: v.chainId + '-' + v.assetId,
+          symbol: v.symbol,
+          registerChain: parseRegisterChain(v.fromChainId)
+        });
+      });
+      hotAssets.value = list;
+    }
+  }
+
+  function parseRegisterChain(registerChainId: number) {
+    const chain = Object.values(_networkInfo).find(
+      v => v.chainId === registerChainId
+    )?.name;
+    if (chain && chain !== 'NERVE') {
+      return chain;
+    }
+    return '';
+  }
 
   watch(
     [filterLPAssets, stableCoins],
@@ -52,17 +90,17 @@ export default function useAsset(isLiquidity = false) {
         }
         if (!isLoaded) {
           const { fromAsset, toAsset } = route.params;
-          const L1Info = _networkInfo[chain.value];
           let defaultSymbol = 'NVT';
-          if (L1Info?.supported) {
-            // defaultSymbol = L1Info.mainAsset;
-          }
           const default_eth = val.find(
             item => item.symbol === defaultSymbol
           ) as AssetItem;
           if (fromAsset || toAsset) {
-            const from = val.find(item => item.assetKey === fromAsset && !sCoins[fromAsset]);
-            const to = val.find(item => item.assetKey === toAsset && !sCoins[toAsset]);
+            const from = val.find(
+              item => item.assetKey === fromAsset && !sCoins[fromAsset]
+            );
+            const to = val.find(
+              item => item.assetKey === toAsset && !sCoins[toAsset]
+            );
             if (from || to) {
               hasQuery.value = true;
               defaultAsset.value = {
@@ -87,6 +125,7 @@ export default function useAsset(isLiquidity = false) {
   return {
     assetsList: liquidityAssets,
     defaultAsset,
-    hasQuery
+    hasQuery,
+    hotAssets
   };
 }

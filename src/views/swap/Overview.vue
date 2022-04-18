@@ -63,7 +63,12 @@
                 </div>
               </div>
             </div>
-            <p>Hash: <span class="link" @click="openExplorer('hash', item.hash)">{{ superLong(item.hash, 8) }}</span></p>
+            <p>
+              Hash:
+              <span class="link" @click="openExplorer('hash', item.hash)">
+                {{ superLong(item.hash, 8) }}
+              </span>
+            </p>
           </li>
         </ul>
       </div>

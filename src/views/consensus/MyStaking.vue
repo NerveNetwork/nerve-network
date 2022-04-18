@@ -2,14 +2,16 @@
   <div class="my-staking-info box_wrapper">
     <h3 class="title-label">
       {{ $t('staking.staking32') }}丨${{ myTotalStake }}
-      <el-button class="fr" type="primary" @click="joinStakingDialog = true;">
+      <el-button class="fr" type="primary" @click="joinStakingDialog = true">
         {{ $t('staking.staking1') }}
       </el-button>
     </h3>
     <div class="info-wrap">
       <div class="infos clear">
         <p class="info-name">{{ $t('staking.staking33') }}</p>
-        <p class="info-val">{{ $thousands(myReward) }} ≈ ${{ $thousands(myRewardUsd) }}</p>
+        <p class="info-val">
+          {{ $thousands(myReward) }} ≈ ${{ $thousands(myRewardUsd) }}
+        </p>
       </div>
       <div class="chart-wrap">
         <PieChart :data="pieData" />
@@ -37,7 +39,6 @@ import {
 } from '@/service/api';
 import { divisionAndFix, Plus, fixNumber, Times } from '@/utils/util';
 
-import { AssetItem } from '@/store/types';
 import { CanStakingListItem } from '@/views/consensus/types';
 
 interface PieData {

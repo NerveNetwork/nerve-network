@@ -2,14 +2,14 @@
   <div class="link-card">
     <div class="bg"></div>
     <div class="content">
-      <img :src="picSrc" alt="" />
-      <p class="title">{{ title }}</p>
-      <p class="desc">{{ desc }}</p>
+      <img :src="props.picSrc" alt="" />
+      <p class="title">{{ props.title }}</p>
+      <p class="desc">{{ props.desc }}</p>
       <div class="button-wrap">
-        <router-link :to="link" v-if="link.startsWith('/')">
-          {{ btnLabel }}
+        <router-link :to="props.link" v-if="props.link.startsWith('/')">
+          {{ props.btnLabel }}
         </router-link>
-        <a :href="link" target="_blank" v-else>{{ btnLabel }}</a>
+        <a :href="props.link" target="_blank" v-else>{{ props.btnLabel }}</a>
       </div>
     </div>
   </div>

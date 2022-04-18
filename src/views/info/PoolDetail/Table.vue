@@ -1,9 +1,11 @@
 <template>
-  <Table :columns="columns" v-bind="props" @sortChange="sortChange" @pageChange="pageChange">
+  <Table
+    :columns="columns"
+    v-bind="props"
+    @sortChange="sortChange"
+    @pageChange="pageChange"
+  >
     <template #type="scope">
-<!--      <span class="link" @click="openExplorer('hash', scope.row.hash)">
-        {{ scope.row.type }}
-      </span>-->
       <TxType
         v-if="scope.row.type"
         :type="scope.row.type"
@@ -95,10 +97,10 @@ const columns = computed(() => {
   ];
 });
 function sortChange(item) {
-  // console.log(item);
+  console.log(item);
 }
 function pageChange(index: number) {
-  emit('pageChange', index)
+  emit('pageChange', index);
 }
 </script>
 
