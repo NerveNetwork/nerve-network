@@ -4,5 +4,6 @@ declare global {
     ethereum: any; //ethers.providers.Web3Provider,
     NaboxWallet: any; //ethers.providers.Web3Provider
     nabox: any;
+    tronLink: any;
   }
 }

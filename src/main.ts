@@ -3,10 +3,13 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import usePlugins from '@/plugins';
+import AddChain from '@/utils/AddChain';
 
 if (process.env.NODE_ENV !== 'development') {
   window.console.log = () => {};
 }
+
+AddChain();
 
 setTimeout(() => {
   // 不延迟有时刷新会拿不到ethereum.selectedAddress???

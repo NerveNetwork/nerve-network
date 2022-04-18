@@ -52,7 +52,8 @@ const en = {
     public22: 'Status',
     public23: 'The last 20 transactions will be displayed below',
     public24: 'Wrong network connected',
-    public25: 'Provider not found'
+    public25: 'Provider not found',
+    public26: 'Please login to the extention wallet first.'
   },
   error: {
     err_0001: 'Failed',

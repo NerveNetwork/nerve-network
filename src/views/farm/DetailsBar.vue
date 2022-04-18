@@ -263,7 +263,7 @@ async function getERC20Allowance() {
     needAuth.value = await transfer.getERC20Allowance(
       tokenInfo.lpToken,
       contractAddress,
-      currentAccount.value?.address?.Ethereum
+      currentAccount.value?.address?.EVM
     );
     if (!needAuth.value) {
       refreshAuth.value = false;
@@ -285,7 +285,7 @@ async function authToken() {
     const res = await transfer.approveERC20(
       tokenInfo.lpToken,
       contractAddress,
-      currentAccount.value?.address?.Ethereum
+      currentAccount.value?.address?.EVM
     );
     if (res.hash) {
       toast.success(t('transfer.transfer14'));
@@ -365,7 +365,7 @@ async function getBalance() {
     const transfer = new ETransfer();
     const tokenInfo = props.tokenInfo as UniFarmItem;
     const contractAddress = tokenInfo.lpToken;
-    const address = currentAccount.value?.address?.Ethereum;
+    const address = currentAccount.value?.address?.EVM;
     if (contractAddress) {
       const decimal = tokenInfo.stakeTokenDecimals;
       balance.value = await transfer.getERC20Balance(

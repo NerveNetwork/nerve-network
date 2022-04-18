@@ -19,7 +19,11 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue';
 import { useStore } from '@/store';
-import useEthereum, { getProvider, AddChain } from '@/hooks/useEthereum';
+import useEthereum, {
+  getProvider,
+  AddChain,
+  specialChain
+} from '@/hooks/useEthereum';
 import useClickOutside from '@/hooks/useClickOutside';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getCurrentAccount } from '@/utils/util';
@@ -70,16 +74,13 @@ export default defineComponent({
       const provider = getProvider();
       try {
         if (
-          item.chainName === 'NULS' ||
-          item.chainName === 'NERVE' ||
+          specialChain.indexOf(item.chainName) > -1 ||
           item.chainId === provider.chainId
         ) {
           store.commit('changeNetwork', item.chainName);
           const currentAccount = getCurrentAccount(props.address || '');
           const chain =
-            item.chainName === 'NULS' || item.chainName === 'NERVE'
-              ? item.chainName
-              : 'Ethereum';
+            specialChain.indexOf(item.chainName) > -1 ? item.chainName : 'EVM';
           const newAddress = currentAccount.address[chain];
           store.commit('changeAddress', newAddress);
           store.commit('changeIsWrongChain', false);

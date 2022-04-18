@@ -1,45 +1,52 @@
 <template>
   <div class="cross-in" v-loading="loading">
-    <div class="title">
-      {{ 'From ' + father.network }}
-      <span class="click" @click="openUrl(father.address, father.network)">
-        {{ superLong(father.address, 6) }}
-        <i class="iconfont icon-tiaozhuanlianjie"></i>
-      </span>
-    </div>
-    <div class="transfer-content">
-      <custom-input
-        v-model:inputVal="amount"
-        :label="$t('public.public11')"
-        :icon="transferAsset.symbol"
-        :assetList="assetsList"
-        :balance="balance"
-        :show-amount="false"
-        :selectedAsset="transferAsset"
-        @selectAsset="selectAsset"
-        @max="max"
-      ></custom-input>
-    </div>
-    <div class="confirm-wrap">
-      <el-button
-        type="primary"
-        v-if="!needAuth"
-        @click="handleSendTx"
-        :disabled="disableTransfer"
-      >
-        {{
-          amountErrorTip ? $t('transfer.transfer15') : $t('transfer.transfer9')
-        }}
+    <template v-if="isTron && !TRONAddress">
+      <el-button type="primary" @click="connectTron" class="connect-tron-btn" style="width: 100%; margin: 25px 0">
+        {{ $t('transfer.transfer27') }}
       </el-button>
-      <el-button
-        type="primary"
-        v-else
-        @click="handleApprove"
-        :disabled="father.disableTx"
-      >
-        {{ $t('transfer.transfer13') }}
-      </el-button>
-    </div>
+    </template>
+    <template v-else>
+      <div class="title">
+        {{ 'From ' + father.network }}
+        <span class="click" @click="openUrl(L1Address, father.network)">
+          {{ superLong(L1Address, 6) }}
+          <i class="iconfont icon-tiaozhuanlianjie"></i>
+        </span>
+      </div>
+      <div class="transfer-content">
+        <custom-input
+          v-model:inputVal="amount"
+          :label="$t('public.public11')"
+          :icon="transferAsset.symbol"
+          :assetList="assetsList"
+          :balance="balance"
+          :show-amount="false"
+          :selectedAsset="transferAsset"
+          @selectAsset="selectAsset"
+          @max="max"
+        ></custom-input>
+      </div>
+      <div class="confirm-wrap">
+        <el-button
+          type="primary"
+          v-if="!needAuth"
+          @click="handleSendTx"
+          :disabled="disableTransfer"
+        >
+          {{
+            amountErrorTip ? $t('transfer.transfer15') : $t('transfer.transfer9')
+          }}
+        </el-button>
+        <el-button
+          type="primary"
+          v-else
+          @click="handleApprove"
+          :disabled="father.disableTx"
+        >
+          {{ $t('transfer.transfer13') }}
+        </el-button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -71,12 +78,18 @@ export default defineComponent({
   },
   setup() {
     const father = inject(rootCmpKey, {} as RootComponent);
+    console.log(father.network, 88777);
     const { t } = useI18n();
     const toast = useToast();
 
+    const isTron = computed(() => {
+      return father.network === 'TRON';
+    });
     const loading = ref(false);
     const amount = ref('');
     const {
+      TRONAddress,
+      connect,
       balance,
       getBalance,
       fee,
@@ -85,7 +98,28 @@ export default defineComponent({
       getERC20Allowance,
       approveERC20,
       sendTx
-    } = useCrossIn();
+    } = useCrossIn(isTron.value);
+
+    const L1Address = computed(() => {
+      return isTron.value ? TRONAddress.value : father.address;
+    });
+
+    async function connectTron() {
+      try {
+        await connect();
+      } catch (e) {
+        toast.error(e.message || e);
+      }
+    }
+
+    watch(
+      () => TRONAddress.value,
+      val => {
+        if (val && transferAsset.value && isTron.value) {
+          checkAsset(transferAsset.value);
+        }
+      }
+    );
 
     const amountErrorTip = ref('');
     watch(
@@ -171,7 +205,7 @@ export default defineComponent({
       // needAuth.value = false;
       const heterogeneousList = asset.heterogeneousList || [];
       const heterogeneousChainId = _networkInfo[father.network]?.chainId;
-      if (!heterogeneousChainId) return;
+      if (!heterogeneousChainId || !L1Address.value) return;
       heterogeneousInfo = heterogeneousList.find(
         v => v.heterogeneousChainId === heterogeneousChainId
       ) as HeterogeneousInfo;
@@ -179,14 +213,14 @@ export default defineComponent({
       if (heterogeneousInfo) {
         transferAsset.value = asset;
         if (heterogeneousInfo.isToken) {
-          getERC20Allowance(heterogeneousInfo, father.address);
+          getERC20Allowance(heterogeneousInfo, L1Address.value);
         } else {
           needAuth.value = false;
         }
         await getFee(heterogeneousInfo.isToken);
         getBalance(
           heterogeneousInfo,
-          father.address,
+          L1Address.value,
           transferAsset.value.decimals
         );
       } else {
@@ -209,7 +243,7 @@ export default defineComponent({
     async function handleApprove() {
       loading.value = true;
       try {
-        const res = await approveERC20(heterogeneousInfo, father.address);
+        const res = await approveERC20(heterogeneousInfo, L1Address.value);
         handleMsg(res, 'approve');
       } catch (e) {
         toast.error(e.message || e);
@@ -224,7 +258,7 @@ export default defineComponent({
           heterogeneousInfo,
           father.nerveAddress,
           amount.value,
-          father.address,
+          L1Address.value,
           transferAsset.value.decimals
         );
         handleMsg(res, 'crossIn');
@@ -256,6 +290,10 @@ export default defineComponent({
 
     return {
       father,
+      isTron,
+      TRONAddress,
+      connectTron,
+      L1Address,
       loading,
       amount,
       balance,

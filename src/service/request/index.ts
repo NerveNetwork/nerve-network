@@ -38,7 +38,7 @@ class Request {
     });
   }
 
-  get<T>(config: AxiosRequestConfig): Promise<T> {
+  get<T = any>(config: AxiosRequestConfig): Promise<T> {
     return this.request<T>({ ...config, method: 'GET' });
   }
 

@@ -1,33 +1,66 @@
 import { ref } from 'vue';
+import TronLinkApi from '@/utils/tronLink';
 import { ETransfer } from '@/utils/api';
 import { HeterogeneousInfo } from '@/store/types';
+import { useI18n } from 'vue-i18n';
 
-export default function useCrossIn() {
-  const transfer = new ETransfer();
+export default function useCrossIn(isTron = false) {
+  const { t } = useI18n();
+  const TronTransfer = new TronLinkApi();
+  const EvmTransfer = new ETransfer();
 
+  if (isTron) {
+    window.addEventListener('message', function (e) {
+      if (e.data.message && e.data.message.action == 'accountsChanged') {
+        // console.log("accountsChanged event", e.data.message)
+        // console.log("current address:", e.data.message.data.address)
+        TRONAddress.value = e.data.message.data.address;
+      }
+    });
+  }
+  const TRONAddress = ref(TronTransfer.selectedAddress);
+
+  async function connect() {
+    if (isTron) {
+      if (!TronTransfer.connected) throw t('public.public26');
+      const address = await TronTransfer.requestAccount();
+      TRONAddress.value = address;
+      return address;
+    }
+  }
   const balance = ref('');
   async function getBalance(
     heterogeneousInfo: HeterogeneousInfo,
     address: string,
     decimal?: number
   ) {
-    if (heterogeneousInfo) {
-      const { contractAddress, isToken } = heterogeneousInfo;
+    const { contractAddress, isToken } = heterogeneousInfo;
+    if (isTron) {
       if (isToken) {
-        balance.value = await transfer.getERC20Balance(
+        balance.value = await TronTransfer.getTrc20Balance(
+          TRONAddress.value,
+          contractAddress,
+          decimal
+        );
+      } else {
+        balance.value = await TronTransfer.getTrxBalance(TRONAddress.value);
+      }
+    } else {
+      if (isToken) {
+        balance.value = await EvmTransfer.getERC20Balance(
           contractAddress,
           decimal as number,
           address
         );
       } else {
-        balance.value = await transfer.getEthBalance(address);
+        balance.value = await EvmTransfer.getEthBalance(address);
       }
     }
   }
 
   const fee = ref('');
   async function getFee(isToken: boolean) {
-    fee.value = await transfer.getGasPrice(isToken);
+    fee.value = isTron ? '0' : await EvmTransfer.getGasPrice(isToken);
   }
 
   const needAuth = ref(false);
@@ -39,11 +72,19 @@ export default function useCrossIn() {
   ) {
     const { contractAddress, heterogeneousChainMultySignAddress } =
       heterogeneousInfo;
-    needAuth.value = await transfer.getERC20Allowance(
-      contractAddress,
-      heterogeneousChainMultySignAddress,
-      address
-    );
+    if (isTron) {
+      needAuth.value = await TronTransfer.getTrc20Allowance(
+        TRONAddress.value,
+        heterogeneousChainMultySignAddress,
+        contractAddress
+      );
+    } else {
+      needAuth.value = await EvmTransfer.getERC20Allowance(
+        contractAddress,
+        heterogeneousChainMultySignAddress,
+        address
+      );
+    }
     if (!needAuth.value) {
       refreshAuth = false;
     }
@@ -60,11 +101,20 @@ export default function useCrossIn() {
   ) {
     const { contractAddress, heterogeneousChainMultySignAddress } =
       heterogeneousInfo;
-    const res = await transfer.approveERC20(
-      contractAddress,
-      heterogeneousChainMultySignAddress,
-      address
-    );
+    let res: any = {};
+    if (isTron) {
+      res.hash = await TronTransfer.approveTrc20(
+        TRONAddress.value,
+        heterogeneousChainMultySignAddress,
+        contractAddress
+      );
+    } else {
+      res = await EvmTransfer.approveERC20(
+        contractAddress,
+        heterogeneousChainMultySignAddress,
+        address
+      );
+    }
     if (res.hash) {
       refreshAuth = true;
       getERC20Allowance(heterogeneousInfo, address);
@@ -81,19 +131,32 @@ export default function useCrossIn() {
   ) {
     const { contractAddress, heterogeneousChainMultySignAddress } =
       heterogeneousInfo;
-    const params = {
-      multySignAddress: heterogeneousChainMultySignAddress,
-      nerveAddress: nerveAddress,
-      numbers: amount,
-      fromAddress: address,
-      contractAddress,
-      decimals: decimal
-    };
-    // console.log(params);
-    return await transfer.crossIn(params);
+    if (isTron) {
+      const hash = await TronTransfer.crossOutToNerve(
+        nerveAddress,
+        amount,
+        heterogeneousChainMultySignAddress,
+        contractAddress,
+        decimal
+      );
+      return { hash };
+    } else {
+      const params = {
+        multySignAddress: heterogeneousChainMultySignAddress,
+        nerveAddress: nerveAddress,
+        numbers: amount,
+        fromAddress: address,
+        contractAddress,
+        decimals: decimal
+      };
+      // console.log(params);
+      return await EvmTransfer.crossIn(params);
+    }
   }
 
   return {
+    TRONAddress,
+    connect,
     balance,
     getBalance,
     fee,

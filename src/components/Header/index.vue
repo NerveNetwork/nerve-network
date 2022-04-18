@@ -90,7 +90,7 @@ import useLang from '@/hooks/useLang';
 import AuthButton from '../AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-import { getTx } from '@/service/api';
+import { getTx, getTronTx } from '@/service/api';
 import { superLong, getCurrentAccount } from '@/utils/util';
 import { Account, TxInfo } from '@/store/types';
 import storage from '@/utils/storage';
@@ -194,7 +194,7 @@ async function checkTxStatus() {
     isQuery = true;
     try {
       accountTxs.value = [...txs];
-      const pendingTx = txs.filter((v: TxInfo) => v.status === 0);
+      const pendingTx = txs.filter((v: TxInfo) => !v.status);
       if (pendingTx.length) {
         const newTxs = await pollingTx(pendingTx);
         newTxs.map(tx => {
@@ -207,7 +207,7 @@ async function checkTxStatus() {
         accountTxs.value = txs;
         const accountList: Account[] = storage.get('accountList') || [];
         accountList.map(v => {
-          if (v.address.Ethereum === address.value) {
+          if (v.address.EVM === address.value) {
             v.txs = txs;
           }
         });
@@ -223,10 +223,11 @@ async function pollingTx(txs: TxInfo[]) {
   const txsQuery = txs.map(v => {
     if (!v.L1Chain) {
       return getTx(v.hash);
+    } else if (v.L1Chain === 'TRON') {
+      return getTronTx(v.hash);
     } else {
       const transfer = new ETransfer(v.L1Chain);
       return transfer.provider.getTransactionReceipt(v.hash);
-      // return ''
     }
   });
   const res = await Promise.all(txsQuery);

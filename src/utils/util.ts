@@ -276,20 +276,6 @@ export function isNULSOrNERVE(address: string | null) {
   }
 }
 
-// 获取当前metamask连接的网络名称
-export function getChain() {
-  const provider = getProvider();
-  const chainId = provider?.chainId;
-  if (!chainId) return null;
-  let chain = '';
-  Object.keys(_networkInfo).map(v => {
-    if (_networkInfo[v].nativeId === chainId) {
-      chain = _networkInfo[v].name;
-    }
-  });
-  return chain;
-}
-
 // 检查资产是否能在L1-L2间跨链
 export function checkCanToL1(asset: AssetItem): boolean {
   if (!asset.heterogeneousList) return false;
@@ -312,7 +298,7 @@ export function checkCanToL1(asset: AssetItem): boolean {
 export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
   const canToL1 = checkCanToL1(asset);
   if (!canToL1) return false;
-  const currentChain = getChain();
+  const currentChain = storage.get('network', 'session');
   if (currentChain) {
     return !!asset.heterogeneousList?.find((v: HeterogeneousInfo) => {
       return _networkInfo[currentChain].chainId === v.heterogeneousChainId;
@@ -342,7 +328,11 @@ export function openL1Explorer(chain: string, type: string, query: string) {
   if (type === 'address') {
     url += '/address/' + query;
   } else if (type === 'hash') {
-    url += '/tx/' + query;
+    if (chain === 'TRON') {
+      url += '/transaction/' + query;
+    } else {
+      url += '/tx/' + query;
+    }
   }
   window.open(url);
 }

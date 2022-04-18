@@ -19,6 +19,7 @@ import nerve from 'nerve-sdk-js';
 import storage from '@/utils/storage';
 import { getCurrentAccount } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import { generateTronAddress } from '@/utils/tronLink';
 
 interface State {
   address: string | null;
@@ -129,13 +130,16 @@ export async function generateAddress(
   );
   return {
     address: {
-      Ethereum: heterogeneousAddress,
+      EVM: heterogeneousAddress,
       NERVE: nerveAddress,
-      NULS: NULSAddress
+      NULS: NULSAddress,
+      TRON: generateTronAddress(pub)
     },
     pub
   };
 }
+
+export const specialChain = ['NULS', 'NERVE', 'TRON'];
 
 export default function useEthereum() {
   const store = useStore();
@@ -171,7 +175,7 @@ export default function useEthereum() {
     let currentAddress = address;
     let network = storage.get('network', 'session');
     if (network && network !== 'undefined') {
-      if (network === 'NULS' || network === 'NERVE') {
+      if (specialChain.indexOf(network) > -1) {
         isWrongChain = false;
         // 新账户、且bridge之前在NULS链，会导致currentAccount为null
         currentAddress = currentAccount

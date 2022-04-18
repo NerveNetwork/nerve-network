@@ -207,7 +207,7 @@ export default function useData() {
         divisionDecimals(poolInfoValue[5], tokenInfo.stakeTokenDecimals)
       ).toString();
 
-      const address = currentAccount.value?.address?.Ethereum;
+      const address = currentAccount.value?.address?.EVM;
       if (address) {
         // 待领取收益数量
         const pendingTokenValue = await contract.pendingToken(item, address);
