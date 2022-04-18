@@ -22,8 +22,11 @@ export default function useCrossIn(isTron = false) {
 
   async function connect() {
     if (isTron) {
-      if (!TronTransfer.connected) throw t('public.public26');
+      if (!TronTransfer.hasTronLink) throw t('public.public25');
       const address = await TronTransfer.requestAccount();
+      if (!address) {
+        throw t('public.public26');
+      }
       TRONAddress.value = address;
       return address;
     }
