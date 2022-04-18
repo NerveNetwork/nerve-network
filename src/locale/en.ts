@@ -510,7 +510,8 @@ const en = {
     transfer23: 'Broadcast tx failed',
     transfer24: 'Please enter correct NERVE/NULS address',
     transfer25: 'Insufficient handling fees',
-    transfer26: 'Do not transfer aasets directly to the NULS contract address, it may cause asset loss'
+    transfer26: 'Do not transfer aasets directly to the NULS contract address, it may cause asset loss',
+    transfer27: 'Connect TronLink'
   },
   trading: {
     trading1: 'Order History',
