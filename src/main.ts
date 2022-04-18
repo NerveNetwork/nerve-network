@@ -4,6 +4,9 @@ import router from './router';
 import store from './store';
 import usePlugins from '@/plugins';
 import AddChain from '@/utils/AddChain';
+// @ts-ignore
+// import VConsole from 'vconsole'
+// new VConsole()
 
 if (process.env.NODE_ENV !== 'development') {
   window.console.log = () => {};

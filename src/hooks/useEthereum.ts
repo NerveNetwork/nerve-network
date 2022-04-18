@@ -152,9 +152,10 @@ export default function useEthereum() {
 
   function initProvider() {
     const provider = getProvider();
-    if (provider && provider.selectedAddress) {
-      state.address = provider.selectedAddress;
-      initChainInfo(provider.selectedAddress);
+    const address = provider?.selectedAddress || provider?.address;
+    if (provider && address) {
+      state.address = address;
+      initChainInfo(address);
       // console.log(state.address, 8)
       listenAccountChange();
       listenNetworkChange();
@@ -164,7 +165,7 @@ export default function useEthereum() {
   function initChainInfo(address: string) {
     const currentAccount = getCurrentAccount(address);
     const provider = getProvider();
-    let chainId = provider.chainId;
+    let chainId = provider.chainId + '';
     chainId = chainId.startsWith('0x')
       ? chainId
       : '0x' + Number(chainId).toString(16);
