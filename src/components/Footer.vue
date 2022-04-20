@@ -57,7 +57,7 @@ const linkConfig = computed(() => {
         },
         {
           label: t('footer.footer3'),
-          href: 'https://github.com/NerveNetwork/nerve-docs'
+          href: 'https://docs.nerve.network/'
         },
         {
           label: t('footer.footer4'),
