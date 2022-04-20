@@ -45,6 +45,7 @@ const { t } = useI18n();
 const router = useRouter();
 
 const { lang } = useLang();
+console.log(lang, 77);
 
 const linkConfig = computed(() => {
   return [
@@ -57,7 +58,10 @@ const linkConfig = computed(() => {
         },
         {
           label: t('footer.footer3'),
-          href: 'https://docs.nerve.network/'
+          href:
+            lang.value === 'CN'
+              ? 'https://docs.nerve.network/'
+              : 'https://docs.nerve.network/zh/'
         },
         {
           label: t('footer.footer4'),
