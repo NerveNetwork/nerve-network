@@ -43,7 +43,7 @@ export default function useBroadcastNerveHex() {
     const txHex = await transfer.getTxHex({
       tAssemble,
       pub: currentAccount.value?.pub,
-      signAddress: currentAccount.value?.address?.Ethereum
+      signAddress: currentAccount.value?.address?.EVM
     });
     // console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);
@@ -70,7 +70,7 @@ export default function useBroadcastNerveHex() {
     //     outputs: inputOuput.outputs,
     //     txData,
     //     pub: currentAccount.value?.pub,
-    //     signAddress: currentAccount.value?.address?.Ethereum
+    //     signAddress: currentAccount.value?.address?.EVM
     //   },
     //   '====tx===='
     // );
@@ -79,7 +79,7 @@ export default function useBroadcastNerveHex() {
       outputs: inputOuput.outputs,
       txData,
       pub: currentAccount.value?.pub,
-      signAddress: currentAccount.value?.address?.Ethereum
+      signAddress: currentAccount.value?.address?.EVM
     });
     // console.log(txHex, '===txHex===');
     const res = await broadcastHex(txHex);

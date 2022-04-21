@@ -52,7 +52,8 @@ const en = {
     public22: 'Status',
     public23: 'The last 20 transactions will be displayed below',
     public24: 'Wrong network connected',
-    public25: 'Provider not found'
+    public25: 'Provider not found',
+    public26: 'Please login to the extention wallet first.'
   },
   error: {
     err_0001: 'Failed',
@@ -509,7 +510,8 @@ const en = {
     transfer23: 'Broadcast tx failed',
     transfer24: 'Please enter correct NERVE/NULS address',
     transfer25: 'Insufficient handling fees',
-    transfer26: 'Do not transfer aasets directly to the NULS contract address, it may cause asset loss'
+    transfer26: 'Do not transfer aasets directly to the NULS contract address, it may cause asset loss',
+    transfer27: 'Connect TronLink'
   },
   trading: {
     trading1: 'Order History',

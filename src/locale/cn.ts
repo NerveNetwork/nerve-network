@@ -52,7 +52,8 @@ const cn = {
     public22: '状态',
     public23: '最近20条交易将显示在下方',
     public24: '连接网络错误',
-    public25: '请先安装该插件'
+    public25: '请先安装该插件',
+    public26: '请先登录插件钱包'
   },
   error: {
     err_0001: '失败',
@@ -493,7 +494,8 @@ const cn = {
     transfer23: '广播交易失败',
     transfer24: '请输入正确的NERVE/NULS地址',
     transfer25: '手续费不足',
-    transfer26: '请勿直接向NULS合约地址转账，可能造成资产丢失'
+    transfer26: '请勿直接向NULS合约地址转账，可能造成资产丢失',
+    transfer27: '连接TronLink'
   },
   trading: {
     trading1: '订单历史',

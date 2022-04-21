@@ -41,6 +41,7 @@ export default class ImageManager {
     this.renderSrc(cb);
   }
   renderSrc(cb?: () => void) {
+    this.render(this.loadingSrc);
     loadImage(this.src)
       .then(() => {
         this.state = State.loaded;

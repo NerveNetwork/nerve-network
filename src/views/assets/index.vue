@@ -233,6 +233,7 @@ import CollapseTransition from '@/components/CollapseTransition.vue';
 import { superLong } from '@/utils/util';
 import useStoreState from '@/hooks/useStoreState';
 import useAssetsList from './hooks/useAssetsList';
+import { specialChain } from '@/hooks/useEthereum';
 
 import { AssetItemType, rootCmpKey, TransferType } from './types';
 import { HeterogeneousInfo } from '@/store/types';
@@ -311,7 +312,9 @@ export default defineComponent({
 
     function canToL1OnCurrent(status: boolean) {
       if (!status) return false;
-      return network.value !== 'NULS' && network.value !== 'NERVE';
+      if (network.value === 'TRON') return true;
+      return specialChain.indexOf(network.value) < 0;
+      // return network.value !== 'NULS' && network.value !== 'NERVE' && network.value !== 'TRON';
     }
 
     const rootCmp = reactive({

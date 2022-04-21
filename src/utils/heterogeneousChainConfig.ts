@@ -13,6 +13,7 @@ import CROLogo from '@/assets/img/chainLogo/Cronos.png';
 import AVAVLogo from '@/assets/img/chainLogo/AVAX.png';
 import ARBILogo from '@/assets/img/chainLogo/arbitrum.png';
 import FTMLogo from '@/assets/img/chainLogo/fantom.png';
+import TRONLogo from '@/assets/img/chainLogo/tron.svg';
 
 const isBeta = config.isBeta;
 
@@ -41,7 +42,7 @@ const PolygonOrigin = isBeta
 const KCCOrigin = isBeta
   ? 'https://scan-testnet.kcc.network'
   : 'https://explorer.kcc.io';
-const TRXOrigin = isBeta
+const TRONOrigin = isBeta
   ? 'https://shasta.tronscan.org/#'
   : 'https://tronscan.org/#';
 const CronosOrigin = isBeta
@@ -67,7 +68,7 @@ export const RPC_URL = {
   Heco: isBeta
     ? 'https://http-testnet.hecochain.com'
     : 'https://http-mainnet.hecochain.com',
-  OKC: isBeta
+  OKX: isBeta
     ? 'https://exchaintestrpc.okex.org'
     : 'https://exchainrpc.okex.org',
   Avalanche: isBeta
@@ -139,8 +140,8 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Heco
   },
-  OKC: {
-    name: 'OKC',
+  OKX: {
+    name: 'OKX',
     chainId: 104,
     assetKey: isBeta ? '5-12' : '9-87',
     origin: OECOrigin,
@@ -150,7 +151,7 @@ export const _networkInfo = {
     supported: true,
     logo: OECLogo,
     decimals: 18,
-    rpcUrl: RPC_URL.OKC
+    rpcUrl: RPC_URL.OKX
   },
   Avalanche: {
     name: 'Avalanche',
@@ -191,16 +192,6 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.KCC
   },
-  TRON: {
-    name: 'TRON',
-    chainId: 108,
-    assetKey: isBeta ? '5-55' : '9-218',
-    origin: TRXOrigin,
-    color: '#c23631',
-    mainAsset: 'TRX',
-    nativeId: '',
-    decimals: 6
-  },
   Cronos: {
     name: 'Cronos',
     chainId: 109,
@@ -239,6 +230,18 @@ export const _networkInfo = {
     logo: FTMLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Fantom
+  },
+  TRON: {
+    name: 'TRON',
+    chainId: 108,
+    assetKey: isBeta ? '5-55' : '9-218',
+    origin: TRONOrigin,
+    color: '#c23631',
+    mainAsset: 'TRX',
+    nativeId: '',
+    supported: true,
+    logo: TRONLogo,
+    decimals: 6
   },
   NULS: {
     name: 'NULS',
