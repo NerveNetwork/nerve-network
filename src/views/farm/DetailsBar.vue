@@ -474,11 +474,15 @@ function toAddLiquidity() {
     stakeTokenAssetId,
     swapPairAddress,
     syrupTokenChainId,
-    syrupTokenAssetId
+    syrupTokenAssetId,
+    lpPairAssetAChainId,
+    lpPairAssetAAssetId,
+    lpPairAssetBChainId,
+    lpPairAssetBAssetId
   } = props.tokenInfo as NerveFarmItem;
   let url;
   if (swapPairAddress) {
-    url = `/liquidity/${stakeTokenChainId}-${stakeTokenAssetId}/${syrupTokenChainId}-${syrupTokenAssetId}`;
+    url = `/liquidity/${lpPairAssetAChainId}-${lpPairAssetAAssetId}/${lpPairAssetBChainId}-${lpPairAssetBAssetId}`;
   } else {
     const { chainId, assetId, NULSConfig } = config;
     if (stakeTokenChainId === chainId && stakeTokenAssetId === assetId) {
