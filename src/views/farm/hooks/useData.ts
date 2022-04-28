@@ -43,6 +43,7 @@ export default function useData() {
       v.pendingReward = '0';
       v.isLocked = Minus(Times(v.lockedTime, 1000), times).toNumber() < 0;
       v.syrupTokenBalance = fixNumber(v.syrupTokenBalance, 8);
+      v.rewardBalance = fixNumber(v.rewardBalance, 8);
     });
     totalNerveList = [...data];
     state.nerveList = filter(data, filterType, onlySeeMortgage);

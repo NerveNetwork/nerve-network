@@ -42,6 +42,7 @@ export interface NerveFarmItem {
   lpPairAssetBChainId: number;
   logo: string;
   logo2: string;
+  rewardBalance: string; // pool中奖励资产余额
 }
 
 export interface UserStakeFarm {
