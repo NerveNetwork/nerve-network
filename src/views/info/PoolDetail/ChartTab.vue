@@ -1,5 +1,6 @@
 <template>
   <div class="chart-tab">
+    <slot></slot>
     <div class="tabs flex">
       <template v-for="item in chartTab" :key="item.label">
         <div
@@ -7,7 +8,7 @@
           :class="item.key === activeTab ? 'active' : ''"
           @click="activeTab = item.key"
         >
-          {{ item.label }}
+          <span>{{ item.label }}</span>
         </div>
       </template>
     </div>
@@ -31,6 +32,7 @@ import { adaptiveFix, divisionAndFix } from '@/utils/util';
 const props = defineProps<{
   assetKey?: string;
   isPool?: boolean;
+  isMultiRouting?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -70,7 +72,7 @@ async function getChartData(key: string) {
         value: divisionAndFix(v.reserveUsdtValue, 18, 2)
       };
       liq.push(liqItem);
-      if (!props.isPool) {
+      if (!props.isPool && !props.isMultiRouting) {
         const priceItem = {
           label: v.period,
           value: adaptiveFix(divisionAndFix(v.price, 18, 18))
@@ -85,7 +87,7 @@ async function getChartData(key: string) {
 const activeTab = ref('tx');
 
 const chartTab = computed(() => {
-  if (props.isPool) {
+  if (props.isPool || props.isMultiRouting) {
     return {
       tx: { label: t('info.info34'), type: 'bar', key: 'tx' },
       liq: { label: t('info.info4'), type: 'line', key: 'liq' }
@@ -113,7 +115,7 @@ const chartTab = computed(() => {
 });*/
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .chart-tab {
   .tabs {
     height: 68px;

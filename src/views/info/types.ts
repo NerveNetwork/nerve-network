@@ -87,3 +87,12 @@ export enum TxType {
   ADDLP = 'ADDLP',
   REOMVELP = 'REOMVELP'
 }
+
+export interface MultiRoutingItem {
+  name: string;
+  proof: string;
+  tx_24: string;
+  tx_7d: string;
+  liq: string;
+  supportChain: string[];
+}

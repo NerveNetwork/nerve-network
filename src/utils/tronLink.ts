@@ -28,7 +28,7 @@ const customTronWeb = new TronWeb(
   fullNode,
   solidityNode,
   eventServer,
-  privateKey
+  ''
 );
 // customTronWeb.setHeader({ "TRON-PRO-API-KEY": '1355e44a-205d-4264-b4f6-76a3515aaec4' });
 

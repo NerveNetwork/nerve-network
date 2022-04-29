@@ -61,7 +61,7 @@ const route = useRoute();
 const assetKey = route.params.id as string;
 const { pools, poolTotal, getPoolsList } = useTokensAndPools();
 onMounted(() => {
-  getPoolsList('', assetKey);
+  getPoolsList(0, assetKey);
   getTokenDetail();
 });
 

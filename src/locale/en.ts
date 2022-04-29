@@ -795,7 +795,17 @@ const en = {
     info31: 'Top Pools',
     info32: 'All Tokens',
     info33: 'Search pools or tokens',
-    info34: 'Volume'
+    info34: 'Volume',
+    info35: 'Multi-Routing',
+    info36: 'Asset',
+    info37: '流动性凭证',
+    info38: '支持网络',
+    info39: '资金分布',
+    info40: '主网合约地址',
+    info41: 'Nerve网络资产ID',
+    info42: '占比',
+    info43: 'Get',
+    info44: 'Main net'
   }
 };
 
