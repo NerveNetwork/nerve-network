@@ -85,7 +85,7 @@
                 type="primary"
                 size="small"
                 :disabled="
-                  !!!Number(tokenInfo.syrupTokenBalance) ||
+                  !!!Number(tokenInfo.rewardBalance) ||
                   !nerveAddress ||
                   isFinished
                 "
@@ -154,7 +154,7 @@
                 type="primary"
                 size="small"
                 :disabled="
-                  !!!Number(tokenInfo.syrupTokenBalance) ||
+                  !!!Number(tokenInfo.rewardBalance) ||
                   !nerveAddress ||
                   isFinished
                 "
@@ -179,7 +179,7 @@
       <div class="d-flex align-items-center space-between mt-8 size-14">
         <span>{{ $t('farm.farm5') }}</span>
         <span>
-          {{ $thousands(tokenInfo.syrupTokenBalance) }}
+          {{ $thousands(tokenInfo.rewardBalance) }}
           {{ tokenInfo.syrupTokenSymbol }}
         </span>
       </div>
@@ -474,11 +474,15 @@ function toAddLiquidity() {
     stakeTokenAssetId,
     swapPairAddress,
     syrupTokenChainId,
-    syrupTokenAssetId
+    syrupTokenAssetId,
+    lpPairAssetAChainId,
+    lpPairAssetAAssetId,
+    lpPairAssetBChainId,
+    lpPairAssetBAssetId
   } = props.tokenInfo as NerveFarmItem;
   let url;
   if (swapPairAddress) {
-    url = `/liquidity/${stakeTokenChainId}-${stakeTokenAssetId}/${syrupTokenChainId}-${syrupTokenAssetId}`;
+    url = `/liquidity/${lpPairAssetAChainId}-${lpPairAssetAAssetId}/${lpPairAssetBChainId}-${lpPairAssetBAssetId}`;
   } else {
     const { chainId, assetId, NULSConfig } = config;
     if (stakeTokenChainId === chainId && stakeTokenAssetId === assetId) {
