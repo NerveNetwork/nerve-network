@@ -34,7 +34,7 @@
           <li class="fl">
             <p>{{ $t('farm.farm5') }}</p>
             <h2>
-              {{ $thousands(item.syrupTokenBalance) }}
+              {{ $thousands(item.rewardBalance) }}
               {{ item.syrupTokenSymbol }}
             </h2>
           </li>
