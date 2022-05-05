@@ -360,7 +360,7 @@ async function getBalance() {
       stakeTokenAssetId,
       currentAccount.value?.address?.NERVE
     );
-    balance.value = divisionDecimals(res.balance, stakeTokenDecimals);
+    balance.value = divisionDecimals(res.balanceStr, stakeTokenDecimals);
   } else {
     const transfer = new ETransfer();
     const tokenInfo = props.tokenInfo as UniFarmItem;
@@ -428,7 +428,7 @@ async function farmWithdrawal(number: string) {
   }
 }
 
-// 添加 - Add、减少 - Remove lp, 领取收益 -Claim
+// evm 添加 - Add、减少 - Remove lp, 领取收益 -Claim
 async function LPOperation(type: string, value: string) {
   try {
     const transfer = new ETransfer();
