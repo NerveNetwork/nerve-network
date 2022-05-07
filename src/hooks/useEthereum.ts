@@ -13,6 +13,7 @@ import OKEx from '@/assets/img/provider/metax.jpg';
 import safepal from '@/assets/img/provider/safepal.svg';
 import coin98 from '@/assets/img/provider/coin98.svg';
 import bitkeep from '@/assets/img/provider/bitkeep.jpg';
+import onto from '@/assets/img/provider/ONTO.png';
 
 import { ethers } from 'ethers';
 import nerve from 'nerve-sdk-js';
@@ -58,6 +59,7 @@ const MetaMaskProvider = 'ethereum';
 const NaboxProvider = 'NaboxWallet';
 const OKExProvider = 'okexchain';
 const BSCProvider = 'BinanceChain';
+// const ONTOProvider = 'onto';
 
 export const providerList = [
   { name: 'MetaMask', src: MetaMask, provider: MetaMaskProvider },
@@ -69,7 +71,8 @@ export const providerList = [
   { name: 'MetaX', src: OKEx, provider: OKExProvider },
   { name: 'SafePal', src: safepal, provider: MetaMaskProvider },
   { name: 'Coin98', src: coin98, provider: MetaMaskProvider },
-  { name: 'BitKeep', src: bitkeep, provider: MetaMaskProvider }
+  { name: 'BitKeep', src: bitkeep, provider: MetaMaskProvider },
+  { name: 'ONTO', src: onto, provider: MetaMaskProvider }
 ];
 
 export function getProvider(type?: string) {
