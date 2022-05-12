@@ -78,6 +78,9 @@ const visible = computed({
           height: 35px;
         }
       }
+      .ledger-tip {
+        width: 100%;
+      }
     }
   }
   @media screen and (max-width: 500px) {

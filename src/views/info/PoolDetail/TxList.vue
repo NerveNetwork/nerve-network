@@ -26,7 +26,7 @@ import { ref, watch } from 'vue';
 import Table from './Table.vue';
 import { getTxs } from '@/service/api';
 import dayjs from 'dayjs';
-import { adaptiveFix, divisionAndFix } from '@/utils/util';
+import { adaptiveFix, divisionAndFix, Times } from '@/utils/util';
 import { TxItem, TxType } from '../types';
 
 const props = defineProps<{
@@ -65,8 +65,12 @@ async function getTxData() {
     res.list.map(v => {
       let token0, token1, decimals0, decimals1, amount0, amount1;
       const token0Price = divisionAndFix(v.token0Price, 18);
-      const token0Amount = divisionAndFix(v.amount0, v.decimals0, v.decimals0);
-      const totalVal = adaptiveFix(token0Price * token0Amount);
+      const token0Amount = divisionAndFix(
+        v.amount0,
+        v.token0Decimals,
+        v.token0Decimals
+      );
+      const totalVal = adaptiveFix(Times(token0Price, token0Amount).toFixed());
       if (v.tokenIn === v.token0) {
         token0 = v.token0Symbol;
         decimals0 = v.token0Decimals;
@@ -88,7 +92,7 @@ async function getTxData() {
         type: v.type,
         hash: v.hash,
         time: dayjs(v.blockTime * 1000).format('MM-DD HH:mm'),
-        totalVal: v.type === 'SWAP' ? totalVal : totalVal * 2,
+        totalVal: v.type === 'SWAP' ? totalVal : Times(totalVal, 2).toFixed(),
         token0,
         amount0,
         token1,
