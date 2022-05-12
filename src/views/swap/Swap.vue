@@ -514,9 +514,10 @@ export default defineComponent({
         }
       } else {
         state.priceImpact = '';
-        if (!state.fromAmountError) {
-          state.toAmount = '';
-        }
+        // if (!state.fromAmountError) {
+        state.toAmount = '';
+        state.fromAmountError = '';
+        // }
         getSwapRate(true);
       }
     }
@@ -542,6 +543,7 @@ export default defineComponent({
       } else {
         state.priceImpact = '';
         state.fromAmount = '';
+        state.fromAmountError = '';
         getSwapRate(true);
       }
     }
@@ -745,6 +747,7 @@ export default defineComponent({
               toDecimal
             );
             context.emit('updateRate', toAmount + state.toAsset?.symbol);
+            return [0, 0];
           }
           const bestExact =
             type === 'to'
