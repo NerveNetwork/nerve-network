@@ -36,11 +36,12 @@ export default function useSpecialSwap() {
     token2Key?: string
   ) {
     if (!token1Key || !token2Key) {
-      isStableCoinForOthers.value = false;
+      isStableCoinForStableCoin.value = false;
     } else {
-      return (isStableCoinForStableCoin.value =
-        !!stableCoins.value[token1Key] && stableCoins.value[token2Key]);
+      isStableCoinForStableCoin.value =
+        !!stableCoins.value[token1Key] && stableCoins.value[token2Key];
     }
+    return isStableCoinForStableCoin.value;
   }
 
   // 判读是否是稳定币换其他资产, 只支持USDT - USDTN - symbol，其他的稳定币暂不支持

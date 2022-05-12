@@ -359,7 +359,7 @@ export default defineComponent({
         state.fromAsset.assetKey &&
         state.toAsset.assetKey
       ) {
-        if (!isStableCoinSwap.value && !isStableCoinForStableCoin) {
+        if (!isStableCoinSwap.value && !isStableCoinForStableCoin.value) {
           if (isStableCoinForOthers.value) {
             // 稳定币换NVT，缓存稳定币N兑换NVT交易对信息
             const routeCoin = getStableRouteCoin();
