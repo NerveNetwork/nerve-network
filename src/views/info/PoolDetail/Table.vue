@@ -12,13 +12,19 @@
         :hash="scope.row.hash"
         :token0="scope.row.token0"
         :token1="scope.row.token1"
+        :is-multi-routing="props.isMultiRouting"
       />
     </template>
     <template #totalVal="scope">
       <span>${{ $format(scope.row.totalVal) }}</span>
     </template>
     <template #amount0="scope">
-      <span>{{ scope.row.amount0 }} {{ scope.row.token0 }}</span>
+      <template v-if="props.isMultiRouting">
+        <span>{{ Number(scope.row.amount0) ? scope.row.amount0 : scope.row.amount1 }} {{ scope.row.token0 || scope.row.token1 }}</span>
+      </template>
+      <template v-else>
+        <span>{{ scope.row.amount0 }} {{ scope.row.token0 }}</span>
+      </template>
     </template>
     <template #amount1="scope">
       <span>{{ scope.row.amount1 }} {{ scope.row.token1 }}</span>
@@ -45,6 +51,7 @@ const props = defineProps<{
   data: any[];
   pageIndex: number;
   total: number;
+  isMultiRouting?: boolean;
 }>();
 
 const emit = defineEmits(['pageChange']);
@@ -52,7 +59,7 @@ const emit = defineEmits(['pageChange']);
 const { t } = useI18n();
 
 const columns = computed(() => {
-  return [
+  const result = [
     { width: 30 },
     {
       prop: 'type',
@@ -85,7 +92,7 @@ const columns = computed(() => {
       prop: 'address',
       label: t('info.info27'),
       slotName: 'address',
-      width: 210
+      'min-width': 210
     },
     {
       prop: 'time',
@@ -95,6 +102,10 @@ const columns = computed(() => {
       // sortable: 'custom'
     }
   ];
+  if (props.isMultiRouting) {
+    result.splice(4, 1);
+  }
+  return result;
 });
 function sortChange(item) {
   console.log(item);

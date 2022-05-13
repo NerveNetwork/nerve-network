@@ -3,7 +3,7 @@ import config from '@/config';
 import { genId } from '@/utils/util';
 import {
   ChartItem,
-  ListRes,
+  ListRes, MultiPairItem, MultiPairTxParam, MultiPairTxRes,
   PairListParam,
   PoolItem,
   SearchRes,
@@ -245,6 +245,103 @@ export async function searchText(text: string) {
     params: { text }
   };
   return await listen<SearchRes>({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
+/**
+ * @desc 多链资金池列表
+ */
+export async function getMultiPairs(data?: TokenListParam) {
+  const pageIndex = data?.pageIndex || 1;
+  const pageSize = data?.pageSize || 10;
+  const orderby = data?.orderby || 'reserveUsdtValue';
+  const sorting = data?.sorting || 'desc';
+  const channel = 'db_stable_pairs';
+  const params = {
+    method: channel,
+    id: genId(),
+    params: { pageIndex, pageSize, orderby, sorting }
+  };
+  return await listen<ListRes<MultiPairItem>>({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
+/**
+ * @desc 多链资金详情
+ */
+export async function getMultiPair(address: string) {
+  const channel = 'db_stable_pair';
+  const params = {
+    method: channel,
+    id: genId(),
+    params: { address }
+  };
+  return await listen<MultiPairItem>({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
+/**
+ * @desc 多链资金详情曲线图数据
+ * @param address pairAddress
+ * @param tokenKey 网络
+ */
+export async function getMultiPairChartData(
+  address: string,
+  tokenKey?: string
+) {
+  const channel = 'db_stable_pair_analytics';
+  const params = {
+    method: channel,
+    id: genId(),
+    params: { address, tokenKey }
+  };
+  return await listen<ChartItem[]>({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
+/**
+ * @desc 交易列表：支持过滤条件pool、token、operation
+ * @params pairAddress
+ */
+export async function getMultiPairTxs(data: MultiPairTxParam) {
+  const pageIndex = data.pageIndex || 1;
+  const pageSize = data.pageSize || 10;
+  const channel = 'db_stable_transactions';
+  if (data.operation === TxType.ALL) delete data.operation;
+  const params = {
+    method: channel,
+    id: genId(),
+    params: { ...data, pageIndex, pageSize }
+  };
+  return await listen<ListRes<MultiPairTxRes>>({
     url,
     channel,
     id: params.id,

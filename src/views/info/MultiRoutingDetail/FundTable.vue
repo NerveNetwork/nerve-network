@@ -6,12 +6,17 @@
           <SymbolIcon :icon="scope.row.name" />
         </div>
       </template>
-      <template #contract="scope">
-        <span class="link">{{ superLong(scope.row.contract) }}</span>
+      <template #contractAddress="scope">
+        <span
+          class="link"
+          @click="openUrl(scope.row.name, scope.row.contractAddress)"
+        >
+          {{ superLong(scope.row.contractAddress) }}
+        </span>
       </template>
       <template #liq="scope">${{ $format(scope.row.liq) }}</template>
-      <template #rate="scope">
-        <el-progress :percentage="scope.row.rate" color="#2688F7" stroke-width="8" />
+      <template #ratio="scope">
+        <el-progress :percentage="Number(scope.row.ratio || '')" color="#2688F7" :stroke-width="8" />
       </template>
     </Table>
   </div>
@@ -23,7 +28,7 @@ import Table from '@/components/Table/index.vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { superLong } from '@/utils/util';
+import { superLong, openExplorer, openL1Explorer } from '@/utils/util';
 import { PoolItem } from '../types';
 
 const props = withDefaults(
@@ -53,21 +58,40 @@ const columns = computed(() => {
       slotName: 'name',
       width: 180
     },
-    { prop: 'contract', label: t('info.info40'), 'min-width': 160, slotName: 'contract' },
-    { prop: 'assetKey', label: t('info.info41'), width: 180, slotName: 'assetKey' },
+    {
+      prop: 'contractAddress',
+      label: t('info.info40'),
+      'min-width': 160,
+      slotName: 'contractAddress'
+    },
+    {
+      prop: 'nerveId',
+      label: t('info.info41'),
+      width: 180,
+      slotName: 'nerveId'
+    },
     { prop: 'liq', label: t('info.info4'), width: 180, slotName: 'liq' },
-    { prop: 'rate', label: t('info.info42'), 'min-width': 140, slotName: 'rate' },
-    { width: 30 },
+    {
+      prop: 'ratio',
+      label: t('info.info42'),
+      'min-width': 140,
+      slotName: 'ratio'
+    },
+    { width: 30 }
   ];
 });
-function rowClick(item: PoolItem) {
-  // console.log(item);
-  // emit('rowClick', item);
-  router.push('/info/pools/' + item.address);
-}
+
 function pageChange(index: number) {
   // console.log(index);
   emit('pageChange', index);
+}
+
+function openUrl(chain: string, address: string) {
+  if (chain === 'NULS' || chain === 'NERVE') {
+    openExplorer('address', address);
+  } else {
+    openL1Explorer(chain, 'address', address);
+  }
 }
 </script>
 

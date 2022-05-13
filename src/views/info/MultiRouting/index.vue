@@ -2,7 +2,7 @@
   <div class="multi-routing">
     <Table
       :title="$t('info.info32')"
-      :data="list"
+      :data="pairs"
       :total="total"
       :columns="columns"
       @rowClick="rowClick"
@@ -29,51 +29,84 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import Table from '@/components/Table/index.vue';
 import { MultiRoutingItem } from '@/views/info/types';
+import { getMultiPairs } from '@/service/api';
+import { divisionAndFix } from '@/utils/util';
+import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import config from '@/config';
 
 const { t } = useI18n();
 const router = useRouter();
 
 const columns = computed(() => {
   return [
-    { width: 40 },
+    { width: 30 },
     {
       prop: 'name',
       label: t('info.info36'),
       slotName: 'name',
-      'width': 140
+      width: 210
     },
-    { prop: 'proof', label: t('info.info37'), width: 180 },
-    { prop: 'tx_24', label: t('info.info11'), width: 180, slotName: 'tx_24' },
-    { prop: 'tx_7d', label: t('info.info12'), width: 180, slotName: 'tx_7d' },
-    { prop: 'liq', label: t('info.info4'), width: 180, slotName: 'liq' },
+    { prop: 'lpTokenSymbol', label: t('info.info37'), width: 180 },
+    { prop: 'tx_24', label: t('info.info11'), width: 140, slotName: 'tx_24' },
+    { prop: 'tx_7d', label: t('info.info12'), width: 140, slotName: 'tx_7d' },
+    { prop: 'liq', label: t('info.info4'), width: 140, slotName: 'liq' },
     { prop: 'supportChain', label: t('info.info38'), 'min-width': 180, slotName: 'supportChain' },
   ];
 });
 
-const list = ref<MultiRoutingItem[]>([
-  { name: 'NVT', proof: 'USDTN', tx_24: '3435789', tx_7d: '35789', liq: '33789', supportChain: ['ETH', 'BNB', 'OKT'] },
-  { name: 'BNB', proof: 'NFIL', tx_24: '35789', tx_7d: '3435789', liq: '337343578989', supportChain: ['BNB', 'OKT'] },
-  { name: 'NVT', proof: 'USDTN', tx_24: '3435789', tx_7d: '35789', liq: '3435789', supportChain: ['ETH',  'OKT'] },
-  { name: 'BNB', proof: 'NFIL', tx_24: '35789', tx_7d: '3435789', liq: '33789', supportChain: ['ETH', 'BNB'] },
-  { name: 'NVT', proof: 'USDTN', tx_24: '3435789', tx_7d: '35789', liq: '3435789', supportChain: [ 'OKT'] },
-  { name: 'BNB', proof: 'NFIL', tx_24: '35789', tx_7d: '3435789', liq: '33789', supportChain: ['ETH', 'BNB', 'OKT'] },
-]);
-const total = ref(14);
+onMounted(() => {
+  getList();
+});
+
+const pairs = ref<MultiRoutingItem[]>([]);
+const total = ref(0);
+async function getList(pageIndex = 1) {
+  const data = { pageIndex };
+  const res = await getMultiPairs(data);
+  if (res) {
+    const list: MultiRoutingItem[] = [];
+    res.list.map(v => {
+      list.push({
+        address: v.pairAddress,
+        name: v.name,
+        lpTokenSymbol: v.lpTokenSymbol,
+        assetKey: v.lpTokenChainId + '-' + v.lpTokenAssetId,
+        price: v.price,
+        tx_24: divisionAndFix(v.amountUsdtValue24H, 18, 2),
+        tx_7d: divisionAndFix(v.amountUsdtValue7D, 18, 2),
+        liq: divisionAndFix(v.reserveUsdtValue, 18, 2),
+        supportChain: v.tokenList.map(v =>
+          getChainNameById(v.sourceChainId, v.assetChainId)
+        )
+      });
+    });
+    pairs.value = list;
+    total.value = res.total;
+  }
+}
+
+function getChainNameById(sourceChainId: number, assetChainId: number) {
+  const chains = Object.values(_networkInfo);
+  let chainName = '';
+  if (sourceChainId !== 0) {
+    chainName = chains.find(v => v.chainId === sourceChainId)!.name;
+  } else {
+    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS';
+  }
+  return chainName;
+}
 
 function rowClick(item: MultiRoutingItem) {
-  // console.log(item);
-  // emit('rowClick', item);
-  // router.push('/info/multi-routing/' + item.name);
-  router.push('/info/multi-routing/' + '5-1');
+  router.push('/info/multi-routing/' + item.address);
 }
 function pageChange(index: number) {
   // console.log(index);
-  // emit('pageChange', index);
+  getList(index);
 }
 </script>
 
@@ -86,10 +119,12 @@ function pageChange(index: number) {
   }
   .chain-list {
     display: flex;
+    flex-wrap: wrap;
     img {
       width: 28px;
       height: 28px;
       margin-right: 10px;
+      margin-bottom: 5px;
     }
   }
   tr.el-table__row {

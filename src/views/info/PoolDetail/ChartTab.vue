@@ -25,7 +25,7 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Chart from '../Overview/Chart.vue';
-import { getTokenAnalytics, get300DaysData } from '@/service/api';
+import { getTokenAnalytics, get300DaysData, getMultiPairChartData } from '@/service/api';
 import { ChartTabItem, ChartItem } from '../types';
 import { adaptiveFix, divisionAndFix } from '@/utils/util';
 
@@ -33,6 +33,7 @@ const props = defineProps<{
   assetKey?: string;
   isPool?: boolean;
   isMultiRouting?: boolean;
+  chainKey?: string;
 }>();
 
 const { t } = useI18n();
@@ -49,10 +50,23 @@ watch(
   }
 );
 
+watch(
+  () => props.chainKey,
+  val => {
+    if (val) {
+      getChartData(props.assetKey!, val);
+    }
+  }
+);
+
 const chartData = ref<ChartTabItem>({} as ChartTabItem);
-async function getChartData(key: string) {
+async function getChartData(key: string, tokenKey?: string) {
   let res;
-  if (props.isPool) {
+  console.log(key, tokenKey, 666);
+  if (props.isMultiRouting) {
+    tokenKey = tokenKey !== 'ALL' ? tokenKey : '';
+    res = await getMultiPairChartData(key, tokenKey);// 7 72 73 74 90
+  } else if (props.isPool) {
     res = await get300DaysData(key);
   } else {
     res = await getTokenAnalytics(key);
@@ -99,20 +113,6 @@ const chartTab = computed(() => {
     price: { label: t('info.info9'), type: 'line', key: 'price' }
   };
 });
-
-/*const chartTabData = computed(() => {
-  if (props.isPool) {
-    return [
-      { label: t('info.info5'), type: 'bar', key: 'tx' },
-      { label: t('info.info4'), type: 'line', key: 'liq' }
-    ];
-  }
-  return [
-    { label: t('info.info5'), type: 'bar', key: 'tx' },
-    { label: t('info.info4'), type: 'line', key: 'liq' },
-    { label: t('info.info9'), type: 'line', key: 'price' }
-  ];
-});*/
 </script>
 
 <style lang="scss">

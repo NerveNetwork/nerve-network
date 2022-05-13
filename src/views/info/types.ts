@@ -90,9 +90,20 @@ export enum TxType {
 
 export interface MultiRoutingItem {
   name: string;
-  proof: string;
+  lpTokenSymbol: string;
+  assetKey: string;
+  price: string;
   tx_24: string;
   tx_7d: string;
   liq: string;
   supportChain: string[];
+  address: string;
+}
+
+export interface MultiChainInfo {
+  name: string;
+  contractAddress: string;
+  liq: string;
+  ratio: string;
+  nerveId: string;
 }

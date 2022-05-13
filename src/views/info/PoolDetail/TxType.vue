@@ -15,6 +15,7 @@ const props = defineProps<{
   hash: string;
   token0: string;
   token1: string;
+  isMultiRouting: boolean;
 }>();
 
 const { locale } = useI18n();
@@ -30,17 +31,27 @@ const typeText = computed(() => {
     }
   } else if (props.type === TxType.ADDLP) {
     if (isEN) {
-      txt = `Add ${props.token0} and ${props.token1}`;
+      txt = `Add ${props.token0}${
+        props.isMultiRouting ? '' : ' and' + props.token1
+      }`;
     } else {
-      txt = `添加 ${props.token0} 和 ${props.token1}`;
+      txt = `添加 ${props.token0}${
+        props.isMultiRouting ? '' : ' 和' + props.token1
+      }`;
     }
   } else if (props.type !== TxType.REOMVELP) {
     //
   } else {
     if (isEN) {
-      txt = `Remove ${props.token0} and ${props.token1}`;
+      txt = `Remove ${
+        props.isMultiRouting
+          ? props.token1
+          : props.token0 + 'and' + props.token1
+      }`;
     } else {
-      txt = `移除 ${props.token0} 和 ${props.token1}`;
+      txt = `移除 ${
+        props.isMultiRouting ? props.token1 : props.token0 + '和' + props.token1
+      }`;
     }
   }
   return txt;

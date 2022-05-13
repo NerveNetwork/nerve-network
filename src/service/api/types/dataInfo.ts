@@ -98,3 +98,61 @@ export interface SearchRes {
   token: TokenItem[];
   pool: PoolItem[];
 }
+
+export interface MultiPairItem {
+  amountUsdtValue7D: string;
+  amountUsdtValue24H: string;
+  lpTokenAssetId: number;
+  lpTokenChainId: number;
+  lpTokenDecimal: number;
+  lpTokenSymbol: string;
+  name: string;
+  pairAddress: string;
+  price: string;
+  reserveUsdtValue: string;
+  tokenList: SupportChain[];
+}
+
+interface SupportChain {
+  assetChainId: number;
+  assetId: number;
+  decimals: number;
+  image: string;
+  name: string;
+  ratio: number;
+  reserveUsdtValue: string;
+  sourceChainId: number;
+  symbol: string;
+  contractAddress: string;
+}
+
+export interface MultiPairTxParam extends TokenListParam {
+  address: string;
+  operation?: TxType;
+}
+
+export interface MultiPairTxRes {
+  amountIn: string;
+  amountOut: string;
+  blockHeight: number;
+  blockTime: number;
+  hash: string;
+  id: string;
+  lpAmount: string;
+  pairAddress: string;
+  receiveAddress: string;
+  tokenIn: string;
+  tokenInDecimals: number;
+  tokenInImageUrl: string;
+  tokenInSymbol: string;
+  tokenOut: string;
+  tokenOutDecaimals: number;
+  tokenOutImageUrl: string;
+  tokenOutSymbol: string;
+  tokenPrice: string;
+  type: string;
+  userAddress: string;
+  userTradePairAddress: string;
+  userTradePairTokenIn: string;
+  userTradePairTokenOut: string;
+}
