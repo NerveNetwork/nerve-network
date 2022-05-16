@@ -68,7 +68,7 @@ export const RPC_URL = {
   Heco: isBeta
     ? 'https://http-testnet.hecochain.com'
     : 'https://http-mainnet.hecochain.com',
-  OKX: isBeta
+  OKC: isBeta
     ? 'https://exchaintestrpc.okex.org'
     : 'https://exchainrpc.okex.org',
   Avalanche: isBeta
@@ -140,8 +140,8 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Heco
   },
-  OKX: {
-    name: 'OKX',
+  OKC: {
+    name: 'OKC',
     chainId: 104,
     assetKey: isBeta ? '5-12' : '9-87',
     origin: OECOrigin,
@@ -151,7 +151,7 @@ export const _networkInfo = {
     supported: true,
     logo: OECLogo,
     decimals: 18,
-    rpcUrl: RPC_URL.OKX
+    rpcUrl: RPC_URL.OKC
   },
   Avalanche: {
     name: 'Avalanche',
