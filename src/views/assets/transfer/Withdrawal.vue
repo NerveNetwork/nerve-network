@@ -205,7 +205,11 @@ export default defineComponent({
           );
         }
       } else {
-        const feeAssetUSD = (await getAssetPrice(chainId, assetId)) as string;
+        const feeAssetUSD = (await getAssetPrice(
+          chainId,
+          assetId,
+          true
+        )) as string;
         const mainAsset = supportedFeeAssets.value.find(
           v => v.symbol === heterogeneousInfo.chainName
         ) as AssetItemType;
