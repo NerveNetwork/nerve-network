@@ -108,6 +108,29 @@ export async function userTradeHistoryPage(data: UserTradeHistoryParam) {
   });
 }
 
+/**
+ * 查询用户多链资金池交易记录
+ */
+export async function userStableTradeHistoryPage(data: UserTradeHistoryParam) {
+  const pageIndex = data.pageIndex || 1;
+  const pageSize = data.pageSize || 5;
+  const channel = 'userStableTradeHistoryPage';
+  const params = {
+    method: channel,
+    id: genId(),
+    params: { ...data, pageIndex, pageSize }
+  };
+  return await listen({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
 // 查询可用于Swap交易的稳定币交易对
 export async function getStablePairListForSwapTrade() {
   // const channel = 'getStablePairListForSwapTrade';

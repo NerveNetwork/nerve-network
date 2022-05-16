@@ -73,7 +73,7 @@ function change(status: boolean) {
       height: 42px;
       background-color: #fff;
     }
-    img:last-of-type {
+    img:nth-child(2) {
       margin-left: -10px;
     }
   }
@@ -88,6 +88,22 @@ function change(status: boolean) {
   }
   .collect {
     cursor: pointer;
+  }
+  @media screen and (max-width: 1200px) {
+    .symbol-wrap {
+      img {
+        width: 35px;
+        height: 35px;
+      }
+    }
+    .symbol-info {
+      .name {
+        font-size: 18px;
+      }
+      .key {
+        font-size: 14px;
+      }
+    }
   }
 }
 </style>

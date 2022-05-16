@@ -520,7 +520,9 @@ const cn = {
     trading20: '价格影响很大',
     trading21: '兑换失败',
     trading22:
-      '暂未开通该交易对智能路由，请兑换USDTN后再通过USDTN进行其余网络的USDT兑换'
+      '暂未开通该交易对智能路由，请兑换USDTN后再通过USDTN进行其余网络的USDT兑换',
+    trading23: '普通交易',
+    trading24: '多链路由'
   },
   liquidity: {
     liquidity1: '流动性',

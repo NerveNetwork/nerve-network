@@ -20,6 +20,11 @@
           {{ $t('info.info43') }}
         </el-button>
       </div>
+      <div class="mobile-btn">
+        <el-button type="primary" @click="getLp(tokenInfo.assetKey)">
+          {{ $t('info.info43') }}
+        </el-button>
+      </div>
     </div>
     <div class="overview">
       <div class="left">
@@ -189,11 +194,18 @@ function getLp(key: string) {
     .right .symbol-info {
       text-align: right;
     }
-    .right .el-button {
+    .mobile-btn .el-button,.right .el-button {
       min-width: 140px;
       margin-left: 20px;
       span {
         font-size: 14px;
+      }
+    }
+    .mobile-btn {
+      display: none;
+      padding-top: 10px;
+      .el-button {
+        margin-left: 0;
       }
     }
   }
@@ -247,12 +259,6 @@ function getLp(key: string) {
       height: 339px;
     }
   }
-  .rate-into {
-    margin: 20px 0 30px;
-  }
-  .symbol_1 {
-    margin-right: 40px;
-  }
   .radius {
     border-radius: 20px;
     border: 1px solid #e4e9f4;
@@ -289,17 +295,40 @@ function getLp(key: string) {
     }
   }
   @media screen and (max-width: 1200px) {
-    .rate-into {
-      margin-top: 5px;
+    .route-info {
       margin-bottom: 20px;
       flex-wrap: wrap;
-      .handle-wrap {
+      .left {
+        img {
+          width: 35px;
+          height: 35px;
+        }
+      }
+      .symbol-info {
+        .name {
+          font-size: 18px;
+        }
+      }
+      .right .el-button {
+        display: none;
+      }
+      .mobile-btn {
+        display: block;
         width: 100%;
-        padding-top: 10px;
+      }
+    }
+    .chart-tab {
+      .routes-wrap {
+        padding: 20px 20px 0;
+        flex-wrap: wrap;
+      }
+      .route-item {
+        margin-bottom: 10px;
       }
     }
     .overview {
       flex-wrap: wrap;
+      margin-bottom: 20px;
       .left {
         width: 100%;
         margin-right: 0;

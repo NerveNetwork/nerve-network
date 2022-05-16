@@ -341,10 +341,6 @@ export default defineComponent({
         state?.toAsset?.assetKey
       );
 
-      if (isStableCoinForStableCoin.value) {
-        return;
-      }
-
       checkIsStableCoinForOthers(
         state?.fromAsset?.assetKey,
         state?.toAsset?.assetKey
@@ -359,6 +355,10 @@ export default defineComponent({
         state.fromAsset.assetKey &&
         state.toAsset.assetKey
       ) {
+        context.emit('selectAsset', state.fromAsset, state.toAsset);
+        if (isStableCoinForStableCoin.value) {
+          return;
+        }
         if (!isStableCoinSwap.value && !isStableCoinForStableCoin.value) {
           if (isStableCoinForOthers.value) {
             // 稳定币换NVT，缓存稳定币N兑换NVT交易对信息
@@ -372,7 +372,6 @@ export default defineComponent({
           await storeSwapPairInfo(false, true);
           // canRefresh.value = true;
         }
-        context.emit('selectAsset', state.fromAsset, state.toAsset);
       } else {
         context.emit('updateRate', '');
       }
@@ -881,17 +880,6 @@ export default defineComponent({
           1
         )} ${state.fromAsset?.symbol}`;
       }
-      /*if (swapDirection.value === 'from-to') {
-        swapRate.value = `1 ${state.fromAsset?.symbol} ≈ ${formatFloat(
-          Division(toAmount, fromAmount).toFixed(),
-          1
-        )} ${state.toAsset?.symbol}`;
-      } else {
-        swapRate.value = `1 ${state.toAsset?.symbol} ≈ ${formatFloat(
-          Division(fromAmount, toAmount).toFixed(),
-          1
-        )} ${state.fromAsset?.symbol}`;
-      }*/
     }
 
     const minReceive = computed(() => {
@@ -999,11 +987,6 @@ export default defineComponent({
       } else {
         return state.fromAmountError || t('public.public10');
       }
-      // insufficient
-      //     ? $t("trading.trading17")
-      //     : impactButton === 1
-      //         ? $t("trading.trading19")
-      //         : fromAmountError || $t("public.public10")
     });
 
     const priceImpactColor = computed(() => {

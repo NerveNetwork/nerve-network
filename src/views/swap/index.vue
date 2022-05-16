@@ -6,6 +6,7 @@
       :swapRate="swapRate"
       :list="orderList"
       v-model:pager="pager"
+      v-model:txType="txType"
       @changeList="changeList"
     ></Overview>
     <Swap
@@ -28,7 +29,9 @@
         :swapSymbol="swapSymbol"
         :swapRate="swapRate"
         :list="orderList"
+        destroy-on-close
         v-model:pager="pager"
+        v-model:txType="txType"
         @changeList="changeList"
       ></Overview>
     </el-dialog>
@@ -56,7 +59,7 @@ export default defineComponent({
 
     const { assetsList, defaultAsset, hotAssets } = useAsset();
 
-    const { swapSymbol, orderList, pager, selectAsset, selectedAsset } =
+    const { swapSymbol, orderList, pager, txType, selectAsset, selectedAsset } =
       useSelectAsset();
 
     // url带交易对信息时请求一次订单列表信息
@@ -96,6 +99,17 @@ export default defineComponent({
       selectAsset(selectedAsset.value?.from, selectedAsset.value?.to);
     }
 
+    watch(
+      () => txType.value,
+      val => {
+        if (val) {
+          pager.index = 1;
+          pager.total = 0;
+          selectAsset(selectedAsset.value?.from, selectedAsset.value?.to);
+        }
+      }
+    );
+
     const swapRate = ref('');
     function updateRate(rate: string) {
       swapRate.value = rate;
@@ -113,6 +127,7 @@ export default defineComponent({
       orderList,
       selectAsset,
       pager,
+      txType,
       changeList,
       swapRate,
       updateRate,

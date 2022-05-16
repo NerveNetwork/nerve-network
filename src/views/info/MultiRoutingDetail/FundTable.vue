@@ -56,12 +56,12 @@ const columns = computed(() => {
       prop: 'name',
       label: t('info.info44'),
       slotName: 'name',
-      width: 180
+      width: 140
     },
     {
       prop: 'contractAddress',
       label: t('info.info40'),
-      'min-width': 160,
+      'min-width': 180,
       slotName: 'contractAddress'
     },
     {
@@ -70,7 +70,7 @@ const columns = computed(() => {
       width: 180,
       slotName: 'nerveId'
     },
-    { prop: 'liq', label: t('info.info4'), width: 180, slotName: 'liq' },
+    { prop: 'liq', label: t('info.info4'), width: 160, slotName: 'liq' },
     {
       prop: 'ratio',
       label: t('info.info42'),
