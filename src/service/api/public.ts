@@ -54,9 +54,15 @@ export async function uniAssetPrice(symbol: string) {
  * @desc 查询资产价格
  * @param chainId 资产chainId
  * @param assetId 资产assetId
+ * @param isForCalFee 是否是提现手续费资产
  */
-export async function getAssetPrice(chainId: number, assetId: number) {
-  const res = await http.rPost('getBestSymbolPrice', [chainId, assetId]);
+export async function getAssetPrice(
+  chainId: number,
+  assetId: number,
+  isForCalFee?: boolean
+) {
+  const params = isForCalFee ? [chainId, assetId, 'FEE'] : [chainId, assetId];
+  const res = await http.rPost('getBestSymbolPrice', params);
   return res?.result || null;
 }
 
