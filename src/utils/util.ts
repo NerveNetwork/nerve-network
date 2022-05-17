@@ -369,20 +369,42 @@ export function formatNumber(num: string | number) {
   }
 }
 
-//
+// 大于等于
 export function isBiggerOrEqual(str1: string | number, str2: string | number) {
   const b = new BigNumber(str1);
   return b.gte(str2);
 }
 
-// 自适应保留小数位数 最多保留8位;
+// 自适应保留小数位数 最多保留8位,针对小于1的数字;
 export function adaptiveFix(str: string, maxFix = 8) {
-  let fix = 2;
   str = str + '';
+  let fix = 2;
   let res = '0';
   while (fix <= maxFix && res === '0') {
     res = fixNumber(str, fix);
     fix += 2;
   }
   return res;
+}
+
+export function priceFormat(str: string, formatFix = 4) {
+  str = str + '';
+  if (!str.startsWith('0.')) {
+    return fixNumber(str, 2);
+  }
+  const float = str.split('0.')[1];
+  let zeroCount = 0;
+  let index = 0;
+  while (index <= float.length && float[index] === '0') {
+    index++;
+    zeroCount++;
+  }
+  if (zeroCount >= formatFix) {
+    const stayLength = 3;
+    let prefix = float.substr(index, stayLength);
+    prefix = prefix.replace(/(0+)$/g, '');
+    return `0.0{${zeroCount}}${prefix}`;
+  } else {
+    return fixNumber(str, formatFix);
+  }
 }

@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { getTokenList, getPairList } from '@/service/api';
 import { TokenItem, PoolItem } from '../types';
-import { divisionAndFix, Division, fixNumber, adaptiveFix } from '@/utils/util';
+import { divisionAndFix, Division, fixNumber, priceFormat } from '@/utils/util';
 
 export default function useTokensAndPools() {
   const tokens = ref<TokenItem[]>([]);
@@ -18,7 +18,7 @@ export default function useTokensAndPools() {
         list.push({
           name: v.symbol,
           assetKey: v.assetChainId + '-' + v.assetId,
-          price: adaptiveFix(divisionAndFix(v.price, 18, 18)),
+          price: priceFormat(divisionAndFix(v.price, 18, 18)),
           priceChange: fixNumber(Division(v.priceChange, 100).toFixed(), 2),
           txs: divisionAndFix(v.amountUsdtValue24H, 18, 2),
           liq: divisionAndFix(v.reserveUsdtValue, 18, 2)

@@ -277,6 +277,7 @@ function toUrl(type: string, query: string) {
       .content {
         color: #475472;
         cursor: pointer;
+        align-items: center;
         .symbol-wrap {
           display: flex;
           align-items: center;

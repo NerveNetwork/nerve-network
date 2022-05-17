@@ -88,7 +88,7 @@ import FundTable from './FundTable.vue';
 import TxList from '../PoolDetail/TxList.vue';
 import { getMultiPair } from '@/service/api';
 import { MultiChainInfo, MultiRoutingItem } from '@/views/info/types';
-import { adaptiveFix, divisionAndFix, fixNumber } from '@/utils/util';
+import { divisionAndFix, fixNumber, priceFormat } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import config from '@/config';
 
@@ -114,7 +114,7 @@ async function getTokenDetail() {
       lpTokenSymbol: res.lpTokenSymbol,
       assetKey: res.lpTokenChainId + '-' + res.lpTokenAssetId,
       address: res.pairAddress,
-      price: adaptiveFix(divisionAndFix(res.price, 18, 18)),
+      price: priceFormat(divisionAndFix(res.price, 18, 18)),
       tx_24: divisionAndFix(res.amountUsdtValue24H, 18, 2),
       tx_7d: divisionAndFix(res.amountUsdtValue7D, 18, 2),
       liq: divisionAndFix(res.reserveUsdtValue, 18, 2)

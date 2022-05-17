@@ -52,7 +52,7 @@ import PoolsTable from '../Overview/PoolsTable.vue';
 import TxList from '../PoolDetail/TxList.vue';
 import { getTokenInfo } from '@/service/api';
 import { TokenDetail } from '@/views/info/types';
-import { adaptiveFix, divisionAndFix } from '@/utils/util';
+import { divisionAndFix, priceFormat } from '@/utils/util';
 import useTokensAndPools from '@/views/info/hooks/useTokensAndPools';
 
 const { t } = useI18n();
@@ -73,7 +73,7 @@ async function getTokenDetail() {
     tokenInfo.value = {
       name: res.symbol,
       assetKey: res.assetChainId + '-' + res.assetId,
-      price: adaptiveFix(divisionAndFix(res.price, 18, 18)),
+      price: priceFormat(divisionAndFix(res.price, 18, 18)),
       tx_24: divisionAndFix(res.amountUsdtValue24H, 18, 2),
       tx_7d: divisionAndFix(res.amountUsdtValue7D, 18, 2),
       tx_24_count: res.transactionCount24H,

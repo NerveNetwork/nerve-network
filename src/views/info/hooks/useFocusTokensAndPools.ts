@@ -1,7 +1,7 @@
 import { computed, ref, watch } from 'vue';
 import { useStore } from '@/store';
 import { getFocusPairsInfo, getFocusAssetsInfo } from '@/service/api';
-import { adaptiveFix, Division, divisionAndFix, fixNumber } from '@/utils/util';
+import { Division, divisionAndFix, fixNumber, priceFormat } from '@/utils/util';
 import { TokenItem, PoolItem } from '../types';
 
 export function useFocusPools() {
@@ -76,7 +76,7 @@ export function useFocusTokens() {
         list.push({
           name: v.symbol,
           assetKey: v.assetChainId + '-' + v.assetId,
-          price: adaptiveFix(divisionAndFix(v.price, 18, 18)),
+          price: priceFormat(divisionAndFix(v.price, 18, 18)),
           priceChange: fixNumber(Division(v.priceChange, 100).toFixed(), 2),
           txs: divisionAndFix(v.amountUsdtValue24H, 18, 2),
           liq: divisionAndFix(v.reserveUsdtValue, 18, 2)

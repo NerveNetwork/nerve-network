@@ -16,6 +16,7 @@
       <Chart
         :type="chartTab[activeTab].type"
         :data="chartData[activeTab] || []"
+        :isPrice="activeTab === 'price'"
       ></Chart>
     </div>
   </div>
@@ -25,7 +26,11 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Chart from '../Overview/Chart.vue';
-import { getTokenAnalytics, get300DaysData, getMultiPairChartData } from '@/service/api';
+import {
+  getTokenAnalytics,
+  get300DaysData,
+  getMultiPairChartData
+} from '@/service/api';
 import { ChartTabItem, ChartItem } from '../types';
 import { adaptiveFix, divisionAndFix } from '@/utils/util';
 
@@ -89,7 +94,7 @@ async function getChartData(key: string, tokenKey?: string) {
       if (!props.isPool && !props.isMultiRouting) {
         const priceItem = {
           label: v.period,
-          value: adaptiveFix(divisionAndFix(v.price, 18, 18))
+          value: divisionAndFix(v.price, 18, 18)
         };
         price.push(priceItem);
       }
