@@ -71,8 +71,8 @@ const linkConfig = computed(() => {
           label: t('footer.footer5'),
           href:
             lang.value === 'EN'
-              ? 'http://nerve-cn.oss-cn-hangzhou.aliyuncs.com/wp/Nerve_Whitepaper_ZH.pdf'
-              : 'http://nervefiles.oss-us-west-1.aliyuncs.com/wp/Nerve_Whitepaper_EN.pdf'
+              ? 'https://nerve-west.oss-us-west-1.aliyuncs.com/wp/Nerve_Whitepaper_ZH.pdf'
+              : 'https://nerve-west.oss-us-west-1.aliyuncs.com/wp/Nerve_Whitepaper_EN.pdf'
         }
       ]
     },
