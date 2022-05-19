@@ -408,3 +408,19 @@ export function priceFormat(str: string, formatFix = 4) {
     return fixNumber(str, formatFix);
   }
 }
+
+// 优先级USDTN最高
+export const valuationAssets = ['BNB', 'ETH', 'USDT', 'NVT', 'USDTN'];
+
+/**
+ * 两个资产，通过计价优先级排序, 返回优先级由低到高
+ */
+export function sortAssetsByValuation(symbol1: string, symbol2: string) {
+  const index1 = valuationAssets.indexOf(symbol1);
+  const index2 = valuationAssets.indexOf(symbol2);
+  if (index1 <= index2) {
+    return [symbol1, symbol2];
+  } else {
+    return [symbol2, symbol1];
+  }
+}

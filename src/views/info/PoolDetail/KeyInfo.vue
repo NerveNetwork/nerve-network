@@ -2,14 +2,16 @@
   <div class="key-info flex-between">
     <div class="left flex-center">
       <div class="symbol-wrap flex-center" v-if="props.isPool">
-        <SymbolIcon :icon="props.info.token0Symbol"></SymbolIcon>
-        <SymbolIcon :icon="props.info.token1Symbol"></SymbolIcon>
+        <SymbolIcon :icon="symbols[1]"></SymbolIcon>
+        <SymbolIcon :icon="symbols[0]"></SymbolIcon>
       </div>
       <div class="symbol-wrap" v-else>
         <SymbolIcon :icon="props.info.name" />
       </div>
       <div class="symbol-info">
-        <p class="name fw">{{ props.info.name }}</p>
+        <p class="name fw">
+          {{ props.isPool ? symbols[0] + '/' + symbols[1] : props.info.name }}
+        </p>
         <p class="key">
           ID: {{ props.info.assetKey || props.info.tokenLP }}
           <span v-if="!props.isPool" style="color: #475472; font-size: 16px">
@@ -23,11 +25,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import useCollect from '../hooks/useCollect';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import CollectIcon from '@/components/CollectIcon.vue';
 import { useStore } from '@/store';
+import { sortAssetsByValuation } from '@/utils/util';
 
 const props = defineProps<{
   info: any;
@@ -36,6 +39,13 @@ const props = defineProps<{
 
 const store = useStore();
 const { changeCollect } = useCollect();
+
+const symbols = computed(() => {
+  const { token0Symbol, token1Symbol } = props.info;
+  if (!token0Symbol) return ['', ''];
+  if (!token1Symbol) return [token0Symbol, ''];
+  return sortAssetsByValuation(token0Symbol, token1Symbol);
+});
 
 watch(
   () => props.info,

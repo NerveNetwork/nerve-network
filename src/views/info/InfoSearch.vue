@@ -69,9 +69,13 @@
                 @click="toUrl('pool', item.address)"
               >
                 <div class="symbol-wrap">
-                  <SymbolIcon :icon="item.token0"></SymbolIcon>
+                  <LiquiditySymbols
+                    :symbol1="item.token0"
+                    :symbol2="item.token1"
+                  ></LiquiditySymbols>
+<!--                  <SymbolIcon :icon="item.token0"></SymbolIcon>
                   <SymbolIcon :icon="item.token1"></SymbolIcon>
-                  {{ item.lpName }}
+                  {{ item.lpName }}-->
                   <CollectIcon
                     v-model="item.isWatch"
                     @change="changeCollect(item.address, $event, 'pool')"
@@ -95,12 +99,13 @@
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SymbolIcon from '@/components/SymbolIcon.vue';
+import LiquiditySymbols from '@/components/LiquiditySymbols.vue';
 import CollectIcon from '@/components/CollectIcon.vue';
 import useClickOutside from '@/hooks/useClickOutside';
 import useMask from '@/hooks/useMask';
 import useCollect from './hooks/useCollect';
 import { searchText } from '@/service/api';
-import { debounce, divisionAndFix } from '@/utils/util';
+import { debounce, divisionAndFix, sortAssetsByValuation } from '@/utils/util';
 import storage from '@/utils/storage';
 import { SearchToken, SearchPool } from './types';
 
@@ -175,31 +180,6 @@ async function doSearch(key: string) {
     pools.value = list2;
   }
 }
-
-/*function changeCollect(item: SearchToken & SearchPool, status: boolean) {
-  console.log(item, status, 88);
-  if (item.assetKey) {
-    const watchTokens = storage.get('watchTokens') || [];
-    if (status) {
-      watchTokens.push(item.assetKey);
-    } else {
-      const index = watchTokens.indexOf(item.assetKey);
-      watchTokens.splice(index, 1);
-    }
-    storage.set('watchTokens', watchTokens);
-    store.commit('changeWatchTokens', watchTokens);
-  } else {
-    const watchPools = storage.get('watchPools') || [];
-    if (status) {
-      watchPools.push(item.address);
-    } else {
-      const index = watchPools.indexOf(item.address);
-      watchPools.splice(index, 1);
-    }
-    storage.set('watchPools', watchPools);
-    store.commit('changeWatchPools', watchPools);
-  }
-}*/
 
 function toUrl(type: string, query: string) {
   if (type === 'token') {

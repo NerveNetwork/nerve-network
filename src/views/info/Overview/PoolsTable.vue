@@ -8,9 +8,10 @@
     >
       <template #name="scope">
         <div class="symbol-wrap flex-center">
-          <SymbolIcon :icon="scope.row.token0Symbol" />
-          <SymbolIcon :icon="scope.row.token1Symbol" />
-          {{ scope.row.token0Symbol }}/{{ scope.row.token1Symbol }}
+          <LiquiditySymbols
+            :symbol1="scope.row.token0Symbol"
+            :symbol2="scope.row.token1Symbol"
+          ></LiquiditySymbols>
         </div>
       </template>
       <template #tx_24="scope">${{ $format(scope.row.tx_24) }}</template>
@@ -25,7 +26,7 @@
 <script lang="ts" setup>
 import { computed, withDefaults } from 'vue';
 import Table from '@/components/Table/index.vue';
-import SymbolIcon from '@/components/SymbolIcon.vue';
+import LiquiditySymbols from '@/components/LiquiditySymbols.vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { PoolItem } from '../types';
