@@ -16,6 +16,8 @@ const props = defineProps<{
   token0: string;
   token1: string;
   isMultiRouting: boolean;
+  fromChain?: string;
+  toChain?: string;
 }>();
 
 const { locale } = useI18n();
@@ -25,9 +27,25 @@ const typeText = computed(() => {
   let txt = '';
   if (props.type === TxType.SWAP) {
     if (isEN) {
-      txt = `Swap ${props.token0} for ${props.token1}`;
+      txt = `Swap ${
+        props.isMultiRouting
+          ? props.token0 + '(' + props.fromChain + ')'
+          : props.token0
+      } for ${
+        props.isMultiRouting
+          ? props.token1 + '(' + props.toChain + ')'
+          : props.token1
+      }`;
     } else {
-      txt = `将 ${props.token0} 交换为 ${props.token1}`;
+      txt = `将 ${
+        props.isMultiRouting
+          ? props.token0 + '(' + props.fromChain + ')'
+          : props.token0
+      } 交换为 ${
+        props.isMultiRouting
+          ? props.token1 + '(' + props.toChain + ')'
+          : props.token1
+      }`;
     }
   } else if (props.type === TxType.ADDLP) {
     if (isEN) {

@@ -13,6 +13,8 @@
         :token0="scope.row.token0"
         :token1="scope.row.token1"
         :is-multi-routing="props.isMultiRouting"
+        :from-chain="scope.row.fromChain"
+        :to-chain="scope.row.toChain"
       />
     </template>
     <template #totalVal="scope">

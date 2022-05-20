@@ -145,10 +145,12 @@ export interface MultiPairTxRes {
   tokenInDecimals: number;
   tokenInImageUrl: string;
   tokenInSymbol: string;
+  tokenInSourceChainId: number;
   tokenOut: string;
   tokenOutDecaimals: number;
   tokenOutImageUrl: string;
   tokenOutSymbol: string;
+  tokenOutSourceChainId: number;
   tokenPrice: string;
   type: string;
   userAddress: string;

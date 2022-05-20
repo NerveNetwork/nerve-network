@@ -79,6 +79,8 @@ export interface TxItem {
   token1: string;
   amount1: string;
   address: string;
+  fromChain?: string;
+  toChain?: string;
 }
 
 export enum TxType {
