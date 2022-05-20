@@ -161,7 +161,7 @@ export async function getTx(hash: string) {
 }
 
 export async function getTronTx(hash: string) {
-  const origin = config.isBeta ? 'https://shastapi.tronscan.org' : '';
+  const origin = config.isBeta ? 'https://shastapi.tronscan.org' : 'https://apilist.tronscan.org';
   const baseUrl = origin.split('/#')[0];
   const res = await http.get({
     url: baseUrl + '/api/transaction-info?hash=' + hash
