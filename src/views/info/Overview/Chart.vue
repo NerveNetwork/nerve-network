@@ -225,7 +225,8 @@ const barOptions = computed(() => {
       {
         // type: 'line',
         data: props.data.map(v => v.value),
-        cursor: 'initial'
+        cursor: 'initial',
+        barMaxWidth: 10
       }
     ]
   };

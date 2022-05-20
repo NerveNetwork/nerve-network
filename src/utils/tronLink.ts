@@ -66,30 +66,27 @@ export function generateTronAddress(pub: string) {
 class TronLinkApi {
   hasTronLink = false;
   selectedAddress = '';
-  connected = false;
   provider = null;
 
   constructor(pub?: string) {
     if (pub) {
       this.selectedAddress = this.generateAddressByPub(pub);
     } else {
-      this.hasTronLink = !!window.tronLink;
-      this.connected = this.isReady();
-      this.selectedAddress = this.connected
-        ? window.tronLink.tronWeb.defaultAddress.base58
+      this.hasTronLink = !!window.tronWeb;
+      this.selectedAddress = this.isReady()
+        ? window.tronWeb.defaultAddress.base58
         : '';
-      // console.log(window.tronLink)
       this.getProvider();
     }
   }
 
   isReady() {
-    return window.tronLink && window.tronLink.ready;
+    return window.tronWeb && window.tronWeb.ready;
   }
 
   getProvider() {
-    if (this.connected) {
-      this.provider = window.tronLink.tronWeb;
+    if (this.isReady()) {
+      this.provider = window.tronWeb;
     }
   }
 
@@ -98,17 +95,20 @@ class TronLinkApi {
   }
 
   async requestAccount() {
-    // if (!window.tronLink) throw 'No provider was found';
-    // if (!window.tronLink.ready) throw 'Pls login first';
-    if (this.connected) {
-      return window.tronLink.tronWeb.defaultAddress.base58;
+    if (this.isReady()) {
+      return window.tronWeb.defaultAddress.base58;
     }
     let address;
-    const res = await window.tronLink.request({
+    const res = await window.tronWeb.request({
       method: 'tron_requestAccounts'
     });
+    // 锁定插件时 返回值为空
+    if (!res) return '';
     if (res.code === 200) {
-      address = window.tronLink.tronWeb.defaultAddress.base58;
+      // 插件确定授权  code=== 200
+      address = window.tronWeb.defaultAddress.base58;
+    } else {
+      throw res.message;
     }
     this.selectedAddress = address;
     return address;
@@ -170,7 +170,7 @@ class TronLinkApi {
         'balanceOf(address)',
         {},
         parameter,
-        this.selectedAddress
+        address
       );
     const balance = tx.constant_result[0]; //十六进制余额
     const balance_bignumber = tronWeb.toBigNumber('0x' + balance).toString();

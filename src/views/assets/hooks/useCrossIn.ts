@@ -11,10 +11,23 @@ export default function useCrossIn(isTron = false) {
 
   if (isTron) {
     window.addEventListener('message', function (e) {
-      if (e.data.message && e.data.message.action == 'accountsChanged') {
-        // console.log("accountsChanged event", e.data.message)
-        // console.log("current address:", e.data.message.data.address)
+      if (!e.data.message) return;
+      // 账户改变
+      if (e.data.message.action === 'accountsChanged') {
+        // console.log('==accountsChanged==', e.data.message.data);
+        TronTransfer.selectedAddress = e.data.message.data.address;
         TRONAddress.value = e.data.message.data.address;
+      }
+      // 断开连接
+      if (e.data.message.action === 'disconnect') {
+        // console.log('==disconnect==', e.data.message.data);
+        TronTransfer.selectedAddress = '';
+        TRONAddress.value = '';
+      }
+      // 网络切换
+      if (e.data.message.action === 'setNode') {
+        // this.reload();
+        window.location.reload();
       }
     });
   }
@@ -24,6 +37,11 @@ export default function useCrossIn(isTron = false) {
     if (isTron) {
       if (!TronTransfer.hasTronLink) throw t('public.public25');
       const address = await TronTransfer.requestAccount();
+      /*
+      * if (!TronTransfer.isReady()) {
+      * // tronWeb.isReady 在锁定状态和连接被拒绝后都是false
+        throw t('public.public26');
+      }*/
       if (!address) {
         throw t('public.public26');
       }
