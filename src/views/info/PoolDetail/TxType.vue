@@ -26,51 +26,33 @@ const typeText = computed(() => {
   const isEN = locale.value === 'en';
   let txt = '';
   if (props.type === TxType.SWAP) {
-    if (isEN) {
-      txt = `Swap ${
-        props.isMultiRouting
-          ? props.token0 + '(' + props.fromChain + ')'
-          : props.token0
-      } for ${
-        props.isMultiRouting
-          ? props.token1 + '(' + props.toChain + ')'
-          : props.token1
-      }`;
-    } else {
-      txt = `将 ${
-        props.isMultiRouting
-          ? props.token0 + '(' + props.fromChain + ')'
-          : props.token0
-      } 交换为 ${
-        props.isMultiRouting
-          ? props.token1 + '(' + props.toChain + ')'
-          : props.token1
-      }`;
-    }
+    const text1 = isEN ? 'Swap ' : '将 ';
+    const text2 = isEN ? ' for ' : ' 交换为 ';
+    txt = `${text1}${
+      props.isMultiRouting
+        ? props.token0 + '(' + props.fromChain + ')'
+        : props.token0
+    }${text2}${
+      props.isMultiRouting
+        ? props.token1 + '(' + props.toChain + ')'
+        : props.token1
+    }`;
   } else if (props.type === TxType.ADDLP) {
-    if (isEN) {
-      txt = `Add ${props.token0}${
-        props.isMultiRouting ? '' : ' and' + props.token1
-      }`;
-    } else {
-      txt = `添加 ${props.token0}${
-        props.isMultiRouting ? '' : ' 和' + props.token1
-      }`;
-    }
+    const text1 = isEN ? 'Add ' : '添加 ';
+    const text2 = isEN ? ' and ' : ' 和 ';
+    txt = `${text1}${props.token0}${
+      props.isMultiRouting ? '(' + props.fromChain + ')' : text2 + props.token1
+    }`;
   } else if (props.type !== TxType.REOMVELP) {
     //
   } else {
-    if (isEN) {
-      txt = `Remove ${
-        props.isMultiRouting
-          ? props.token1
-          : props.token0 + 'and' + props.token1
-      }`;
-    } else {
-      txt = `移除 ${
-        props.isMultiRouting ? props.token1 : props.token0 + '和' + props.token1
-      }`;
-    }
+    const text1 = isEN ? 'Remove ' : '移除 ';
+    const text2 = isEN ? ' and ' : ' 和 ';
+    txt = `${text1}${
+      props.isMultiRouting
+        ? props.token1 + '(' + props.toChain + ')'
+        : props.token0 + text2 + props.token1
+    }`;
   }
   return txt;
 });
