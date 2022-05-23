@@ -307,9 +307,10 @@ export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
   return false;
 }
 
-// 打开nerve浏览器
-export function openExplorer(type: string, query: string) {
-  let url = config.explorerUrl;
+// 打开nerve/nuls浏览器
+export function openExplorer(type: string, query: string, isNuls = false) {
+  // let url = config.explorerUrl;
+  let url = isNuls ? _networkInfo.NULS.origin : _networkInfo.NERVE.origin;
   if (type === 'address') {
     url += '/address/info?address=' + query;
   } else if (type === 'hash') {

@@ -88,7 +88,7 @@ function pageChange(index: number) {
 
 function openUrl(chain: string, address: string) {
   if (chain === 'NULS' || chain === 'NERVE') {
-    openExplorer('address', address);
+    openExplorer('address', address, true);
   } else {
     openL1Explorer(chain, 'address', address);
   }
