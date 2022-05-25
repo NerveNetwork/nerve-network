@@ -27,8 +27,12 @@ import { ref, watch } from 'vue';
 import Table from './Table.vue';
 import { getTxs, getMultiPairTxs } from '@/service/api';
 import dayjs from 'dayjs';
-import { adaptiveFix, divisionAndFix, Times } from '@/utils/util';
-import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import {
+  adaptiveFix,
+  divisionAndFix,
+  Times,
+  getOriginChain
+} from '@/utils/util';
 import { TxItem, TxType } from '../types';
 
 const props = defineProps<{
@@ -162,13 +166,6 @@ async function getMultiRoutingTxData() {
     txList.value = list;
     txTotal.value = res.total;
   }
-}
-
-function getOriginChain(chainId: number) {
-  if (!chainId) return 'NULS';
-  const chainsInfo = Object.values(_networkInfo);
-  const chain = chainsInfo.find(v => v.chainId === chainId)!;
-  return chain.name;
 }
 
 function tabChange() {

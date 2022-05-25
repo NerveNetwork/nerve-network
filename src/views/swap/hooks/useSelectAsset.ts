@@ -8,7 +8,7 @@ import {
   getStablePairListForSwapTrade
 } from '@/service/api';
 import dayjs from 'dayjs';
-import { divisionDecimals } from '@/utils/util';
+import { divisionDecimals, getOriginChain } from '@/utils/util';
 import {
   SwapSymbol,
   OrderItem,
@@ -95,12 +95,14 @@ export default function useSelectAsset() {
         const fromAmount = v.paidTokenAmount.amount;
         const toToken = v.receivedTokenAmount.token;
         const toAmount = v.receivedTokenAmount.amount;
+        const fromChain = getOriginChain(fromToken.heterogeneousChainId);
+        const toChain = getOriginChain(toToken.heterogeneousChainId);
         list.push({
           time: dayjs(v.txTime * 1000).format('MM-DD HH:mm'),
           fromAmount: divisionDecimals(fromAmount, fromToken.decimals),
-          fromSymbol: fromToken.symbol,
+          fromSymbol: isMultiRouting ? fromToken.symbol + '(' + fromChain + ')' : fromToken.symbol,
           toAmount: divisionDecimals(toAmount, toToken.decimals),
-          toSymbol: toToken.symbol,
+          toSymbol: isMultiRouting ? toToken.symbol + '(' + toChain + ')' : toToken.symbol,
           status: true,
           hash: v.hash
         });

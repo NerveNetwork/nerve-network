@@ -425,3 +425,11 @@ export function sortAssetsByValuation(symbol1: string, symbol2: string) {
     return [symbol2, symbol1];
   }
 }
+
+// 通过异构链id获取异构链名称
+export function getOriginChain(chainId: number) {
+  if (!chainId) return 'NULS';
+  const chainsInfo = Object.values(_networkInfo);
+  const chain = chainsInfo.find(v => v.chainId === chainId)!;
+  return chain.name;
+}
