@@ -35,8 +35,10 @@ export default class Lazy {
 
   init() {
     if (hasIntersectionObserver()) {
+      // 浏览器支持IntersectionObserver
       this.initIntersectionObserver();
     } else {
+      // 不支持IntersectionObserver，使用手动监听scroll事件
       this.targetQueue = [];
     }
   }
@@ -151,6 +153,9 @@ export default class Lazy {
     });
     if (manager) {
       manager.update(src);
+    } else {
+      // 列表中使用在加载完成后会被remove，调用update时找不到manager
+      // this.add(el, binding);
     }
   }
 
