@@ -603,6 +603,9 @@ function checkShow(item: StakingListItem) {
   .el-button--small.is-round {
     padding: 6px;
   }
+  .batch-handle-wrap {
+    overflow: auto;
+  }
 
   .staking-list {
     display: none;

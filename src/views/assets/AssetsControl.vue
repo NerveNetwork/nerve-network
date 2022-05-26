@@ -96,6 +96,7 @@ const checkboxVal = computed({
   @media screen and (max-width: 1200px) {
     flex-wrap: wrap;
     justify-content: flex-end;
+    margin-bottom: 12px;
     .left {
       width: 100%;
     }

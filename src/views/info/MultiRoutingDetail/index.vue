@@ -3,7 +3,7 @@
     <Breadcrumb :items="breadItems"></Breadcrumb>
     <div class="route-info flex-between">
       <div class="left flex-center">
-        <SymbolIcon :icon="tokenInfo.name"></SymbolIcon>
+        <SymbolIcon :icon="tokenInfo.logo"></SymbolIcon>
         <div class="symbol-info">
           <p class="name">{{ tokenInfo.name }}</p>
           <p class="info">${{ tokenInfo.price }}</p>
@@ -111,6 +111,7 @@ async function getTokenDetail() {
   if (res) {
     tokenInfo.value = {
       name: res.name,
+      logo: res.logo || res.name,
       lpTokenSymbol: res.lpTokenSymbol,
       assetKey: res.lpTokenChainId + '-' + res.lpTokenAssetId,
       address: res.pairAddress,
@@ -214,11 +215,14 @@ function getLp(key: string) {
     border-radius: 20px;
     .routes-wrap {
       display: flex;
-      padding: 30px 30px 5px;
+      overflow-x: auto;
+      padding: 30px 30px 0;
+      margin-bottom: 5px;
       background-color: #fff;
       border-radius: 20px 20px 0 0;
     }
     .route-item {
+      flex-shrink: 0;
       padding: 8px 12px;
       margin-right: 12px;
       border-radius: 10px;

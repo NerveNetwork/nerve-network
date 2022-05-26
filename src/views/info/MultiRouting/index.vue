@@ -10,7 +10,7 @@
     >
       <template #name="scope">
         <div class="asset-wrap flex-center">
-          <SymbolIcon :icon="scope.row.name" />
+          <SymbolIcon :icon="scope.row.logo" />
           {{ scope.row.name }}
         </div>
       </template>
@@ -74,6 +74,7 @@ async function getList(pageIndex = 1) {
       list.push({
         address: v.pairAddress,
         name: v.name,
+        logo: v.logo || v.name,
         lpTokenSymbol: v.lpTokenSymbol,
         assetKey: v.lpTokenChainId + '-' + v.lpTokenAssetId,
         price: v.price,

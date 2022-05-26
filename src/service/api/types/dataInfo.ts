@@ -111,6 +111,7 @@ export interface MultiPairItem {
   price: string;
   reserveUsdtValue: string;
   tokenList: SupportChain[];
+  logo: string;
 }
 
 interface SupportChain {

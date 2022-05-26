@@ -598,6 +598,9 @@ export default defineComponent({
 }
 
 @media screen and (max-width: 1024px) {
+  .assets-wrap {
+    padding: 0 16px;
+  }
   .assets-wrap .assets-title {
     margin-bottom: 15px;
   }

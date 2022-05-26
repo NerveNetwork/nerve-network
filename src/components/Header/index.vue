@@ -396,6 +396,33 @@ async function pollingTx(txs: TxInfo[]) {
       line-height: 32px;
     }
   }
+  @media screen and (max-width: 375px) {
+    .w1200 {
+      height: 50px;
+      padding: 0 16px 0 12px;
+    }
+    .logo {
+      width: 86px;
+    }
+    .account {
+      margin-left: 2px;
+      line-height: 32px;
+      height: 32px;
+    }
+    .logo img {
+      margin-right: 0;
+    }
+    .pc-menu {
+      display: none;
+    }
+    .menu-icon {
+      margin-left: 10px;
+    }
+    .account .chain-wrap {
+      margin-left: 0;
+      line-height: 32px;
+    }
+  }
 }
 
 .el-popup-parent--hidden {

@@ -92,6 +92,7 @@ export enum TxType {
 
 export interface MultiRoutingItem {
   name: string;
+  logo: string;
   lpTokenSymbol: string;
   assetKey: string;
   price: string;
