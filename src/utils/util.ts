@@ -426,10 +426,19 @@ export function sortAssetsByValuation(symbol1: string, symbol2: string) {
   }
 }
 
-// 通过异构链id获取异构链名称
-export function getOriginChain(chainId: number) {
-  if (!chainId) return 'NULS';
+/**
+ * @desc 通过异构链id/注册id(nerve、nuls)，获取链名称
+ * @param heterogeneousChainId 异构链id
+ * @param assetChainId 资产id
+ */
+export function getOriginChain(heterogeneousChainId: number, assetChainId?: number) {
   const chainsInfo = Object.values(_networkInfo);
-  const chain = chainsInfo.find(v => v.chainId === chainId)!;
-  return chain.name;
+  let chainName = '';
+  if (heterogeneousChainId !== 0) {
+    chainName = chainsInfo.find(v => v.chainId === heterogeneousChainId)!.name;
+  } else {
+    if (!assetChainId) return 'NULS';
+    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS';
+  }
+  return chainName;
 }

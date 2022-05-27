@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { getTokenList, getPairList } from '@/service/api';
 import { TokenItem, PoolItem } from '../types';
-import { divisionAndFix, Division, fixNumber, priceFormat } from '@/utils/util';
+import { divisionAndFix, Division, fixNumber, priceFormat, getOriginChain } from '@/utils/util';
 
 export default function useTokensAndPools() {
   const tokens = ref<TokenItem[]>([]);
@@ -16,6 +16,7 @@ export default function useTokensAndPools() {
       const list: TokenItem[] = [];
       res.list.map(v => {
         list.push({
+          originChain: getOriginChain(v.sourceChainid, v.assetChainId),
           name: v.symbol,
           assetKey: v.assetChainId + '-' + v.assetId,
           price: priceFormat(divisionAndFix(v.price, 18, 18)),

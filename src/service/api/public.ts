@@ -11,6 +11,7 @@ import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import http from '@/service';
+import { HeterogeneousInfo } from '@/store/types';
 
 const url = config.WS_URL;
 
@@ -140,6 +141,7 @@ export async function getAssetList(address = config.destroyAddress) {
     )?.name;
     item.canToL1 = checkCanToL1(item);
     item.canToL1OnCurrent = checkCanToL1OnCurrent(item);
+    item.registerContract = getContractAddress(item.heterogeneousList, item.registerChainId);
   });
   // 返回按字母排序
   const sortDataBySymbol = [...res]
@@ -153,6 +155,19 @@ export async function getAssetList(address = config.destroyAddress) {
   sortDataBySymbol.splice(mainSymbolIndex, 1);
   sortDataBySymbol.unshift(mainSymbol);
   return sortDataBySymbol;
+}
+
+function getContractAddress(
+  heterogeneousList: HeterogeneousInfo[],
+  registerChainId: number
+): string {
+  if (!heterogeneousList || !heterogeneousList.length) {
+    return '';
+  }
+  const info = heterogeneousList.find(
+    v => v.heterogeneousChainId === registerChainId
+  );
+  return info ? info.contractAddress : '';
 }
 
 export async function getTx(hash: string) {

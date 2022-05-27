@@ -90,7 +90,8 @@ module.exports = {
     // config.plugins.push(new BundleAnalyzerPlugin());
   },
   css: {
-    extract: { ignoreOrder: true },
+    // 提取 CSS 在开发环境模式下是默认不开启的，因为它和 CSS 热重载不兼容
+    extract: !isProduction ? false : { ignoreOrder: true },
     sourceMap: !isProduction
   },
 

@@ -12,7 +12,7 @@ const cn = {
     header10: '资产',
     header11: '共识',
     header12: '数据',
-    header13: '区块链浏览器',
+    header13: '浏览器',
     header14: '* Nerve网络暂不支持硬件钱包'
   },
   footer: {

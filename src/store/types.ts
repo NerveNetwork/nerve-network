@@ -26,6 +26,7 @@ export interface AssetItem {
   contractAddress?: string;
   usdPrice: string;
   source: number;
+  registerContract: string;
 }
 
 export interface AccountFarm {

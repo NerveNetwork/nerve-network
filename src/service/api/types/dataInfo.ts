@@ -31,6 +31,7 @@ export interface TokenItem {
   price: string;
   priceChange: string;
   transactionCount24H: string;
+  sourceChainid: number;
 }
 
 export interface PairListParam extends TokenListParam {

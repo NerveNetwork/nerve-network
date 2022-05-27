@@ -7,10 +7,11 @@
       @pageChange="pageChange"
     >
       <template #name="scope">
-        <div class="symbol-wrap">
-          <SymbolIcon :icon="scope.row.name"></SymbolIcon>
-          {{ scope.row.name }}
-        </div>
+        <SymbolInfo
+          :name="scope.row.name"
+          :chain="scope.row.originChain"
+          :asset-key="scope.row.assetKey"
+        ></SymbolInfo>
       </template>
       <template #price="scope">${{ scope.row.price }}</template>
       <template #priceChange="scope">
@@ -31,6 +32,7 @@
 <script lang="ts" setup>
 import { computed, withDefaults } from 'vue';
 import Table from '@/components/Table/index.vue';
+import SymbolInfo from '@/components/SymbolInfo.vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -90,9 +92,7 @@ function pageChange(index: number) {
   tr.el-table__row {
     cursor: pointer;
   }
-  .symbol-wrap {
-    display: flex;
-    align-items: center;
+  .symbol-chain-info {
     img {
       width: 30px;
       height: 30px;

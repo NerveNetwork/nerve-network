@@ -10,6 +10,7 @@ export interface TokenItem {
   priceChange: string;
   txs: string;
   liq: string;
+  originChain: string;
 }
 
 export interface PoolItem {
@@ -31,6 +32,7 @@ export interface SearchToken {
   liq: string;
   assetKey: string;
   isWatch: boolean;
+  originChain: string;
 }
 
 export interface SearchPool {

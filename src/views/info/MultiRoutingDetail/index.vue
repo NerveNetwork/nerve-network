@@ -216,7 +216,7 @@ function getLp(key: string) {
     .routes-wrap {
       display: flex;
       overflow-x: auto;
-      padding: 30px 30px 0;
+      padding: 30px 30px 5px;
       margin-bottom: 5px;
       background-color: #fff;
       border-radius: 20px 20px 0 0;
@@ -260,7 +260,7 @@ function getLp(key: string) {
       }
     }
     .tab-content {
-      height: 339px;
+      height: 334px;
     }
   }
   .radius {

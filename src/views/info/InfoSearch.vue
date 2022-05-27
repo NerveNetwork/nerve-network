@@ -35,8 +35,11 @@
                 @click="toUrl('token', item.assetKey)"
               >
                 <div class="symbol-wrap">
-                  <SymbolIcon :icon="item.symbol"></SymbolIcon>
-                  {{ item.symbol }}
+                  <SymbolInfo
+                    :name="item.symbol"
+                    :asset-key="item.assetKey"
+                    :chain="item.originChain"
+                  ></SymbolInfo>
                   <CollectIcon
                     v-model="item.isWatch"
                     @change="changeCollect(item.assetKey, $event, 'token')"
@@ -73,9 +76,6 @@
                     :symbol1="item.token0"
                     :symbol2="item.token1"
                   ></LiquiditySymbols>
-<!--                  <SymbolIcon :icon="item.token0"></SymbolIcon>
-                  <SymbolIcon :icon="item.token1"></SymbolIcon>
-                  {{ item.lpName }}-->
                   <CollectIcon
                     v-model="item.isWatch"
                     @change="changeCollect(item.address, $event, 'pool')"
@@ -98,14 +98,14 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import SymbolIcon from '@/components/SymbolIcon.vue';
+import SymbolInfo from '@/components/SymbolInfo.vue';
 import LiquiditySymbols from '@/components/LiquiditySymbols.vue';
 import CollectIcon from '@/components/CollectIcon.vue';
 import useClickOutside from '@/hooks/useClickOutside';
 import useMask from '@/hooks/useMask';
 import useCollect from './hooks/useCollect';
 import { searchText } from '@/service/api';
-import { debounce, divisionAndFix, sortAssetsByValuation } from '@/utils/util';
+import { debounce, divisionAndFix, getOriginChain } from '@/utils/util';
 import storage from '@/utils/storage';
 import { SearchToken, SearchPool } from './types';
 
@@ -157,6 +157,7 @@ async function doSearch(key: string) {
     res.token.map(v => {
       const assetKey = v.assetChainId + '-' + v.assetId;
       list1.push({
+        originChain: getOriginChain(v.sourceChainid, v.assetChainId),
         assetKey,
         symbol: v.symbol,
         price: divisionAndFix(v.price, 18, 2),
