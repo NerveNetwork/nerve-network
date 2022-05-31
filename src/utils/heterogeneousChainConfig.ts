@@ -110,7 +110,7 @@ export const RPC_URL = {
   Metis: isBeta
     ? 'https://stardust.metis.io/?owner=588'
     : 'https://andromeda.metis.io/?owner=1088',
-  Lotex: isBeta
+  Iotex: isBeta
     ? 'https://babel-api.testnet.iotex.io'
     : 'https://babel-api.mainnet.iotex.io',
   Optimism: isBeta
@@ -119,7 +119,7 @@ export const RPC_URL = {
   Klaytn: isBeta
     ? 'https://api.baobab.klaytn.net:8651'
     : 'https://public-node-api.klaytnapi.com/v1/cypress',
-  SmartBCH: isBeta
+  smartBCH: isBeta
     ? 'https://moeing.tech:9545'
     : 'https://smartbch.greyh.at',
 };
@@ -291,9 +291,9 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Metis
   },
-  Lotex: {
-    name: 'Lotex',
-    chainName: isBeta ? 'Lotex_Beta' : 'Lotex',
+  Iotex: {
+    name: 'Iotex',
+    chainName: isBeta ? 'Iotex_Beta' : 'Iotex',
     chainId: 114,
     assetKey: isBeta ? '5-116' : '',
     origin: LotexOrigin,
@@ -302,7 +302,7 @@ export const _networkInfo = {
     supported: true,
     logo: LotexLogo,
     decimals: 18,
-    rpcUrl: RPC_URL.Lotex
+    rpcUrl: RPC_URL.Iotex
   },
   Optimism: {
     name: 'Optimism',
@@ -330,9 +330,9 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Klaytn
   },
-  SmartBCH: {
-    name: 'SmartBCH',
-    chainName: isBeta ? 'SmartBCH_Beta' : 'SmartBCH',
+  smartBCH: {
+    name: 'smartBCH',
+    chainName: isBeta ? 'smartBCH_Beta' : 'smartBCH',
     chainId: 117,
     assetKey: isBeta ? '5-119' : '',
     origin: SmartBCHOrigin,
@@ -341,7 +341,7 @@ export const _networkInfo = {
     supported: true,
     logo: SmartBCHLogo,
     decimals: 18,
-    rpcUrl: RPC_URL.SmartBCH
+    rpcUrl: RPC_URL.smartBCH
   },
   NULS: {
     name: 'NULS',
