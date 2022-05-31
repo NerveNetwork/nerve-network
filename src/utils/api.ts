@@ -790,6 +790,11 @@ export class ETransfer {
     if (transactionParameters.from) {
       delete transactionParameters.from;
     }
+    if (this.provider._web3Provider?.chainId === _networkInfo.Klaytn.nativeId) {
+      // @ts-ignore
+      // Klaytn 网络设置gas为250，不然交易无法发送
+      transactionParameters.gasPrice = '0x3a35294400';
+    }
     return await this.sendTransaction(transactionParameters);
   }
 
@@ -946,6 +951,11 @@ export class ETransfer {
     if (failed) {
       console.error('failed approveERC20' + failed);
       return { success: false, message: 'failed approveERC20' + failed };
+    }
+    if (this.provider._web3Provider?.chainId === _networkInfo.Klaytn.nativeId) {
+      // @ts-ignore
+      // Klaytn 网络设置gas为250，不然交易无法发送
+      transactionParameters.gasPrice = '0x3a35294400';
     }
     // @ts-ignore
     delete transactionParameters.from; //etherjs 4.0 from参数无效 报错

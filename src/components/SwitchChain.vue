@@ -1,18 +1,20 @@
 <template>
   <div class="switch-chain-wrapper" ref="wrapper">
     <slot></slot>
-    <ul class="support-network-list" v-show="show">
-      <li
-        v-for="item in supportChainList"
-        :key="item.chainId"
-        :class="{ active: item.chainName === currentChain }"
-        @click.stop="switchChain(item)"
-      >
-        <img :src="item.logo" alt="" />
-        {{ item.chainName }}
-      </li>
-      <div class="pop-arrow"></div>
-    </ul>
+    <div class="support-network-list" v-show="show">
+      <ul v-show="show">
+        <li
+          v-for="item in supportChainList"
+          :key="item.chainId"
+          :class="{ active: item.name === currentChain }"
+          @click.stop="switchChain(item)"
+        >
+          <img :src="item.logo" alt="" />
+          {{ item.name }}
+        </li>
+        <div class="pop-arrow"></div>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -30,6 +32,7 @@ import { getCurrentAccount } from '@/utils/util';
 
 interface ChainItem extends AddChain {
   logo: string;
+  name: string;
 }
 
 export default defineComponent({
@@ -48,7 +51,8 @@ export default defineComponent({
         supportChainList.push({
           chainId: v.nativeId,
           rpcUrls: v.rpcUrl ? [v.rpcUrl] : [],
-          chainName: v.name,
+          name: v.name,
+          chainName: v.chainName,
           nativeCurrency: {
             name: v.name,
             symbol: v.mainAsset,
@@ -69,23 +73,23 @@ export default defineComponent({
     });
     const { addEthereumChain, switchEthereumChain } = useEthereum();
     async function switchChain(item: ChainItem) {
-      if (item.chainName === props.currentChain) return;
+      if (item.name === props.currentChain) return;
       show.value = false;
       const provider = getProvider();
       try {
         if (
-          specialChain.indexOf(item.chainName) > -1 ||
+          specialChain.indexOf(item.name) > -1 ||
           item.chainId === provider.chainId
         ) {
-          store.commit('changeNetwork', item.chainName);
+          store.commit('changeNetwork', item.name);
           const currentAccount = getCurrentAccount(props.address || '');
           const chain =
-            specialChain.indexOf(item.chainName) > -1 ? item.chainName : 'EVM';
+            specialChain.indexOf(item.name) > -1 ? item.name : 'EVM';
           const newAddress = currentAccount.address[chain];
           store.commit('changeAddress', newAddress);
           store.commit('changeIsWrongChain', false);
-        } else if (item.chainName !== 'Ethereum') {
-          const { logo, ...rest } = item;
+        } else if (item.name !== 'Ethereum') {
+          const { logo, name, ...rest } = item;
           await addEthereumChain(rest);
         } else {
           await switchEthereumChain({ chainId: item.chainId });
@@ -124,13 +128,17 @@ export default defineComponent({
   top: 40px;
   left: -20px;
   z-index: 111;
-  width: 140px;
   padding: 6px 0;
   margin-top: 8px;
   border: 1px solid #e4e7ed;
   border-radius: 4px;
   background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  ul {
+    min-width: 148px;
+    height: 350px;
+    overflow-y: auto;
+  }
   li {
     padding-left: 10px;
     height: 40px;

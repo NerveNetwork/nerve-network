@@ -129,21 +129,19 @@ export default defineComponent({
     function getFeeAssetInfo() {
       const { network } = father;
       const feeAssets: AssetItemType[] = [];
-      const htgMainAsset = Object.values(config.htgMainAsset);
+      const htgMainAsset = Object.values(_networkInfo).filter(
+        v => v.name !== 'NULS'
+      );
       father.allAssetsList.map(v => {
         htgMainAsset.map(item => {
-          if (item.chainId === v.chainId && item.assetId === v.assetId) {
+          if (item.assetKey === v.assetKey) {
             feeAssets.push(v);
           }
         });
       });
-      const defaultFeeAsset =
-        config.htgMainAsset[network] || config.htgMainAsset.NERVE;
+      const defaultFeeAsset = _networkInfo[network] || _networkInfo.NERVE;
       selectedFeeAsset.value = father.allAssetsList.find(asset => {
-        return (
-          asset.chainId === defaultFeeAsset.chainId &&
-          asset.assetId === defaultFeeAsset.assetId
-        );
+        return asset.assetKey === defaultFeeAsset.assetKey;
       }) as AssetItemType;
       feeSymbol.value = _networkInfo[network].mainAsset;
       supportedFeeAssets.value = feeAssets;

@@ -35,7 +35,7 @@ const config = {
     ETHNET: 'ropsten',
     feeAddress: 'TNVTdTSPP9oSLvdtVSVFiUYCvXJdj1ZA1nyQU', //提现费用地址
     destroyAddress: 'TNVTdTSPGwjgRMtHqjmg8yKeMLnpBpVN5ZuuY', // 黑洞地址
-    htgMainAsset: {
+    /*htgMainAsset: {
       // 提现费用资产信息
       NERVE: { chainId: 5, assetId: 1, decimals: 8, symbol: 'NVT' },
       Ethereum: { chainId: 5, assetId: 2, decimals: 18, symbol: 'ETH' },
@@ -50,7 +50,7 @@ const config = {
       Avalanche: { chainId: 5, assetId: 94, decimals: 18, symbol: 'AVAX' },
       Arbitrum: { chainId: 5, assetId: 95, decimals: 18, symbol: 'AETH' },
       Fantom: { chainId: 5, assetId: 96, decimals: 18, symbol: 'FTM' }
-    },
+    },*/
     trxWithdrawFee: '40000000',
     explorerUrl: 'http://beta.scan.nerve.network',
     bridgeUrl: 'http://beta.bridge.nerve.network/'
@@ -72,7 +72,7 @@ const config = {
     ETHNET: 'homestead',
     feeAddress: 'NERVEepb69f573sRzfoTX9Kn67WeNtXhG6Y6W8',
     destroyAddress: 'NERVEepb63T1M8JgQ26jwZpZXYL8ZMLdUAK31L',
-    htgMainAsset: {
+    /*htgMainAsset: {
       NERVE: { chainId: 9, assetId: 1, decimals: 8, symbol: 'NVT' },
       Ethereum: { chainId: 9, assetId: 2, decimals: 18, symbol: 'ETH' },
       BSC: { chainId: 9, assetId: 25, decimals: 18, symbol: 'BNB' },
@@ -86,7 +86,7 @@ const config = {
       Avalanche: { chainId: 9, assetId: 267, decimals: 18, symbol: 'AVAX' },
       Arbitrum: { chainId: 9, assetId: 268, decimals: 18, symbol: 'AETH' },
       Fantom: { chainId: 9, assetId: 269, decimals: 6, symbol: 'FTM' }
-    },
+    },*/
     trxWithdrawFee: '40000000',
     explorerUrl: 'https://scan.nerve.network',
     bridgeUrl: 'https://bridge.nerve.network/'
