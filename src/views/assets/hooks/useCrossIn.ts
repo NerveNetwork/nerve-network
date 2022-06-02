@@ -6,10 +6,11 @@ import { useI18n } from 'vue-i18n';
 
 export default function useCrossIn(isTron = false) {
   const { t } = useI18n();
-  const TronTransfer = new TronLinkApi();
+  let TronTransfer: any;
   const EvmTransfer = new ETransfer();
 
   if (isTron) {
+    TronTransfer = new TronLinkApi();
     window.addEventListener('message', function (e) {
       if (!e.data.message) return;
       // 账户改变
@@ -31,7 +32,7 @@ export default function useCrossIn(isTron = false) {
       }
     });
   }
-  const TRONAddress = ref(TronTransfer.selectedAddress);
+  const TRONAddress = ref(TronTransfer?.selectedAddress);
 
   async function connect() {
     if (isTron) {
