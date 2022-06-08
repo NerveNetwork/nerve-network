@@ -2,11 +2,11 @@
   <div class="key-info flex-between">
     <div class="left flex-center">
       <div class="symbol-wrap flex-center" v-if="props.isPool">
-        <SymbolIcon :icon="symbols[1]"></SymbolIcon>
-        <SymbolIcon :icon="symbols[0]"></SymbolIcon>
+        <SymbolIcon :icon="symbols[1]" :asset-key="assetKeys[1]"></SymbolIcon>
+        <SymbolIcon :icon="symbols[0]" :asset-key="assetKeys[0]"></SymbolIcon>
       </div>
       <div class="symbol-wrap" v-else>
-        <SymbolIcon :icon="props.info.name" />
+        <SymbolIcon :icon="props.info.name" :asset-key="props.info.assetKey" />
       </div>
       <div class="symbol-info">
         <p class="name fw">
@@ -39,12 +39,23 @@ const props = defineProps<{
 
 const store = useStore();
 const { changeCollect } = useCollect();
-
+console.log(props.info, 881222222);
 const symbols = computed(() => {
   const { token0Symbol, token1Symbol } = props.info;
+  console.log(props.info, 881222222);
   if (!token0Symbol) return ['', ''];
   if (!token1Symbol) return [token0Symbol, ''];
   return sortAssetsByValuation(token0Symbol, token1Symbol);
+});
+
+const assetKeys = computed(() => {
+  if (!props.isPool) return [];
+  const { token0Symbol, token1Symbol, token0, token1 } = props.info;
+  if (symbols.value[0] === token0Symbol && symbols.value[1] === token1Symbol) {
+    return [token0, token1];
+  } else {
+    return [token1, token0];
+  }
 });
 
 watch(

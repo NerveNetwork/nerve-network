@@ -11,14 +11,22 @@
 import { defineComponent, computed } from 'vue';
 import { getIconSrc } from '@/utils/util';
 import defaultIcon from '@/assets/img/defaultIcon.svg';
+import storage from '@/utils/storage';
+
 export default defineComponent({
   props: {
-    icon: String
+    icon: String,
+    assetKey: String
   },
   name: 'SymbolIcon',
   setup(props) {
     const iconSrc = computed(() => {
-      return getIconSrc(props.icon || '');
+      const logoConfig = storage.get('logoConfig');
+      if (!props.assetKey || !logoConfig[props.assetKey]) {
+        return getIconSrc(props.icon || '');
+      } else {
+        return logoConfig[props.assetKey];
+      }
     });
     function replaceImg(e: Event) {
       const target = e.target as HTMLImageElement;

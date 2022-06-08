@@ -23,6 +23,8 @@ export interface PoolItem {
   liq: string;
   token0Symbol: string;
   token1Symbol: string;
+  token0: string;
+  token1: string;
 }
 
 export interface SearchToken {
@@ -43,6 +45,8 @@ export interface SearchPool {
   token0: string;
   token1: string;
   lpName: string;
+  token0Key: string;
+  token1Key: string;
 }
 
 export interface TokenDetail {

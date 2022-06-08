@@ -1,6 +1,6 @@
 <template>
   <div class="symbol-chain-info flex-center">
-    <SymbolIcon :icon="props.logo || props.name"></SymbolIcon>
+    <SymbolIcon :icon="props.logo || props.name" :asset-key="props.assetKey"></SymbolIcon>
     <div class="chain-info">
       <span class="name">{{ props.name }}</span>
       <span class="chain">{{ props.chain }}&nbsp;&nbsp;|&nbsp;&nbsp;ID: {{ props.assetKey }}</span>

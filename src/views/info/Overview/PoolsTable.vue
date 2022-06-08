@@ -11,6 +11,8 @@
           <LiquiditySymbols
             :symbol1="scope.row.token0Symbol"
             :symbol2="scope.row.token1Symbol"
+            :asset-key1="scope.row.token0"
+            :asset-key2="scope.row.token1"
           ></LiquiditySymbols>
         </div>
       </template>

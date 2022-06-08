@@ -75,6 +75,8 @@
                   <LiquiditySymbols
                     :symbol1="item.token0"
                     :symbol2="item.token1"
+                    :asset-key1="item.token0Key"
+                    :asset-key2="item.token1Key"
                   ></LiquiditySymbols>
                   <CollectIcon
                     v-model="item.isWatch"
@@ -175,7 +177,9 @@ async function doSearch(key: string) {
         isWatch: watchPools.includes(v.address),
         token0: v.token0Symbol,
         token1: v.token1Symbol,
-        lpName: v.token0Symbol + ' / ' + v.token1Symbol
+        lpName: v.token0Symbol + ' / ' + v.token1Symbol,
+        token0Key: v.token0,
+        token1Key: v.token1
       });
     });
     pools.value = list2;

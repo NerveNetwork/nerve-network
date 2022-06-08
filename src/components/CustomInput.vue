@@ -17,8 +17,8 @@
         </template>
       </el-input>
       <div class="select-wrap flex-center" @click="showDialog = true">
-        <template v-if="icon">
-          <symbol-icon :icon="icon" />
+        <template v-if="selectedAsset">
+          <symbol-icon :icon="selectedAsset.symbol" :asset-key="selectedAsset.assetKey"/>
           <!--          <span class="coin-name">{{ icon }}</span>-->
           <el-tooltip effect="dark" :content="icon" placement="top">
             <span class="click">{{ icon }}</span>

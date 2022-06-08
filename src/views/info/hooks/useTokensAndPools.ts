@@ -41,6 +41,8 @@ export default function useTokensAndPools() {
           address: v.address,
           token0Symbol: v.token0Symbol,
           token1Symbol: v.token1Symbol,
+          token0: v.token0,
+          token1: v.token1,
           tx_24: divisionAndFix(v.amountUsdtValue24H, 18, 2),
           tx_7d: divisionAndFix(v.amountUsdtValue7D, 18, 2),
           lp_24: divisionAndFix(v.feeUsdtValue, 18, 2),
