@@ -511,7 +511,9 @@ const en = {
     transfer24: 'Please enter correct NERVE/NULS address',
     transfer25: 'Insufficient handling fees',
     transfer26: 'Do not transfer aasets directly to the NULS contract address, it may cause asset loss',
-    transfer27: 'Connect TronLink'
+    transfer27: 'Connect TronLink',
+    transfer28: 'Pls fill in the to address',
+    transfer29: 'Pls fill in a valid receiving address'
   },
   trading: {
     trading1: 'Order History',

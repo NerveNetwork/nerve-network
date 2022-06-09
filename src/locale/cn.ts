@@ -495,7 +495,9 @@ const cn = {
     transfer24: '请输入正确的NERVE/NULS地址',
     transfer25: '手续费不足',
     transfer26: '请勿直接向NULS合约地址转账，可能造成资产丢失',
-    transfer27: '连接TronLink'
+    transfer27: '连接TronLink',
+    transfer28: '请输入接收地址',
+    transfer29: '请输入有效的接收地址'
   },
   trading: {
     trading1: '订单历史',

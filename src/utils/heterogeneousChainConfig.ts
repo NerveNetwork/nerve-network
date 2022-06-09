@@ -83,7 +83,7 @@ export const RPC_URL = {
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
     : 'https://bsc-dataseed.binance.org/',
   Polygon: isBeta
-    ? 'https://rpc-mumbai.maticvigil.com'
+    ? 'https://matic-mumbai.chainstacklabs.com'
     : 'https://matic-mainnet.chainstacklabs.com',
   Heco: isBeta
     ? 'https://http-testnet.hecochain.com'

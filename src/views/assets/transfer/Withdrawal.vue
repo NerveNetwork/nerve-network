@@ -2,9 +2,18 @@
   <div class="cross-out" v-loading="loading">
     <div class="title">
       {{ 'To ' + father.network }}
-      <span class="click" @click="openUrl(father.address, father.network)">
+<!--      <span class="click" @click="openUrl(father.address, father.network)">
         {{ superLong(father.address) }}
         <i class="iconfont icon-tiaozhuanlianjie"></i>
+      </span>-->
+    </div>
+    <div class="to-input">
+      <el-input
+        :placeholder="$t('transfer.transfer28')"
+        v-model.trim="toAddress"
+      ></el-input>
+      <span class="address-error" v-if="addressError">
+        {{ addressError }}
       </span>
     </div>
     <div class="transfer-content">
@@ -64,6 +73,7 @@ import {
   floatToCeil
 } from '@/utils/util';
 import { ETransfer } from '@/utils/api';
+import TronLinkApi from '@/utils/tronLink';
 import { getAssetPrice } from '@/service/api';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
@@ -84,6 +94,30 @@ export default defineComponent({
     const toast = useToast();
 
     const loading = ref(false);
+    const toAddress = ref(father.address);
+    const addressError = ref('');
+    watch(
+      () => toAddress.value,
+      val => {
+        if (val) {
+          let flag = true;
+          try {
+            if (father.network === 'TRON') {
+              const tron = new TronLinkApi();
+              flag = tron.validAddress(val);
+            } else {
+              const transfer = new ETransfer();
+              flag = transfer.validateAddress(val);
+            }
+          } catch (e) {
+            flag = false;
+          }
+          addressError.value = flag ? '' : t('transfer.transfer29');
+        } else {
+          addressError.value = '';
+        }
+      }
+    );
     const amount = ref('');
 
     const assetsList = computed<AssetItemType[]>(() => {
@@ -111,7 +145,9 @@ export default defineComponent({
         !amount.value ||
         !balance.value ||
         amountErrorTip.value ||
-        father.disableTx
+        father.disableTx ||
+        !toAddress.value ||
+        addressError.value
       );
     });
     const feeSymbol = ref('');
@@ -290,7 +326,7 @@ export default defineComponent({
       loading.value = true;
       try {
         const { chainId, assetId, decimals } = transferAsset.value;
-        const { nerveAddress, address } = father;
+        const { nerveAddress } = father;
         const {
           chainId: feeChainId,
           assetId: feeAssetId,
@@ -310,7 +346,7 @@ export default defineComponent({
         };
         console.log(transferInfo, '===transferInfo===');
         const txData = {
-          heterogeneousAddress: address,
+          heterogeneousAddress: toAddress.value,
           heterogeneousChainId: heterogeneousInfo.heterogeneousChainId
         };
         const result: any = await handleTxInfo(transferInfo, 43, txData);
@@ -330,6 +366,8 @@ export default defineComponent({
 
     return {
       father,
+      toAddress,
+      addressError,
       loading,
       amount,
       balance,
@@ -353,14 +391,33 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../../../assets/css/style.scss';
 .cross-out {
   .title {
     font-size: 18px;
     color: $labelColor;
+    margin-bottom: 20px;
     span {
       color: $linkColor;
+    }
+  }
+  .to-input {
+    position: relative;
+    .el-input {
+      border-color: #e3eeff;
+    }
+    .el-input__inner {
+      border-color: #e3eeff;
+      height: 58px;
+      line-height: 58px;
+    }
+    .address-error {
+      position: absolute;
+      left: 0;
+      top: 65px;
+      font-size: 13px;
+      color: #f56c6c;
     }
   }
   .transfer-content {
