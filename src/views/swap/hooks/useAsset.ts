@@ -7,8 +7,11 @@ import {
   getStablePairListForSwapTrade,
   getHotAssets as getHotAssetsApi
 } from '@/service/api';
+import { isBeta } from '@/utils/util';
 
 const LpSource = [10, 11, 12];
+
+const USDTN_kEY = isBeta ? '5-102' : '9-220';
 
 export default function useAsset(isLiquidity = false) {
   const route = useRoute();
@@ -77,15 +80,16 @@ export default function useAsset(isLiquidity = false) {
   watch(
     [filterLPAssets, stableCoins],
     ([val, sCoins]) => {
-      // 添加流动性页面资产列表不展示可swap稳定币资产
+      // 添加流动性页面资产列表不展示可swap稳定币资产 仅限usdt
       // if (val && val.length) {
+      console.log(sCoins, '--==--');
       if (val && val.length && (!isLiquidity || Object.keys(sCoins).length)) {
         // assetsList stableCoins都存在
         if (!isLiquidity) {
           liquidityAssets.value = val.filter(v => v);
         } else {
           liquidityAssets.value = val.filter(v => {
-            return !sCoins[v.assetKey];
+            return sCoins[v.assetKey] !== USDTN_kEY;
           });
         }
         if (!isLoaded) {
