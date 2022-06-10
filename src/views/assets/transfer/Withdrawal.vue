@@ -448,8 +448,8 @@ export default defineComponent({
       }
     }
     .el-checkbox__label {
-
       color: #f56c6c;
+      white-space: normal;
     }
   }
   .wrong-net {
