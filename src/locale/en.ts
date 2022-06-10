@@ -513,7 +513,8 @@ const en = {
     transfer26: 'Do not transfer aasets directly to the NULS contract address, it may cause asset loss',
     transfer27: 'Connect TronLink',
     transfer28: 'Pls fill in the to address',
-    transfer29: 'Pls fill in a valid receiving address'
+    transfer29: 'Pls fill in a valid receiving address',
+    transfer30: 'Recharging directly to the exchange address will cause asset loss'
   },
   trading: {
     trading1: 'Order History',

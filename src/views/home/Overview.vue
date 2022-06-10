@@ -29,7 +29,7 @@
 import { ref, onMounted } from 'vue';
 import CountUp from '@/components/CountUp.vue';
 import { getOverviewData } from '@/service/api';
-import { divisionDecimals } from '@/utils/util';
+import { divisionDecimals, Times } from '@/utils/util';
 
 const overviewData = ref({
   turnoverAmount: '0',
@@ -44,7 +44,7 @@ onMounted(() => {
         8
       ).split('.')[0];
       overviewData.value.totalUsd = divisionDecimals(
-        res.nvtTotalUsdtValue,
+        Times(res.nvtTurnoverAmount, res.nvtUsdtValue),
         8
       ).split('.')[0];
       overviewData.value.totalStake = divisionDecimals(

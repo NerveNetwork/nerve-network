@@ -41,6 +41,9 @@
           {{ $t('transfer.transfer22') }}
         </span>
       </div>
+      <div class="tx-tip">
+        <el-checkbox v-model="confirmTip" :label="$t('transfer.transfer30')" />
+      </div>
     </div>
     <div class="confirm-wrap">
       <el-button type="primary" @click="sendTx" :disabled="disableTransfer">
@@ -96,6 +99,7 @@ export default defineComponent({
     const loading = ref(false);
     const toAddress = ref(father.address);
     const addressError = ref('');
+    const confirmTip = ref(false);
     watch(
       () => toAddress.value,
       val => {
@@ -147,7 +151,8 @@ export default defineComponent({
         amountErrorTip.value ||
         father.disableTx ||
         !toAddress.value ||
-        addressError.value
+        addressError.value ||
+        !confirmTip.value
       );
     });
     const feeSymbol = ref('');
@@ -368,6 +373,7 @@ export default defineComponent({
       father,
       toAddress,
       addressError,
+      confirmTip,
       loading,
       amount,
       balance,
@@ -427,6 +433,24 @@ export default defineComponent({
     color: #7e87c2;
     font-size: 14px;
     margin-top: 20px;
+  }
+  .tx-tip {
+    padding-top: 10px;
+    .el-checkbox__inner {
+      width: 18px;
+      height: 18px;
+      &:after {
+        height: 10px;
+        left: 5px;
+        top: 1px;
+        font-weight: 600;
+        width: 5px;
+      }
+    }
+    .el-checkbox__label {
+
+      color: #f56c6c;
+    }
   }
   .wrong-net {
     margin-top: 10px;
