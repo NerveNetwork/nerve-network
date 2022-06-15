@@ -699,7 +699,27 @@ export default defineComponent({
         !isNaN(Number(amount)) &&
         Number(amount) > 0
       ) {
-        // 稳定币、稳定币N互换
+        if (isStableCoinSwap.value || isStableCoinForStableCoin.value) {
+          // 稳定币、稳定币N互换
+          // 稳定币、稳定币互换
+          const stableKey = stableCoins.value[fromAssetKey];
+          const stableN: any = stablePairList.value.find(
+            (v: any) => v.lpToken === stableKey
+          );
+          const toAssetInfo = stableN.groupCoin[toAssetKey];
+          const balance = divisionDecimals(
+            toAssetInfo.balance,
+            toAssetInfo.decimals
+          );
+          // @ts-ignore
+          if (balance - amount < 0) {
+            // 池子余额不足
+            return [0, 0];
+          }
+          state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+          return [amount, 0];
+        }
+        /*// 稳定币、稳定币N互换
         if (isStableCoinSwap.value) {
           state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
           return [amount, 0];
@@ -708,7 +728,7 @@ export default defineComponent({
         if (isStableCoinForStableCoin.value) {
           state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
           return [amount, 0];
-        }
+        }*/
 
         let key = fromAssetKey + '_' + toAssetKey;
         let fromAsset = state.fromAsset;

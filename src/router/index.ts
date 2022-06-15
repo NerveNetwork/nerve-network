@@ -17,7 +17,7 @@ const MultiRouting = () => import('@/views/info/MultiRouting/index.vue');
 const MultiRoutingDetail = () =>
   import('@/views/info/MultiRoutingDetail/index.vue');
 
-const routes: Array<RouteRecordRaw> = [
+const routes: RouteRecordRaw[] = [
   {
     path: '',
     name: 'home',
