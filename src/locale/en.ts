@@ -25,7 +25,7 @@ const en = {
     footer7: 'More',
     footer8: 'Block Explorer',
     footer9: 'Create Node',
-    footer10: 'Web Wallet'
+    footer10: 'wallet Download'
   },
   public: {
     public1: 'Asset',

@@ -25,7 +25,7 @@ const cn = {
     footer7: '更多',
     footer8: '区块链浏览器',
     footer9: '创建节点',
-    footer10: '网页钱包'
+    footer10: '下载钱包'
   },
   public: {
     public1: '资产',

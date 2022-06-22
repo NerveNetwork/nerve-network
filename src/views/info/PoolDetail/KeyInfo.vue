@@ -10,7 +10,17 @@
       </div>
       <div class="symbol-info">
         <p class="name fw">
-          {{ props.isPool ? symbols[0] + '/' + symbols[1] : props.info.name }}
+          <template v-if="props.isPool">
+            <span class="link" @click="toAsset(assetKeys[0])">
+              {{ symbols[0] }}
+            </span>
+            /
+            <span class="link" @click="toAsset(assetKeys[1])">
+              {{ symbols[1] }}
+            </span>
+          </template>
+          <template v-else>{{ props.info.name }}</template>
+<!--          {{ props.isPool ? symbols[0] + '/' + symbols[1] : props.info.name }}-->
         </p>
         <p class="key">
           ID: {{ props.info.assetKey || props.info.tokenLP }}
@@ -26,6 +36,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import useCollect from '../hooks/useCollect';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import CollectIcon from '@/components/CollectIcon.vue';
@@ -37,6 +48,7 @@ const props = defineProps<{
   isPool?: boolean;
 }>();
 
+const router = useRouter();
 const store = useStore();
 const { changeCollect } = useCollect();
 console.log(props.info, 881222222);
@@ -82,6 +94,10 @@ function change(status: boolean) {
   const type = props.isPool ? 'pool' : 'token';
   const value = props.isPool ? props.info.address : props.info.assetKey;
   changeCollect(value, status, type);
+}
+
+function toAsset(key: string) {
+  router.push('/info/tokens/' + key);
 }
 </script>
 

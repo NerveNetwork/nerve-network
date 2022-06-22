@@ -111,9 +111,7 @@ const linkConfig = computed(() => {
         },
         {
           label: t('footer.footer10'),
-          href: isBeta
-            ? 'http://beta.wallet.nerve.network/'
-            : 'https://wallet.nerve.network/'
+          href: 'https://github.com/NerveNetwork/nerve'
         },
         {
           label: 'NerveDEX',

@@ -227,6 +227,13 @@ export default function useEthereum() {
   // 连接provider
   async function connect(providerType: string) {
     const provider = getProvider(providerType);
+    const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
+      navigator.userAgent
+    );
+    if (providerType === 'ethereum' && !provider && isMobile) {
+      window.open('https://metamask.app.link/dapp/nerve.network');
+      return;
+    }
     if (!provider) {
       throw new Error(t('public.public25'));
     }
