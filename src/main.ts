@@ -12,6 +12,7 @@ import { getLogoConfig } from '@/utils/logoConfig';
 if (process.env.NODE_ENV !== 'development') {
   window.console.log = () => {};
 }
+console.info('start');
 
 AddChain();
 getLogoConfig();
