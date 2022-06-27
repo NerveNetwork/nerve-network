@@ -411,7 +411,7 @@ export function priceFormat(str: string, formatFix = 4) {
 }
 
 // 优先级USDTN最高
-export const valuationAssets = ['BNB', 'ETH', 'USDT', 'NVT', 'USDTN'];
+export const valuationAssets = ['BNB', 'ETH', 'NVT', 'NULS', 'USDTN'];
 
 /**
  * 两个资产，通过计价优先级排序, 返回优先级由低到高
