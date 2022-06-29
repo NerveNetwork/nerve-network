@@ -699,8 +699,35 @@ export default defineComponent({
         !isNaN(Number(amount)) &&
         Number(amount) > 0
       ) {
-        if (isStableCoinSwap.value || isStableCoinForStableCoin.value) {
+        if (isStableCoinSwap.value) {
           // 稳定币、稳定币N互换
+          if (stableCoins.value[fromAssetKey] === toAssetKey) {
+            // 稳定币换稳定币N
+            /*const stableN: any = stablePairList.value.find(
+              (v: any) => v.lpToken === toAssetKey
+            );*/
+            state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+            return [amount, 0];
+          } else {
+            // 稳定币N换稳定币
+            const stableN: any = stablePairList.value.find(
+              (v: any) => v.lpToken === fromAssetKey
+            );
+            const toAssetInfo = stableN.groupCoin[toAssetKey];
+            const balance = divisionDecimals(
+              toAssetInfo.balance,
+              toAssetInfo.decimals
+            );
+            // @ts-ignore
+            if (balance - amount < 0) {
+              // 池子余额不足
+              return [0, 0];
+            }
+            state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+            return [amount, 0];
+          }
+        }
+        if (isStableCoinForStableCoin.value) {
           // 稳定币、稳定币互换
           const stableKey = stableCoins.value[fromAssetKey];
           const stableN: any = stablePairList.value.find(
@@ -719,6 +746,26 @@ export default defineComponent({
           state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
           return [amount, 0];
         }
+        /*if (isStableCoinSwap.value || isStableCoinForStableCoin.value) {
+          // 稳定币、稳定币N互换
+          // 稳定币、稳定币互换
+          const stableKey = stableCoins.value[fromAssetKey];
+          const stableN: any = stablePairList.value.find(
+            (v: any) => v.lpToken === stableKey
+          );
+          const toAssetInfo = stableN.groupCoin[toAssetKey];
+          const balance = divisionDecimals(
+            toAssetInfo.balance,
+            toAssetInfo.decimals
+          );
+          // @ts-ignore
+          if (balance - amount < 0) {
+            // 池子余额不足
+            return [0, 0];
+          }
+          state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+          return [amount, 0];
+        }*/
         /*// 稳定币、稳定币N互换
         if (isStableCoinSwap.value) {
           state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
