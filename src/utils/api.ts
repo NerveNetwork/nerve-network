@@ -148,6 +148,9 @@ export class NTransfer {
     } else if (this.type === 9) {
       // 注销节点
       return this.stopNodeTransaction(data);
+    } else if (this.type === 56) {
+      // 追加提现手续费
+      return this.additionFee(data);
     }
   }
 
@@ -631,6 +634,28 @@ export class NTransfer {
   // 注销节点
   stopNodeTransaction(transferInfo: any) {
     return this.quitDepositTransaction(transferInfo, true);
+  }
+
+  // 追加提现手续费
+  async additionFee(transferInfo: any) {
+    const { assetsChainId, assetsId, from, to, amount } = transferInfo;
+    const nonce = await this.getNonce(from, assetsChainId, assetsId);
+    const inputs = [{
+      address: from,
+      assetsChainId,
+      assetsId,
+      amount,
+      locked: 0,
+      nonce
+    }];
+    const outputs = [{
+      address: to,
+      assetsChainId,
+      assetsId,
+      amount,
+      lockTime: 0
+    }];
+    return { inputs, outputs };
   }
 
   async getNonce(from: string, assetsChainId: number, assetsId: number) {

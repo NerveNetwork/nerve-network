@@ -52,6 +52,7 @@ export interface TxInfo {
   type?: number;
   L1Chain?: string;
   L1Type?: string;
+  expand?: boolean;
 }
 
 // 手动声明 state 类型

@@ -135,11 +135,14 @@ export default defineComponent({
   background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   ul {
-    min-width: 148px;
+    min-width: 300px;
     height: 350px;
     overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
   }
   li {
+    width: 50%;
     padding-left: 10px;
     height: 40px;
     color: $txColor;
@@ -178,6 +181,14 @@ export default defineComponent({
       top: 1px;
       margin-left: -6px;
       border-bottom-color: #fff;
+    }
+  }
+  @media screen and (max-width: 1200px) {
+    ul {
+      min-width: 148px;
+    }
+    li {
+      width: 100%;
     }
   }
 }

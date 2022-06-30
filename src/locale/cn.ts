@@ -451,7 +451,8 @@ const cn = {
     home11: '总市值',
     home12: '质押量',
     home13: '链上资金总量',
-    home14: '链上资金流动/24H'
+    home14: '链上资金流动/24H',
+    home15: '支持15+网络'
   },
   assets: {
     assets1: 'Layer2资产',
@@ -498,7 +499,10 @@ const cn = {
     transfer27: '连接TronLink',
     transfer28: '请输入接收地址',
     transfer29: '请输入有效的接收地址',
-    transfer30: '直接向交易所地址充值会造成资产丢失'
+    transfer30: '直接向交易所地址充值会造成资产丢失',
+    transfer31: '追加手续费',
+    transfer32: '已支付手续费',
+    transfer33: '追加',
   },
   trading: {
     trading1: '订单历史',

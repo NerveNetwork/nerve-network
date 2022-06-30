@@ -467,7 +467,8 @@ const en = {
     home11: 'Market Cap',
     home12: 'Staking',
     home13: 'Total Assets on Nerve',
-    home14: 'Total Flow on Nerve / 24H'
+    home14: 'Total Flow on Nerve / 24H',
+    home15: 'Support 15+ Networks'
   },
   assets: {
     assets1: 'Layer2 Asset',
@@ -514,7 +515,10 @@ const en = {
     transfer27: 'Connect TronLink',
     transfer28: 'Pls fill in the to address',
     transfer29: 'Pls fill in a valid receiving address',
-    transfer30: 'Recharging directly to the exchange address will cause asset loss'
+    transfer30: 'Recharging directly to the exchange address will cause asset loss',
+    transfer31: 'Additional fee',
+    transfer32: 'Paid',
+    transfer33: 'Append',
   },
   trading: {
     trading1: 'Order History',

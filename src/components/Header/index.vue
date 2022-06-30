@@ -207,7 +207,10 @@ async function checkTxStatus() {
         accountTxs.value = txs;
         const accountList: Account[] = storage.get('accountList') || [];
         accountList.map(v => {
-          if (v.address.EVM === address.value) {
+          const sameAddress = Object.values(v.address)
+            .map((v: any) => v.toLowerCase())
+            .includes(address.value?.toLowerCase());
+          if (sameAddress) {
             v.txs = txs;
           }
         });
@@ -219,10 +222,16 @@ async function checkTxStatus() {
     isQuery = false;
   }
 }
+
 async function pollingTx(txs: TxInfo[]) {
   const txsQuery = txs.map(v => {
     if (!v.L1Chain) {
-      return getTx(v.hash);
+      if (v.type === 43) {
+        // 提现，目标链未确认前显示追加手续费按钮
+        return handleWithdrawalTx(v);
+      } else {
+        return getTx(v.hash);
+      }
     } else if (v.L1Chain === 'TRON') {
       return getTronTx(v.hash);
     } else {
@@ -232,6 +241,7 @@ async function pollingTx(txs: TxInfo[]) {
   });
   const res = await Promise.all(txsQuery);
   res.map(v => {
+    if (!v) return;
     txs.map(tx => {
       if (tx.hash === v.hash || tx.hash === v.transactionHash) {
         tx.status = v.status;
@@ -239,6 +249,17 @@ async function pollingTx(txs: TxInfo[]) {
     });
   });
   return txs;
+}
+
+async function handleWithdrawalTx(tx: TxInfo) {
+  const txState = { status: 0, hash: tx.hash };
+  const res = await getTx(tx.hash);
+  if (res) {
+    if (res.txData?.state !== 'Unconfirmed') {
+      return res;
+    }
+  }
+  return txState;
 }
 </script>
 
