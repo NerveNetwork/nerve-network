@@ -23,13 +23,21 @@
         </el-button>
       </p>
     </div>
+    <div class="loading-wrap" v-if="isLoading">
+      <el-icon color="#2688F7" class="is-loading" :size="20">
+        <loading />
+      </el-icon>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useToast } from 'vue-toastification';
+import { Loading } from '@element-plus/icons-vue';
+
+console.info(Loading, 9922);
 
 const props = defineProps<{
   txInfo: any;
@@ -39,6 +47,15 @@ const emit = defineEmits(['confirm', 'cancel']);
 
 const { t } = useI18n();
 const toast = useToast();
+
+const isLoading = ref(true);
+watch(
+  () => props.txInfo.hash,
+  val => {
+    isLoading.value = !val;
+  }
+);
+
 const amount = ref('');
 function changeInput(e: Event) {
   // this.amount = val;
@@ -76,6 +93,7 @@ async function confirm() {
   background-color: #f3f6fd;
   padding: 8px 15px 10px;
   display: flex;
+  position: relative;
   .row-item {
     &:first-child {
       width: 32%;
@@ -133,6 +151,17 @@ async function confirm() {
   .el-divider--vertical {
     height: 10px;
     border-color: #7e879b;
+  }
+  .loading-wrap {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7);
   }
   @media screen and (max-width: 500px) {
     flex-wrap: wrap;

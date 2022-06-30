@@ -264,6 +264,7 @@ async function additionFee(amount: string) {
       display: flex;
       justify-content: flex-end;
       .is-loading {
+        margin-left: 2px;
         transform-origin: center center;
       }
     }

@@ -46,6 +46,11 @@
               <span @click="manageAccount = true">
                 {{ superLong(nerveAddress, 5) }}
               </span>
+              <template v-if="unConfirmedTx">
+                <el-icon color="#2688F7" class="is-loading">
+                  <loading />
+                </el-icon>
+              </template>
             </div>
           </div>
         </div>
@@ -185,6 +190,10 @@ onMounted(() => {
   checkTxStatus();
 });
 const accountTxs = ref<TxInfo[]>([]);
+
+const unConfirmedTx = computed(() => {
+  return accountTxs.value.filter(tx => !tx.status).length;
+});
 
 async function checkTxStatus() {
   if (!address.value || !nerveAddress.value) return;
