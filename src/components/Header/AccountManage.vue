@@ -155,7 +155,7 @@ function showAdditionFee(hash: string, isExpand: boolean) {
     if (v.hash === hash) {
       v.expand = !v.expand;
       const tx = await getTx(hash);
-      const txData = tx.txData;
+      const txData = tx?.txData;
       if (txData) {
         feeCoin = assetsList.value.find(
           asset =>
