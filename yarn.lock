@@ -7587,10 +7587,10 @@ neo-async@^2.5.0, neo-async@^2.6.0, neo-async@^2.6.1, neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nerve-sdk-js@^1.0.19:
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/nerve-sdk-js/-/nerve-sdk-js-1.0.19.tgz#5ae95f2a269efa7ba906ffc1e00a07a8ec765114"
-  integrity sha512-eU0QGmGVT0l66HqGcDn4TWDh1or3hN4M6iZJRXi3kC822FoKkot/rFHo53mEJm7tPlg+Qsd3BFSz3D3ND4/3sg==
+nerve-sdk-js@^1.0.22:
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/nerve-sdk-js/-/nerve-sdk-js-1.0.22.tgz#13b05930c97f6fb54478b28a971ddf84fcb0d3bd"
+  integrity sha512-m57oVX15syFu2PIwA52PueCvSx8Awb+UVyRHH/BhlPdBp0C2okrm+OckF0Mntu9U1HzgPHhuTSM6pbeq8d0HEA==
   dependencies:
     "@babel/cli" "^7.0.0"
     "@babel/core" "^7.0.0"

@@ -252,7 +252,8 @@ export default defineComponent({
       stableCoins,
       stablePairList,
       getReceiveOrderIndex,
-      getStableCoinInfoAndIndex
+      getStableCoinInfoAndIndex,
+      staleSwapFeeAddress
     } = useSpecialSwap();
     const state = reactive<SwapState>({
       feeRate: '0.3', // 千三的手续费
@@ -919,13 +920,28 @@ export default defineComponent({
       }
     }
 
+    const stableSwapFeeRate= computed(() => {
+      if (!isStableCoinForStableCoin.value) return null;
+      const fromAssetKey = state.fromAsset!.assetKey;
+      const stableKey = stableCoins.value[fromAssetKey];
+      const stableN: any = stablePairList.value.find(
+        (v: any) => v.lpToken === stableKey
+      );
+      return stableN.feeRate;
+    });
     const minReceive = computed(() => {
       if (!state.toAmount) return '';
       // if (!state.protectPercent) {
       //   state.protectPercent = 0.5;
       // }
-      if (isStableCoinSwap.value || isStableCoinForStableCoin.value) {
+      if (isStableCoinSwap.value) {
         return state.toAmount;
+      }
+      if (isStableCoinForStableCoin.value) {
+        return fixNumber(
+          Minus(state.toAmount, fee.value).toFixed(),
+          state.toAsset?.decimals
+        );
       }
       return fixNumber(
         Times(state.toAmount, 1 - Number(state.protectPercent) / 100).toFixed(),
@@ -950,6 +966,13 @@ export default defineComponent({
 
     const fee = computed(() => {
       if (!state.fromAsset) return '';
+      if (isStableCoinSwap.value) return '0';
+      if (isStableCoinForStableCoin.value) {
+        return fixNumber(
+          Times(state.fromAmount, stableSwapFeeRate.value).toFixed(),
+          state.fromAsset?.decimals
+        );
+      }
       if (isStableCoinSwap.value || isStableCoinForStableCoin.value) return '0';
       return fixNumber(
         Times(state.fromAmount, divisionDecimals('0.3', 2)).toFixed(),
@@ -1145,7 +1168,13 @@ export default defineComponent({
             toAssetKey,
             stablePairAddress
           );
-          const feeTo = null;
+          const feeTo = staleSwapFeeAddress.value;
+          const feeAmount = timesDecimals(fee.value, fromDecimal);
+          const feeTokenAmount = nerve.swap.tokenAmount(
+            +chainId,
+            +assetId,
+            feeAmount
+          );
           tx = await nerve.swap.stableSwapTrade(
             fromAddress,
             stablePairAddress,
@@ -1154,7 +1183,8 @@ export default defineComponent({
             feeTo,
             deadline,
             toAddress,
-            remark
+            remark,
+            feeTokenAmount
           );
         } else {
           const amountIn = timesDecimals(state.fromAmount, fromDecimal); // 卖出的资产数量

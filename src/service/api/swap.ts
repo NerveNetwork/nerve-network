@@ -1,7 +1,7 @@
 import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
 import { genId } from '@/utils/util';
-import { HotAsset } from './types/swap';
+import type { HotAsset, StablePairBaseInfo } from './types/swap';
 
 const url = config.WS_URL;
 
@@ -180,6 +180,44 @@ export async function getHotAssets() {
     params: {}
   };
   return await listen<HotAsset[]>({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
+// 查询所有稳定币交易对基础信息
+export async function getStablePairBaseInfoList() {
+  const channel = 'getStablePairBaseInfoList';
+  const params = {
+    method: channel,
+    id: genId(),
+    params: {}
+  };
+  return await listen<StablePairBaseInfo[]>({
+    url,
+    channel,
+    id: params.id,
+    params: {
+      cmd: true,
+      channel: 'cmd:' + JSON.stringify(params)
+    }
+  });
+}
+
+// 查询手续Nerve网络手续费的地址
+export async function getNerveFeeAddress() {
+  const channel = 'getNerveFeeAddress';
+  const params = {
+    method: channel,
+    id: genId(),
+    params: {}
+  };
+  return await listen<{ nerveFeeAddress: string }>({
     url,
     channel,
     id: params.id,
