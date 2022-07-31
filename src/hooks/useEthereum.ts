@@ -153,15 +153,31 @@ export default function useEthereum() {
     networkError: ''
   });
 
-  function initProvider() {
+  async function initProvider() {
     const provider = getProvider();
-    const address = provider?.selectedAddress || provider?.address;
-    if (provider && address) {
-      state.address = address;
-      initChainInfo(address);
-      // console.log(state.address, 8)
+    if (!provider) return;
+    if (provider.on) {
       listenAccountChange();
       listenNetworkChange();
+    }
+    let address = provider?.selectedAddress || provider?.address;
+    try {
+      address = await provider
+        ?.request({ method: 'eth_requestAccounts' })
+        .then((accounts: string[]) => accounts && accounts[0]);
+    } catch (error) {
+      if ((error as any).code === 4001) {
+        throw error.message;
+      }
+    }
+    if (!address) {
+      address = await provider
+        .enable()
+        .then((accounts: string[]) => accounts && accounts[0]);
+    }
+    if (address) {
+      state.address = address;
+      initChainInfo(address);
     }
   }
 
