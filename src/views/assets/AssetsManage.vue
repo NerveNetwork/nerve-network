@@ -46,7 +46,7 @@
           :class="{ 'disable-item': noCancel(item.chainId, item.assetId) }"
         >
           <div class="flex-center">
-            <symbol-icon :icon="item.symbol"></symbol-icon>
+            <symbol-icon :icon="item.symbol" :asset-key="item.assetKey"></symbol-icon>
             <div class="asset-base-info">
               <div>
                 {{ item.symbol }}

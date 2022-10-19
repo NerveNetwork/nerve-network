@@ -3,20 +3,24 @@ import { Minus, divisionDecimals, isBeta } from '@/utils/util';
 // import config from '@/config';
 import {
   getStablePairListForSwapTrade,
-  getStableSwapPairInfo
+  getStableSwapPairInfo,
+  // getStablePairBaseInfoList,
+  getNerveFeeAddress as getNerveFeeAddressApi
 } from '@/service/api';
 
 // const NVT_KEY = config.chainId + '-' + config.assetId;
 
 const USDTN_kEY = isBeta ? '5-102' : '9-220';
 
-// U换nvt、U换USDTN
+// 稳定币换稳定币、稳定币换非稳定币、稳定币/稳定币N互换
 export default function useSpecialSwap() {
-  const isStableCoinForStableCoin = ref(false); // 稳定币换稳定币, 暂不支持，需提示用户
-  const isStableCoinForOthers = ref(false); // 是否是稳定币换NVT
+  const isStableCoinForStableCoin = ref(false); // 稳定币换稳定币
+  const isStableCoinForOthers = ref(false); // 是否是稳定币换其他资产
   const isStableCoinSwap = ref(false); // 稳定币、稳定币N互换
   const stableCoins = ref({}); // {稳定币: 稳定币+'N'}
   const stablePairList = ref([]);
+  // const stableSwapFeeList = ref<any>(); // 稳定币换稳定币收取手续费信息
+  const staleSwapFeeAddress = ref(''); // 稳定币换稳定币手续费地址
   const getStablePairList = async () => {
     const res = await getStablePairListForSwapTrade();
     if (res) {
@@ -28,7 +32,17 @@ export default function useSpecialSwap() {
       });
     }
   };
-  onMounted(getStablePairList);
+  async function getNerveFeeAddress() {
+    const res = await getNerveFeeAddressApi();
+    if (res) {
+      staleSwapFeeAddress.value = res.nerveFeeAddress;
+    }
+  }
+
+  onMounted(() => {
+    getStablePairList();
+    getNerveFeeAddress();
+  });
 
   // 判断是否是稳定币换稳定币
   function checkIsStableCoinForStableCoin(
@@ -111,6 +125,8 @@ export default function useSpecialSwap() {
     isStableCoinSwap,
     stableCoins,
     stablePairList,
+    // stableSwapFeeList,
+    staleSwapFeeAddress,
     checkIsStableCoinForStableCoin,
     checkIsStableCoinForOthers,
     checkIsStableCoinSwap,

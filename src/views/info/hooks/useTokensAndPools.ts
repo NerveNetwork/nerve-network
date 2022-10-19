@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { getTokenList, getPairList } from '@/service/api';
 import { TokenItem, PoolItem } from '../types';
-import { divisionAndFix, Division, fixNumber, adaptiveFix } from '@/utils/util';
+import { divisionAndFix, Division, fixNumber, priceFormat, getOriginChain } from '@/utils/util';
 
 export default function useTokensAndPools() {
   const tokens = ref<TokenItem[]>([]);
@@ -16,9 +16,10 @@ export default function useTokensAndPools() {
       const list: TokenItem[] = [];
       res.list.map(v => {
         list.push({
+          originChain: getOriginChain(v.sourceChainid, v.assetChainId),
           name: v.symbol,
           assetKey: v.assetChainId + '-' + v.assetId,
-          price: adaptiveFix(divisionAndFix(v.price, 18, 18)),
+          price: priceFormat(divisionAndFix(v.price, 18, 18)),
           priceChange: fixNumber(Division(v.priceChange, 100).toFixed(), 2),
           txs: divisionAndFix(v.amountUsdtValue24H, 18, 2),
           liq: divisionAndFix(v.reserveUsdtValue, 18, 2)
@@ -40,6 +41,8 @@ export default function useTokensAndPools() {
           address: v.address,
           token0Symbol: v.token0Symbol,
           token1Symbol: v.token1Symbol,
+          token0: v.token0,
+          token1: v.token1,
           tx_24: divisionAndFix(v.amountUsdtValue24H, 18, 2),
           tx_7d: divisionAndFix(v.amountUsdtValue7D, 18, 2),
           lp_24: divisionAndFix(v.feeUsdtValue, 18, 2),

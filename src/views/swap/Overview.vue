@@ -2,84 +2,38 @@
   <div class="overview pd_40_rd_20">
     <div class="head" v-if="swapSymbol.to">
       <div class="top flex-center">
-        <symbol-icon class="img1" :icon="swapSymbol.from"></symbol-icon>
-        <symbol-icon class="img2" :icon="swapSymbol.to"></symbol-icon>
+        <symbol-icon class="img1" :icon="swapSymbol.from" :key="swapSymbol.from"></symbol-icon>
+        <symbol-icon class="img2" :icon="swapSymbol.to" :key="swapSymbol.to"></symbol-icon>
         <div class="pair">{{ swapSymbol.from }}/{{ swapSymbol.to }}</div>
       </div>
       <div class="bottom" v-if="swapRate">{{ swapRate }}</div>
     </div>
     <div class="order-history">
-      <div class="title">{{ $t('trading.trading1') }}</div>
-      <el-table :data="list" max-height="435" v-loading="loading">
-        <el-table-column width="10px"></el-table-column>
-        <el-table-column :label="$t('trading.trading3')">
-          <template #default="scope">
-            {{ $thousands(scope.row.toAmount) }} {{ scope.row.toSymbol }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="lock" :label="$t('trading.trading4')">
-          <template #default="scope">
-            {{ $thousands(scope.row.fromAmount) }} {{ scope.row.fromSymbol }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="time"
-          :label="$t('trading.trading2')"
-        ></el-table-column>
-        <el-table-column :label="$t('trading.trading5')" width="100px">
-          <template #default="scope">
-            <span class="iconfont icon-chenggong" :scope="scope"></span>
-            <span
-              class="click iconfont icon-tiaozhuanlianjie"
-              :scope="scope"
-              style="margin-left: 10px"
-              @click="openExplorer('hash', scope.row.hash)"
-            ></span>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="mobile-list">
-        <ul>
-          <li v-for="(item, index) in list" :key="index">
-            <div class="flex-between">
-              <div class="left">
-                <div>
-                  <span>{{ $t('trading.trading3') }}</span>
-                  <p>{{ $thousands(item.toAmount) + item.toSymbol }}</p>
-                </div>
-                <div>
-                  <span>{{ $t('trading.trading4') }}</span>
-                  <p>{{ $thousands(item.fromAmount) + item.fromSymbol }}</p>
-                </div>
-              </div>
-              <div class="right">
-                <div>
-                  <span>{{ $t('trading.trading5') }}</span>
-                  <p>{{ $t('trading.trading18') }}</p>
-                </div>
-                <div>
-                  <span>{{ $t('trading.trading2') }}</span>
-                  <p>{{ item.time }}</p>
-                </div>
-              </div>
-            </div>
-            <p>
-              Hash:
-              <span class="link" @click="openExplorer('hash', item.hash)">
-                {{ superLong(item.hash, 8) }}
-              </span>
-            </p>
-          </li>
-        </ul>
+      <div class="order-nav">
+        <span
+          :class="{ active: txType === 'swap' }"
+          @click="changeTxType('swap')"
+        >
+          {{ $t('trading.trading23') }}
+        </span>
+        <span
+          :class="{ active: txType === 'multiRouting' }"
+          @click="changeTxType('multiRouting')"
+        >
+          {{ $t('trading.trading24') }}
+        </span>
       </div>
+      <TxList :list="list" v-show="txType === 'swap'"></TxList>
+      <TxList :list="list" v-show="txType === 'multiRouting'"></TxList>
       <pagination v-model:pager="newPager" @change="changeList"></pagination>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
+import TxList from './TxList.vue';
 import Pagination from '@/components/Pagination.vue';
 import { SwapSymbol, OrderItem, Pager } from './types';
 import { openExplorer, superLong } from '@/utils/util';
@@ -98,10 +52,12 @@ export default defineComponent({
     pager: {
       type: Object as PropType<Pager>,
       default: () => {}
-    }
+    },
+    txType: String
   },
   components: {
     SymbolIcon,
+    TxList,
     Pagination
   },
   setup(props, { emit }) {
@@ -113,11 +69,16 @@ export default defineComponent({
         emit('update:pager', val);
       }
     });
+    function changeTxType(type: string) {
+      if (type === props.txType) return;
+      emit('update:txType', type);
+    }
     function changeList() {
       emit('changeList');
     }
     return {
       newPager,
+      changeTxType,
       changeList,
       openExplorer,
       superLong
@@ -135,7 +96,7 @@ export default defineComponent({
   margin-right: 30px;
   //margin-right: 40px;
   .head {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     .img1,
     .img2 {
       width: 35px;
@@ -156,10 +117,21 @@ export default defineComponent({
     }
   }
   .order-history {
-    .title {
-      font-size: 24px;
+    .order-nav {
       margin-bottom: 15px;
-      color: $labelColor;
+      span {
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+        margin-right: 40px;
+        color: #475472;
+        cursor: pointer;
+        &.active {
+          color: #2688f7;
+          border-bottom: 3px solid #2688f7;
+        }
+      }
     }
     :deep(.el-table) {
       border: none !important;
@@ -193,6 +165,15 @@ export default defineComponent({
       }
     }
     .order-history {
+      .order-nav {
+        margin-bottom: 10px;
+        span {
+          height: 34px;
+          line-height: 34px;
+          font-size: 18px;
+          margin-right: 30px;
+        }
+      }
       :deep(.el-table) {
         th .cell {
           font-size: 14px;
@@ -229,11 +210,7 @@ export default defineComponent({
       }
     }
     .order-history {
-      .title {
-        font-size: 22px;
-        margin-bottom: 10px;
-        display: none;
-      }
+
       :deep(.el-table) {
         display: none;
       }

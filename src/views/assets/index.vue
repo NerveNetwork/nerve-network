@@ -19,35 +19,28 @@
           <el-table-column :label="$t('public.public1')">
             <template v-slot="scope">
               <div class="flex-center">
-                <symbol-icon :icon="scope.row.symbol"></symbol-icon>
-                <el-tooltip placement="top">
+<!--                <symbol-icon :icon="scope.row.symbol"></symbol-icon>-->
+                <el-tooltip placement="top" v-if="scope.row.registerContract">
                   <template #content>
                     <div>
-                      ID: {{ scope.row.assetKey }}
-                      <br />
-                      <span
-                        v-if="
-                          getContractAddress(
-                            scope.row.heterogeneousList,
-                            scope.row.registerChainId
-                          )
-                        "
-                      >
+                      <span>
                         {{ $t('assets.assets10') }}
-                        {{
-                          getContractAddress(
-                            scope.row.heterogeneousList,
-                            scope.row.registerChainId
-                          )
-                        }}
+                        {{ scope.row.registerContract }}
                       </span>
                     </div>
                   </template>
-                  <div class="t_info">
-                    <span>{{ scope.row.symbol }}</span>
-                    <p>{{ '(' + scope.row.originNetwork + ')' }}</p>
-                  </div>
+                  <SymbolInfo
+                    :name="scope.row.symbol"
+                    :chain="scope.row.originNetwork"
+                    :asset-key="scope.row.assetKey"
+                  ></SymbolInfo>
                 </el-tooltip>
+                <SymbolInfo
+                  v-else
+                  :name="scope.row.symbol"
+                  :chain="scope.row.originNetwork"
+                  :asset-key="scope.row.assetKey"
+                ></SymbolInfo>
               </div>
             </template>
           </el-table-column>
@@ -114,16 +107,11 @@
         <div v-for="(item, index) in filteredAssets" v-else :key="index">
           <div class="p-24 asset-cont-wrap" @click="assetClick(item)">
             <div class="asset-cont">
-              <div class="asset-item">
-                <span class="asset-img">
-                  <symbol-icon :icon="item.symbol"></symbol-icon>
-                </span>
-                <span class="font-bold" style="font-size: 14px; line-height: 1">
-                  {{ item.symbol }}
-                  <br />
-                  <span>({{ item.originNetwork }})</span>
-                </span>
-              </div>
+              <SymbolInfo
+                :name="item.symbol"
+                :chain="item.originNetwork"
+                :asset-key="item.assetKey"
+              ></SymbolInfo>
               <div class="asset-amount flex-center">
                 <div class="left">
                   <div class="font-bold align-right" style="font-size: 15px">
@@ -144,26 +132,9 @@
               </div>
             </div>
             <div class="t_info">
-              <span>ID: {{ item.assetKey }}</span>
-              <br />
-              <span
-                v-if="
-                  getContractAddress(
-                    item.heterogeneousList,
-                    item.registerChainId
-                  )
-                "
-              >
-                {{ $t('assets.assets10')
-                }}{{
-                  superLong(
-                    getContractAddress(
-                      item.heterogeneousList,
-                      item.registerChainId
-                    ),
-                    10
-                  )
-                }}
+              <span v-if="item.registerContract">
+                {{ $t('assets.assets10') }}
+                {{ superLong(item.registerContract, 10) }}
               </span>
             </div>
           </div>
@@ -226,7 +197,7 @@ import {
   reactive
 } from 'vue';
 import AssetsControl from './AssetsControl.vue';
-import SymbolIcon from '@/components/SymbolIcon.vue';
+import SymbolInfo from '@/components/SymbolInfo.vue';
 import AssetsManage from './AssetsManage.vue';
 import Transfer from './transfer/index.vue';
 import CollapseTransition from '@/components/CollapseTransition.vue';
@@ -236,12 +207,11 @@ import useAssetsList from './hooks/useAssetsList';
 import { specialChain } from '@/hooks/useEthereum';
 
 import { AssetItemType, rootCmpKey, TransferType } from './types';
-import { HeterogeneousInfo } from '@/store/types';
 
 export default defineComponent({
   name: 'assets',
   components: {
-    SymbolIcon,
+    SymbolInfo,
     AssetsManage,
     Transfer,
     CollapseTransition,
@@ -296,25 +266,10 @@ export default defineComponent({
       transferAsset.value = asset;
     }
 
-    // 获取资产合约地址
-    function getContractAddress(
-      heterogeneousList: HeterogeneousInfo[],
-      registerChainId: number
-    ): string {
-      if (!heterogeneousList || !heterogeneousList.length) {
-        return '';
-      }
-      const info = heterogeneousList.find(
-        v => v.heterogeneousChainId === registerChainId
-      );
-      return info ? info.contractAddress : '';
-    }
-
     function canToL1OnCurrent(status: boolean) {
       if (!status) return false;
       if (network.value === 'TRON') return true;
       return specialChain.indexOf(network.value) < 0;
-      // return network.value !== 'NULS' && network.value !== 'NERVE' && network.value !== 'TRON';
     }
 
     const rootCmp = reactive({
@@ -351,7 +306,6 @@ export default defineComponent({
       transfer,
       superLong,
       assetClick,
-      getContractAddress,
       TransferType,
       assetCanCross,
       canToL1OnCurrent
@@ -442,30 +396,11 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
     padding: 3px 0;
-
-    .asset-item {
-      display: flex;
-      align-items: center;
-      max-width: 40%;
-
-      .asset-img {
-        height: 25px;
-        width: 25px;
-        overflow: hidden;
-        margin-right: 6px;
-        flex-shrink: 0;
-
-        .symbol-icon {
-          height: 100%;
-          width: 100%;
-          border-radius: 50%;
-        }
-      }
-
-      .font-bold span {
-        color: $labelColor;
-        font-weight: 400;
-        font-size: 12px;
+    .symbol-chain-info {
+      img {
+        height: 28px;
+        width: 28px;
+        margin-right: 4px;
       }
     }
 
@@ -585,7 +520,9 @@ export default defineComponent({
 
     .el-button--text {
       color: #2688f7;
-
+      &.is-disabled {
+        color: #c0c4cc;
+      }
       span {
         font-size: 14px;
       }
@@ -598,6 +535,9 @@ export default defineComponent({
 }
 
 @media screen and (max-width: 1024px) {
+  .assets-wrap {
+    padding: 0 16px;
+  }
   .assets-wrap .assets-title {
     margin-bottom: 15px;
   }

@@ -50,47 +50,47 @@ module.exports = {
         resolvers: [ElementPlusResolver()]
       })
     );
-    config.optimization = {
+    config.optimization.splitChunks = {
       // 添加分包
-      splitChunks: {
-        chunks: 'all',
-        maxAsyncRequests: 5, // 每个异步加载模块最多能被拆分的数量
-        maxInitialRequests: 5, // 每个入口和它的同步依赖最多能被拆分的数量
-        cacheGroups: {
-          'nerve-sdk-js': {
-            name: 'sdk-chunk',
-            // test: /[\\/]node_modules[\\/](jsrsasign|nerve-sdk-js)/,
-            test: /[\\/]node_modules[\\/](nerve-sdk-js|jsrsasign)/,
-            priority: -7
-          },
-          'element-plus': {
-            name: 'ui-chunk',
-            test: /[\\/]node_modules[\\/](element-plus)/,
-            priority: -8
-          },
-          echarts: {
-            name: 'echarts-chunk',
-            test: /[\\/]node_modules[\\/](echarts|zrender)/,
-            priority: -9
-          },
-          ethers: {
-            name: 'ethers-chunk',
-            test: /[\\/]node_modules[\\/](ethers|web3)/,
-            priority: -10
-          },
-          /*vendors: {
-            name: 'vendors',
-            test: /[\\/]node_modules[\\/]/,
-            priority: -20
-          }*/
-        }
+      chunks: 'all',
+      maxAsyncRequests: 5, // 每个异步加载模块最多能被拆分的数量
+      maxInitialRequests: 5, // 每个入口和它的同步依赖最多能被拆分的数量
+      cacheGroups: {
+        'nerve-sdk-js': {
+          name: 'sdk-chunk',
+          // test: /[\\/]node_modules[\\/](jsrsasign|nerve-sdk-js)/,
+          test: /[\\/]node_modules[\\/](nerve-sdk-js|jsrsasign)/,
+          priority: -7
+        },
+        'element-plus': {
+          name: 'ui-chunk',
+          test: /[\\/]node_modules[\\/](element-plus)/,
+          priority: -8
+        },
+        echarts: {
+          name: 'echarts-chunk',
+          test: /[\\/]node_modules[\\/](echarts|zrender)/,
+          priority: -9
+        },
+        ethers: {
+          name: 'ethers-chunk',
+          test: /[\\/]node_modules[\\/](ethers|web3)/,
+          priority: -10
+        },
+        /*vendors: {
+          name: 'vendors',
+          test: /[\\/]node_modules[\\/]/,
+          priority: -20
+        }*/
       }
     };
     config.devtool = !isProduction ? 'cheap-module-source-map' : false;
+    config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
     // config.plugins.push(new BundleAnalyzerPlugin());
   },
   css: {
-    extract: { ignoreOrder: true },
+    // 提取 CSS 在开发环境模式下是默认不开启的，因为它和 CSS 热重载不兼容
+    extract: !isProduction ? false : { ignoreOrder: true },
     sourceMap: !isProduction
   },
 

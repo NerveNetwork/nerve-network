@@ -22,19 +22,11 @@
                 @click="toggleDetail(item)"
               >
                 <div class="symbol">
-                  <div class="symbol-cont">
-                    <div class="img-wrap">
-                      <symbol-icon
-                        class="symbol1"
-                        :icon="item.token0.symbol"
-                      ></symbol-icon>
-                      <symbol-icon
-                        class="symbol2"
-                        :icon="item.token1.symbol"
-                      ></symbol-icon>
-                    </div>
-                    <span>{{ item.lpTokenAmount.token.symbol }}</span>
-                  </div>
+                  <LiquiditySymbols
+                    :symbol1="item.token0.symbol"
+                    :symbol2="item.token1.symbol"
+                    :name="item.lpTokenAmount.token.symbol"
+                  ></LiquiditySymbols>
                   <div class="amount-cont">{{ item.amount }}</div>
                 </div>
                 <div class="view-detail">
@@ -80,10 +72,11 @@ import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import AddLiquidity from './AddLiquidity.vue';
 import CollapseTransition from '@/components/CollapseTransition.vue';
 import DetailBar from './DetailBar.vue';
+import LiquiditySymbols from '@/components/LiquiditySymbols.vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import Pagination from '@/components/Pagination.vue';
 import { userLiquidityPage } from '@/service/api';
-import { divisionAndFix } from '@/utils/util';
+import { divisionAndFix, sortAssetsByValuation } from '@/utils/util';
 import useStoreState from '@/hooks/useStoreState';
 import useAsset from '@/views/swap/hooks/useAsset';
 
@@ -202,27 +195,6 @@ function handleLoading(status: boolean) {
         display: flex;
         //align-items: center;
         flex-direction: column;
-        .symbol-cont {
-          display: flex;
-          align-items: center;
-          img {
-            width: 32px;
-            height: 32px;
-            overflow: hidden;
-            border-radius: 50%;
-          }
-          .img-wrap {
-            display: flex;
-            align-items: center;
-            margin-right: 10px;
-          }
-          .symbol1 {
-            z-index: 2;
-          }
-          .symbol2 {
-            margin-left: -10px;
-          }
-        }
         .amount-cont {
           margin-top: 5px;
           color: $labelColor;

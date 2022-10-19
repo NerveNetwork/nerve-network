@@ -141,11 +141,14 @@
           <div
             class="route-item"
             v-for="(item, index) in routesSymbol"
-            :key="item"
+            :key="item.assetKey"
           >
             <div class="flex-center">
-              <symbol-icon :icon="item"></symbol-icon>
-              <span>{{ item }}</span>
+              <symbol-icon
+                :icon="item.icon"
+                :asset-key="item.assetKey"
+              ></symbol-icon>
+              <span>{{ item.icon }}</span>
             </div>
             <el-icon
               class="icon-arrow-right"
@@ -252,7 +255,8 @@ export default defineComponent({
       stableCoins,
       stablePairList,
       getReceiveOrderIndex,
-      getStableCoinInfoAndIndex
+      getStableCoinInfoAndIndex,
+      staleSwapFeeAddress
     } = useSpecialSwap();
     const state = reactive<SwapState>({
       feeRate: '0.3', // 千三的手续费
@@ -341,10 +345,6 @@ export default defineComponent({
         state?.toAsset?.assetKey
       );
 
-      if (isStableCoinForStableCoin.value) {
-        return;
-      }
-
       checkIsStableCoinForOthers(
         state?.fromAsset?.assetKey,
         state?.toAsset?.assetKey
@@ -359,6 +359,10 @@ export default defineComponent({
         state.fromAsset.assetKey &&
         state.toAsset.assetKey
       ) {
+        context.emit('selectAsset', state.fromAsset, state.toAsset);
+        if (isStableCoinForStableCoin.value) {
+          return;
+        }
         if (!isStableCoinSwap.value && !isStableCoinForStableCoin.value) {
           if (isStableCoinForOthers.value) {
             // 稳定币换NVT，缓存稳定币N兑换NVT交易对信息
@@ -372,7 +376,6 @@ export default defineComponent({
           await storeSwapPairInfo(false, true);
           // canRefresh.value = true;
         }
-        context.emit('selectAsset', state.fromAsset, state.toAsset);
       } else {
         context.emit('updateRate', '');
       }
@@ -700,14 +703,72 @@ export default defineComponent({
         !isNaN(Number(amount)) &&
         Number(amount) > 0
       ) {
-        // 稳定币、稳定币N互换
         if (isStableCoinSwap.value) {
-          state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
-          return [amount, 0];
+          // 稳定币、稳定币N互换
+          if (stableCoins.value[fromAssetKey] === toAssetKey) {
+            // 稳定币换稳定币N
+            /*const stableN: any = stablePairList.value.find(
+              (v: any) => v.lpToken === toAssetKey
+            );*/
+            // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+            state.routesSymbol = [
+              {
+                icon: state.fromAsset!.symbol,
+                assetKey: state.fromAsset!.assetKey
+              },
+              { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
+            ];
+            return [amount, 0];
+          } else {
+            // 稳定币N换稳定币
+            const stableN: any = stablePairList.value.find(
+              (v: any) => v.lpToken === fromAssetKey
+            );
+            const toAssetInfo = stableN.groupCoin[toAssetKey];
+            const balance = divisionDecimals(
+              toAssetInfo.balance,
+              toAssetInfo.decimals
+            );
+            // @ts-ignore
+            if (balance - amount < 0) {
+              // 池子余额不足
+              return [0, 0];
+            }
+            // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+            state.routesSymbol = [
+              {
+                icon: state.fromAsset!.symbol,
+                assetKey: state.fromAsset!.assetKey
+              },
+              { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
+            ];
+            return [amount, 0];
+          }
         }
-        // 稳定币、稳定币互换
         if (isStableCoinForStableCoin.value) {
-          state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+          // 稳定币、稳定币互换
+          const stableKey = stableCoins.value[fromAssetKey];
+          const stableN: any = stablePairList.value.find(
+            (v: any) => v.lpToken === stableKey
+          );
+          const toAssetInfo = stableN.groupCoin[toAssetKey];
+          const balance = divisionDecimals(
+            toAssetInfo.balance,
+            toAssetInfo.decimals
+          );
+          // @ts-ignore
+          if (balance - amount < 0) {
+            // 池子余额不足
+            return [0, 0];
+          }
+          // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+          state.routesSymbol = [
+            {
+              icon: state.fromAsset!.symbol,
+              assetKey: state.fromAsset!.assetKey
+            },
+            { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
+          ];
           return [amount, 0];
         }
 
@@ -759,16 +820,25 @@ export default defineComponent({
             const outAmount = bestExact.tokenAmountOut.amount.toFixed();
             // console.log(inAmount, outAmount, "===---===", amount, type, state.customerType);
             const tokenPathArray = bestExact.path;
-            const routesSymbol: string[] = [];
+            const routesSymbol: { icon: string; assetKey: string }[] = [];
             bestExact.path.map((v: any) => {
               const asset = props.assetsList.find(
                 asset => asset.assetKey === v.chainId + '-' + v.assetId
               );
-              asset && routesSymbol.push(asset.symbol);
+              // asset && routesSymbol.push(asset.symbol);
+              asset &&
+                routesSymbol.push({
+                  icon: asset.symbol,
+                  assetKey: asset.assetKey
+                });
             });
             if (isStableCoinForOthers.value) {
               const fromSymbol = state.fromAsset?.symbol as string;
-              routesSymbol.unshift(fromSymbol);
+              // routesSymbol.unshift(fromSymbol);
+              routesSymbol.unshift({
+                icon: fromSymbol,
+                assetKey: state.fromAsset!.assetKey
+              });
             }
             state.routesSymbol = routesSymbol;
             const pairsArray = [];
@@ -881,26 +951,30 @@ export default defineComponent({
           1
         )} ${state.fromAsset?.symbol}`;
       }
-      /*if (swapDirection.value === 'from-to') {
-        swapRate.value = `1 ${state.fromAsset?.symbol} ≈ ${formatFloat(
-          Division(toAmount, fromAmount).toFixed(),
-          1
-        )} ${state.toAsset?.symbol}`;
-      } else {
-        swapRate.value = `1 ${state.toAsset?.symbol} ≈ ${formatFloat(
-          Division(fromAmount, toAmount).toFixed(),
-          1
-        )} ${state.fromAsset?.symbol}`;
-      }*/
     }
 
+    const stableSwapFeeRate= computed(() => {
+      if (!isStableCoinForStableCoin.value) return null;
+      const fromAssetKey = state.fromAsset!.assetKey;
+      const stableKey = stableCoins.value[fromAssetKey];
+      const stableN: any = stablePairList.value.find(
+        (v: any) => v.lpToken === stableKey
+      );
+      return stableN.feeRate;
+    });
     const minReceive = computed(() => {
       if (!state.toAmount) return '';
       // if (!state.protectPercent) {
       //   state.protectPercent = 0.5;
       // }
-      if (isStableCoinSwap.value || isStableCoinForStableCoin.value) {
+      if (isStableCoinSwap.value) {
         return state.toAmount;
+      }
+      if (isStableCoinForStableCoin.value) {
+        return fixNumber(
+          Minus(state.toAmount, fee.value).toFixed(),
+          state.toAsset?.decimals
+        );
       }
       return fixNumber(
         Times(state.toAmount, 1 - Number(state.protectPercent) / 100).toFixed(),
@@ -925,6 +999,13 @@ export default defineComponent({
 
     const fee = computed(() => {
       if (!state.fromAsset) return '';
+      if (isStableCoinSwap.value) return '0';
+      if (isStableCoinForStableCoin.value) {
+        return fixNumber(
+          Times(state.fromAmount, stableSwapFeeRate.value).toFixed(),
+          state.fromAsset?.decimals
+        );
+      }
       if (isStableCoinSwap.value || isStableCoinForStableCoin.value) return '0';
       return fixNumber(
         Times(state.fromAmount, divisionDecimals('0.3', 2)).toFixed(),
@@ -999,11 +1080,6 @@ export default defineComponent({
       } else {
         return state.fromAmountError || t('public.public10');
       }
-      // insufficient
-      //     ? $t("trading.trading17")
-      //     : impactButton === 1
-      //         ? $t("trading.trading19")
-      //         : fromAmountError || $t("public.public10")
     });
 
     const priceImpactColor = computed(() => {
@@ -1125,7 +1201,13 @@ export default defineComponent({
             toAssetKey,
             stablePairAddress
           );
-          const feeTo = null;
+          const feeTo = staleSwapFeeAddress.value;
+          const feeAmount = timesDecimals(fee.value, fromDecimal);
+          const feeTokenAmount = nerve.swap.tokenAmount(
+            +chainId,
+            +assetId,
+            feeAmount
+          );
           tx = await nerve.swap.stableSwapTrade(
             fromAddress,
             stablePairAddress,
@@ -1134,7 +1216,8 @@ export default defineComponent({
             feeTo,
             deadline,
             toAddress,
-            remark
+            remark,
+            feeTokenAmount
           );
         } else {
           const amountIn = timesDecimals(state.fromAmount, fromDecimal); // 卖出的资产数量

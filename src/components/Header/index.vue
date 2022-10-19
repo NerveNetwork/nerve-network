@@ -46,6 +46,11 @@
               <span @click="manageAccount = true">
                 {{ superLong(nerveAddress, 5) }}
               </span>
+              <template v-if="unConfirmedTx">
+                <el-icon color="#2688F7" class="is-loading">
+                  <loading />
+                </el-icon>
+              </template>
             </div>
           </div>
         </div>
@@ -186,6 +191,10 @@ onMounted(() => {
 });
 const accountTxs = ref<TxInfo[]>([]);
 
+const unConfirmedTx = computed(() => {
+  return accountTxs.value.filter(tx => !tx.status).length;
+});
+
 async function checkTxStatus() {
   if (!address.value || !nerveAddress.value) return;
   const account = getCurrentAccount(address.value);
@@ -207,7 +216,10 @@ async function checkTxStatus() {
         accountTxs.value = txs;
         const accountList: Account[] = storage.get('accountList') || [];
         accountList.map(v => {
-          if (v.address.EVM === address.value) {
+          const sameAddress = Object.values(v.address)
+            .map((v: any) => v.toLowerCase())
+            .includes(address.value?.toLowerCase());
+          if (sameAddress) {
             v.txs = txs;
           }
         });
@@ -219,10 +231,16 @@ async function checkTxStatus() {
     isQuery = false;
   }
 }
+
 async function pollingTx(txs: TxInfo[]) {
   const txsQuery = txs.map(v => {
     if (!v.L1Chain) {
-      return getTx(v.hash);
+      if (v.type === 43) {
+        // 提现，目标链未确认前显示追加手续费按钮
+        return handleWithdrawalTx(v);
+      } else {
+        return getTx(v.hash);
+      }
     } else if (v.L1Chain === 'TRON') {
       return getTronTx(v.hash);
     } else {
@@ -232,6 +250,7 @@ async function pollingTx(txs: TxInfo[]) {
   });
   const res = await Promise.all(txsQuery);
   res.map(v => {
+    if (!v) return;
     txs.map(tx => {
       if (tx.hash === v.hash || tx.hash === v.transactionHash) {
         tx.status = v.status;
@@ -239,6 +258,17 @@ async function pollingTx(txs: TxInfo[]) {
     });
   });
   return txs;
+}
+
+async function handleWithdrawalTx(tx: TxInfo) {
+  const txState = { status: 0, hash: tx.hash };
+  const res = await getTx(tx.hash);
+  if (res) {
+    if (res.txData?.state !== 'Unconfirmed') {
+      return res;
+    }
+  }
+  return txState;
 }
 </script>
 
@@ -381,6 +411,33 @@ async function pollingTx(txs: TxInfo[]) {
     .logo {
       width: 96px;
       margin-right: 0;
+    }
+    .logo img {
+      margin-right: 0;
+    }
+    .pc-menu {
+      display: none;
+    }
+    .menu-icon {
+      margin-left: 10px;
+    }
+    .account .chain-wrap {
+      margin-left: 0;
+      line-height: 32px;
+    }
+  }
+  @media screen and (max-width: 375px) {
+    .w1200 {
+      height: 50px;
+      padding: 0 16px 0 12px;
+    }
+    .logo {
+      width: 86px;
+    }
+    .account {
+      margin-left: 2px;
+      line-height: 32px;
+      height: 32px;
     }
     .logo img {
       margin-right: 0;

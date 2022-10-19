@@ -4,15 +4,17 @@ import router from './router';
 import store from './store';
 import usePlugins from '@/plugins';
 import AddChain from '@/utils/AddChain';
+import { getLogoConfig } from '@/utils/logoConfig';
 // @ts-ignore
 // import VConsole from 'vconsole'
 // new VConsole()
 
-if (process.env.NODE_ENV !== 'development') {
+/*if (process.env.NODE_ENV !== 'development') {
   window.console.log = () => {};
-}
+}*/
 
 AddChain();
+getLogoConfig();
 
 setTimeout(() => {
   // 不延迟有时刷新会拿不到ethereum.selectedAddress???

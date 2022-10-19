@@ -1,5 +1,6 @@
 <template>
   <div class="chart-tab">
+    <slot></slot>
     <div class="tabs flex">
       <template v-for="item in chartTab" :key="item.label">
         <div
@@ -7,7 +8,7 @@
           :class="item.key === activeTab ? 'active' : ''"
           @click="activeTab = item.key"
         >
-          {{ item.label }}
+          <span>{{ item.label }}</span>
         </div>
       </template>
     </div>
@@ -15,6 +16,7 @@
       <Chart
         :type="chartTab[activeTab].type"
         :data="chartData[activeTab] || []"
+        :isPrice="activeTab === 'price'"
       ></Chart>
     </div>
   </div>
@@ -24,13 +26,19 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Chart from '../Overview/Chart.vue';
-import { getTokenAnalytics, get300DaysData } from '@/service/api';
+import {
+  getTokenAnalytics,
+  get300DaysData,
+  getMultiPairChartData
+} from '@/service/api';
 import { ChartTabItem, ChartItem } from '../types';
 import { adaptiveFix, divisionAndFix } from '@/utils/util';
 
 const props = defineProps<{
   assetKey?: string;
   isPool?: boolean;
+  isMultiRouting?: boolean;
+  chainKey?: string;
 }>();
 
 const { t } = useI18n();
@@ -47,10 +55,23 @@ watch(
   }
 );
 
+watch(
+  () => props.chainKey,
+  val => {
+    if (val) {
+      getChartData(props.assetKey!, val);
+    }
+  }
+);
+
 const chartData = ref<ChartTabItem>({} as ChartTabItem);
-async function getChartData(key: string) {
+async function getChartData(key: string, tokenKey?: string) {
   let res;
-  if (props.isPool) {
+  console.log(key, tokenKey, 666);
+  if (props.isMultiRouting) {
+    tokenKey = tokenKey !== 'ALL' ? tokenKey : '';
+    res = await getMultiPairChartData(key, tokenKey);// 7 72 73 74 90
+  } else if (props.isPool) {
     res = await get300DaysData(key);
   } else {
     res = await getTokenAnalytics(key);
@@ -70,10 +91,10 @@ async function getChartData(key: string) {
         value: divisionAndFix(v.reserveUsdtValue, 18, 2)
       };
       liq.push(liqItem);
-      if (!props.isPool) {
+      if (!props.isPool && !props.isMultiRouting) {
         const priceItem = {
           label: v.period,
-          value: adaptiveFix(divisionAndFix(v.price, 18, 18))
+          value: divisionAndFix(v.price, 18, 18)
         };
         price.push(priceItem);
       }
@@ -85,7 +106,7 @@ async function getChartData(key: string) {
 const activeTab = ref('tx');
 
 const chartTab = computed(() => {
-  if (props.isPool) {
+  if (props.isPool || props.isMultiRouting) {
     return {
       tx: { label: t('info.info34'), type: 'bar', key: 'tx' },
       liq: { label: t('info.info4'), type: 'line', key: 'liq' }
@@ -97,23 +118,9 @@ const chartTab = computed(() => {
     price: { label: t('info.info9'), type: 'line', key: 'price' }
   };
 });
-
-/*const chartTabData = computed(() => {
-  if (props.isPool) {
-    return [
-      { label: t('info.info5'), type: 'bar', key: 'tx' },
-      { label: t('info.info4'), type: 'line', key: 'liq' }
-    ];
-  }
-  return [
-    { label: t('info.info5'), type: 'bar', key: 'tx' },
-    { label: t('info.info4'), type: 'line', key: 'liq' },
-    { label: t('info.info9'), type: 'line', key: 'price' }
-  ];
-});*/
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .chart-tab {
   .tabs {
     height: 68px;

@@ -2,6 +2,7 @@ export interface OverviewData {
   nvtTurnoverAmount: string;
   nvtTotalUsdtValue: string;
   nvtStackTotal: string;
+  nvtUsdtValue: string;
 }
 
 export interface SummaryData {

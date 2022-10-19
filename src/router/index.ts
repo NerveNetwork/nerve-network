@@ -13,8 +13,11 @@ const InfoPools = () => import('@/views/info/Pools/index.vue');
 const InfoTokens = () => import('@/views/info/Tokens/index.vue');
 const PoolDetail = () => import('@/views/info/PoolDetail/index.vue');
 const TokenDetail = () => import('@/views/info/TokenDetail/index.vue');
+const MultiRouting = () => import('@/views/info/MultiRouting/index.vue');
+const MultiRoutingDetail = () =>
+  import('@/views/info/MultiRoutingDetail/index.vue');
 
-const routes: Array<RouteRecordRaw> = [
+const routes: RouteRecordRaw[] = [
   {
     path: '',
     name: 'home',
@@ -64,7 +67,8 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       { path: '', component: InfoOverview },
       { path: 'pools', component: InfoPools },
-      { path: 'tokens', component: InfoTokens }
+      { path: 'tokens', component: InfoTokens },
+      { path: 'multi-routing', component: MultiRouting }
     ]
   },
   {
@@ -76,6 +80,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/info/tokens/:id',
     name: 'tokenDetail',
     component: TokenDetail
+  },
+  {
+    path: '/info/multi-routing/:id',
+    name: 'multiRoutingDetail',
+    component: MultiRoutingDetail
   }
 ];
 

@@ -10,6 +10,7 @@ export interface TokenItem {
   priceChange: string;
   txs: string;
   liq: string;
+  originChain: string;
 }
 
 export interface PoolItem {
@@ -22,6 +23,8 @@ export interface PoolItem {
   liq: string;
   token0Symbol: string;
   token1Symbol: string;
+  token0: string;
+  token1: string;
 }
 
 export interface SearchToken {
@@ -31,6 +34,7 @@ export interface SearchToken {
   liq: string;
   assetKey: string;
   isWatch: boolean;
+  originChain: string;
 }
 
 export interface SearchPool {
@@ -41,6 +45,8 @@ export interface SearchPool {
   token0: string;
   token1: string;
   lpName: string;
+  token0Key: string;
+  token1Key: string;
 }
 
 export interface TokenDetail {
@@ -79,6 +85,8 @@ export interface TxItem {
   token1: string;
   amount1: string;
   address: string;
+  fromChain?: string;
+  toChain?: string;
 }
 
 export enum TxType {
@@ -86,4 +94,25 @@ export enum TxType {
   SWAP = 'SWAP',
   ADDLP = 'ADDLP',
   REOMVELP = 'REOMVELP'
+}
+
+export interface MultiRoutingItem {
+  name: string;
+  logo: string;
+  lpTokenSymbol: string;
+  assetKey: string;
+  price: string;
+  tx_24: string;
+  tx_7d: string;
+  liq: string;
+  supportChain: string[];
+  address: string;
+}
+
+export interface MultiChainInfo {
+  name: string;
+  contractAddress: string;
+  liq: string;
+  ratio: string;
+  nerveId: string;
 }

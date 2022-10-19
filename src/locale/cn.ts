@@ -12,7 +12,7 @@ const cn = {
     header10: '资产',
     header11: '共识',
     header12: '数据',
-    header13: '区块链浏览器',
+    header13: '浏览器',
     header14: '* Nerve网络暂不支持硬件钱包'
   },
   footer: {
@@ -25,7 +25,7 @@ const cn = {
     footer7: '更多',
     footer8: '区块链浏览器',
     footer9: '创建节点',
-    footer10: '网页钱包'
+    footer10: '下载钱包'
   },
   public: {
     public1: '资产',
@@ -441,7 +441,7 @@ const cn = {
     home2:
       '旨在打破孤立的区块链价值，建立跨链资产交换网络，为Defi应用生态提供一切必要的底层支持。让每一位数字资产持有者体验真正安全、免费、透明的 Defi 应用服务。',
     home3: '2秒确认，0 Gas Fee',
-    home4: '支持超过8条链',
+    home4: '支持19条链',
     home5: '进入兑换',
     home6: '进入Bridge',
     home7: '总交易量',
@@ -451,7 +451,8 @@ const cn = {
     home11: '总市值',
     home12: '质押量',
     home13: '链上资金总量',
-    home14: '链上资金流动/24H'
+    home14: '链上资金流动/24H',
+    home15: '支持19个网络'
   },
   assets: {
     assets1: 'Layer2资产',
@@ -495,7 +496,13 @@ const cn = {
     transfer24: '请输入正确的NERVE/NULS地址',
     transfer25: '手续费不足',
     transfer26: '请勿直接向NULS合约地址转账，可能造成资产丢失',
-    transfer27: '连接TronLink'
+    transfer27: '连接TronLink',
+    transfer28: '请输入接收地址',
+    transfer29: '请输入有效的接收地址',
+    transfer30: '直接向交易所地址充值会造成资产丢失',
+    transfer31: '追加手续费',
+    transfer32: '已支付手续费',
+    transfer33: '追加',
   },
   trading: {
     trading1: '订单历史',
@@ -520,7 +527,9 @@ const cn = {
     trading20: '价格影响很大',
     trading21: '兑换失败',
     trading22:
-      '暂未开通该交易对智能路由，请兑换USDTN后再通过USDTN进行其余网络的USDT兑换'
+      '暂未开通该交易对智能路由，请兑换USDTN后再通过USDTN进行其余网络的USDT兑换',
+    trading23: '普通交易',
+    trading24: '多链路由'
   },
   liquidity: {
     liquidity1: '流动性',
@@ -776,7 +785,17 @@ const cn = {
     info31: '池子排名',
     info32: '全部资产',
     info33: '搜索池子或代币',
-    info34: '交易量'
+    info34: '交易量',
+    info35: '多链路由',
+    info36: '资金',
+    info37: '流动性凭证',
+    info38: '支持网络',
+    info39: '资金分布',
+    info40: '主网合约地址',
+    info41: 'Nerve网络资产ID',
+    info42: '占比',
+    info43: '获取',
+    info44: '主网'
   }
 };
 

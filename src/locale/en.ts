@@ -25,7 +25,7 @@ const en = {
     footer7: 'More',
     footer8: 'Block Explorer',
     footer9: 'Create Node',
-    footer10: 'Web Wallet'
+    footer10: 'Wallet Download'
   },
   public: {
     public1: 'Asset',
@@ -457,7 +457,7 @@ const en = {
     home2:
       'NerveNetwork aims to connect all isolated blockchains and establish a cross-chain asset exchange network, providing all necessary underlying support for the Defi ecosystem. Let every digital asset holder experience a truly safe, free and transparent Defi service.',
     home3: '2 seconds confirmation and 0 gas fee',
-    home4: 'Support 8+ chains',
+    home4: 'Support 19 chains',
     home5: 'Launch Swap ',
     home6: 'Launch Bridge',
     home7: 'Total Volume',
@@ -467,7 +467,8 @@ const en = {
     home11: 'Market Cap',
     home12: 'Staking',
     home13: 'Total Assets on Nerve',
-    home14: 'Total Flow on Nerve / 24H'
+    home14: 'Total Flow on Nerve / 24H',
+    home15: 'Support 19 Networks'
   },
   assets: {
     assets1: 'Layer2 Asset',
@@ -511,7 +512,13 @@ const en = {
     transfer24: 'Please enter correct NERVE/NULS address',
     transfer25: 'Insufficient handling fees',
     transfer26: 'Do not transfer aasets directly to the NULS contract address, it may cause asset loss',
-    transfer27: 'Connect TronLink'
+    transfer27: 'Connect TronLink',
+    transfer28: 'Pls fill in the to address',
+    transfer29: 'Pls fill in a valid receiving address',
+    transfer30: 'Recharging directly to the exchange address will cause asset loss',
+    transfer31: 'Additional fee',
+    transfer32: 'Paid',
+    transfer33: 'Append',
   },
   trading: {
     trading1: 'Order History',
@@ -536,7 +543,9 @@ const en = {
     trading20: 'Price Impact Too High',
     trading21: 'Swap Failed',
     trading22:
-      'The intelligent routing of this trading pair has not been opened yet. Please exchange USDTN and then exchange USDT through USDTN.'
+      'The intelligent routing of this trading pair has not been opened yet. Please exchange USDTN and then exchange USDT through USDTN.',
+    trading23: 'Transaction',
+    trading24: 'Multi-routing'
   },
   liquidity: {
     liquidity1: 'Liquidity',
@@ -795,7 +804,17 @@ const en = {
     info31: 'Top Pools',
     info32: 'All Tokens',
     info33: 'Search pools or tokens',
-    info34: 'Volume'
+    info34: 'Volume',
+    info35: 'Multi-Routing',
+    info36: 'Asset',
+    info37: 'Liquidity Provider',
+    info38: 'Support network',
+    info39: 'Assets distribution',
+    info40: 'Mainnet contract address',
+    info41: 'Nerve Network Asset ID',
+    info42: 'Proportion',
+    info43: 'Get',
+    info44: 'Main net'
   }
 };
 

@@ -19,7 +19,7 @@
       >
         <el-table-column
           fixed
-          width="85"
+          width="135"
           :label="$t('staking.staking4')"
           align="center"
           prop="symbol"

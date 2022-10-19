@@ -40,7 +40,7 @@ export interface SwapState {
   disableWatchToAmount: boolean;
   insufficient: boolean;
   protectPercent: string;
-  routesSymbol: unknown;
+  routesSymbol: { icon: string; assetKey: string }[];
   fee: string;
   priceImpact: string;
   customerType: string;

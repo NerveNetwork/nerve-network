@@ -148,6 +148,9 @@ export class NTransfer {
     } else if (this.type === 9) {
       // 注销节点
       return this.stopNodeTransaction(data);
+    } else if (this.type === 56) {
+      // 追加提现手续费
+      return this.additionFee(data);
     }
   }
 
@@ -633,6 +636,28 @@ export class NTransfer {
     return this.quitDepositTransaction(transferInfo, true);
   }
 
+  // 追加提现手续费
+  async additionFee(transferInfo: any) {
+    const { assetsChainId, assetsId, from, to, amount } = transferInfo;
+    const nonce = await this.getNonce(from, assetsChainId, assetsId);
+    const inputs = [{
+      address: from,
+      assetsChainId,
+      assetsId,
+      amount,
+      locked: 0,
+      nonce
+    }];
+    const outputs = [{
+      address: to,
+      assetsChainId,
+      assetsId,
+      amount,
+      lockTime: 0
+    }];
+    return { inputs, outputs };
+  }
+
   async getNonce(from: string, assetsChainId: number, assetsId: number) {
     const res: any = await getAssetBalance(assetsChainId, assetsId, from);
     return res ? res.nonce : null;
@@ -790,6 +815,11 @@ export class ETransfer {
     if (transactionParameters.from) {
       delete transactionParameters.from;
     }
+    if (this.provider._web3Provider?.chainId === _networkInfo.Klaytn.nativeId) {
+      // @ts-ignore
+      // Klaytn 网络设置gas为250，不然交易无法发送
+      transactionParameters.gasPrice = '0x3a35294400';
+    }
     return await this.sendTransaction(transactionParameters);
   }
 
@@ -946,6 +976,11 @@ export class ETransfer {
     if (failed) {
       console.error('failed approveERC20' + failed);
       return { success: false, message: 'failed approveERC20' + failed };
+    }
+    if (this.provider._web3Provider?.chainId === _networkInfo.Klaytn.nativeId) {
+      // @ts-ignore
+      // Klaytn 网络设置gas为250，不然交易无法发送
+      transactionParameters.gasPrice = '0x3a35294400';
     }
     // @ts-ignore
     delete transactionParameters.from; //etherjs 4.0 from参数无效 报错

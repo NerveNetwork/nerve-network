@@ -28,7 +28,12 @@ const routeConfig = computed(() => {
   return [
     { label: t('info.info1'), path: '/info', key: 'info' },
     { label: t('info.info2'), path: '/info/pools', key: 'pools' },
-    { label: t('info.info3'), path: '/info/tokens', key: 'tokens' }
+    { label: t('info.info3'), path: '/info/tokens', key: 'tokens' },
+    {
+      label: t('info.info35'),
+      path: '/info/multi-routing',
+      key: 'multiRouting'
+    }
   ];
 });
 

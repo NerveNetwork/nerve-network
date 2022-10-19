@@ -6,7 +6,7 @@ import { useStore } from '@/store';
 import MetaMask from '@/assets/img/provider/metamask.svg';
 import Nabox from '@/assets/img/provider/nabox.svg';
 import TrustWallet from '@/assets/img/provider/trustwallet.svg';
-import Tokenpocket from '@/assets/img/provider/Tokenpocket.svg';
+import Tokenpocket from '@/assets/img/provider/Tokenpocket.jpg';
 import Mathwallet from '@/assets/img/provider/mathwallet.svg';
 import binancechain from '@/assets/img/provider/binancechain.svg';
 import OKEx from '@/assets/img/provider/metax.jpg';
@@ -153,15 +153,31 @@ export default function useEthereum() {
     networkError: ''
   });
 
-  function initProvider() {
+  async function initProvider() {
     const provider = getProvider();
-    const address = provider?.selectedAddress || provider?.address;
-    if (provider && address) {
-      state.address = address;
-      initChainInfo(address);
-      // console.log(state.address, 8)
+    if (!provider) return;
+    if (provider.on) {
       listenAccountChange();
       listenNetworkChange();
+    }
+    let address = provider?.selectedAddress || provider?.address;
+    try {
+      address = await provider
+        ?.request({ method: 'eth_requestAccounts' })
+        .then((accounts: string[]) => accounts && accounts[0]);
+    } catch (error) {
+      if ((error as any).code === 4001) {
+        throw error.message;
+      }
+    }
+    if (!address) {
+      address = await provider
+        .enable()
+        .then((accounts: string[]) => accounts && accounts[0]);
+    }
+    if (address) {
+      state.address = address;
+      initChainInfo(address);
     }
   }
 
@@ -227,6 +243,13 @@ export default function useEthereum() {
   // 连接provider
   async function connect(providerType: string) {
     const provider = getProvider(providerType);
+    const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
+      navigator.userAgent
+    );
+    if (providerType === 'ethereum' && !provider && isMobile) {
+      window.open('https://metamask.app.link/dapp/nerve.network');
+      return;
+    }
     if (!provider) {
       throw new Error(t('public.public25'));
     }

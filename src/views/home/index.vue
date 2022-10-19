@@ -3,6 +3,7 @@
     <Description />
     <LinkWrapper />
     <DataInfo />
+    <SupportChains />
     <Partner />
   </div>
 </template>
@@ -11,6 +12,7 @@
 import Description from './Description.vue';
 import LinkWrapper from './LinkWrapper.vue';
 import DataInfo from './DataInfo.vue';
+import SupportChains from './SupportChains.vue';
 import Partner from './Partner.vue';
 </script>
 

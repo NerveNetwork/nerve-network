@@ -35,8 +35,11 @@
                 @click="toUrl('token', item.assetKey)"
               >
                 <div class="symbol-wrap">
-                  <SymbolIcon :icon="item.symbol"></SymbolIcon>
-                  {{ item.symbol }}
+                  <SymbolInfo
+                    :name="item.symbol"
+                    :asset-key="item.assetKey"
+                    :chain="item.originChain"
+                  ></SymbolInfo>
                   <CollectIcon
                     v-model="item.isWatch"
                     @change="changeCollect(item.assetKey, $event, 'token')"
@@ -69,9 +72,12 @@
                 @click="toUrl('pool', item.address)"
               >
                 <div class="symbol-wrap">
-                  <SymbolIcon :icon="item.token0"></SymbolIcon>
-                  <SymbolIcon :icon="item.token1"></SymbolIcon>
-                  {{ item.lpName }}
+                  <LiquiditySymbols
+                    :symbol1="item.token0"
+                    :symbol2="item.token1"
+                    :asset-key1="item.token0Key"
+                    :asset-key2="item.token1Key"
+                  ></LiquiditySymbols>
                   <CollectIcon
                     v-model="item.isWatch"
                     @change="changeCollect(item.address, $event, 'pool')"
@@ -94,13 +100,14 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import SymbolIcon from '@/components/SymbolIcon.vue';
+import SymbolInfo from '@/components/SymbolInfo.vue';
+import LiquiditySymbols from '@/components/LiquiditySymbols.vue';
 import CollectIcon from '@/components/CollectIcon.vue';
 import useClickOutside from '@/hooks/useClickOutside';
 import useMask from '@/hooks/useMask';
 import useCollect from './hooks/useCollect';
 import { searchText } from '@/service/api';
-import { debounce, divisionAndFix } from '@/utils/util';
+import { debounce, divisionAndFix, getOriginChain } from '@/utils/util';
 import storage from '@/utils/storage';
 import { SearchToken, SearchPool } from './types';
 
@@ -152,6 +159,7 @@ async function doSearch(key: string) {
     res.token.map(v => {
       const assetKey = v.assetChainId + '-' + v.assetId;
       list1.push({
+        originChain: getOriginChain(v.sourceChainid, v.assetChainId),
         assetKey,
         symbol: v.symbol,
         price: divisionAndFix(v.price, 18, 2),
@@ -169,37 +177,14 @@ async function doSearch(key: string) {
         isWatch: watchPools.includes(v.address),
         token0: v.token0Symbol,
         token1: v.token1Symbol,
-        lpName: v.token0Symbol + ' / ' + v.token1Symbol
+        lpName: v.token0Symbol + ' / ' + v.token1Symbol,
+        token0Key: v.token0,
+        token1Key: v.token1
       });
     });
     pools.value = list2;
   }
 }
-
-/*function changeCollect(item: SearchToken & SearchPool, status: boolean) {
-  console.log(item, status, 88);
-  if (item.assetKey) {
-    const watchTokens = storage.get('watchTokens') || [];
-    if (status) {
-      watchTokens.push(item.assetKey);
-    } else {
-      const index = watchTokens.indexOf(item.assetKey);
-      watchTokens.splice(index, 1);
-    }
-    storage.set('watchTokens', watchTokens);
-    store.commit('changeWatchTokens', watchTokens);
-  } else {
-    const watchPools = storage.get('watchPools') || [];
-    if (status) {
-      watchPools.push(item.address);
-    } else {
-      const index = watchPools.indexOf(item.address);
-      watchPools.splice(index, 1);
-    }
-    storage.set('watchPools', watchPools);
-    store.commit('changeWatchPools', watchPools);
-  }
-}*/
 
 function toUrl(type: string, query: string) {
   if (type === 'token') {
@@ -277,6 +262,7 @@ function toUrl(type: string, query: string) {
       .content {
         color: #475472;
         cursor: pointer;
+        align-items: center;
         .symbol-wrap {
           display: flex;
           align-items: center;

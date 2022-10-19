@@ -307,9 +307,10 @@ export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
   return false;
 }
 
-// 打开nerve浏览器
-export function openExplorer(type: string, query: string) {
-  let url = config.explorerUrl;
+// 打开nerve/nuls浏览器
+export function openExplorer(type: string, query: string, isNuls = false) {
+  // let url = config.explorerUrl;
+  let url = isNuls ? _networkInfo.NULS.origin : _networkInfo.NERVE.origin;
   if (type === 'address') {
     url += '/address/info?address=' + query;
   } else if (type === 'hash') {
@@ -369,20 +370,75 @@ export function formatNumber(num: string | number) {
   }
 }
 
-//
+// 大于等于
 export function isBiggerOrEqual(str1: string | number, str2: string | number) {
   const b = new BigNumber(str1);
   return b.gte(str2);
 }
 
-// 自适应保留小数位数 最多保留8位;
+// 自适应保留小数位数 最多保留8位,针对小于1的数字;
 export function adaptiveFix(str: string, maxFix = 8) {
-  let fix = 2;
   str = str + '';
+  let fix = 2;
   let res = '0';
   while (fix <= maxFix && res === '0') {
     res = fixNumber(str, fix);
     fix += 2;
   }
   return res;
+}
+
+export function priceFormat(str: string, formatFix = 4) {
+  str = str + '';
+  if (!str.startsWith('0.')) {
+    return fixNumber(str, 2);
+  }
+  const float = str.split('0.')[1];
+  let zeroCount = 0;
+  let index = 0;
+  while (index <= float.length && float[index] === '0') {
+    index++;
+    zeroCount++;
+  }
+  if (zeroCount >= formatFix) {
+    const stayLength = 3;
+    let prefix = float.substr(index, stayLength);
+    prefix = prefix.replace(/(0+)$/g, '');
+    return `0.0{${zeroCount}}${prefix}`;
+  } else {
+    return fixNumber(str, formatFix);
+  }
+}
+
+// 优先级USDTN最高
+export const valuationAssets = ['BNB', 'ETH', 'NVT', 'NULS', 'USDTN'];
+
+/**
+ * 两个资产，通过计价优先级排序, 返回优先级由低到高
+ */
+export function sortAssetsByValuation(symbol1: string, symbol2: string) {
+  const index1 = valuationAssets.indexOf(symbol1);
+  const index2 = valuationAssets.indexOf(symbol2);
+  if (index1 <= index2) {
+    return [symbol1, symbol2];
+  } else {
+    return [symbol2, symbol1];
+  }
+}
+
+/**
+ * @desc 通过异构链id/注册id(nerve、nuls)，获取链名称
+ * @param heterogeneousChainId 异构链id
+ * @param assetChainId 资产id
+ */
+export function getOriginChain(heterogeneousChainId: number, assetChainId?: number) {
+  const chainsInfo = Object.values(_networkInfo);
+  let chainName = '';
+  if (heterogeneousChainId !== 0) {
+    chainName = chainsInfo.find(v => v.chainId === heterogeneousChainId)!.name;
+  } else {
+    if (!assetChainId) return 'NULS';
+    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS';
+  }
+  return chainName;
 }

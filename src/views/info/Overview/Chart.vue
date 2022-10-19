@@ -30,7 +30,7 @@
 import { computed, ref } from 'vue';
 import Chart from '@/components/Charts/index.vue';
 import { useI18n } from 'vue-i18n';
-import { formatNumber } from '@/utils/util';
+import { formatNumber, priceFormat } from '@/utils/util';
 import dayjs from 'dayjs';
 const localizedFormat = require('dayjs/plugin/localizedFormat');
 import { ChartItem } from '../types';
@@ -45,6 +45,7 @@ const props = defineProps<{
   type: 'line' | 'bar';
   label?: string;
   data: ChartItem[];
+  isPrice?: boolean;
 }>();
 
 const { locale } = useI18n();
@@ -66,10 +67,12 @@ const activeIndex = ref(null);
 
 const totalVal = computed(() => {
   if (!props.data?.length) return 0;
-  if (activeIndex.value !== null) {
-    return props.data[activeIndex.value!].value;
-  }
-  return props.data[defaultIndex.value].value;
+  const index = activeIndex.value ? activeIndex.value : defaultIndex.value;
+  return priceFormat(props.data[index!].value);
+  // if (activeIndex.value !== null) {
+  //   return props.data[activeIndex.value!].value;
+  // }
+  // return props.data[defaultIndex.value].value;
 });
 
 const parsedDate = computed(() => {
@@ -222,7 +225,8 @@ const barOptions = computed(() => {
       {
         // type: 'line',
         data: props.data.map(v => v.value),
-        cursor: 'initial'
+        cursor: 'initial',
+        barMaxWidth: 10
       }
     ]
   };

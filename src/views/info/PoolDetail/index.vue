@@ -32,14 +32,14 @@
             <p class="label">{{ $t('info.info19') }}</p>
             <div class="flex-between">
               <div class="flex-center">
-                <SymbolIcon :icon="poolInfo.token0Symbol" />
+                <SymbolIcon :icon="poolInfo.token0Symbol" :asset-key="poolInfo.token0"/>
                 {{ poolInfo.token0Symbol }}
               </div>
               <span class="fw">{{ $format(poolInfo.reserve0) }}</span>
             </div>
             <div class="flex-between">
               <div class="flex-center">
-                <SymbolIcon :icon="poolInfo.token1Symbol" />
+                <SymbolIcon :icon="poolInfo.token1Symbol" :asset-key="poolInfo.token1" />
                 {{ poolInfo.token1Symbol }}
               </div>
               <span class="fw">{{ $format(poolInfo.reserve1) }}</span>

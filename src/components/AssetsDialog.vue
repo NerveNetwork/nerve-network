@@ -19,7 +19,7 @@
         :class="{ active: item.assetKey === selectedAsset?.assetKey }"
         @click="selectHotAsset(item.assetKey)"
       >
-        <SymbolIcon :icon="item.symbol"></SymbolIcon>
+        <SymbolIcon :icon="item.symbol" :asset-key="item.assetKey"></SymbolIcon>
         {{ item.symbol }}
         <template v-if="item.registerChain">
           <span>({{ item.registerChain }})</span>
@@ -39,7 +39,7 @@
         @click="changeSelect(item)"
       >
         <div class="flex-center flex-1" style="width: 100%">
-          <SymbolIcon :icon="item.symbol"></SymbolIcon>
+          <SymbolIcon :icon="item.symbol" :asset-key="item.assetKey"></SymbolIcon>
           <div class="asset-base-info">
             <div>
               {{ item.symbol }}

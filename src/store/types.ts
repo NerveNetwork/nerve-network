@@ -26,6 +26,7 @@ export interface AssetItem {
   contractAddress?: string;
   usdPrice: string;
   source: number;
+  registerContract: string;
 }
 
 export interface AccountFarm {
@@ -51,6 +52,7 @@ export interface TxInfo {
   type?: number;
   L1Chain?: string;
   L1Type?: string;
+  expand?: boolean;
 }
 
 // 手动声明 state 类型

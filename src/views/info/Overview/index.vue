@@ -5,7 +5,7 @@
         <Chart type="line" :label="$t('info.info4')" :data="lineData"></Chart>
       </div>
       <div class="tx-chart">
-        <Chart type="bar" :label="$t('info.info5')" :data="barData"></Chart>
+        <Chart type="bar" :label="$t('info.info34')" :data="barData"></Chart>
       </div>
     </div>
     <AssetsTable
