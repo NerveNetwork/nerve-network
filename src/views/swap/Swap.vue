@@ -141,11 +141,14 @@
           <div
             class="route-item"
             v-for="(item, index) in routesSymbol"
-            :key="item"
+            :key="item.assetKey"
           >
             <div class="flex-center">
-              <symbol-icon :icon="item"></symbol-icon>
-              <span>{{ item }}</span>
+              <symbol-icon
+                :icon="item.icon"
+                :asset-key="item.assetKey"
+              ></symbol-icon>
+              <span>{{ item.icon }}</span>
             </div>
             <el-icon
               class="icon-arrow-right"
@@ -707,7 +710,14 @@ export default defineComponent({
             /*const stableN: any = stablePairList.value.find(
               (v: any) => v.lpToken === toAssetKey
             );*/
-            state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+            // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+            state.routesSymbol = [
+              {
+                icon: state.fromAsset!.symbol,
+                assetKey: state.fromAsset!.assetKey
+              },
+              { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
+            ];
             return [amount, 0];
           } else {
             // 稳定币N换稳定币
@@ -724,7 +734,14 @@ export default defineComponent({
               // 池子余额不足
               return [0, 0];
             }
-            state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+            // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+            state.routesSymbol = [
+              {
+                icon: state.fromAsset!.symbol,
+                assetKey: state.fromAsset!.assetKey
+              },
+              { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
+            ];
             return [amount, 0];
           }
         }
@@ -744,7 +761,14 @@ export default defineComponent({
             // 池子余额不足
             return [0, 0];
           }
-          state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+          // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
+          state.routesSymbol = [
+            {
+              icon: state.fromAsset!.symbol,
+              assetKey: state.fromAsset!.assetKey
+            },
+            { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
+          ];
           return [amount, 0];
         }
 
@@ -796,16 +820,25 @@ export default defineComponent({
             const outAmount = bestExact.tokenAmountOut.amount.toFixed();
             // console.log(inAmount, outAmount, "===---===", amount, type, state.customerType);
             const tokenPathArray = bestExact.path;
-            const routesSymbol: string[] = [];
+            const routesSymbol: { icon: string; assetKey: string }[] = [];
             bestExact.path.map((v: any) => {
               const asset = props.assetsList.find(
                 asset => asset.assetKey === v.chainId + '-' + v.assetId
               );
-              asset && routesSymbol.push(asset.symbol);
+              // asset && routesSymbol.push(asset.symbol);
+              asset &&
+                routesSymbol.push({
+                  icon: asset.symbol,
+                  assetKey: asset.assetKey
+                });
             });
             if (isStableCoinForOthers.value) {
               const fromSymbol = state.fromAsset?.symbol as string;
-              routesSymbol.unshift(fromSymbol);
+              // routesSymbol.unshift(fromSymbol);
+              routesSymbol.unshift({
+                icon: fromSymbol,
+                assetKey: state.fromAsset!.assetKey
+              });
             }
             state.routesSymbol = routesSymbol;
             const pairsArray = [];
