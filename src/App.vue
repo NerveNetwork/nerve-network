@@ -35,7 +35,7 @@ watch(
       if (timer) clearInterval(timer);
       timer = window.setInterval(() => {
         store.dispatch('getAssetList', val);
-      }, 5000);
+      }, 10000);
     } else {
       store.commit('setAssetList', []);
     }
@@ -46,13 +46,13 @@ watch(
 );
 onMounted(() => {
   getNvtPrice();
-  getHeight();
-  setInterval(() => {
-    getHeight();
-  }, 2000);
+  // getHeight(); // farm 里面获取
+  // setInterval(() => {
+  //   getHeight();
+  // }, 2000);
   setInterval(() => {
     getNvtPrice();
-  }, 5000);
+  }, 10000);
 });
 // 获取nvt价格
 async function getNvtPrice() {

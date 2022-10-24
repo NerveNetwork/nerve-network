@@ -1,4 +1,4 @@
-import { onBeforeUnmount, reactive, toRefs, watch } from 'vue';
+import { onBeforeUnmount, reactive, toRefs, watch, onMounted } from 'vue';
 import * as subSocket from '@/service/socket/websocket';
 import config from '@/config';
 import {
@@ -13,8 +13,10 @@ import { ETransfer } from '@/utils/api';
 import { ethers } from 'ethers';
 import useContractAddress from './useContractAddress';
 import { abi, abiThree, abiTwo } from '@/contractConfig/contractConfig';
-import { getNerveFarm, uniAssetPrice } from '@/service/api';
+import { getBlockInfo, getNerveFarm, uniAssetPrice } from '@/service/api';
 import useStoreState from '@/hooks/useStoreState';
+import { useStore } from 'vuex';
+const store = useStore();
 import { FarmList, NerveFarmItem, UniFarmItem, UserStakeFarm } from '../types';
 
 const url = config.WS_URL;
@@ -29,8 +31,20 @@ export default function useData() {
   let filterType = '1'; // 排序类型 1.按照收益排名 2.按照流动性排名
   let onlySeeMortgage = false; // 只看已质押
   let farmStatusType = 'pending'; // farm状态 默认显示进行中的farm
+  let heightTimer: number;
+  onMounted(() => {
+    getHeight();
+    heightTimer = window.setInterval(() => {
+      getHeight();
+    }, 2000);
+  })
+  async function getHeight() {
+    const result = await getBlockInfo();
+    store.commit('changeHeight', result?.blockHeight || null);
+  }
   onBeforeUnmount(() => {
     subSocket.unListen(url, 'farmListSub');
+    clearInterval(heightTimer);
   });
   // 获取nerve farmList
   async function getFarmData(farmHash?: string) {
