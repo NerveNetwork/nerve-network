@@ -115,7 +115,7 @@ const linkConfig = computed(() => {
         },
         {
           label: 'NerveDEX',
-          href: 'https://nervedex.com/'
+          href: 'https://dex.nerve.network/'
         }
       ]
     }
