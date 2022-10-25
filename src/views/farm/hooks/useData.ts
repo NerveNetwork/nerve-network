@@ -16,12 +16,12 @@ import { abi, abiThree, abiTwo } from '@/contractConfig/contractConfig';
 import { getBlockInfo, getNerveFarm, uniAssetPrice } from '@/service/api';
 import useStoreState from '@/hooks/useStoreState';
 import { useStore } from 'vuex';
-const store = useStore();
 import { FarmList, NerveFarmItem, UniFarmItem, UserStakeFarm } from '../types';
 
 const url = config.WS_URL;
 
 export default function useData() {
+  const store = useStore();
   const state = reactive<FarmList>({
     nerveList: [],
     uniList: []
@@ -34,13 +34,23 @@ export default function useData() {
   let heightTimer: number;
   onMounted(() => {
     getHeight();
-    heightTimer = window.setInterval(() => {
-      getHeight();
-    }, 2000);
-  })
+  });
   async function getHeight() {
     const result = await getBlockInfo();
-    store.commit('changeHeight', result?.blockHeight || null);
+    let height = result?.blockHeight || null;
+    store.commit('changeHeight', height);
+    if (height) {
+      heightTimer = window.setInterval(() => {
+        height += 1;
+        // console.log(height, '===height===');
+        store.commit('changeHeight', height);
+      }, 2000);
+    } else {
+      if (heightTimer) {
+        clearInterval(heightTimer);
+      }
+      getHeight();
+    }
   }
   onBeforeUnmount(() => {
     subSocket.unListen(url, 'farmListSub');
@@ -287,6 +297,12 @@ export default function useData() {
       );
     }
   }
+  function sleep(delay: number) {
+    const start = new Date().getTime();
+    while (new Date().getTime() - start < delay) {
+      continue;
+    }
+  }
 
   function filter(
     list: any,
@@ -294,26 +310,32 @@ export default function useData() {
     mortgage: boolean,
     isUni?: boolean,
     farmStatus = 'pending'
-  ) {
+  ): any {
     let newList = [...list];
-    if (farmStatus === 'pending') {
-      newList = [...newList].filter(
-        v => !v.stopHeight || v.stopHeight > height.value
-      );
+    if (!height.value) {
+      // console.log(farmStatus, height.value, '333==333');
+      sleep(3000);
+      return filter(list, type, mortgage, isUni, farmStatus);
     } else {
-      newList = [...newList].filter(
-        v => v.stopHeight && v.stopHeight < height.value
-      );
-    }
-    // console.log(newList, 21336)
+      if (farmStatus === 'pending') {
+        newList = [...newList].filter(
+          v => !v.stopHeight || v.stopHeight > height.value
+        );
+      } else {
+        newList = [...newList].filter(
+          v => v.stopHeight && v.stopHeight < height.value
+        );
+      }
+      // console.log(newList, 21336)
 
-    if (mortgage) {
-      newList = [...newList].filter(v => Number(v.stakeAmount));
+      if (mortgage) {
+        newList = [...newList].filter(v => Number(v.stakeAmount));
+      }
+      const sortBy = type === '1' ? 'apr' : 'tatalStakeTokenUSD';
+      return [...newList].sort((a, b) => {
+        return b[sortBy] - a[sortBy];
+      });
     }
-    const sortBy = type === '1' ? 'apr' : 'tatalStakeTokenUSD';
-    return [...newList].sort((a, b) => {
-      return b[sortBy] - a[sortBy];
-    });
   }
 
   return {
