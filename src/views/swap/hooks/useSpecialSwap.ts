@@ -11,6 +11,11 @@ import {
 // const NVT_KEY = config.chainId + '-' + config.assetId;
 
 const USDTN_kEY = isBeta ? '5-102' : '9-220';
+const NESTN_KEY = isBeta ? '9-339' : '9-339';
+const USDCN_KEY = isBeta ? '9-388' : '9-388';
+
+// 允许 USDT -> USDTM -> NVT(其他),NEST -> NESTN -> NVT(其他)路径的稳定币
+const specialStableKeys = [USDTN_kEY, NESTN_KEY, USDCN_KEY];
 
 // 稳定币换稳定币、稳定币换非稳定币、稳定币/稳定币N互换
 export default function useSpecialSwap() {
@@ -67,7 +72,7 @@ export default function useSpecialSwap() {
     } else {
       const lpToken = stableCoins.value[token1Key];
       isStableCoinForOthers.value =
-        lpToken && lpToken !== token2Key && lpToken === USDTN_kEY;
+        lpToken && lpToken !== token2Key && specialStableKeys.includes(lpToken);
     }
   }
 
