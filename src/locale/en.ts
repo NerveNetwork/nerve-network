@@ -13,7 +13,7 @@ const en = {
     header11: 'Consensus',
     header12: 'Info',
     header13: 'Explorer',
-    header14: '* Nerve Network does not support hardware wallets'
+    header14: '* NerveNetwork does not support hardware wallets'
   },
   footer: {
     footer1: 'Buy NVT',
@@ -28,7 +28,7 @@ const en = {
     footer10: 'Wallet Download'
   },
   public: {
-    public1: 'Asset',
+    public1: 'Assets',
     public2: 'Available',
     public3: 'Locked',
     public4: 'Total Amount',
@@ -616,8 +616,8 @@ const en = {
     createFarm13: 'My Pool/Farm:'
   },
   farmRankType: {
-    apr: 'Rank by APR',
-    usd: 'Rank by liquidity'
+    apr: 'Rank By APR',
+    usd: 'Rank By Liquidity'
   },
   staking: {
     staking0: 'Staking Pool',
@@ -806,9 +806,9 @@ const en = {
     info33: 'Search pools or tokens',
     info34: 'Volume',
     info35: 'Multi-Routing',
-    info36: 'Asset',
+    info36: 'Assets',
     info37: 'Liquidity Provider',
-    info38: 'Support network',
+    info38: 'Support Network',
     info39: 'Assets distribution',
     info40: 'Mainnet contract address',
     info41: 'Nerve Network Asset ID',
