@@ -112,6 +112,11 @@ export async function getAssetList(address = config.destroyAddress) {
       return asset.assetKey !== '9-219';
     });*/
 
+    // 屏蔽BTE
+    res = res.filter((asset: any) => {
+      return asset.assetKey !== '9-528';
+    });
+
     // 禁止SNEGY, MC2, XTMC跨链
     res.map((asset: any) => {
       const assetKey = asset.assetKey;
