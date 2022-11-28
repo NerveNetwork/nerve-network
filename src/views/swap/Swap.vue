@@ -1360,9 +1360,12 @@ export default defineComponent({
         cursor: pointer;
         &:first-child {
           margin-left: 0;
-          width: 22px;
-          height: 22px;
+          width: 26px;
+          height: 26px;
           overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
         i {
           font-size: 22px;

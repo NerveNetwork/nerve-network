@@ -455,7 +455,7 @@ const en = {
   home: {
     home1: 'Decentralized Digital Asset Service Network',
     home2:
-      'NerveNetwork aims to connect all isolated blockchains and establish a cross-chain asset exchange network, providing all necessary underlying support for the Defi ecosystem. Let every digital asset holder experience a truly safe, free and transparent Defi service.',
+      'NerveNetwork aims to connect all isolated blockchains and establish a cross-chain asset exchange network, providing all necessary underlying support for the DeFi ecosystem. Let every digital asset holder experience a truly safe, free and transparent DeFi service.',
     home3: '2 seconds confirmation and 0 gas fee',
     home4: 'Support 19 chains',
     home5: 'Launch Swap ',
@@ -809,12 +809,12 @@ const en = {
     info36: 'Assets',
     info37: 'Liquidity Provider',
     info38: 'Support Network',
-    info39: 'Assets distribution',
-    info40: 'Mainnet contract address',
+    info39: 'Assets Distribution',
+    info40: 'MainNet Contract Address',
     info41: 'Nerve Network Asset ID',
     info42: 'Proportion',
     info43: 'Get',
-    info44: 'Main net'
+    info44: 'MainNet'
   }
 };
 
