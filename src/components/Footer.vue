@@ -12,7 +12,7 @@
             </el-button>
           </p>
         </div>
-        <p class="copy-right pc">Copyright 2022 © All rights Reserved. Nerve</p>
+        <p class="copy-right pc">Copyright 2019-2023 @ All rights Reserved. NerveNetwork</p>
       </div>
       <div class="right flex-between">
         <ul v-for="linkItem in linkConfig" :key="linkItem.label">
@@ -26,7 +26,7 @@
         </ul>
       </div>
       <p class="copy-right mobile">
-        Copyright 2022 © All rights Reserved. Nerve
+        Copyright 2019-2023 @ All rights Reserved. NerveNetwork
       </p>
     </div>
   </div>

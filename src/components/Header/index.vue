@@ -349,6 +349,7 @@ async function handleWithdrawalTx(tx: TxInfo) {
       margin-left: 10px;
       img {
         width: 25px;
+        height: 25px;
         margin-right: 5px;
       }
       span {

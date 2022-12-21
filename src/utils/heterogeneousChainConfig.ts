@@ -19,6 +19,7 @@ import LotexLogo from '@/assets/img/chainLogo/LOTEX.png';
 import OptimismLogo from '@/assets/img/chainLogo/optimism.png';
 import KlaytnLogo from '@/assets/img/chainLogo/Klaytn.png';
 import SmartBCHLogo from '@/assets/img/chainLogo/smartBCH.png';
+import ENULSLogo from '@/assets/img/chainLogo/ENULS.svg';
 
 const isBeta = config.isBeta;
 
@@ -78,6 +79,10 @@ const SmartBCHOrigin = isBeta
   ? 'https://smartscan.cash'
   : 'https://smartscan.cash';
 
+const ENULSOrigin = isBeta
+  ? 'https://beta.evmscan.nuls.io'
+  : 'https://evmscan.nuls.io';
+
 export const RPC_URL = {
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
@@ -122,6 +127,9 @@ export const RPC_URL = {
   smartBCH: isBeta
     ? 'https://moeing.tech:9545'
     : 'https://smartbch.greyh.at',
+  ENULS: isBeta
+    ? 'https://beta.evmapi.nuls.io'
+    : 'https://evmapi.nuls.io',
 };
 
 export const _networkInfo = {
@@ -343,6 +351,30 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.smartBCH
   },
+  Goerli: {
+    name: 'Goerli',
+    chainName: 'Goerli',
+    chainId: 118,
+    assetKey: '5-2',
+    origin: 'https://goerli.etherscan.io/',
+    mainAsset: 'ETH',
+    nativeId: '0x5',
+    supported: true,
+    logo: ETHLogo
+  },
+  ENULS: {
+    name: 'ENULS',
+    chainName: isBeta ? 'ENULS_Beta' : 'ENULS',
+    chainId: 119,
+    assetKey: isBeta ? '2-1' : '1-1',
+    origin: ENULSOrigin,
+    mainAsset: 'NULS',
+    nativeId: isBeta ? '0x78' : '0x77',
+    supported: true,
+    logo: ENULSLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.ENULS
+  },
   NULS: {
     name: 'NULS',
     chainName: 'NULS',
@@ -366,3 +398,7 @@ export const _networkInfo = {
     logo: NERVELogo
   }
 };
+if (!isBeta) {
+  // @ts-ignore
+  delete _networkInfo.Goerli;
+}

@@ -88,7 +88,7 @@ export default defineComponent({
           const newAddress = currentAccount.address[chain];
           store.commit('changeAddress', newAddress);
           store.commit('changeIsWrongChain', false);
-        } else if (item.name !== 'Ethereum') {
+        } else if (item.name !== 'Ethereum' && item.name !== 'Goerli') {
           const { logo, name, ...rest } = item;
           await addEthereumChain(rest);
         } else {
@@ -159,6 +159,7 @@ export default defineComponent({
     img {
       margin-right: 10px;
       width: 28px;
+      height: 28px;
     }
   }
   .pop-arrow,
