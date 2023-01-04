@@ -71,6 +71,7 @@
     <FundTable
       :title="$t('info.info39')"
       :data="multiChains"
+      :page-size="multiChains.length"
       :total="multiChains.length"
     />
     <TxList :assetKey="tokenInfo.address" is-multi-routing />

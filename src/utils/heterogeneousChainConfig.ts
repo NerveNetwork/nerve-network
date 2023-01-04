@@ -299,9 +299,9 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Metis
   },
-  Iotex: {
-    name: 'Iotex',
-    chainName: isBeta ? 'Iotex_Beta' : 'Iotex',
+  IoTex: {
+    name: 'IoTex',
+    chainName: isBeta ? 'IoTex_Beta' : 'IoTex',
     chainId: 114,
     assetKey: isBeta ? '5-116' : '9-446',
     origin: LotexOrigin,

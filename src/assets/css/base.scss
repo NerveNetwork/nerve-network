@@ -277,13 +277,32 @@ a.line {
 // 滚动条滑块样式
 ::-webkit-scrollbar-thumb {
   border-radius: 2px;
-  background: #d8d8d8;
+  background: #97a9f0;
   //-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
   //background: transparent;
 }
 
 :hover::-webkit-scrollbar-thumb,body::-webkit-scrollbar-thumb {
-  background: #d8d8d8;
+  background: #97a9f0;
+}
+
+// 纵向滚动条和横向滚动条宽度
+body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+
+// 滚动条滑块样式
+body::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: #97a9f0;
+  //-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+  //background: transparent;
+}
+
+body:hover::-webkit-scrollbar-thumb,body::-webkit-scrollbar-thumb {
+  background: #97a9f0;
 }
 
 .mobile {

@@ -810,11 +810,11 @@ const en = {
     info37: 'Liquidity Provider',
     info38: 'Support Network',
     info39: 'Assets Distribution',
-    info40: 'MainNet Contract Address',
-    info41: 'Nerve Network Asset ID',
+    info40: 'Contract Address',
+    info41: 'NerveNetwork Asset ID',
     info42: 'Proportion',
     info43: 'Get',
-    info44: 'MainNet'
+    info44: 'Native Chains'
   }
 };
 
