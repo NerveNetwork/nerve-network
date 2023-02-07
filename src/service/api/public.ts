@@ -64,7 +64,7 @@ export async function getAssetPrice(
 ) {
   const params = isForCalFee ? [chainId, assetId, 'FEE'] : [chainId, assetId];
   const res = await http.rPost('getBestSymbolPrice', params);
-  return res?.result || null;
+  return res?.result || '0';
 }
 
 /**

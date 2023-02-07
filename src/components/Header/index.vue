@@ -81,8 +81,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useToast } from 'vue-toastification';
 import Menu from '../Menu.vue';
@@ -95,8 +95,8 @@ import useLang from '@/hooks/useLang';
 import AuthButton from '../AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-import { getTx, getTronTx } from '@/service/api';
-import { superLong, getCurrentAccount } from '@/utils/util';
+import { getTronTx, getTx } from '@/service/api';
+import { getCurrentAccount, superLong } from '@/utils/util';
 import { Account, TxInfo } from '@/store/types';
 import storage from '@/utils/storage';
 import { ETransfer } from '@/utils/api';
@@ -172,8 +172,7 @@ watch(
 // }
 
 const chainLogo = computed(() => {
-  const { logo } = _networkInfo[chain.value];
-  return logo;
+  return _networkInfo[chain.value]?.logo;
 });
 
 const showMenu = ref(false);

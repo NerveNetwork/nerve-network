@@ -20,6 +20,8 @@ import OptimismLogo from '@/assets/img/chainLogo/optimism.png';
 import KlaytnLogo from '@/assets/img/chainLogo/Klaytn.png';
 import SmartBCHLogo from '@/assets/img/chainLogo/smartBCH.png';
 import ENULSLogo from '@/assets/img/chainLogo/ENULS.svg';
+import KavaLogo from '@/assets/img/chainLogo/KAVA.png';
+import ETHWLogo from '@/assets/img/chainLogo/ETHW.png';
 
 const isBeta = config.isBeta;
 
@@ -83,6 +85,12 @@ const ENULSOrigin = isBeta
   ? 'https://beta.evmscan.nuls.io'
   : 'https://evmscan.nuls.io';
 
+const KavaOrigin = isBeta
+  ? 'https://explorer.testnet.kava.io'
+  : 'https://explorer.kava.io';
+
+const ETHWOrigin = 'https://mainnet.ethwscan.com';
+
 export const RPC_URL = {
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
@@ -115,7 +123,7 @@ export const RPC_URL = {
   Metis: isBeta
     ? 'https://stardust.metis.io/?owner=588'
     : 'https://andromeda.metis.io/?owner=1088',
-  Iotex: isBeta
+  IoTex: isBeta
     ? 'https://babel-api.testnet.iotex.io'
     : 'https://babel-api.mainnet.iotex.io',
   Optimism: isBeta
@@ -130,6 +138,8 @@ export const RPC_URL = {
   ENULS: isBeta
     ? 'https://beta.evmapi.nuls.io'
     : 'https://evmapi.nuls.io',
+  KAVA: isBeta ? 'https://evm.testnet.kava.io' : 'https://evm.kava.io',
+  ETHW: 'https://mainnet.ethereumpow.org/'
 };
 
 export const _networkInfo = {
@@ -310,7 +320,7 @@ export const _networkInfo = {
     supported: true,
     logo: LotexLogo,
     decimals: 18,
-    rpcUrl: RPC_URL.Iotex
+    rpcUrl: RPC_URL.IoTex
   },
   Optimism: {
     name: 'Optimism',
@@ -352,6 +362,7 @@ export const _networkInfo = {
     rpcUrl: RPC_URL.smartBCH
   },
   Goerli: {
+    // eth 测试网
     name: 'Goerli',
     chainName: 'Goerli',
     chainId: 118,
@@ -374,6 +385,33 @@ export const _networkInfo = {
     logo: ENULSLogo,
     decimals: 18,
     rpcUrl: RPC_URL.ENULS
+  },
+  KAVA: {
+    name: 'KAVA',
+    chainName: isBeta ? 'KAVA_Beta' : 'KAVA',
+    chainId: 120,
+    assetKey: isBeta ? '5-136' : '',
+    origin: KavaOrigin,
+    mainAsset: 'KAVA',
+    nativeId: isBeta ? '0x8ad' : '0x8ae',
+    supported: true,
+    logo: KavaLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.KAVA
+  },
+  ETHW: {
+    // 只有主网
+    name: 'ETHW',
+    chainName: isBeta ? '' : 'ETHW',
+    chainId: 121,
+    assetKey: isBeta ? '' : '',
+    origin: ETHWOrigin,
+    mainAsset: 'ETHW',
+    nativeId: '0x2711',
+    supported: true,
+    logo: ETHWLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.ETHW
   },
   NULS: {
     name: 'NULS',
@@ -401,4 +439,7 @@ export const _networkInfo = {
 if (!isBeta) {
   // @ts-ignore
   delete _networkInfo.Goerli;
+} else {
+  // @ts-ignore
+  // delete _networkInfo.ETHW;
 }
