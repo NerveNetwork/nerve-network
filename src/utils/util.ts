@@ -299,6 +299,12 @@ export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
   const canToL1 = checkCanToL1(asset);
   if (!canToL1) return false;
   const currentChain = storage.get('network', 'session');
+
+  // 禁止nvt 跨链 enuls
+  if (asset.assetKey === '9-1' && currentChain === 'ENULS') {
+    return false;
+  }
+
   if (currentChain) {
     return !!asset.heterogeneousList?.find((v: HeterogeneousInfo) => {
       return _networkInfo[currentChain].chainId === v.heterogeneousChainId;
