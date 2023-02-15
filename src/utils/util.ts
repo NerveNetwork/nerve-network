@@ -301,9 +301,9 @@ export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
   const currentChain = storage.get('network', 'session');
 
   // 禁止nvt 跨链 enuls
-  if ((asset.assetKey === '9-1' || asset.assetKey === '1-1') && currentChain === 'ENULS') {
+  /*if ((asset.assetKey === '9-1' || asset.assetKey === '1-1') && currentChain === 'ENULS') {
     return false;
-  }
+  }*/
 
   if (currentChain) {
     return !!asset.heterogeneousList?.find((v: HeterogeneousInfo) => {
