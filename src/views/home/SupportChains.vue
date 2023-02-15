@@ -35,6 +35,9 @@ import Optimism from '@/assets/img/supportChains/Optimism.png';
 import Klaytn from '@/assets/img/supportChains/Klaytn.png';
 import smartBCH from '@/assets/img/supportChains/smartBCH.png';
 import NULS from '@/assets/img/supportChains/NULS.png';
+import KAVA from '@/assets/img/supportChains/KAVA.png';
+import ETHW from '@/assets/img/supportChains/ETHW.png';
+import ENULS from '@/assets/img/supportChains/ENULS.png';
 
 const supportChains = [
   { src: Ethereum },
@@ -54,7 +57,10 @@ const supportChains = [
   { src: Optimism },
   { src: Klaytn },
   { src: smartBCH },
-  { src: NULS }
+  { src: NULS },
+  { src: KAVA },
+  { src: ETHW },
+  { src: ENULS }
 ];
 </script>
 
@@ -81,6 +87,9 @@ const supportChains = [
       justify-content: center;
       align-items: center;
       border-radius: 15px;
+    }
+    img {
+      width: 224px;
     }
   }
   @media screen and (max-width: 1200px) {

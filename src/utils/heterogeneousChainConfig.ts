@@ -19,7 +19,7 @@ import LotexLogo from '@/assets/img/chainLogo/LOTEX.png';
 import OptimismLogo from '@/assets/img/chainLogo/optimism.png';
 import KlaytnLogo from '@/assets/img/chainLogo/Klaytn.png';
 import SmartBCHLogo from '@/assets/img/chainLogo/smartBCH.png';
-import ENULSLogo from '@/assets/img/chainLogo/ENULS.svg';
+import ENULSLogo from '@/assets/img/chainLogo/ENULS.png';
 import KavaLogo from '@/assets/img/chainLogo/KAVA.png';
 import ETHWLogo from '@/assets/img/chainLogo/ETHW.png';
 

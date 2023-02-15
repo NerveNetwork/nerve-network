@@ -57,6 +57,7 @@ interface GenerateAddressConfig {
 
 const MetaMaskProvider = 'ethereum';
 const NaboxProvider = 'NaboxWallet';
+const TrustWalletProvider = 'trustwallet';
 const OKExProvider = 'okexchain';
 const BSCProvider = 'BinanceChain';
 // const ONTOProvider = 'onto';
@@ -64,7 +65,7 @@ const BSCProvider = 'BinanceChain';
 export const providerList = [
   { name: 'MetaMask', src: MetaMask, provider: MetaMaskProvider },
   { name: 'Nabox', src: Nabox, provider: NaboxProvider },
-  { name: 'Trust Wallet', src: TrustWallet, provider: MetaMaskProvider },
+  { name: 'Trust Wallet', src: TrustWallet, provider: TrustWalletProvider },
   { name: 'TokenPocket', src: Tokenpocket, provider: MetaMaskProvider },
   { name: 'MathWallet', src: Mathwallet, provider: MetaMaskProvider },
   { name: 'Binance Wallet', src: binancechain, provider: BSCProvider },
@@ -76,6 +77,12 @@ export const providerList = [
 ];
 
 export function getProvider(type?: string) {
+  const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
+    navigator.userAgent
+  );
+  if (isMobile) {
+    type = 'ethereum';
+  }
   if (type) return window[type];
   const providerType = storage.get('providerType');
   return providerType ? window[providerType] : null;
@@ -215,7 +222,12 @@ export default function useEthereum() {
     const provider = getProvider();
     provider?.on('accountsChanged', (accounts: string) => {
       console.log(accounts, '=======accountsChanged');
-      reload();
+      if (
+        state.address &&
+        state.address.toLowerCase() !== accounts[0].toLowerCase()
+      ) {
+        reload();
+      }
       /*if (accounts.length) {
         state.address = accounts[0];
       } else {
@@ -235,7 +247,10 @@ export default function useEthereum() {
         );
         const network = chainInfo?.name || null;
         store.commit('changeNetwork', network);
-        reload();
+        const oldChainId = provider.chainId;
+        if (oldChainId && Number(oldChainId) !== Number(chainId)) {
+          reload();
+        }
       }
     });
   }
@@ -246,8 +261,24 @@ export default function useEthereum() {
     const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
       navigator.userAgent
     );
-    if (providerType === 'ethereum' && !provider && isMobile) {
-      window.open('https://metamask.app.link/dapp/nerve.network');
+    const dappUrl = 'nerve.network';
+    if (
+      providerType === 'ethereum' &&
+      // @ts-ignore
+      !provider?.isMetaMask &&
+      isMobile
+    ) {
+      window.open(`https://metamask.app.link/dapp/${dappUrl}`);
+      return;
+    } else if (
+      providerType === 'trustwallet' &&
+      // @ts-ignore
+      !provider?.isTrust &&
+      isMobile
+    ) {
+      window.open(
+        `https://link.trustwallet.com/open_url?coin_id=60&url=https://${dappUrl}`
+      );
       return;
     }
     if (!provider) {
@@ -256,8 +287,8 @@ export default function useEthereum() {
     await provider?.request({ method: 'eth_requestAccounts' });
     state.address = provider?.selectedAddress;
     storage.set('providerType', providerType);
-    listenAccountChange();
-    listenNetworkChange();
+    // listenAccountChange();
+    // listenNetworkChange();
     reload();
   }
 
