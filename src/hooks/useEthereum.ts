@@ -25,6 +25,7 @@ import { generateTronAddress } from '@/utils/tronLink';
 interface State {
   address: string | null;
   networkError: string;
+  chainId: string;
 }
 
 interface NativeCurrency {
@@ -157,7 +158,8 @@ export default function useEthereum() {
 
   const state: State = reactive({
     address: '',
-    networkError: ''
+    networkError: '',
+    chainId: ''
   });
 
   async function initProvider() {
@@ -195,6 +197,7 @@ export default function useEthereum() {
     chainId = chainId.startsWith('0x')
       ? chainId
       : '0x' + Number(chainId).toString(16);
+    state.chainId = chainId;
     const chainInfo = Object.values(_networkInfo).find(
       v => v.nativeId === chainId
     );
@@ -240,14 +243,14 @@ export default function useEthereum() {
   function listenNetworkChange() {
     const provider = getProvider();
     provider?.on('chainChanged', (chainId: string) => {
-      console.log(chainId, '=======chainId');
+      const oldChainId = state.chainId;
+      console.log(chainId, '=======chainId', oldChainId);
       if (chainId) {
         const chainInfo = Object.values(_networkInfo).find(
           v => v.nativeId === chainId
         );
         const network = chainInfo?.name || null;
         store.commit('changeNetwork', network);
-        const oldChainId = provider.chainId;
         if (oldChainId && Number(oldChainId) !== Number(chainId)) {
           reload();
         }
