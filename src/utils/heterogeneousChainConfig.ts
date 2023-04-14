@@ -147,7 +147,7 @@ export const RPC_URL = {
   KAVA: isBeta ? 'https://evm.testnet.kava.io' : 'https://evm.kava.io',
   ETHW: 'https://mainnet.ethereumpow.org/',
   REI: isBeta ? 'https://rpc-testnet.rei.network' : 'https://rpc-mainnet.rei.network',
-  ZK: isBeta ? 'https://zksync2-testnet.zksync.dev' : 'https://zksync2-mainnet.zksync.io'
+  zkSync: isBeta ? 'https://zksync2-testnet.zksync.dev' : 'https://zksync2-mainnet.zksync.io'
 };
 
 export const _networkInfo = {
@@ -445,7 +445,7 @@ export const _networkInfo = {
     supported: true,
     logo: ZKLogo,
     decimals: 18,
-    rpcUrl: RPC_URL.ZK
+    rpcUrl: RPC_URL.zkSync
   },
   NULS: {
     name: 'NULS',
