@@ -12,13 +12,13 @@ const url = isBeta
   : 'https://assets.nabox.io/api/image/list';
 export async function getLogoConfig() {
   const storeConfig = storage.get('logoConfig');
-  if (!storeConfig) {
+  if (!storeConfig || !Object.keys(storeConfig).length) {
     storage.set('logoConfig', localConfig);
   }
   const result = await http.get({
     url
   });
-  if (result) {
+  if (result && Object.keys(result).length) {
     storage.set('logoConfig', result);
   }
 }

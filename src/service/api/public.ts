@@ -5,7 +5,7 @@ import {
   checkCanToL1,
   genId,
   isBeta,
-  checkCanToL1OnCurrent
+  checkCanToL1OnCurrent, createRPCParams
 } from '@/utils/util';
 import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
@@ -196,4 +196,16 @@ export async function getTronTx(hash: string) {
     status: 0,
     ...res
   };
+}
+
+// withdrawal gasLimit
+export async function withdrawalGasLimit() {
+  /*const rpcParams = createRPCParams('gasLimitOfHeterogeneousChains');
+  const res = await http.post({
+    url: 'http://beta.api.nerve.network/jsonrpc',
+    data: rpcParams
+  });
+  return res?.result || null;*/
+  const res = await http.rPost('gasLimitOfHeterogeneousChains');
+  return res?.result || null;
 }

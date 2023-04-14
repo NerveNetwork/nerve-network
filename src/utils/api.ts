@@ -1024,7 +1024,8 @@ export class ETransfer {
   /**
    * @param mainAssetUSD 提现网络主资产USD
    * @param feeUSD 手续费USD
-   * @param isToken 提现资产是否是token
+   // * @param isToken 提现资产是否是token
+   * @param gasLimit
    * @param feeDecimals 手续费精度
    * @param isMainAsset 手续费是否是提现网络主资产
    * @param isNVT 手续费是否是NVT
@@ -1033,27 +1034,28 @@ export class ETransfer {
   async calWithdrawalFee(
     mainAssetUSD: string,
     feeUSD: string,
-    isToken: boolean,
+    gasLimit: string,
     feeDecimals: number,
     isMainAsset: boolean,
     isNVT?: boolean,
     isTRX?: boolean
   ) {
     const gasPrice = await this.getWithdrawGas();
-    let gasLimit;
+    const gasLimit_big = new ethers.utils.BigNumber(gasLimit);
+    /*let gasLimit;
     if (isToken) {
       gasLimit = new ethers.utils.BigNumber('210000');
     } else {
       gasLimit = new ethers.utils.BigNumber('190000');
-    }
+    }*/
     if (isMainAsset) {
-      return this.formatEthers(gasLimit.mul(gasPrice), feeDecimals);
+      return this.formatEthers(gasLimit_big.mul(gasPrice), feeDecimals);
     }
     const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 6);
     const mainAssetUSDBig = ethers.utils.parseUnits(mainAssetUSD.toString(), 6);
     let result: any = mainAssetUSDBig
       .mul(gasPrice)
-      .mul(gasLimit)
+      .mul(gasLimit_big)
       .mul(ethers.utils.parseUnits('1', feeDecimals))
       .div(ethers.utils.parseUnits('1', 18))
       .div(feeUSDBig);

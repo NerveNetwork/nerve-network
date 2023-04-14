@@ -84,6 +84,8 @@ import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { rootCmpKey, RootComponent, AssetItemType } from '../types';
 import { HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import storage from '@/utils/storage';
+import getWithdrawalGasLimit from '@/utils/getWithdrawalGasLimit';
 
 export default defineComponent({
   name: 'withdrawal',
@@ -226,10 +228,12 @@ export default defineComponent({
         decimals,
         originNetwork: feeChain
       } = selectedFeeAsset.value;
-      const { isToken } = heterogeneousInfo;
+      const { isToken, heterogeneousChainId } = heterogeneousInfo;
+      console.log(heterogeneousInfo, '333');
       const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
       const transfer = new ETransfer(withdrawalChain);
       let res = '';
+      const gasLimit = await getGasLimit(heterogeneousChainId);
       if (feeChain === withdrawalChain) {
         // 手续费资产为L1网络主资产
         if (withdrawalChain === 'TRON') {
@@ -238,7 +242,7 @@ export default defineComponent({
           res = await transfer.calWithdrawalFee(
             '',
             '',
-            isToken,
+            gasLimit,
             decimals,
             true
           );
@@ -268,7 +272,7 @@ export default defineComponent({
           res = await transfer.calWithdrawalFee(
             L1MainAssetUSD,
             feeAssetUSD,
-            isToken,
+            gasLimit,
             decimals,
             false,
             feeIsNVT,
@@ -277,6 +281,17 @@ export default defineComponent({
         }
       }
       fee.value = floatToCeil(res, 6);
+    }
+
+    async function getGasLimit(chainId: number) {
+      let gasLimitConfig = storage.get('gasLimitConfig');
+      if (!gasLimitConfig) {
+        gasLimitConfig = await getWithdrawalGasLimit();
+      }
+      if (!gasLimitConfig) {
+        throw 'Fail to get GasLimit';
+      }
+      return gasLimitConfig[chainId].gasLimitOfWithdraw;
     }
     async function changeFeeAsset(asset: AssetItemType) {
       showFeeDialog.value = false;
