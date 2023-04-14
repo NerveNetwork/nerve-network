@@ -22,6 +22,8 @@ import SmartBCHLogo from '@/assets/img/chainLogo/smartBCH.png';
 import ENULSLogo from '@/assets/img/chainLogo/ENULS.png';
 import KavaLogo from '@/assets/img/chainLogo/KAVA.png';
 import ETHWLogo from '@/assets/img/chainLogo/ETHW.png';
+import REILogo from '@/assets/img/chainLogo/REI.png';
+import ZKLogo from '@/assets/img/chainLogo/zksync.png';
 
 const isBeta = config.isBeta;
 
@@ -91,6 +93,14 @@ const KavaOrigin = isBeta
 
 const ETHWOrigin = 'https://mainnet.ethwscan.com';
 
+const REIOrigin = isBeta
+  ? 'https://scan-test.rei.network'
+  : 'https://scan.rei.network';
+
+const ZKOrigin = isBeta
+  ? 'https://zksync2-testnet.zkscan.io'
+  : 'https://explorer.zksync.io';
+
 export const RPC_URL = {
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
@@ -132,14 +142,12 @@ export const RPC_URL = {
   Klaytn: isBeta
     ? 'https://api.baobab.klaytn.net:8651'
     : 'https://public-node-api.klaytnapi.com/v1/cypress',
-  smartBCH: isBeta
-    ? 'https://moeing.tech:9545'
-    : 'https://smartbch.greyh.at',
-  ENULS: isBeta
-    ? 'https://beta.evmapi.nuls.io'
-    : 'https://evmapi.nuls.io',
+  smartBCH: isBeta ? 'https://moeing.tech:9545' : 'https://smartbch.greyh.at',
+  ENULS: isBeta ? 'https://beta.evmapi.nuls.io' : 'https://evmapi.nuls.io',
   KAVA: isBeta ? 'https://evm.testnet.kava.io' : 'https://evm.kava.io',
-  ETHW: 'https://mainnet.ethereumpow.org/'
+  ETHW: 'https://mainnet.ethereumpow.org/',
+  REI: isBeta ? 'https://rpc-testnet.rei.network' : 'https://rpc-mainnet.rei.network',
+  ZK: isBeta ? 'https://zksync2-testnet.zksync.dev' : 'https://zksync2-mainnet.zksync.io'
 };
 
 export const _networkInfo = {
@@ -412,6 +420,32 @@ export const _networkInfo = {
     logo: ETHWLogo,
     decimals: 18,
     rpcUrl: RPC_URL.ETHW
+  },
+  REI: {
+    name: 'REI',
+    chainName: isBeta ? 'REI_Beta' : 'REI',
+    chainId: 122,
+    assetKey: isBeta ? '5-138' : '9-620',
+    origin: REIOrigin,
+    mainAsset: 'REI',
+    nativeId: isBeta ? '0x3045' : '0xbabd',
+    supported: true,
+    logo: REILogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.REI
+  },
+  zkSync: {
+    name: 'zkSync',
+    chainName: isBeta ? 'zkSync_Beta' : 'zkSync',
+    chainId: 123,
+    assetKey: isBeta ? '5-139' : '9-621',
+    origin: ZKOrigin,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0x118' : '0x144',
+    supported: true,
+    logo: ZKLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.ZK
   },
   NULS: {
     name: 'NULS',

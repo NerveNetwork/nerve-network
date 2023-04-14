@@ -59,6 +59,7 @@ interface GenerateAddressConfig {
 const MetaMaskProvider = 'ethereum';
 const NaboxProvider = 'NaboxWallet';
 const TrustWalletProvider = 'trustwallet';
+const SafePalProvider = 'safepal';
 const OKExProvider = 'okexchain';
 const BSCProvider = 'BinanceChain';
 // const ONTOProvider = 'onto';
@@ -71,21 +72,21 @@ export const providerList = [
   { name: 'MathWallet', src: Mathwallet, provider: MetaMaskProvider },
   { name: 'Binance Wallet', src: binancechain, provider: BSCProvider },
   { name: 'OKX Wallet', src: OKEx, provider: OKExProvider },
-  { name: 'SafePal', src: safepal, provider: MetaMaskProvider },
+  { name: 'SafePal', src: safepal, provider: SafePalProvider },
   { name: 'Coin98', src: coin98, provider: MetaMaskProvider },
   { name: 'BitKeep', src: bitkeep, provider: MetaMaskProvider },
   { name: 'ONTO', src: onto, provider: MetaMaskProvider }
 ];
 
 export function getProvider(type?: string) {
+  const providerType = storage.get('providerType');
   const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
     navigator.userAgent
   );
-  if (isMobile) {
+  if (isMobile && providerType) {
     type = 'ethereum';
   }
   if (type) return window[type];
-  const providerType = storage.get('providerType');
   return providerType ? window[providerType] : null;
 }
 
@@ -260,10 +261,14 @@ export default function useEthereum() {
 
   // 连接provider
   async function connect(providerType: string) {
-    const provider = getProvider(providerType);
+    let provider = getProvider(providerType);
     const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
       navigator.userAgent
     );
+    if (isMobile) {
+      // @ts-ignore
+      provider = window.ethereum;
+    }
     const dappUrl = 'nerve.network';
     if (
       providerType === 'ethereum' &&
@@ -283,6 +288,9 @@ export default function useEthereum() {
         `https://link.trustwallet.com/open_url?coin_id=60&url=https://${dappUrl}`
       );
       return;
+    } else if (providerType === 'safepal' && !provider?.isSafePal && isMobile) {
+      // mobile safepal
+      throw new Error('Please open the link in the SafePal app');
     }
     if (!provider) {
       throw new Error(t('public.public25'));
