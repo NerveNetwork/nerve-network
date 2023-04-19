@@ -176,13 +176,13 @@
           }}
         </span>
       </div>
-      <div class="d-flex align-items-center space-between mt-8 size-14">
+<!--      <div class="d-flex align-items-center space-between mt-8 size-14">
         <span>{{ $t('farm.farm5') }}</span>
         <span>
           {{ $thousands(tokenInfo.rewardBalance) }}
           {{ tokenInfo.syrupTokenSymbol }}
         </span>
-      </div>
+      </div>-->
       <div
         class="link mt-8"
         @click="toAddLiquidity"
@@ -688,7 +688,7 @@ function toAddLiquidity() {
     margin-top: 15px;
   }
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1024px) {
   .pc-cont {
     display: none !important;
   }

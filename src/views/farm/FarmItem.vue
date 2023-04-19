@@ -31,13 +31,13 @@
               }}
             </h2>
           </li>
-          <li class="fl">
+          <!--          <li class="fl">
             <p>{{ $t('farm.farm5') }}</p>
             <h2>
               {{ $thousands(item.rewardBalance) }}
               {{ item.syrupTokenSymbol }}
             </h2>
-          </li>
+          </li>-->
         </ul>
         <div class="link view">
           <!--            {{ $t("farm.farm6") }}-->
@@ -228,7 +228,7 @@ function handleLoading(status: boolean) {
         /* width: 1000px; */
         flex: 1;
         li {
-          width: 25%;
+          width: 33%;
           text-align: center;
           p {
             font-size: 14px;
