@@ -819,6 +819,7 @@ export default defineComponent({
               : bestTradeExactOut(amount, pairs, fromAsset);
           // console.log(bestExact, "---bestExact---", pairs, 999);
           if (bestExact) {
+            pathFee.value = bestExact.pathFee;
             const inAmount = bestExact.tokenAmountIn.amount.toString();
             const outAmount = bestExact.tokenAmountOut.amount.toFixed();
             // console.log(inAmount, outAmount, "===---===", amount, type, state.customerType);
@@ -868,6 +869,7 @@ export default defineComponent({
               priceImpact.toFixed()
             ];
           } else {
+            pathFee.value = '0';
             return [0, 0];
           }
         }
@@ -899,10 +901,8 @@ export default defineComponent({
         maxPairSize
       );
       if (res && Object.values(res).length) {
-        pathFee.value = res.pathFee;
         return res;
       } else {
-        pathFee.value = '0';
         return null;
       }
     }
@@ -927,14 +927,12 @@ export default defineComponent({
         maxPairSize
       );
       if (res && Object.values(res).length) {
-        pathFee.value = res.pathFee;
         return {
           path: res.path,
           tokenAmountIn: res.tokenAmountOut,
           tokenAmountOut: res.tokenAmountIn
         };
       } else {
-        pathFee.value = '0';
         return null;
       }
     }

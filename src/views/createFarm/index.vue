@@ -294,15 +294,12 @@ async function createFarm() {
     );
     const result: any = await handleHex(tx.hex, 62);
     if (result && result.hash) {
-      toast.success(t('transfer.transfer14'));
       updateMyFarms({
         type: tokenA.symbol.indexOf('_') > -1 ? 'farm' : 'pool',
         hash: result.hash,
         name: tokenA.symbol
       });
       form.value?.resetFields();
-    } else {
-      toast.error('Create farm failed');
     }
   } catch (e) {
     console.log(e, 'create-farm-error');
