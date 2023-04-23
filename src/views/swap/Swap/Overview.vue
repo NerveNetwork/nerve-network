@@ -35,7 +35,7 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import TxList from './TxList.vue';
 import Pagination from '@/components/Pagination.vue';
-import { SwapSymbol, OrderItem, Pager } from './types';
+import { SwapSymbol, OrderItem, Pager } from '../types';
 import { openExplorer, superLong } from '@/utils/util';
 export default defineComponent({
   props: {
@@ -88,7 +88,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/css/style.scss';
+@import '../../../assets/css/style';
 .overview {
   //width: 790px;
   width: 60%;
@@ -153,9 +153,6 @@ export default defineComponent({
       }
     }
   }
-  .mobile-list {
-    display: none;
-  }
   @media screen and (max-width: 1200px) {
     padding: 20px;
     .head {
@@ -174,21 +171,9 @@ export default defineComponent({
           margin-right: 30px;
         }
       }
-      :deep(.el-table) {
-        th .cell {
-          font-size: 14px;
-        }
-        tr .cell {
-          line-height: 24px;
-          font-size: 14px;
-        }
-        .iconfont {
-          font-size: 22px;
-        }
-      }
     }
   }
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 1000px) {
     width: 100%;
     max-height: 460px;
     border: none;
@@ -207,46 +192,6 @@ export default defineComponent({
       .bottom {
         padding-top: 5px;
         font-size: 22px;
-      }
-    }
-    .order-history {
-
-      :deep(.el-table) {
-        display: none;
-      }
-    }
-    .mobile-list {
-      display: block;
-      ul {
-        max-height: 335px;
-        overflow: auto;
-      }
-      li {
-        padding: 10px 0;
-        border-bottom: 1px solid #e4e9f4;
-        &:first-child {
-          padding-top: 0;
-        }
-        &:last-child {
-          border-bottom: none;
-        }
-      }
-      .left,
-      .right {
-        div:first-child {
-          margin-bottom: 2px;
-        }
-        span {
-          font-size: 14px;
-          color: $labelColor;
-        }
-        p {
-          font-size: 14px;
-        }
-        .iconfont {
-          color: #21d8ba;
-          font-size: 20px;
-        }
       }
     }
   }

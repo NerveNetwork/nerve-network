@@ -13,6 +13,7 @@ const proxyUrl =
 
 const port = process.env.BUILD_ENV === 'prod' ? 8031 : 8033;
 module.exports = {
+  // transpileDependencies: ['@injectivelabs'], // 使用babel-loader编译node_modules里的包
   publicPath: '/',
   configureWebpack: config => {
     // element-plus import es-module

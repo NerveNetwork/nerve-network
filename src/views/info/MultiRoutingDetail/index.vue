@@ -73,6 +73,7 @@
       :data="multiChains"
       :page-size="multiChains.length"
       :total="multiChains.length"
+      :mainAsset="tokenInfo.name"
     />
     <TxList :assetKey="tokenInfo.address" is-multi-routing />
   </div>

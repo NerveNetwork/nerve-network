@@ -10,9 +10,11 @@
         <span
           class="link"
           @click="openUrl(scope.row.name, scope.row.contractAddress)"
+          v-if="scope.row.contractAddress"
         >
           {{ superLong(scope.row.contractAddress) }}
         </span>
+        <span v-else>{{ mainAsset }}</span>
       </template>
       <template #liq="scope">${{ $format(scope.row.liq) }}</template>
       <template #ratio="scope">
@@ -39,6 +41,7 @@ const props = withDefaults(
     pageIndex?: number;
     pagination?: boolean;
     pageSize?: number | string;
+    mainAsset?: string;
   }>(),
   {
     pagination: true

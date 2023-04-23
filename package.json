@@ -17,7 +17,7 @@
     "echarts": "^5.2.2",
     "element-plus": "^2.0.1",
     "ethers": "^4.0.47",
-    "nerve-sdk-js": "^1.0.22",
+    "nerve-sdk-js": "^1.0.25",
     "tronweb": "^4.1.0",
     "vconsole": "^3.14.6",
     "vue": "^3.2.9",

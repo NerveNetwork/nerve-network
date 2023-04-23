@@ -55,7 +55,12 @@
           </span>
         </div>
       </div>
-      <div class="mortgage">
+      <div class="mortgage flex-center">
+        <div class="create">
+          <el-button type="primary" @click="createFarm">
+            {{ $t('farm.farm11') }}
+          </el-button>
+        </div>
         <el-switch
           v-model="state.mortgageValue"
           :active-text="$t('farm.farm1')"
@@ -87,7 +92,7 @@
 import { onMounted, ref, onUnmounted, watch, reactive } from 'vue';
 import FarmItem from './FarmItem.vue';
 import useFarmData from './hooks/useData';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { FarmType, SearchState } from './types';
 
@@ -99,6 +104,7 @@ const props = defineProps({
 });
 
 const route = useRoute();
+const router = useRouter();
 const uniLoading = ref(true);
 const nerveLoading = ref(true);
 const current = ref<FarmType>(FarmType.UniFarm);
@@ -156,6 +162,10 @@ function handleLoading(status: boolean) {
 }
 function filterListByStatus(status: 'pending' | 'end') {
   state.farmStatus = status;
+}
+
+function createFarm() {
+  router.push('/create');
 }
 </script>
 
@@ -258,6 +268,14 @@ function filterListByStatus(status: 'pending' | 'end') {
     .el-switch {
       .el-switch__label {
         color: $labelColor;
+      }
+    }
+    .create {
+      margin-right: 20px;
+      .el-button {
+        min-height: 32px;
+        padding: 7px 15px;
+        border-radius: 8px;
       }
     }
   }

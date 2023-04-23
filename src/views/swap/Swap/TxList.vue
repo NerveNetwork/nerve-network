@@ -78,7 +78,7 @@ const name = ref('hi');
 </script>
 
 <style lang="scss">
-@import '../../assets/css/style.scss';
+@import '../../../assets/css/style';
 .swap-tx-list {
   .el-table {
     border: none !important;
@@ -116,7 +116,7 @@ const name = ref('hi');
       }
     }
   }
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 1000px) {
     .el-table {
       display: none;
     }

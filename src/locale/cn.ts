@@ -529,7 +529,22 @@ const cn = {
     trading22:
       '暂未开通该交易对智能路由，请兑换USDTN后再通过USDTN进行其余网络的USDT兑换',
     trading23: '普通交易',
-    trading24: '多链路由'
+    trading24: '多链路由',
+    trading25: '购买',
+    trading26: '出售',
+    trading27: '购买数量',
+    trading28: '出售数量',
+    trading29: '单价',
+    trading30: '花费',
+    trading31: '名称',
+    trading32: '数量',
+    trading33: '价格',
+    trading34: '操作',
+    trading35: '资产',
+    trading36: '可售',
+    trading37: '可买',
+    trading38: '确认出售',
+    trading39: '确认购买'
   },
   liquidity: {
     liquidity1: '流动性',
@@ -567,14 +582,14 @@ const cn = {
     farm8: '查看交易对信息',
     farm9: '已质押',
     farm10: '取回',
-    farm11: '创建新的Farm',
-    farm12: '创建Pool/Farm',
+    farm11: '创建农场',
+    farm12: '创建农场',
     farm13: '质押的Token资产',
     farm14: '解锁时间',
     farm15: '奖励的Token资产',
     farm16: '奖励的Token数量/天',
     farm17: '奖励Token总量',
-    farm18: '我清楚创建Pool/Farm时，奖励给用户的Token将被立即转入',
+    farm18: '我清楚创建Farm时，奖励给用户的Token将被立即转入',
     farm19: '确认创建',
     farm20: '添加',
     farm21: '收取',
@@ -596,7 +611,7 @@ const cn = {
     createFarm10: '当前账户可用余额不足',
     createFarm11: '请输入数字',
     createFarm12: '高级',
-    createFarm13: '我的Pool/Farm:'
+    createFarm13: '我的农场:'
   },
   farmRankType: {
     apr: '按照收益排名',

@@ -545,7 +545,22 @@ const en = {
     trading22:
       'The intelligent routing of this trading pair has not been opened yet. Please exchange USDTN and then exchange USDT through USDTN.',
     trading23: 'Transaction',
-    trading24: 'Multi-routing'
+    trading24: 'Multi-routing',
+    trading25: '购买',
+    trading26: '出售',
+    trading27: '购买数量',
+    trading28: '出售数量',
+    trading29: '单价',
+    trading30: '花费',
+    trading31: '名称',
+    trading32: '数量',
+    trading33: '价格',
+    trading34: '操作',
+    trading35: '资产',
+    trading36: '可售',
+    trading37: '可买',
+    trading38: '确认出售',
+    trading39: '确认购买'
   },
   liquidity: {
     liquidity1: 'Liquidity',
@@ -583,15 +598,15 @@ const en = {
     farm8: 'Check Pair',
     farm9: 'Total Staked',
     farm10: 'Claim',
-    farm11: 'Create New Farm',
-    farm12: 'Create Pool/Farm',
+    farm11: 'Create Farm',
+    farm12: 'Create Farm',
     farm13: 'Stake',
     farm14: 'Unlock at',
     farm15: 'Token rewarded',
     farm16: 'Token rewarded/day',
     farm17: 'Total token rewarded',
     farm18:
-      'I understand that token rewards to users will be transferred upon Pool/Farm creation',
+      'I understand that token rewards to users will be transferred upon Farm creation',
     farm19: 'Confirm',
     farm20: 'Add',
     farm21: 'Claim',
@@ -613,7 +628,7 @@ const en = {
     createFarm10: 'Insufficient Balance',
     createFarm11: 'Enter Amount',
     createFarm12: 'Advanced',
-    createFarm13: 'My Pool/Farm:'
+    createFarm13: 'My Farm:'
   },
   farmRankType: {
     apr: 'Rank By APR',

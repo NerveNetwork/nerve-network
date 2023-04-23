@@ -2,7 +2,7 @@
   <div class="custom-input">
     <div class="info flex-between">
       <span>{{ label }}</span>
-      <span v-if="nerveAddress">{{ $t('public.public12') }}{{ balance }}</span>
+      <span v-if="nerveAddress && !isPush">{{ $t('public.public12') }}{{ balance }}</span>
     </div>
     <div class="inner flex-between">
       <el-input
@@ -12,7 +12,7 @@
         @focus="customerFocus"
         placeholder="0.0"
       >
-        <template #append v-if="nerveAddress">
+        <template #append v-if="nerveAddress && !isPush">
           <span @click="max">MAX</span>
         </template>
       </el-input>
@@ -81,6 +81,10 @@ export default defineComponent({
     showAmount: {
       type: Boolean,
       default: true
+    },
+    isPush: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -200,10 +204,10 @@ export default defineComponent({
   }
   .info {
     margin-bottom: 5px;
-    color: $txColor;
+    color: $subLabelColor;
     font-size: 12px;
     & span:first-child {
-      font-size: 14px;
+      //font-size: 14px;
     }
   }
   .el-input {

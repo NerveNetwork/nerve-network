@@ -1,5 +1,5 @@
 <template>
-  <div class="swap pd_40_rd_20 mobile-p" v-loading="loading">
+  <div class="swap pd_40_rd_20" v-loading="loading">
     <div class="icon-wrap flex-between">
       <div class="left">
         <i
@@ -41,7 +41,7 @@
         <img
           @click="changeDirection"
           class="click"
-          src="../../assets/img/swap-to.svg"
+          src="../../../assets/img/swap-to.svg"
           alt=""
         />
       </div>
@@ -203,7 +203,7 @@ import { getWholeTradeExactIn } from '@/service/api';
 import nerve from 'nerve-sdk-js';
 import { useToast } from 'vue-toastification';
 import config from '@/config';
-import useSpecialSwap from './hooks/useSpecialSwap';
+import useSpecialSwap from '../hooks/useSpecialSwap';
 import useStoreState from '@/hooks/useStoreState';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { ComponentInternalInstance } from '@vue/runtime-core';
@@ -213,7 +213,7 @@ import {
   SwapState,
   SwapPairInfo,
   HotAsset
-} from './types';
+} from '../types';
 import { Account } from '@/store/types';
 import storage from '@/utils/storage';
 
@@ -278,6 +278,8 @@ export default defineComponent({
       protectError: '',
       showLoading: false
     });
+
+    const pathFee = ref(''); // 普通兑换手续费(非稳定币)
 
     onMounted(() => {
       const currentAccount = getCurrentAccount(nerveAddress.value);
@@ -439,7 +441,8 @@ export default defineComponent({
                   assetId: token1.assetId
                 },
                 res[i].reserve0,
-                res[i].reserve1
+                res[i].reserve1,
+                res[i].feeRate
               );
             }
             if (
@@ -896,8 +899,10 @@ export default defineComponent({
         maxPairSize
       );
       if (res && Object.values(res).length) {
+        pathFee.value = res.pathFee;
         return res;
       } else {
+        pathFee.value = '0';
         return null;
       }
     }
@@ -922,12 +927,14 @@ export default defineComponent({
         maxPairSize
       );
       if (res && Object.values(res).length) {
+        pathFee.value = res.pathFee;
         return {
           path: res.path,
           tokenAmountIn: res.tokenAmountOut,
           tokenAmountOut: res.tokenAmountIn
         };
       } else {
+        pathFee.value = '0';
         return null;
       }
     }
@@ -957,6 +964,7 @@ export default defineComponent({
       if (!isStableCoinForStableCoin.value) return null;
       const fromAssetKey = state.fromAsset!.assetKey;
       const stableKey = stableCoins.value[fromAssetKey];
+      console.log(stablePairList, '3334455');
       const stableN: any = stablePairList.value.find(
         (v: any) => v.lpToken === stableKey
       );
@@ -1006,11 +1014,13 @@ export default defineComponent({
           state.fromAsset?.decimals
         );
       }
-      if (isStableCoinSwap.value || isStableCoinForStableCoin.value) return '0';
       return fixNumber(
+        divisionDecimals(pathFee.value, state.fromAsset?.decimals)
+      );
+      /*return fixNumber(
         Times(state.fromAmount, divisionDecimals('0.3', 2)).toFixed(),
         state.fromAsset?.decimals
-      );
+      );*/
     });
 
     const swapRate = ref(''); // swap兑换比例
@@ -1337,14 +1347,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/css/style.scss';
+@import '../../../assets/css/style';
 .swap {
   //width: 470px;
   width: 37%;
-  min-width: 400px;
+  min-width: 470px;
   /* height: 752px; */
   padding-bottom: 12px;
   overflow: hidden;
+  align-self: flex-start;
   .icon-wrap {
     .left {
       width: 27px;
@@ -1435,7 +1446,7 @@ export default defineComponent({
       }
       .left,
       .right {
-        color: $labelColor;
+        color: $subLabelColor;
       }
       .left,
       .right {
@@ -1452,7 +1463,7 @@ export default defineComponent({
   .swap-route {
     .name {
       padding: 12px 0;
-      color: $labelColor;
+      color: $subLabelColor;
     }
     .route-network {
       flex-wrap: wrap;

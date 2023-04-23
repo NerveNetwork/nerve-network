@@ -61,6 +61,7 @@ export interface SwapPairInfo {
   token1: TokenInfo;
   reserve0: string;
   reserve1: string;
+  feeRate: string;
 }
 
 export interface HotAsset {

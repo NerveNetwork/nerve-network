@@ -17,6 +17,8 @@ const MultiRouting = () => import('@/views/info/MultiRouting/index.vue');
 const MultiRoutingDetail = () =>
   import('@/views/info/MultiRoutingDetail/index.vue');
 
+const CreateFarm = () => import('@/views/createFarm/index.vue');
+
 const routes: RouteRecordRaw[] = [
   {
     path: '',
@@ -85,6 +87,11 @@ const routes: RouteRecordRaw[] = [
     path: '/info/multi-routing/:id',
     name: 'multiRoutingDetail',
     component: MultiRoutingDetail
+  },
+  {
+    path: '/create',
+    name: 'createFarm',
+    component: CreateFarm
   }
 ];
 

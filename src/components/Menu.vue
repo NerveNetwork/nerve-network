@@ -99,12 +99,12 @@ function changeLang() {
       height: 44px;
       line-height: 44px;
       padding: 0 20px;
-      color: #475472;
+      color: #5e6983;
       //font-size: 18px;
       &:hover,
       &:focus,
       &:active {
-        color: #387cf4;
+        color: #2688f7;
         //background-color: #387cf4;
       }
     }

@@ -1,146 +1,82 @@
 <template>
   <div class="w1200 trading-page">
-    <Overview
-      v-if="showOverview && !isMobile"
-      :swapSymbol="swapSymbol"
-      :swapRate="swapRate"
-      :list="orderList"
-      v-model:pager="pager"
-      v-model:txType="txType"
-      @changeList="changeList"
-    ></Overview>
-    <Swap
-      :assetsList="assetsList"
-      :hotAssets="hotAssets"
-      :defaultAsset="defaultAsset"
-      @toggleExpand="toggleOverview"
-      @selectAsset="changeOrderList"
-      @updateRate="updateRate"
-    ></Swap>
-    <el-dialog
-      custom-class="mobile-overview-dialog"
-      top="10vh"
-      v-model="showMobileOverview"
-      :show-close="false"
-      @closed="showOverview = false"
-      :title="$t('trading.trading1')"
-    >
-      <Overview
-        :swapSymbol="swapSymbol"
-        :swapRate="swapRate"
-        :list="orderList"
-        destroy-on-close
-        v-model:pager="pager"
-        v-model:txType="txType"
-        @changeList="changeList"
-      ></Overview>
-    </el-dialog>
+    <!-- <div class="trading-tabs">
+      <div class="wrap">
+            <span
+              v-for="item in tabs"
+              :key="item.value"
+              class="click fw"
+              :class="{ active: item.value === activeTab }"
+              @click="activeTab = item.value"
+            >
+              {{ item.label }}
+            </span>
+      </div>
+    </div>-->
+    <SwapPage v-show="activeTab === 'swap'" />
+    <PushPage v-show="activeTab === 'push'" />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, watch, ref } from 'vue';
-import Overview from './Overview.vue';
-import Swap from './Swap.vue';
-import useOverview from './hooks/useOverview';
-import useAsset from './hooks/useAsset';
-import useSelectAsset from './hooks/useSelectAsset';
-import { AssetItem } from '@/store/types';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import SwapPage from './Swap/SwapPage.vue';
+import PushPage from './Push/PushPage.vue';
 
-export default defineComponent({
-  name: 'trading',
-  components: {
-    Overview,
-    Swap
-  },
-  setup() {
-    const { showOverview, toggleOverview, isMobile, showMobileOverview } =
-      useOverview();
-
-    const { assetsList, defaultAsset, hotAssets } = useAsset();
-
-    const { swapSymbol, orderList, pager, txType, selectAsset, selectedAsset } =
-      useSelectAsset();
-
-    // url带交易对信息时请求一次订单列表信息
-    watch(
-      defaultAsset,
-      val => {
-        if (val.to) {
-          selectAsset(val.from, val.to);
-        }
-      },
-      { immediate: true }
-    );
-    watch(
-      assetsList,
-      val => {
-        if (val && val.length) {
-          if (selectedAsset.value) {
-            selectAsset(selectedAsset.value.from, selectedAsset.value.to);
-          }
-        }
-      },
-      {
-        immediate: true,
-        deep: true
-      }
-    );
-
-    // 切换兑换资产后刷新兑换记录
-    function changeOrderList(from: AssetItem, to: AssetItem) {
-      pager.index = 1;
-      pager.total = 0;
-      selectAsset(from, to);
-    }
-
-    // 分页
-    function changeList() {
-      selectAsset(selectedAsset.value?.from, selectedAsset.value?.to);
-    }
-
-    watch(
-      () => txType.value,
-      val => {
-        if (val) {
-          pager.index = 1;
-          pager.total = 0;
-          selectAsset(selectedAsset.value?.from, selectedAsset.value?.to);
-        }
-      }
-    );
-
-    const swapRate = ref('');
-    function updateRate(rate: string) {
-      swapRate.value = rate;
-    }
-
-    return {
-      showOverview,
-      toggleOverview,
-      isMobile,
-      showMobileOverview,
-      assetsList,
-      hotAssets,
-      defaultAsset,
-      swapSymbol,
-      orderList,
-      selectAsset,
-      pager,
-      txType,
-      changeList,
-      swapRate,
-      updateRate,
-      changeOrderList
-    };
-  }
-});
+const tabs = [
+  { label: 'SWAP', value: 'swap' },
+  { label: 'PUSH', value: 'push' }
+];
+const activeTab = ref('swap');
 </script>
 
 <style lang="scss">
 .trading-page {
-  display: flex;
-  justify-content: center;
   padding: 0 20px;
+
+  .trading-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+
+    .wrap {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid #e4e9f4;
+    }
+
+    span {
+      color: #387cf4;
+      background: #fff;
+      width: 150px;
+      height: 46px;
+      line-height: 46px;
+      text-align: center;
+      display: inline-block;
+    }
+
+    .active {
+      color: #fefefe;
+      background: #387cf4;
+      border-radius: 24px;
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    .trading-tabs {
+      margin-bottom: 25px;
+
+      .wrap {
+        border-radius: 20px;
+      }
+
+      span {
+        width: 120px;
+        height: 36px;
+        line-height: 36px;
+        font-size: 14px;
+      }
+    }
+  }
 }
 </style>
