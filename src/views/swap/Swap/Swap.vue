@@ -930,7 +930,8 @@ export default defineComponent({
         return {
           path: res.path,
           tokenAmountIn: res.tokenAmountOut,
-          tokenAmountOut: res.tokenAmountIn
+          tokenAmountOut: res.tokenAmountIn,
+          pathFee: res.pathFee
         };
       } else {
         return null;

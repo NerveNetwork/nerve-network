@@ -82,12 +82,29 @@
         </el-form-item>
         <el-form-item class="checkbox-item" prop="check">
           <el-checkbox
+            :label="$t('farm.farm26')"
+            v-model="model.checkContact"
+          >
+            <i18n-t keypath="farm.farm26" tag="label">
+              <a href="https://discord.gg/PBkHeD7" target="_blank" class="link">
+                {{ $t('farm.farm27') }}
+              </a>
+            </i18n-t>
+          </el-checkbox>
+        </el-form-item>
+        <el-form-item class="checkbox-item check-notice" prop="check">
+          <el-checkbox
             :label="$t('farm.farm18')"
             v-model="model.check"
           ></el-checkbox>
         </el-form-item>
         <el-form-item class="confirm-wrap">
-          <el-button type="primary" @click="submitForm" v-if="nerveAddress">
+          <el-button
+            type="primary"
+            @click="submitForm"
+            v-if="nerveAddress"
+            :disabled="disabledConfirm"
+          >
             {{ $t('farm.farm19') }}
           </el-button>
           <auth-button v-else></auth-button>
@@ -134,6 +151,7 @@ const model = reactive({
   syrupPerDay: '', // 每天可获得token奖励
   syrupTotalAmount: '', // 奖励token总量
   startTime: '', // 开始时间
+  checkContact: false,
   check: false
 });
 const { myFarms, toMyFarm, updateMyFarms } = useMyFarm();
@@ -182,8 +200,14 @@ const rules = reactive({
       trigger: 'change'
     }
   ],
-  check: [{ validator: validateCheck, trigger: 'blur' }]
+  /*checkContact: [{ validator: validateCheck, trigger: 'blur' }],
+  check: [{ validator: validateCheck, trigger: 'blur' }]*/
 });
+
+const disabledConfirm = computed(() => {
+  return !model.check || !model.checkContact;
+});
+
 const stakeTokenList = computed(() => {
   return assetList.value.filter(v => v.symbol.indexOf('_') > -1);
 });
@@ -357,8 +381,24 @@ const advanced = ref(false);
       width: 100%;
     }
     .checkbox-item {
+      margin-bottom: 5px;
+      .el-checkbox__label {
+        color: #475472;
+        display: inline;
+      }
       .el-form-item__content {
         line-height: initial;
+      }
+      .el-checkbox {
+        height: auto;
+      }
+      .el-form-item__error {
+        padding-top: 2px;
+      }
+    }
+    .check-notice {
+      .el-checkbox__label {
+        color: #f56c6c;
       }
     }
     .el-checkbox {
@@ -379,10 +419,6 @@ const advanced = ref(false);
     .el-checkbox__input.is-indeterminate .el-checkbox__inner {
       background-color: #4a5ef2;
     }*/
-    .el-checkbox__label {
-      color: #f56c6c;
-      display: inline;
-    }
     .el-date-editor.el-input,
     .el-date-editor.el-input__inner {
       width: 100%;
@@ -397,6 +433,12 @@ const advanced = ref(false);
   .advanced {
     display: flex;
     justify-content: flex-end;
+    .el-switch__label span {
+      color: #475472;
+    }
+    .is-active span{
+      color: #2688F7;
+    }
   }
   .my-farms {
     padding-top: 20px;
