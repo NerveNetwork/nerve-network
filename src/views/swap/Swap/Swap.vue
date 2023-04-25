@@ -1322,7 +1322,6 @@ export default defineComponent({
               remark
             );
           } else if (isOthersForStableCoin.value) {
-            debugger
             // NVT换稳定币
             const tokenIn = nerve.swap.token(
               state.fromAsset?.chainId,
@@ -1338,13 +1337,11 @@ export default defineComponent({
             );
             const stablePairAddress = check.address; // 稳定币交易对地址
             const lpToken = check.lpToken;
-            // const key =
-            //   lpToken.chainId + '-' + lpToken.assetId + '_' + fromAssetKey;
-            // const pairsInfo = storedSwapPairInfo[key];
-            // const pairs = Object.values(pairsInfo);
-            // const tokenPath = bestTradeExactOut(amountOut, pairs, state.fromAsset, lpToken)?.path;
-            // tokenPath.push(tokenOut);
-            const tokenPath = [tokenIn, lpToken];
+            const key =
+              lpToken.chainId + '-' + lpToken.assetId + '_' + fromAssetKey;
+            const pairsInfo = storedSwapPairInfo[key];
+            const pairs = Object.values(pairsInfo);
+            const tokenPath = bestTradeExactIn(amountIn, pairs, state.fromAsset, lpToken)?.path;
             tx = await nerve.swap.swapTradeStableRemoveLp(
               fromAddress,
               amountIn,
