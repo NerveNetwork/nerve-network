@@ -69,8 +69,8 @@ export default function useData() {
       v.syrupTokenBalance = fixNumber(v.syrupTokenBalance, 8);
       v.rewardBalance = fixNumber(v.rewardBalance, 8);
     });
-    totalNerveList = [...data];
-    state.nerveList = filter(data, filterType, onlySeeMortgage);
+    totalNerveList = [...data].sort((a, b) => a.orderNum - b.orderNum);
+    state.nerveList = filter(totalNerveList, filterType, onlySeeMortgage);
   }
 
   const { currentAccount, wrongChain: disableTx, height } = useStoreState();

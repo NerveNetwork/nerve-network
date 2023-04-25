@@ -615,7 +615,7 @@ const en = {
     farm24: 'Live',
     farm25: 'Finished',
     farm26: 'After the creation is complete, you need to {0} to show it in the Farm',
-    farm27: 'contact the technical team'
+    farm27: 'contact us'
   },
   createFarm: {
     createFarm1: 'Choose asset',

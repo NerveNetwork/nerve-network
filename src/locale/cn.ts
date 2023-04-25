@@ -600,7 +600,7 @@ const cn = {
     farm24: '进行中',
     farm25: '已结束',
     farm26: '完成创建后，需{0}在农场中展示',
-    farm27: '联系技术团队'
+    farm27: '联系我们'
   },
   createFarm: {
     createFarm1: '请选择质押的Token资产',
