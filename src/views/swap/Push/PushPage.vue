@@ -44,7 +44,7 @@
           </template>
         </div>
       </div>
-      <div class="right-content" v-show="activeTab === '2'">
+      <div class="order-list right-content" v-show="activeTab === '2'">
         <div class="list-head">
           <div class="list-head-item flex-3">
             <span class="label">{{ $t('trading.trading31') }}</span>
@@ -53,7 +53,9 @@
             <span class="label">{{ $t('trading.trading32') }}</span>
           </div>
           <div class="list-head-item flex-3">
-            <span class="label">{{ $t('trading.trading33') }} (USDTN)</span>
+            <span class="label">{{ $t('trading.trading33') }}</span>
+            <br />
+            <span class="label">(USDTN)</span>
           </div>
           <div class="list-head-item flex-2">
             <span class="label">{{ $t('trading.trading34') }}</span>
@@ -61,32 +63,73 @@
         </div>
         <div class="list-body">
           <div class="list-item" v-for="i in 6" :key="i">
-            <div class="flex-3 flex-center">
+            <div class="flex-center">
               <SymbolIcon :icon="'BNB'" :asset-key="'2-1'" style="margin-right: 10px" />
               <div class="border">
                 <p class="fw">BNB</p>
                 <p class="font12" style="color: #94a6ce">ID:1-4</p>
               </div>
             </div>
-            <div class="flex-3">
-              <div class="border">
-                <span class="font14">3844.32</span>
-              </div>
+            <div class="border">
+              <span class="font14">3844.32</span>
             </div>
-            <div class="flex-3">
-              <div class="border">
-                <span class="font14">3844.32</span>
-              </div>
+            <div class="border">
+              <span class="font14">3844.32</span>
             </div>
-            <div class="flex-2">
-              <div class="border">
-                <el-button type="primary" @click="pushOrder">
-                  {{
-                    buyMode ? $t('trading.trading26') : $t('trading.trading25')
-                  }}
-                </el-button>
-              </div>
+            <div class="border btn-wrap">
+              <el-button type="primary" @click="pushOrder">
+                {{
+                  buyMode ? $t('trading.trading26') : $t('trading.trading25')
+                }}
+              </el-button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="my-order-list">
+      <h3>{{ $t('trading.trading40') }}</h3>
+      <div class="list-head">
+        <div class="list-head-item">
+          <span class="label">{{ $t('trading.trading31') }}</span>
+        </div>
+        <div class="list-head-item">
+          <span class="label">{{ $t('trading.trading32') }}</span>
+        </div>
+        <div class="list-head-item">
+          <span class="label">{{ $t('trading.trading33') }}</span>
+          <br />
+          <span class="label">(USDTN)</span>
+        </div>
+        <div class="list-head-item">
+          <span class="label">{{ $t('trading.trading41') }}</span>
+        </div>
+        <div class="list-head-item">
+          <span class="label">{{ $t('trading.trading34') }}</span>
+        </div>
+      </div>
+      <div class="list-body">
+        <div class="list-item" v-for="i in 6" :key="i">
+          <div class="flex-center">
+            <SymbolIcon :icon="'BNB'" :asset-key="'2-1'" style="margin-right: 10px" />
+            <div class="border">
+              <p class="fw">BNB</p>
+              <p class="font12" style="color: #94a6ce">ID:1-4</p>
+            </div>
+          </div>
+          <div class="border">
+            <span class="font14">3844.32</span>
+          </div>
+          <div class="border">
+            <span class="font14">3844.32</span>
+          </div>
+          <div class="border">
+            <span class="font14">买</span>
+          </div>
+          <div class="border btn-wrap">
+            <el-button type="default" @click="pushOrder" class="default-btn">
+              {{ $t('public.public8') }}
+            </el-button>
           </div>
         </div>
       </div>
@@ -202,7 +245,8 @@ const showConfirmModal = ref(false);
 @import '../../../assets/css/style';
 .push-page {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   .push {
     width: 37%;
     min-width: 470px;
@@ -224,57 +268,99 @@ const showConfirmModal = ref(false);
     }
     .right-content {
       min-height: 400px;
-      .list-head {
-        display: flex;
-        align-items: center;
-        height: 40px;
-        padding: 0 18px;
-        background: #f3f6fd;
+    }
+  }
+  .my-order-list {
+    width: 37%;
+    min-width: 470px;
+    border: 1px solid #e4e9f4;
+    background-color: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 40px;
+    h3 {
+      font-size: 16px;
+      height: 68px;
+      line-height: 69px;
+      color: #475472;
+      padding-left: 18px;
+    }
+  }
+
+  .list-head {
+    display: grid;
+    align-items: center;
+    padding: 0 18px;
+    background: #f3f6fd;
+    height: 48px;
+  }
+  .list-body {
+    padding-bottom: 10px;
+    max-height: 430px;
+    overflow: auto;
+    .list-item {
+      padding: 0 18px;
+    }
+  }
+  .order-list {
+    .list-head {
+      grid-template-columns: repeat(3, 3fr) 2fr;
+    }
+    .list-body .list-item {
+      display: grid;
+      grid-template-columns: repeat(3, 3fr) 2fr;
+    }
+  }
+  .my-order-list {
+    .list-head {
+      grid-template-columns: repeat(3, 3fr) 1.5fr 1.5fr;
+    }
+    .list-body .list-item {
+      display: grid;
+      grid-template-columns: repeat(3, 3fr) 1.5fr 1.5fr;
+    }
+  }
+  .order-list, .my-order-list {
+    .label {
+      font-size: 14px;
+      color: $subLabelColor;
+    }
+    .list-item {
+      /*display: flex;
+      align-items: center;*/
+      height: 76px;
+      &:last-of-type {
+        .border {
+          border: none;
+        }
       }
-      .flex-2 {
-        flex: 2;
-      }
-      .flex-3 {
-        flex: 3;
-      }
-      .label {
+    }
+    .border {
+      height: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-bottom: 1px solid #e4efff;
+    }
+    .btn-wrap {
+      flex-direction: row;
+      align-items: center;
+    }
+    .el-button {
+      min-height: 32px;
+      padding: 0 15px;
+      border-radius: 8px;
+      span {
         font-size: 14px;
-        color: $subLabelColor;
       }
-      .list-body {
-        padding: 0 18px 50px;
-        height: 430px;
-        overflow: auto;
-        .flex-2,
-        .flex-3 {
-          height: 100%;
-        }
-      }
-      .list-item {
-        display: flex;
-        align-items: center;
-        height: 76px;
-        &:last-of-type {
-          .border {
-            border: none;
-          }
-        }
-      }
-      .border {
-        height: 100%;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        border-bottom: 1px solid #e4efff;
-      }
-      .el-button {
-        min-height: 32px;
-        padding: 0 24px;
-        border-radius: 8px;
-        span {
-          font-size: 14px;
-        }
+    }
+    .default-btn {
+      padding: 0 10px;
+      border-radius: 16px;
+      border-color: #387cf4;
+      span {
+        color: #387cf4;
       }
     }
   }
@@ -404,9 +490,12 @@ const showConfirmModal = ref(false);
     //padding: 20px !important;
   }
   @media screen and (max-width: 500px) {
-    .push {
+    .push, .my-order-list {
       width: 100%;
       min-width: 100%;
+    }
+    .my-order-list {
+      //
     }
     .confirm-modal {
       .label {

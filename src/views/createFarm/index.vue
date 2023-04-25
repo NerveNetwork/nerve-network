@@ -209,7 +209,8 @@ const disabledConfirm = computed(() => {
 });
 
 const stakeTokenList = computed(() => {
-  return assetList.value.filter(v => v.symbol.indexOf('_') > -1);
+  // return assetList.value.filter(v => v.symbol.indexOf('_') > -1);
+  return assetList.value.filter(v => v);
 });
 
 const earnTokenList = computed(() => {

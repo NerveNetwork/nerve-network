@@ -21,6 +21,7 @@ const specialStableKeys = [USDTN_kEY, NESTN_KEY, USDCN_KEY];
 export default function useSpecialSwap() {
   const isStableCoinForStableCoin = ref(false); // 稳定币换稳定币
   const isStableCoinForOthers = ref(false); // 是否是稳定币换其他资产
+  const isOthersForStableCoin = ref(false); // 是否是其他资产换稳定币
   const isStableCoinSwap = ref(false); // 稳定币、稳定币N互换
   const stableCoins = ref({}); // {稳定币: 稳定币+'N'}
   const stablePairList = ref([]);
@@ -72,7 +73,24 @@ export default function useSpecialSwap() {
     } else {
       const lpToken = stableCoins.value[token1Key];
       isStableCoinForOthers.value =
-        lpToken && lpToken !== token2Key && specialStableKeys.includes(lpToken);
+        !!lpToken &&
+        lpToken !== token2Key &&
+        specialStableKeys.includes(lpToken);
+    }
+  }
+
+  // 普通资产换稳定币
+  function checkIsOthersForStableCoin(token1Key?: string, token2Key?: string) {
+    if (!token1Key || !token2Key) {
+      isOthersForStableCoin.value = false;
+    } else if (checkIsStableCoinForStableCoin(token1Key, token2Key)) {
+      isOthersForStableCoin.value = false;
+    } else {
+      const lpToken = stableCoins.value[token2Key];
+      isOthersForStableCoin.value =
+        !!lpToken &&
+        lpToken !== token1Key &&
+        specialStableKeys.includes(lpToken);
     }
   }
 
@@ -127,6 +145,7 @@ export default function useSpecialSwap() {
   return {
     isStableCoinForStableCoin,
     isStableCoinForOthers,
+    isOthersForStableCoin,
     isStableCoinSwap,
     stableCoins,
     stablePairList,
@@ -134,6 +153,7 @@ export default function useSpecialSwap() {
     staleSwapFeeAddress,
     checkIsStableCoinForStableCoin,
     checkIsStableCoinForOthers,
+    checkIsOthersForStableCoin,
     checkIsStableCoinSwap,
     getReceiveOrderIndex,
     getStableCoinInfoAndIndex

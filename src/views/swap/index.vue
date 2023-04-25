@@ -1,16 +1,16 @@
 <template>
   <div class="w1200 trading-page">
-    <!-- <div class="trading-tabs">
+    <!--    <div class="trading-tabs">
       <div class="wrap">
-            <span
-              v-for="item in tabs"
-              :key="item.value"
-              class="click fw"
-              :class="{ active: item.value === activeTab }"
-              @click="activeTab = item.value"
-            >
-              {{ item.label }}
-            </span>
+        <span
+          v-for="item in tabs"
+          :key="item.value"
+          class="click fw"
+          :class="{ active: item.value === activeTab }"
+          @click="activeTab = item.value"
+        >
+          {{ item.label }}
+        </span>
       </div>
     </div>-->
     <SwapPage v-show="activeTab === 'swap'" />

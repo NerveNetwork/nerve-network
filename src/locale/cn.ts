@@ -544,7 +544,9 @@ const cn = {
     trading36: '可售',
     trading37: '可买',
     trading38: '确认出售',
-    trading39: '确认购买'
+    trading39: '确认购买',
+    trading40: '当前委托',
+    trading41: '方向'
   },
   liquidity: {
     liquidity1: '流动性',
@@ -597,7 +599,7 @@ const cn = {
     farm23: '已赚取',
     farm24: '进行中',
     farm25: '已结束',
-    farm26: '完成创建后，需{0}做进一步的配置',
+    farm26: '完成创建后，需{0}在农场中展示',
     farm27: '联系技术团队'
   },
   createFarm: {

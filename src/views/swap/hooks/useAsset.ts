@@ -82,7 +82,7 @@ export default function useAsset(isLiquidity = false) {
     ([val, sCoins]) => {
       // 添加流动性页面资产列表不展示可swap稳定币资产 仅限usdt
       // if (val && val.length) {
-      console.log(sCoins, '--==--');
+      // console.log(sCoins, '--==--');
       if (val && val.length && (!isLiquidity || Object.keys(sCoins).length)) {
         // assetsList stableCoins都存在
         if (!isLiquidity) {
