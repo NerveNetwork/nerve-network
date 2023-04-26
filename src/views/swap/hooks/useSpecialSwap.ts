@@ -13,9 +13,10 @@ import {
 const USDTN_kEY = isBeta ? '5-102' : '9-220';
 const NESTN_KEY = isBeta ? '9-339' : '9-339';
 const USDCN_KEY = isBeta ? '9-388' : '9-388';
+const ETHN_KEY = isBeta ? '9-628' : '9-628';
 
 // 允许 USDT -> USDTM -> NVT(其他),NEST -> NESTN -> NVT(其他)路径的稳定币
-const specialStableKeys = [USDTN_kEY, NESTN_KEY, USDCN_KEY];
+const specialStableKeys = [USDTN_kEY, NESTN_KEY, USDCN_KEY, ETHN_KEY];
 
 // 稳定币换稳定币、稳定币换非稳定币、稳定币/稳定币N互换
 export default function useSpecialSwap() {
