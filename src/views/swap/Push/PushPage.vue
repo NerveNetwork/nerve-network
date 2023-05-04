@@ -1,14 +1,14 @@
 <template>
   <div class="push-page">
-    <div class="push">
+    <div class="push" v-loading="loading">
       <Tab @tabChange="tabChange" @modeChange="modeChange" />
       <div class="left-content" v-show="activeTab === '1'">
         <custom-input
-          v-model:inputVal="amount"
+          v-model:inputVal="txAmount"
           ref="customInput"
           :label="buyMode ? $t('trading.trading27') : $t('trading.trading28')"
           :icon="asset && asset.symbol"
-          :assetList="assetsList"
+          :assetList="pushAssetList"
           :selectedAsset="asset || null"
           @selectAsset="selectAsset"
           isPush
@@ -16,28 +16,28 @@
         <div class="price-wrap">
           <div class="info flex-between">
             <span>{{ $t('trading.trading29') }}</span>
-            <span>{{ $t('public.public12') }} {{ 2222 }} USDTN</span>
+            <span>{{ $t('public.public12') }} {{ toThousands(quoteAsset.listAvailable || 0) }} {{ quoteAsset.symbol }}</span>
           </div>
           <div class="inner flex-between">
             <el-input
               class="no-border"
-              :model-value="amount"
-              @input="() => {}"
+              :model-value="price"
+              @input="changePrice"
               placeholder="0.0"
             />
             <div class="select-wrap flex-center" @click="showDialog = true">
-              <SymbolIcon :icon="'USDTN'" :asset-key="2 - 1" />
-              <span>USDTN</span>
+              <SymbolIcon :icon="quoteAsset.symbol" :asset-key="quoteAsset.assetKey" />
+              <span>{{ quoteAsset.symbol }}</span>
             </div>
           </div>
         </div>
         <div class="fee-wrap flex-between">
           <span>{{ $t('trading.trading30') }}</span>
-          <span>{{ total }} USDTN</span>
+          <span>{{ total }} {{ buyMode ? quoteAsset.symbol : asset.symbol }}</span>
         </div>
         <div class="confirm-wrap">
-          <el-button type="primary" v-if="nerveAddress" @click="creatOrder">
-            {{ buyMode ? $t('trading.trading25') : $t('trading.trading26') }}
+          <el-button type="primary" v-if="nerveAddress" @click="creatOrder" :disabled="btnConfig.disable">
+            {{ btnConfig.title }}
           </el-button>
           <template v-else>
             <AuthButton @loading="handleLoading" />
@@ -62,32 +62,39 @@
           </div>
         </div>
         <div class="list-body">
-          <div class="list-item" v-for="i in 6" :key="i">
-            <div class="flex-center">
-              <SymbolIcon :icon="'BNB'" :asset-key="'2-1'" style="margin-right: 10px" />
+          <template v-if="orderList.length">
+            <div class="list-item" v-for="item in orderList" :key="item.id">
+              <div class="flex-center">
+                <SymbolIcon :icon="item.baseSymbol" :asset-key="item.baseAssetKey" style="margin-right: 10px" />
+                <div class="border">
+                  <p class="fw">{{ item.baseSymbol }}</p>
+                  <p class="font12" style="color: #94a6ce">ID:{{ item.baseAssetKey }}</p>
+                </div>
+              </div>
               <div class="border">
-                <p class="fw">BNB</p>
-                <p class="font12" style="color: #94a6ce">ID:1-4</p>
+                <span class="font14">{{ item.amount }}</span>
+              </div>
+              <div class="border">
+                <span class="font14">{{ item.price }}</span>
+              </div>
+              <div class="border btn-wrap">
+                <el-button type="primary" @click="pushOrder(item)">
+                  {{
+                    buyMode ? $t('trading.trading26') : $t('trading.trading25')
+                  }}
+                </el-button>
               </div>
             </div>
-            <div class="border">
-              <span class="font14">3844.32</span>
+          </template>
+          <template v-else>
+            <div class="no-data" style="margin-top: 20px">
+              {{ $t('public.public19') }}
             </div>
-            <div class="border">
-              <span class="font14">3844.32</span>
-            </div>
-            <div class="border btn-wrap">
-              <el-button type="primary" @click="pushOrder">
-                {{
-                  buyMode ? $t('trading.trading26') : $t('trading.trading25')
-                }}
-              </el-button>
-            </div>
-          </div>
+          </template>
         </div>
       </div>
     </div>
-    <div class="my-order-list">
+    <div class="my-order-list" v-loading="revokeLoading">
       <h3>{{ $t('trading.trading40') }}</h3>
       <div class="list-head">
         <div class="list-head-item">
@@ -109,83 +116,57 @@
         </div>
       </div>
       <div class="list-body">
-        <div class="list-item" v-for="i in 6" :key="i">
-          <div class="flex-center">
-            <SymbolIcon :icon="'BNB'" :asset-key="'2-1'" style="margin-right: 10px" />
+        <template v-if="myOrderList.length">
+          <div class="list-item" v-for="item in myOrderList" :key="item.hash">
+            <div class="flex-center">
+              <SymbolIcon :icon="item.baseSymbol" :asset-key="item.baseAssetKey" />
+              <div class="border">
+                <p class="fw">{{ item.baseSymbol }}</p>
+                <p class="font12" style="color: #94a6ce">
+                  ID:{{ item.baseAssetKey }}
+                </p>
+              </div>
+            </div>
             <div class="border">
-              <p class="fw">BNB</p>
-              <p class="font12" style="color: #94a6ce">ID:1-4</p>
+              <span class="font14">{{ item.undealedAmount }}</span>
+            </div>
+            <div class="border">
+              <span class="font14">{{ item.price }}</span>
+            </div>
+            <div class="border">
+              <span class="font14">
+                {{
+                  item.type === 1
+                    ? $t('trading.trading42')
+                    : $t('trading.trading43')
+                }}
+              </span>
+            </div>
+            <div class="border btn-wrap">
+              <el-button
+                type="default"
+                @click="revokeOrder(item)"
+                class="default-btn"
+              >
+                {{ $t('public.public8') }}
+              </el-button>
             </div>
           </div>
-          <div class="border">
-            <span class="font14">3844.32</span>
+        </template>
+        <template v-else>
+          <div class="no-data" style="margin-top: 20px">
+            {{ $t('public.public19') }}
           </div>
-          <div class="border">
-            <span class="font14">3844.32</span>
-          </div>
-          <div class="border">
-            <span class="font14">买</span>
-          </div>
-          <div class="border btn-wrap">
-            <el-button type="default" @click="pushOrder" class="default-btn">
-              {{ $t('public.public8') }}
-            </el-button>
-          </div>
-        </div>
+        </template>
       </div>
     </div>
-    <el-dialog
-      custom-class="confirm-modal"
-      top="10vh"
-      v-model="showConfirmModal"
-      :show-close="false"
-      :title="buyMode ? $t('trading.trading26') : $t('trading.trading25')"
-    >
-      <div class="asset-info">
-        <p class="flex-between">
-          <span class="label">{{ t('trading.trading35') }}</span>
-          <span class="value">{{ 'BRG' }}</span>
-        </p>
-        <p class="flex-between">
-          <span class="label">ID</span>
-          <span class="value">{{ '2-944' }}</span>
-        </p>
-        <p class="flex-between">
-          <span class="label">{{ t('trading.trading33') }}</span>
-          <span class="value">{{ '0.00015' }} USDTN</span>
-        </p>
-        <p class="flex-between">
-          <span class="label">{{ t('trading.trading36') }}</span>
-          <span class="value">{{ '20,000,000' }} BRG</span>
-        </p>
-      </div>
-      <div class="price-wrap">
-        <div class="info flex-between">
-          <span>
-            {{ buyMode ? $t('trading.trading28') : $t('trading.trading27') }}
-          </span>
-          <span>{{ $t('public.public12') }} {{ 2222 }} USDTN</span>
-        </div>
-        <div class="inner flex-between">
-          <el-input
-            class="no-border"
-            :model-value="amount"
-            @input="() => {}"
-            placeholder="0.0"
-          />
-        </div>
-      </div>
-      <div class="fee-wrap flex-between">
-        <span class="label">{{ $t('trading.trading30') }}</span>
-        <span class="value">
-          <span>{{ total }}</span>
-          {{ ' USDTN' }}
-        </span>
-      </div>
-      <el-button type="primary">
-        {{ buyMode ? $t('trading.trading38') : $t('trading.trading39') }}
-      </el-button>
-    </el-dialog>
+    <PushModal
+      :buy-mode="buyMode"
+      :order-item="orderItem"
+      :order-pay-asset="orderPayAsset"
+      :address="nerveAddress"
+      ref="pushModalRef"
+    />
   </div>
 </template>
 
@@ -196,13 +177,23 @@ import Tab from './Tab.vue';
 import CustomInput from '@/components/CustomInput.vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import AuthButton from '@/components/AuthButton.vue';
+import PushModal from './PushModal.vue';
 import useStoreState from '@/hooks/useStoreState';
-import { Times } from '@/utils/util';
+import { Times, toThousands, timesDecimals, divisionDecimals } from '@/utils/util';
+import usePushData from '../hooks/usePushData';
+import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
+import { useToast } from 'vue-toastification';
+import config from '@/config';
+import { AssetItem } from '@/store/types';
+import { IPushAssetItem, IPushOrderItem, IMyOrderItem } from '@/service/api/types/push';
 
 const { t } = useI18n();
-const { nerveAddress } = useStoreState();
+const { nerveAddress, assetsList } = useStoreState();
+const toast = useToast();
 
-const buyMode = ref(true);
+const buyMode = ref(true); // true 挂买单 false 挂卖单
+const { pushAssetList, quoteAsset, orderList, myOrderList, pairInfo, getPushPairInfo } = usePushData(buyMode);
+
 const activeTab = ref('1');
 const tabChange = (val: string) => {
   console.log(val);
@@ -211,34 +202,172 @@ const tabChange = (val: string) => {
 
 const modeChange = (val: boolean) => {
   buyMode.value = val;
-  amount.value = '';
+  txAmount.value = '';
   price.value = '';
 };
 
-const amount = ref('');
-const asset = ref({});
-const assetsList = ref([]);
+const txAmount = ref('');
+const asset = ref<AssetItem>({} as AssetItem);
 const price = ref('');
 const total = computed(() => {
-  if (!amount.value || !price.value) {
-    return '0';
+  if (buyMode.value) {
+    if (!txAmount.value || !price.value) {
+      return '0';
+    }
+    return Times(txAmount.value, price.value);
+  } else {
+    return txAmount.value || '0';
   }
-  return Times(amount.value, price.value);
 });
-const selectAsset = (val: any) => {
+const selectAsset = (val: AssetItem) => {
   asset.value = val;
+  if (asset.value.symbol && quoteAsset.value.symbol) {
+    const key = asset.value.symbol + quoteAsset.value.symbol;
+    getPushPairInfo(key);
+  }
 };
 
-const creatOrder = () => {
-  //
+const changePrice = (val: string) => {
+  price.value = val;
 };
 
-const pushOrder = () => {
-  showConfirmModal.value = true
+const btnConfig = computed(() => {
+  const {
+    baseDecimals,
+    minBaseAmount,
+    baseSymbol,
+    quoteDecimals,
+    minQuoteAmount,
+    quoteSymbol
+  } = pairInfo.value;
+  const minBase = divisionDecimals(minBaseAmount, baseDecimals);
+  const minQuote = divisionDecimals(minQuoteAmount, quoteDecimals);
+  const quoteAmount = txAmount.value * price.value;
+  const payAssetKey = buyMode.value ? quoteAsset.value.assetKey : asset.value.assetKey;
+  const payAsset = assetsList.value.find(v => v.assetKey === payAssetKey);
+  if (
+    !asset.value.assetKey ||
+    !pairInfo.value.hash ||
+    !quoteAsset.value.assetKey ||
+    !Number(txAmount.value) ||
+    !Number(price.value)
+  ) {
+    return {
+      title: buyMode.value ? t('trading.trading25') : t('trading.trading26'),
+      disable: true
+    };
+  } else if (txAmount.value - minBase < 0) {
+    return {
+      title: t('trading.trading44') + minBase + baseSymbol,
+      disable: true
+    };
+  } else if (quoteAmount - minQuote < 0) {
+    return {
+      title: t('trading.trading45') + minQuote + quoteSymbol,
+      disable: true
+    };
+  } else if (total.value - payAsset.listAvailable > 0) {
+    return {
+      title: t('transfer.transfer15'),
+      disable: true
+    };
+  } else {
+    return {
+      title: buyMode.value ? t('trading.trading25') : t('trading.trading26'),
+      disable: false
+    };
+  }
+});
+
+const { handleTxInfo } = useBroadcastNerveHex();
+
+const loading = ref(false);
+const creatOrder = async () => {
+  if (btnConfig.value.disable) {
+    return;
+  }
+  loading.value = true;
+  try {
+    const assetsChainId = buyMode.value
+      ? quoteAsset.value.chainId
+      : asset.value.chainId;
+    const assetsId = buyMode.value
+      ? quoteAsset.value.assetId
+      : asset.value.assetId;
+    const payAmount = buyMode.value
+      ? timesDecimals(total.value, quoteAsset.value.decimals)
+      : timesDecimals(total.value, asset.value.decimals); // 支付资产数量
+    const transferAmount = timesDecimals(txAmount.value, asset.value.decimals); // 挂单数量
+    const transferInfo = {
+      from: nerveAddress.value,
+      assetsChainId,
+      assetsId,
+      amount: payAmount
+    };
+    const txData = {
+      tradingHash: pairInfo.value.hash, //委托挂单hash
+      address: nerveAddress.value,
+      orderType: buyMode.value ? 1 : 2, //委托挂单类型 1:买单，2:卖单
+      assetsChainId,
+      assetsId,
+      amount: transferAmount,
+      price: timesDecimals(price.value, quoteAsset.value.decimals),
+      feeAddress: config.pushFeeAddress,
+      feeScale: config.pushFeeScale
+    };
+    const result: any = await handleTxInfo(transferInfo, 229, txData);
+    if (result && result.hash) {
+      //
+    }
+  } catch (e) {
+    console.log(e, 'withdrawal-error');
+    toast.error(e.message || e);
+  }
+  loading.value = false;
 };
 
+const orderItem = ref<IPushOrderItem>({} as IPushOrderItem);
+const pushModalRef = ref<InstanceType<typeof PushModal>>();
+const pushOrder = (item: IPushOrderItem) => {
+  orderItem.value = item;
+  pushModalRef.value.show();
+};
 
-const showConfirmModal = ref(false);
+// 买入/卖出需要支付的资产
+const orderPayAsset = computed(() => {
+  if (buyMode.value) {
+    if (!orderItem.value.baseAssetKey) {
+      return {} as IPushAssetItem;
+    } else {
+      return assetsList.value.find(
+        v => v.assetKey === orderItem.value.baseAssetKey
+      )!;
+    }
+  } else {
+    return quoteAsset.value;
+  }
+});
+
+const revokeLoading = ref(false);
+const revokeOrder = async (item: IMyOrderItem) => {
+  revokeLoading.value = true;
+  try {
+    const transferInfo = {
+      from: nerveAddress.value
+    };
+    const txData = {
+      orderHash: item.hash, //委托挂单hash
+      address: nerveAddress.value
+    };
+    const result: any = await handleTxInfo(transferInfo, 230, txData);
+    if (result && result.hash) {
+      //
+    }
+  } catch (e) {
+    //
+  }
+  revokeLoading.value = false;
+};
 </script>
 
 <style lang="scss">
@@ -278,6 +407,7 @@ const showConfirmModal = ref(false);
     border-radius: 20px;
     overflow: hidden;
     margin-top: 40px;
+    padding-bottom: 20px;
     h3 {
       font-size: 16px;
       height: 68px;
@@ -300,6 +430,9 @@ const showConfirmModal = ref(false);
     overflow: auto;
     .list-item {
       padding: 0 18px;
+    }
+    .symbol-icon {
+      margin-right: 10px;
     }
   }
   .order-list {
@@ -453,39 +586,6 @@ const showConfirmModal = ref(false);
       }
     }
   }
-  .confirm-modal {
-    width: 470px;
-    .label {
-      font-size: 16px;
-      color: $subLabelColor;
-    }
-    .value {
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .asset-info {
-      padding: 20px;
-      background: #f3f6fd;
-      margin-bottom: 20px;
-      border-radius: 15px;
-      p {
-        margin-bottom: 15px;
-        &:last-of-type {
-          margin-bottom: 0;
-        }
-      }
-    }
-    .fee-wrap {
-      margin: 20px 0 40px;
-      .value span {
-        color: #387cf4;
-      }
-    }
-    .el-button {
-      width: 100%;
-      margin-bottom: 20px;
-    }
-  }
   @media screen and (max-width: 1200px) {
     //padding: 20px !important;
   }
@@ -494,34 +594,24 @@ const showConfirmModal = ref(false);
       width: 100%;
       min-width: 100%;
     }
-    .my-order-list {
-      //
+    .list-head {
+      padding: 0 12px;
     }
-    .confirm-modal {
-      .label {
-        font-size: 14px;
+    .list-body {
+      .list-item {
+        padding: 0 12px;
       }
-      .value {
-        font-size: 14px;
+      .symbol-icon {
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
       }
-      .asset-info {
-        padding: 20px;
-        background: #f3f6fd;
-        margin-bottom: 20px;
-        border-radius: 15px;
-        p {
-          margin-bottom: 15px;
-          &:last-of-type {
-            margin-bottom: 0;
-          }
-        }
+      .fw {
+        font-size: 13px;
       }
-      .fee-wrap {
-        margin: 20px 0 40px;
-      }
-      .el-button {
-        margin-bottom: 10px;
-      }
+    }
+    .my-order-list h3{
+      padding: 0 12px;
     }
   }
 }

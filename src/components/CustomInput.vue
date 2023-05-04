@@ -85,6 +85,10 @@ export default defineComponent({
     isPush: {
       type: Boolean,
       default: false
+    },
+    limitDecimals: {
+      type: Number,
+      default: 0
     }
   },
   components: {
@@ -136,7 +140,7 @@ export default defineComponent({
 
     function changeInput(val: string) {
       // this.amount = val;
-      const decimals = chooseAsset.value?.decimals || 0;
+      const decimals = props.limitDecimals || chooseAsset.value?.decimals || 0;
       let reg: RegExp;
       if (!decimals) {
         reg = new RegExp('^([1-9][\\d]*|0)(\\.[\\d]*)?$|(^\\.[\\d]*$)');

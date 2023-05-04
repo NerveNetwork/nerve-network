@@ -1,6 +1,6 @@
 <template>
   <div class="w1200 trading-page">
-    <!--    <div class="trading-tabs">
+    <div class="trading-tabs">
       <div class="wrap">
         <span
           v-for="item in tabs"
@@ -12,7 +12,7 @@
           {{ item.label }}
         </span>
       </div>
-    </div>-->
+    </div>
     <SwapPage v-show="activeTab === 'swap'" />
     <PushPage v-show="activeTab === 'push'" />
   </div>

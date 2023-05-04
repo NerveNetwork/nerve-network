@@ -546,7 +546,13 @@ const cn = {
     trading38: '确认出售',
     trading39: '确认购买',
     trading40: '当前委托',
-    trading41: '方向'
+    trading41: '方向',
+    trading42: '买',
+    trading43: '卖',
+    trading44: '最小挂单数量: ',
+    trading45: '最小挂单额: ',
+    trading46: '最多可卖: ',
+    trading47: '最多可买: '
   },
   liquidity: {
     liquidity1: '流动性',

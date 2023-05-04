@@ -43,7 +43,7 @@
           <div class="asset-base-info">
             <div>
               {{ item.symbol }}
-              <span>({{ item.originNetwork }})</span>
+              <span v-if="item.originNetwork">({{ item.originNetwork }})</span>
             </div>
             <span v-if="showAmount">ID: {{ item.assetKey }}</span>
             <template v-else>

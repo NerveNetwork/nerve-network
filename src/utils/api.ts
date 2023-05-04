@@ -151,6 +151,10 @@ export class NTransfer {
     } else if (this.type === 56) {
       // 追加提现手续费
       return this.additionFee(data);
+    } else if (this.type === 229) {
+      return this.tradingOrderTransaction(data);
+    } else if (this.type === 230) {
+      return this.revokeOrderTransaction(data);
     }
   }
 
@@ -653,6 +657,51 @@ export class NTransfer {
       assetsChainId,
       assetsId,
       amount,
+      lockTime: 0
+    }];
+    return { inputs, outputs };
+  }
+
+  // 挂单
+  async tradingOrderTransaction(transferInfo: any) {
+    const { assetsChainId, assetsId, from, amount } = transferInfo;
+    const nonce = await this.getNonce(from, assetsChainId, assetsId);
+    const inputs = [{
+      address: from,
+      assetsChainId,
+      assetsId,
+      amount,
+      locked: 0,
+      nonce
+    }];
+    const outputs = [{
+      address: from,
+      assetsChainId,
+      assetsId,
+      amount,
+      lockTime: -2
+    }];
+    return { inputs, outputs };
+  }
+
+  // 撤销挂单
+  async revokeOrderTransaction(transferInfo: any) {
+    const { from } = transferInfo;
+    const { chainId, assetId } = config;
+    const nonce = await this.getNonce(from, chainId, assetId);
+    const inputs = [{
+      address: from,
+      assetsChainId: chainId,
+      assetsId: assetId,
+      amount: '0',
+      locked: 0,
+      nonce
+    }];
+    const outputs = [{
+      address: from,
+      assetsChainId: chainId,
+      assetsId: assetId,
+      amount: '0',
       lockTime: 0
     }];
     return { inputs, outputs };

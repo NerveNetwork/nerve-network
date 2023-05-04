@@ -81,7 +81,8 @@ export default function useBroadcastNerveHex() {
       pub: currentAccount.value?.pub,
       signAddress: currentAccount.value?.address?.EVM
     });
-    // console.log(txHex, '===txHex===');
+    console.log(inputOuput, '===txHex===', txData);
+    // throw '333'
     const res = await broadcastHex(txHex);
     if (res && res.hash) {
       const txInfo: TxInfo = {
