@@ -217,6 +217,7 @@ const createOrder = async () => {
     const result: any = await handleTxInfo(transferInfo, 229, txData);
     if (result && result.hash) {
       //
+      showConfirmModal.value = false;
     }
   } catch (e) {
     console.log(e, 'withdrawal-error');

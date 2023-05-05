@@ -66,6 +66,18 @@ export class NTransfer {
     return tAssemble.txSerialize().toString('hex');
   }
 
+  async getUnSignHex(data: any) {
+    const { inputs, outputs, txData } = data;
+    const tAssemble = this.sdk.transactionAssemble(
+      inputs,
+      outputs,
+      '',
+      this.type,
+      txData
+    );
+    return tAssemble.txSerialize().toString('hex');
+  }
+
   // 补充签名
   async appendSignature(data: any) {
     const { pub, signAddress, txHexForSign } = data;
