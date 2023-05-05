@@ -6,6 +6,7 @@ import storage from '@/utils/storage';
 import { Account, TxInfo } from '@/store/types';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
+import { checkIsNULSLedger } from '@/hooks/useEthereum';
 
 /*interface TxInfo {
   inputs: any;
@@ -38,15 +39,21 @@ export default function useBroadcastNerveHex() {
 
   // 已有交易hex，调用metamask签名，然后广播
   async function handleHex(hex: string, type: number) {
-    const tAssemble = nerve.deserializationTx(hex);
-    const transfer = new NTransfer({ chain: 'NERVE' });
-    const txHex = await transfer.getTxHex({
-      tAssemble,
-      pub: currentAccount.value?.pub,
-      signAddress: currentAccount.value?.address?.EVM
-    });
+    let signedHex: string;
+    const isNULSLedger = checkIsNULSLedger();
+    if (isNULSLedger) {
+      signedHex = await window.nabox.signNULSTransaction({ txHex: hex });
+    } else {
+      const tAssemble = nerve.deserializationTx(hex);
+      const transfer = new NTransfer({ chain: 'NERVE' });
+      signedHex = await transfer.getTxHex({
+        tAssemble,
+        pub: currentAccount.value?.pub,
+        signAddress: currentAccount.value?.address?.EVM
+      });
+    }
     // console.log(txHex, '===txHex===');
-    const res = await broadcastHex(txHex);
+    const res = await broadcastHex(signedHex);
     if (res && res.hash) {
       const txInfo: TxInfo = {
         type,
@@ -74,16 +81,27 @@ export default function useBroadcastNerveHex() {
     //   },
     //   '====tx===='
     // );
-    const txHex = await transfer.getTxHex({
-      inputs: inputOuput.inputs,
-      outputs: inputOuput.outputs,
-      txData,
-      pub: currentAccount.value?.pub,
-      signAddress: currentAccount.value?.address?.EVM
-    });
+    const isNULSLedger = checkIsNULSLedger();
+    let signedHex: string;
+    if (isNULSLedger) {
+      const unsignedHex = await transfer.getUnSignHex({
+        inputs: inputOuput.inputs,
+        outputs: inputOuput.outputs,
+        txData
+      });
+      signedHex = await window.nabox.signNULSTransaction({ txHex: unsignedHex });
+    } else {
+      signedHex = await transfer.getTxHex({
+        inputs: inputOuput.inputs,
+        outputs: inputOuput.outputs,
+        txData,
+        pub: currentAccount.value?.pub,
+        signAddress: currentAccount.value?.address?.EVM
+      });
+    }
     console.log(inputOuput, '===txHex===', txData);
     // throw '333'
-    const res = await broadcastHex(txHex);
+    const res = await broadcastHex(signedHex);
     if (res && res.hash) {
       const txInfo: TxInfo = {
         type,

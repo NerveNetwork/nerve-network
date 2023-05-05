@@ -90,6 +90,11 @@ export function getProvider(type?: string) {
   return providerType ? window[providerType] : null;
 }
 
+export function checkIsNULSLedger() {
+  const provider = getProvider();
+  return provider?.isNabox && provider?.isNULSLedger;
+}
+
 export function getAddress() {
   const provider = getProvider();
   return provider?.selectedAddress;
