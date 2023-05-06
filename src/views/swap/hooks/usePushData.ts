@@ -1,24 +1,16 @@
 import { computed, onBeforeUnmount, onMounted, Ref, ref, watch } from 'vue';
 import useStoreState from '@/hooks/useStoreState';
-import {
-  getPendingOrderList,
-  getPushAssetList,
-  getPushOrderList,
-  getPairInfo
-} from '@/service/api/push';
-import {
-  IPushAssetItem,
-  IPushOrderItem,
-  IMyOrderItem,
-  IPushPairInfo
-} from '@/service/api/types/push';
+import { getPairInfo, getPendingOrderList, getPushAssetList, getPushOrderList } from '@/service/api/push';
+import { IMyOrderItem, IPushAssetItem, IPushOrderItem, IPushPairInfo } from '@/service/api/types/push';
 import { divisionDecimals } from '@/utils/util';
+import { useI18n } from 'vue-i18n';
 
 interface IParis {
   [key: string]: IPushPairInfo;
 }
 
 export default function usePushData(buyMode: Ref<boolean>) {
+  const { t } = useI18n();
   const { nerveAddress, assetsList } = useStoreState();
 
   const pushAssetList = ref<IPushAssetItem[]>([]);
@@ -106,8 +98,19 @@ export default function usePushData(buyMode: Ref<boolean>) {
     // console.log(sellList.value, buyList.value);
   };
 
+  const selectOptions = computed(() => {
+    const list = [...pushAssetList.value];
+    return [
+      { symbol: t('trading.trading48'), value: '', assetKey: '' },
+      ...list
+    ];
+  });
+  const selectValue = ref('');
   const orderList = computed(() => {
-    return buyMode.value ? buyList.value : sellList.value;
+    const list = buyMode.value ? buyList.value : sellList.value;
+    return selectValue.value
+      ? list.filter(v => v.baseAssetKey === selectValue.value)
+      : list;
   });
 
   const myOrderList = ref<IMyOrderItem[]>([]);
@@ -136,6 +139,8 @@ export default function usePushData(buyMode: Ref<boolean>) {
   return {
     pushAssetList,
     quoteAsset,
+    selectValue,
+    selectOptions,
     orderList,
     myOrderList,
     pairInfo,

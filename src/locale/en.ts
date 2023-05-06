@@ -550,11 +550,11 @@ const en = {
     trading26: 'Sell',
     trading27: 'Purchase amount',
     trading28: 'amount sold',
-    trading29: 'unit price',
+    trading29: 'Unit price',
     trading30: 'Cost',
     trading31: 'Name',
-    trading32: 'amount',
-    trading33: 'price',
+    trading32: 'Amount',
+    trading33: 'Price',
     trading34: 'Operation',
     trading35: 'Asset',
     trading36: 'available for sale',
@@ -568,7 +568,8 @@ const en = {
     trading44: 'Minimum pending order amount: ',
     trading45: 'Minimum pending order amount: ',
     trading46: 'Up to sell: ',
-    trading47: 'Up to buy: '
+    trading47: 'Up to buy: ',
+    trading48: 'All'
   },
   liquidity: {
     liquidity1: 'Liquidity',

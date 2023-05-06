@@ -46,13 +46,25 @@
       </div>
       <div class="order-list right-content" v-show="activeTab === '2'">
         <div class="list-head">
-          <div class="list-head-item flex-3">
-            <span class="label">{{ $t('trading.trading31') }}</span>
+          <div class="list-head-item asset-select">
+<!--            <span class="label">{{ $t('trading.trading31') }}</span>-->
+            <el-select
+              v-model="selectValue"
+              :placeholder="$t('trading.trading31')"
+              size="large"
+            >
+              <el-option
+                v-for="item in selectOptions"
+                :key="item.assetKey"
+                :label="item.symbol"
+                :value="item.assetKey"
+              />
+            </el-select>
           </div>
-          <div class="list-head-item flex-3">
+          <div class="list-head-item">
             <span class="label">{{ $t('trading.trading32') }}</span>
           </div>
-          <div class="list-head-item flex-3">
+          <div class="list-head-item">
             <span class="label">{{ $t('trading.trading33') }}</span>
             <br />
             <span class="label">(USDTN)</span>
@@ -134,7 +146,7 @@
               <span class="font14">{{ item.price }}</span>
             </div>
             <div class="border">
-              <span class="font14">
+              <span class="font14" :class="item.type === 1 ? 'buy' : 'sell'">
                 {{
                   item.type === 1
                     ? $t('trading.trading42')
@@ -192,7 +204,16 @@ const { nerveAddress, assetsList } = useStoreState();
 const toast = useToast();
 
 const buyMode = ref(true); // true 挂买单 false 挂卖单
-const { pushAssetList, quoteAsset, orderList, myOrderList, pairInfo, getPushPairInfo } = usePushData(buyMode);
+const {
+  pushAssetList,
+  quoteAsset,
+  selectValue,
+  selectOptions,
+  orderList,
+  myOrderList,
+  pairInfo,
+  getPushPairInfo
+} = usePushData(buyMode);
 
 const activeTab = ref('1');
 const tabChange = (val: string) => {
@@ -266,7 +287,7 @@ const btnConfig = computed(() => {
       title: t('trading.trading45') + minQuote + quoteSymbol,
       disable: true
     };
-  } else if (total.value - payAsset.listAvailable > 0) {
+  } else if (!payAsset?.listAvailable || total.value - payAsset.listAvailable > 0) {
     return {
       title: t('transfer.transfer15'),
       disable: true
@@ -443,6 +464,26 @@ const revokeOrder = async (item: IMyOrderItem) => {
       display: grid;
       grid-template-columns: repeat(3, 3fr) 2fr;
     }
+    .asset-select {
+      padding-right: 15px;
+      .el-select {
+        .el-input--large .el-input__inner {
+          height: 24px;
+          line-height: 24px;
+          padding: 0 10px;
+          border: none;
+          //color: $subLabelColor;
+          color: #475472;
+          &::-webkit-input-placeholder {
+            //color: $subLabelColor;
+            color: #475472;
+          }
+        }
+        .el-input--large .el-input__suffix {
+          right: 5px
+        }
+      }
+    }
   }
   .my-order-list {
     .list-head {
@@ -475,10 +516,17 @@ const revokeOrder = async (item: IMyOrderItem) => {
       flex-direction: column;
       justify-content: center;
       border-bottom: 1px solid #e4efff;
+      .buy {
+        color: #14ce8a;
+      }
+      .sell {
+        color: #f55160;
+      }
     }
     .btn-wrap {
       flex-direction: row;
       align-items: center;
+      justify-content: flex-start;
     }
     .el-button {
       min-height: 32px;

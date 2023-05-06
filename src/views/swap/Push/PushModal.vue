@@ -72,7 +72,6 @@
 <script lang="ts" setup>
 import { computed, ref, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ElLoading } from 'element-plus'
 import { toThousands, Times, divisionDecimals, timesDecimals } from '@/utils/util';
 import { IPushOrderItem, IPushAssetItem } from '@/service/api/types/push';
 import config from '@/config';

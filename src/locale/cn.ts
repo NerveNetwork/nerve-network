@@ -552,7 +552,8 @@ const cn = {
     trading44: '最小挂单数量: ',
     trading45: '最小挂单额: ',
     trading46: '最多可卖: ',
-    trading47: '最多可买: '
+    trading47: '最多可买: ',
+    trading48: '全部'
   },
   liquidity: {
     liquidity1: '流动性',
