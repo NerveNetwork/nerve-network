@@ -453,7 +453,6 @@ export default defineComponent({
         tokenInDecimal = state.toAsset?.decimals;
       }*/
       if (fromAssetKey && toAssetKey) {
-        // console.log(fromAssetKey, toAssetKey, "---===---");
         if (storedSwapPairInfo[key] && !refresh && !isTemp) {
           // 如果存在切不需要刷新 则跳过
           // context.emit("updateRate", storedSwapPairInfo[key].swapRate);
@@ -463,6 +462,7 @@ export default defineComponent({
             tokenOutStr: toAssetKey,
             tokenInAmount: timesDecimals(tokenInAmount, tokenInDecimal)
           })) as SwapPairInfo[];
+
           const pairsInfo = {};
           if (res.length) {
             for (let i = 0; i < res.length; i++) {
@@ -553,9 +553,9 @@ export default defineComponent({
         }
 
         const [res, priceImpact] = getSwapAmount(val, 'to'); // 通过from计算to
-        state.priceImpact = priceImpact || 0;
-        state.insufficient = res === 0;
-        if (res) {
+        state.priceImpact = priceImpact || '0';
+        state.insufficient = !Number(res);
+        if (Number(res)) {
           state.disableWatchToAmount = true; // 避免进入无限循环计算
           state.toAmount = res;
           getSwapRate(false);
@@ -581,9 +581,9 @@ export default defineComponent({
         if (!state.fromAsset || !state.toAsset) return false;
         const [res, priceImpact] = getSwapAmount(val, 'from'); // 通过to计算from
         // console.log(res, priceImpact, 666);
-        state.priceImpact = priceImpact || 0;
-        state.insufficient = res === 0;
-        if (res) {
+        state.priceImpact = priceImpact || '0';
+        state.insufficient = !Number(res);
+        if (Number(res)) {
           state.disableWatchFromAmount = true;
           state.fromAmount = res;
           getSwapRate(false);
@@ -703,16 +703,18 @@ export default defineComponent({
     async function refreshRate() {
       if (!state.fromAmount && !state.toAmount) return;
       // const [res, priceImpact] = getSwapAmount(state.fromAmount, "to"); // 通过from计算to
-      let res, priceImpact;
+      let calResult;
       if (state.customerType === 'from') {
-        [res, priceImpact] = getSwapAmount(state.fromAmount, 'to'); // 通过from计算to
-      } else if (state.customerType === 'to') {
-        [res, priceImpact] = getSwapAmount(state.toAmount, 'from'); // 通过from计算to
+        calResult = getSwapAmount(state.fromAmount, 'to'); // 通过from计算to
+      } else {
+        calResult = getSwapAmount(state.toAmount, 'from'); // 通过from计算to
       }
+      const res = calResult[0];
+      const priceImpact = calResult[1];
       state.priceImpact = priceImpact || '0';
       // console.log(res, "fff");
-      state.insufficient = res === 0;
-      if (res) {
+      state.insufficient = !Number(res);
+      if (Number(res)) {
         state.disableWatchFromAmount = true;
         state.disableWatchToAmount = true; // 避免进入无限循环计算
         if (state.customerType === 'from') {
@@ -738,12 +740,15 @@ export default defineComponent({
       clearInterval(timer);
     });
 
+    // nvt换usdt 是否走 nvt-usdtn-usdt路由，还是直接走nvt-usdt路由；根据计算出来的可兑换数量决定
+    let useStableRoute = false;
     // 计算能兑换的数量 type- 计算from/to的数量, getInitialRate- 计算兑换比例1/n
     function getSwapAmount(
       amount: string,
-      type: string,
+      type: 'from' | 'to',
       getInitialRate = false
-    ) {
+    ): [swapAmount: string, priceImpact: string] {
+      useStableRoute = false;
       const fromAssetKey = state.fromAsset?.assetKey;
       const toAssetKey = state.toAsset?.assetKey;
       if (
@@ -754,22 +759,8 @@ export default defineComponent({
       ) {
         if (isStableCoinSwap.value) {
           // 稳定币、稳定币N互换
-          if (stableCoins.value[fromAssetKey] === toAssetKey) {
-            // 稳定币换稳定币N
-            /*const stableN: any = stablePairList.value.find(
-              (v: any) => v.lpToken === toAssetKey
-            );*/
-            // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
-            state.routesSymbol = [
-              {
-                icon: state.fromAsset!.symbol,
-                assetKey: state.fromAsset!.assetKey
-              },
-              { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
-            ];
-            return [amount, 0];
-          } else {
-            // 稳定币N换稳定币
+          if (stableCoins.value[fromAssetKey] !== toAssetKey) {
+            // 稳定币N换稳定币, 检查池子余额
             const stableN: any = stablePairList.value.find(
               (v: any) => v.lpToken === fromAssetKey
             );
@@ -781,18 +772,17 @@ export default defineComponent({
             // @ts-ignore
             if (balance - amount < 0) {
               // 池子余额不足
-              return [0, 0];
+              return ['0', '0'];
             }
-            // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
-            state.routesSymbol = [
-              {
-                icon: state.fromAsset!.symbol,
-                assetKey: state.fromAsset!.assetKey
-              },
-              { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
-            ];
-            return [amount, 0];
           }
+          state.routesSymbol = [
+            {
+              icon: state.fromAsset!.symbol,
+              assetKey: state.fromAsset!.assetKey
+            },
+            { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
+          ];
+          return [amount, '0'];
         }
         if (isStableCoinForStableCoin.value) {
           // 稳定币、稳定币互换
@@ -808,9 +798,8 @@ export default defineComponent({
           // @ts-ignore
           if (balance - amount < 0) {
             // 池子余额不足
-            return [0, 0];
+            return ['0', '0'];
           }
-          // state.routesSymbol = [state.fromAsset?.symbol, state.toAsset?.symbol];
           state.routesSymbol = [
             {
               icon: state.fromAsset!.symbol,
@@ -818,13 +807,13 @@ export default defineComponent({
             },
             { icon: state.toAsset!.symbol, assetKey: state.toAsset!.assetKey }
           ];
-          return [amount, 0];
+          return [amount, '0'];
         }
 
         let key = fromAssetKey + '_' + toAssetKey;
-        let fromAsset = state.fromAsset;
-        let toAsset = state.toAsset;
-        if (isStableCoinForOthers.value) {
+        let fromAsset = state.fromAsset!;
+        let toAsset = state.toAsset!;
+        /*if (isStableCoinForOthers.value) {
           const routeCoinKey = stableCoins.value[fromAssetKey];
           const routeCoin = getStableRouteCoin(true);
           key = routeCoinKey + '_' + toAssetKey;
@@ -834,16 +823,83 @@ export default defineComponent({
           const routeCoin = getStableRouteCoin(false);
           key = routeCoinKey + '_' + fromAssetKey;
           toAsset = routeCoin;
-        }
+        }*/
         const pairsInfo = storedSwapPairInfo[key];
-
-        if (!pairsInfo) {
-          // setTimeout(() => {
-          //   getSwapAmount(amount, type);
-          // }, 500);
-          return [0, 0];
+        let result = calSwapAmount(
+          pairsInfo,
+          amount,
+          fromAsset,
+          toAsset,
+          type,
+          getInitialRate
+        );
+        if (isStableCoinForOthers.value || isStableCoinForOthers.value) {
+          if (isStableCoinForOthers.value) {
+            const routeCoinKey = stableCoins.value[fromAssetKey];
+            const routeCoin = getStableRouteCoin(true);
+            key = routeCoinKey + '_' + toAssetKey;
+            fromAsset = routeCoin;
+          } else if (isOthersForStableCoin.value) {
+            const routeCoinKey = stableCoins.value[toAssetKey];
+            const routeCoin = getStableRouteCoin(false);
+            key = routeCoinKey + '_' + fromAssetKey;
+            toAsset = routeCoin;
+          }
+          const pairsInfo = storedSwapPairInfo[key];
+          const stableRouteResult = calSwapAmount(
+            pairsInfo,
+            amount,
+            fromAsset,
+            toAsset,
+            type,
+            getInitialRate
+          );
+          // @ts-ignore
+          if (stableRouteResult[0] - result[0] >= 0) {
+            useStableRoute = true;
+            result = stableRouteResult;
+          }
         }
-        const fromDecimal =
+        /*if (isOthersForStableCoin.value) {
+          const routeCoinKey = stableCoins.value[toAssetKey];
+          const routeCoin = getStableRouteCoin(false);
+          const stableRouteKey = routeCoinKey + '_' + fromAssetKey;
+          const stableRouteResult = calSwapAmount(
+            storedSwapPairInfo[stableRouteKey],
+            amount,
+            fromAsset,
+            routeCoin,
+            type,
+            getInitialRate
+          );
+          // @ts-ignore
+          if (stableRouteResult[0] - result[0] >= 0) {
+            useStableRoute = true;
+            result = stableRouteResult;
+          }
+        }*/
+        const [swapAmount, priceImpact, feeValue = '', routes = []] = result;
+        if (feeValue) {
+          pathFee.value = feeValue;
+        }
+        if (routes.length) {
+          if (isStableCoinForOthers.value && useStableRoute) {
+            const fromSymbol = state.fromAsset?.symbol as string;
+            routes.unshift({
+              icon: fromSymbol,
+              assetKey: state.fromAsset!.assetKey
+            });
+          } else if (useStableRoute && useStableRoute) {
+            const toSymbol = state.toAsset?.symbol as string;
+            routes.push({
+              icon: toSymbol,
+              assetKey: state.toAsset!.assetKey
+            });
+          }
+          state.routesSymbol = routes;
+        }
+        return [swapAmount, priceImpact];
+        /*const fromDecimal =
           type === 'from' ? toAsset?.decimals : fromAsset?.decimals;
         const toDecimal =
           type === 'from' ? fromAsset?.decimals : toAsset?.decimals;
@@ -864,7 +920,7 @@ export default defineComponent({
               toDecimal
             );
             context.emit('updateRate', toAmount + toAsset?.symbol);
-            return [0, 0];
+            return ['0', '0'];
           }
           const bestExact =
             type === 'to'
@@ -929,11 +985,100 @@ export default defineComponent({
             ];
           } else {
             pathFee.value = '0';
-            return [0, 0];
+            return ['0', '0'];
           }
-        }
+        }*/
       }
-      return [0, 0];
+      return ['0', '0'];
+    }
+
+    function calSwapAmount(
+      pairsInfo: any,
+      amount: string,
+      fromAsset: AssetItem,
+      toAsset: AssetItem,
+      type: 'from' | 'to',
+      getInitialRate: boolean
+    ): [
+      amount: string,
+      priceImpact: string,
+      pathFee?: string,
+      routesSymbol?: any
+    ] {
+      if (!pairsInfo) {
+        return ['0', '0'];
+      }
+      const fromDecimal =
+        type === 'from' ? toAsset?.decimals : fromAsset?.decimals;
+      const toDecimal =
+        type === 'from' ? fromAsset?.decimals : toAsset?.decimals;
+      amount = timesDecimals(amount, fromDecimal);
+      const pairs = Object.values(pairsInfo);
+      if (pairs.length) {
+        if (getInitialRate) {
+          const bestExactInForOne = bestTradeExactIn(
+            timesDecimals('1', fromDecimal),
+            pairs,
+            fromAsset,
+            toAsset
+          );
+          const toAmount = divisionDecimals(
+            bestExactInForOne.tokenAmountOut.amount,
+            toDecimal
+          );
+          context.emit('updateRate', toAmount + toAsset?.symbol);
+          return ['0', '0'];
+        }
+        const bestExact =
+          type === 'to'
+            ? bestTradeExactIn(amount, pairs, fromAsset, toAsset)
+            : bestTradeExactOut(amount, pairs, fromAsset, toAsset);
+        if (bestExact) {
+          const inAmount = bestExact.tokenAmountIn.amount.toString();
+          const outAmount = bestExact.tokenAmountOut.amount.toFixed();
+          const tokenPathArray = bestExact.path;
+          const routesSymbol: { icon: string; assetKey: string }[] = [];
+          bestExact.path.map((v: any) => {
+            const asset = props.assetsList.find(
+              asset => asset.assetKey === v.chainId + '-' + v.assetId
+            );
+            asset &&
+              routesSymbol.push({
+                icon: asset.symbol,
+                assetKey: asset.assetKey
+              });
+          });
+          const pairsArray = [];
+          for (let i = 0; i < tokenPathArray.length - 1; i++) {
+            const token0 = tokenPathArray[i];
+            const token1 = tokenPathArray[i + 1];
+            const key = `${token0.chainId}-${token0.assetId}_${token1.chainId}-${token1.assetId}`;
+            const reverseKey = `${token1.chainId}-${token1.assetId}_${token0.chainId}-${token0.assetId}`;
+            if (pairsInfo[key]) {
+              pairsArray.push(pairsInfo[key]);
+            } else if (pairsInfo[reverseKey]) {
+              pairsArray.push(pairsInfo[reverseKey]);
+            }
+          }
+          const fromAmount = type === 'to' ? inAmount : outAmount;
+          const toAmount = type === 'to' ? outAmount : inAmount;
+          const priceImpact = nerve.swap.getPriceImpact(
+            [fromAmount, toAmount],
+            tokenPathArray,
+            pairsArray
+          );
+          return [
+            divisionAndFix(outAmount, toDecimal, toDecimal),
+            priceImpact.toFixed(),
+            bestExact.pathFee,
+            routesSymbol
+          ];
+        } else {
+          return ['0', '0'];
+        }
+      } else {
+        return ['0', '0'];
+      }
     }
 
     // 通过输入from获取最佳兑换信息
@@ -1017,7 +1162,7 @@ export default defineComponent({
       }
     }
 
-    const stableSwapFeeRate= computed(() => {
+    const stableSwapFeeRate = computed(() => {
       if (!isStableCoinForStableCoin.value) return null;
       const fromAssetKey = state.fromAsset!.assetKey;
       const stableKey = stableCoins.value[fromAssetKey];
@@ -1074,10 +1219,6 @@ export default defineComponent({
       return fixNumber(
         divisionDecimals(pathFee.value, state.fromAsset?.decimals)
       );
-      /*return fixNumber(
-        Times(state.fromAmount, divisionDecimals('0.3', 2)).toFixed(),
-        state.fromAsset?.decimals
-      );*/
     });
 
     const swapRate = ref(''); // swap兑换比例
@@ -1292,7 +1433,7 @@ export default defineComponent({
             '.'
           )[0]; // 最小买进的资产数量
           const feeTo = null; // 交易手续费取出一部分给指定的接收地址
-          if (isStableCoinForOthers.value) {
+          if (isStableCoinForOthers.value && useStableRoute) {
             // 稳定币换NVT
             const tokenIn = nerve.swap.token(
               state.fromAsset?.chainId,
@@ -1321,7 +1462,7 @@ export default defineComponent({
               toAddress,
               remark
             );
-          } else if (isOthersForStableCoin.value) {
+          } else if (isOthersForStableCoin.value && useStableRoute) {
             // NVT换稳定币
             const tokenIn = nerve.swap.token(
               state.fromAsset?.chainId,

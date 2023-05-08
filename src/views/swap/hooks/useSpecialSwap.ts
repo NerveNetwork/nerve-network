@@ -20,10 +20,10 @@ const specialStableKeys = [USDTN_kEY, NESTN_KEY, USDCN_KEY, ETHN_KEY];
 
 // 稳定币换稳定币、稳定币换非稳定币、稳定币/稳定币N互换
 export default function useSpecialSwap() {
-  const isStableCoinForStableCoin = ref(false); // 稳定币换稳定币
-  const isStableCoinForOthers = ref(false); // 是否是稳定币换其他资产
-  const isOthersForStableCoin = ref(false); // 是否是其他资产换稳定币
-  const isStableCoinSwap = ref(false); // 稳定币、稳定币N互换
+  const isStableCoinForStableCoin = ref(false); // 稳定币换稳定币 USDT(bsc) -> USDT(eth)
+  const isStableCoinForOthers = ref(false); // 是否是稳定币换其他资产 USDT -> NVT
+  const isOthersForStableCoin = ref(false); // 是否是其他资产换稳定币 NVT-> USDTN
+  const isStableCoinSwap = ref(false); // 稳定币、稳定币N互换 USDT ->USDTN
   const stableCoins = ref({}); // {稳定币: 稳定币+'N'}
   const stablePairList = ref([]);
   // const stableSwapFeeList = ref<any>(); // 稳定币换稳定币收取手续费信息
