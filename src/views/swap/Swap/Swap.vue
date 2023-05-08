@@ -833,7 +833,7 @@ export default defineComponent({
           type,
           getInitialRate
         );
-        if (isStableCoinForOthers.value || isStableCoinForOthers.value) {
+        if (isStableCoinForOthers.value || isOthersForStableCoin.value) {
           if (isStableCoinForOthers.value) {
             const routeCoinKey = stableCoins.value[fromAssetKey];
             const routeCoin = getStableRouteCoin(true);
@@ -889,7 +889,7 @@ export default defineComponent({
               icon: fromSymbol,
               assetKey: state.fromAsset!.assetKey
             });
-          } else if (useStableRoute && useStableRoute) {
+          } else if (isOthersForStableCoin && useStableRoute) {
             const toSymbol = state.toAsset?.symbol as string;
             routes.push({
               icon: toSymbol,
