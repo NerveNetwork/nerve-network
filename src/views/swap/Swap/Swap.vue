@@ -1445,11 +1445,13 @@ export default defineComponent({
             );
             const stablePairAddress = check.address; // 稳定币交易对地址
             const lpToken = check.lpToken;
-            const key =
-              lpToken.chainId + '-' + lpToken.assetId + '_' + toAssetKey;
+            const lpKey = lpToken.chainId + '-' + lpToken.assetId;
+            const lpAsset = props.assetsList.find(v => v.assetKey === lpKey)!;
+            const lpAmountIn = timesDecimals(state.fromAmount, lpAsset.decimals);
+            const key = lpKey + '_' + toAssetKey;
             const pairsInfo = storedSwapPairInfo[key];
             const pairs = Object.values(pairsInfo);
-            const tokenPath = bestTradeExactIn(amountIn, pairs, lpToken)?.path;
+            const tokenPath = bestTradeExactIn(lpAmountIn, pairs, lpToken)?.path;
             tokenPath.unshift(tokenIn);
             tx = await nerve.swap.stableLpSwapTrade(
               fromAddress,
