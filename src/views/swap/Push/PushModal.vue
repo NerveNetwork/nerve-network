@@ -19,7 +19,7 @@
       <p class="flex-between">
         <span class="label">{{ $t('trading.trading33') }}</span>
         <span class="value">
-          {{ orderItem.price }} {{ orderItem.quoteSymbol }}
+          {{ priceFormat(orderItem.price) }} {{ orderItem.quoteSymbol }}
         </span>
       </p>
       <p class="flex-between">
@@ -72,7 +72,7 @@
 <script lang="ts" setup>
 import { computed, ref, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { toThousands, Times, divisionDecimals, timesDecimals } from '@/utils/util';
+import { toThousands, Times, divisionDecimals, timesDecimals, priceFormat } from '@/utils/util';
 import { IPushOrderItem, IPushAssetItem } from '@/service/api/types/push';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';

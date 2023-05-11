@@ -395,7 +395,7 @@ export function adaptiveFix(str: string, maxFix = 8) {
 }
 
 export function priceFormat(str: string, formatFix = 4) {
-  str = str + '';
+  str = new BigNumber(str).toString();
   if (!str.startsWith('0.')) {
     return fixNumber(str, 2);
   }

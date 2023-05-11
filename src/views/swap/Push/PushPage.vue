@@ -87,7 +87,7 @@
                 <span class="font14">{{ item.amount }}</span>
               </div>
               <div class="border">
-                <span class="font14">{{ item.price }}</span>
+                <span class="font14">{{ priceFormat(item.price) }}</span>
               </div>
               <div class="border btn-wrap">
                 <el-button type="primary" @click="pushOrder(item)">
@@ -143,7 +143,7 @@
               <span class="font14">{{ item.undealedAmount }}</span>
             </div>
             <div class="border">
-              <span class="font14">{{ item.price }}</span>
+              <span class="font14">{{ priceFormat(item.price) }}</span>
             </div>
             <div class="border">
               <span class="font14" :class="item.type === 1 ? 'buy' : 'sell'">
@@ -191,7 +191,7 @@ import SymbolIcon from '@/components/SymbolIcon.vue';
 import AuthButton from '@/components/AuthButton.vue';
 import PushModal from './PushModal.vue';
 import useStoreState from '@/hooks/useStoreState';
-import { Times, toThousands, timesDecimals, divisionDecimals } from '@/utils/util';
+import { Times, toThousands, timesDecimals, divisionDecimals, priceFormat } from '@/utils/util';
 import usePushData from '../hooks/usePushData';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { useToast } from 'vue-toastification';
@@ -263,7 +263,7 @@ const btnConfig = computed(() => {
   } = pairInfo.value;
   const minBase = divisionDecimals(minBaseAmount, baseDecimals);
   const minQuote = divisionDecimals(minQuoteAmount, quoteDecimals);
-  const quoteAmount = txAmount.value * price.value;
+  const quoteAmount = Times(txAmount.value, price.value);
   const payAssetKey = buyMode.value ? quoteAsset.value.assetKey : asset.value.assetKey;
   const payAsset = assetsList.value.find(v => v.assetKey === payAssetKey);
   if (
