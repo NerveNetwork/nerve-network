@@ -5,13 +5,15 @@ import {
   checkCanToL1,
   genId,
   isBeta,
-  checkCanToL1OnCurrent, createRPCParams
+  checkCanToL1OnCurrent, createRPCParams, Minus
 } from '@/utils/util';
 import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import http from '@/service';
 import { HeterogeneousInfo } from '@/store/types';
+import { getCrossChainInfo } from '@/utils/getSystemConfig';
+import storage from '@/utils/storage';
 
 const url = config.WS_URL;
 
@@ -101,9 +103,32 @@ export async function getAssetBalance(
  * @param address 账户nerve地址
  */
 export async function getAssetList(address = config.destroyAddress) {
-  const result = await http.rPost('getAccountLedgerList', address);
+  const result = await http.rPost('getAccountLedgerListV2', address);
   let res = result?.result;
   if (!res) return [];
+  // adapt V2
+  const crossChainInfo = storage.get('crossChainInfo');
+  if (!crossChainInfo) {
+    await getCrossChainInfo();
+  }
+  res.map((v: any) => {
+    v.assetKey = v.chainId + '-' + v.assetId;
+    v.usdPrice = v.price;
+    v.balanceStr = v.balance;
+    v.list.map((k: any) => {
+      k.contractAddress = k.contract;
+      k.heterogeneousChainId = k.hId;
+      if (crossChainInfo && crossChainInfo[k.hId]) {
+        const info = crossChainInfo[k.hId];
+        k.chainName = info.assetSymbol;
+        k.heterogeneousChainMultySignAddress = info.multySignAddress;
+      } else {
+        k.chainName = ''; // TODO
+        k.heterogeneousChainMultySignAddress = ''; // TODO
+      }
+    });
+    v.heterogeneousList = v.list;
+  });
   // 主网隐藏tron相关内容
   if (!isBeta) {
     // 过滤tron资产
@@ -132,11 +157,8 @@ export async function getAssetList(address = config.destroyAddress) {
   }
   res.map((item: any) => {
     const decimal = item.decimals;
-    item.number = divisionAndFix(item.totalBalanceStr, decimal, decimal);
-    item.locking = divisionAndFix(
-      Plus(item.timeLock, item.consensusLockStr).toString(),
-      decimal
-    );
+    item.number = divisionAndFix(item.total, decimal, decimal);
+    item.locking = divisionAndFix(item.lock, decimal);
     // item.available = divisionAndFix(item.balanceStr, decimal, decimal);
     item.valuation = Times(item.number || 0, item.usdPrice).toFixed(2);
     item.available = divisionAndFix(item.balanceStr, decimal, decimal);
@@ -207,5 +229,10 @@ export async function withdrawalGasLimit() {
   });
   return res?.result || null;*/
   const res = await http.rPost('gasLimitOfHeterogeneousChains');
+  return res?.result || null;
+}
+
+export async function crossChainInfo() {
+  const res = await http.rPost('getCrossChainInfo');
   return res?.result || null;
 }

@@ -85,7 +85,7 @@ import { rootCmpKey, RootComponent, AssetItemType } from '../types';
 import { HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import storage from '@/utils/storage';
-import getWithdrawalGasLimit from '@/utils/getWithdrawalGasLimit';
+import { getWithdrawalGasLimit } from '@/utils/getSystemConfig';
 
 export default defineComponent({
   name: 'withdrawal',

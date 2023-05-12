@@ -5,7 +5,7 @@ import store from './store';
 import usePlugins from '@/plugins';
 import AddChain from '@/utils/AddChain';
 import { getLogoConfig } from '@/utils/logoConfig';
-import getWithdrawalGasLimit from '@/utils/getWithdrawalGasLimit';
+import { getSystemConfig } from '@/utils/getSystemConfig';
 // @ts-ignore
 // import VConsole from 'vconsole'
 // new VConsole()
@@ -16,7 +16,7 @@ import getWithdrawalGasLimit from '@/utils/getWithdrawalGasLimit';
 
 AddChain();
 getLogoConfig();
-getWithdrawalGasLimit();
+getSystemConfig();
 
 setTimeout(() => {
   // 不延迟有时刷新会拿不到ethereum.selectedAddress???
