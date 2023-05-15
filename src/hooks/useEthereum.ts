@@ -320,10 +320,19 @@ export default function useEthereum() {
 
   async function addEthereumChain(params: AddChain) {
     const provider = getProvider();
-    await provider.request({
-      method: 'wallet_addEthereumChain',
-      params: [params]
-    });
+    try {
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: params.chainId }]
+      });
+    } catch (e: any) {
+      if (e.code === 4902) {
+        await provider.request({
+          method: 'wallet_addEthereumChain',
+          params: [params]
+        });
+      }
+    }
   }
 
   async function switchEthereumChain(params: SwitchChain) {

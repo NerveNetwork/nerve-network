@@ -25,7 +25,8 @@
       </div>
     </div>
     <div class="confirm-wrap">
-      <el-button type="primary" @click="sendTx" :disabled="disableTransfer">
+      <el-button v-if="disableToNULS" type="primary" disabled>{{ $t('transfer.transfer34') }}</el-button>
+      <el-button type="primary" @click="sendTx" :disabled="disableTransfer" v-else>
         {{ amountErrorTip || $t('transfer.transfer10') }}
       </el-button>
     </div>
@@ -194,6 +195,11 @@ export default defineComponent({
       return toAddress.value && type.value === 10;
     });
 
+    // 资产无法跨链到NULS
+    const disableToNULS = computed(() => {
+      return showFeeTip.value && !transferAsset.value.canNuls;
+    });
+
     function selectAsset(asset: AssetItemType) {
       transferAsset.value = asset;
     }
@@ -251,7 +257,8 @@ export default defineComponent({
       selectAsset,
       max,
       sendTx,
-      showFeeTip
+      showFeeTip,
+      disableToNULS
     };
   }
 });
