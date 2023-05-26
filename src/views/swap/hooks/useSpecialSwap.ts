@@ -59,8 +59,9 @@ export default function useSpecialSwap() {
     if (!token1Key || !token2Key) {
       isStableCoinForStableCoin.value = false;
     } else {
-      isStableCoinForStableCoin.value =
-        !!stableCoins.value[token1Key] && stableCoins.value[token2Key];
+      const lpKey1 = stableCoins.value[token1Key];
+      const lpKey2 = stableCoins.value[token2Key];
+      isStableCoinForStableCoin.value = lpKey1 && lpKey2 && lpKey1 === lpKey2;
     }
     return isStableCoinForStableCoin.value;
   }
