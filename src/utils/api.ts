@@ -62,7 +62,7 @@ export class NTransfer {
     }
     hash = '0x' + tAssemble.getHash().toString('hex');
     const signature = await this.signHash(hash, signAddress);
-    tAssemble.signatures = this.sdk.appSplicingPub(signature, pub);
+    tAssemble.signatures = nerve.appSplicingPub(signature, pub);
     return tAssemble.txSerialize().toString('hex');
   }
 
@@ -1138,6 +1138,7 @@ export class ETransfer {
    * @param isNVT 是否是NVT
    * */
   calWithdrawalFeeForTRON(
+    withdrawalPrice: string,
     mainAssetUSD = '',
     feeUSD = '',
     feeDecimals: number,
@@ -1145,7 +1146,7 @@ export class ETransfer {
     isNVT?: boolean
   ) {
     if (isMainAsset) {
-      return this.formatEthers(config.trxWithdrawFee, feeDecimals);
+      return this.formatEthers(withdrawalPrice, feeDecimals);
     } else {
       const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 6);
       const mainAssetUSDBig = ethers.utils.parseUnits(
@@ -1153,7 +1154,7 @@ export class ETransfer {
         6
       );
       let result: any = mainAssetUSDBig
-        .mul(config.trxWithdrawFee)
+        .mul(withdrawalPrice)
         .mul(ethers.utils.parseUnits('1', feeDecimals))
         .div(ethers.utils.parseUnits('1', 6))
         .div(feeUSDBig);

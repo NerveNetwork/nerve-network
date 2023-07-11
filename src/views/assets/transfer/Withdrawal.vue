@@ -237,7 +237,13 @@ export default defineComponent({
       if (feeChain === withdrawalChain) {
         // 手续费资产为L1网络主资产
         if (withdrawalChain === 'TRON') {
-          res = transfer.calWithdrawalFeeForTRON('', '', decimals, true);
+          res = transfer.calWithdrawalFeeForTRON(
+            gasLimit,
+            '',
+            '',
+            decimals,
+            true
+          );
         } else {
           res = await transfer.calWithdrawalFee(
             '',
@@ -262,6 +268,7 @@ export default defineComponent({
         )) as string;
         if (withdrawalChain === 'TRON') {
           res = transfer.calWithdrawalFeeForTRON(
+            gasLimit,
             L1MainAssetUSD,
             feeAssetUSD,
             decimals,
