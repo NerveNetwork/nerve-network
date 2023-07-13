@@ -990,7 +990,9 @@ export class ETransfer {
   async getERC20Allowance(
     contractAddress: string,
     multySignAddress: string,
-    address: string
+    address: string,
+    amount: string,
+    decimals: number
   ) {
     const contract = new ethers.Contract(
       contractAddress,
@@ -999,11 +1001,13 @@ export class ETransfer {
     );
     const allowancePromise = contract.allowance(address, multySignAddress);
     // console.log(contractAddress, multySignAddress, address, 66333)
+    const needAllowance = ethers.utils.parseUnits(amount, decimals).toString();
     return allowancePromise
       .then((allowance: any) => {
-        const baseAllowance = '39600000000000000000000000000';
+        // const baseAllowance = '39600000000000000000000000000';
         //已授权额度小于baseAllowance，则需要授权
-        return Minus(baseAllowance, allowance).toNumber() >= 0;
+        console.log(needAllowance, allowance, 33);
+        return Minus(allowance, needAllowance).toNumber() < 0;
       })
       .catch((e: Error) => {
         console.error('获取erc20资产授权额度失败' + e);

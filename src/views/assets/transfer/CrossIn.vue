@@ -1,7 +1,12 @@
 <template>
   <div class="cross-in" v-loading="loading">
     <template v-if="isTron && !TRONAddress">
-      <el-button type="primary" @click="connectTron" class="connect-tron-btn" style="width: 100%; margin: 25px 0">
+      <el-button
+        type="primary"
+        @click="connectTron"
+        class="connect-tron-btn"
+        style="width: 100%; margin: 25px 0"
+      >
         {{ $t('transfer.transfer27') }}
       </el-button>
     </template>
@@ -29,13 +34,18 @@
       <div class="confirm-wrap">
         <el-button
           type="primary"
-          v-if="!needAuth"
+          v-if="!needAuth || authLoading"
           @click="handleSendTx"
           :disabled="disableTransfer"
         >
           {{
-            amountErrorTip ? $t('transfer.transfer15') : $t('transfer.transfer9')
+            amountErrorTip
+              ? $t('transfer.transfer15')
+              : $t('transfer.transfer9')
           }}
+          <el-icon class="is-loading" v-if="amount && needAuth && authLoading">
+            <Loading />
+          </el-icon>
         </el-button>
         <el-button
           type="primary"
@@ -95,6 +105,8 @@ export default defineComponent({
       fee,
       getFee,
       needAuth,
+      authLoading,
+      updateAuthState,
       getERC20Allowance,
       approveERC20,
       sendTx
@@ -116,15 +128,19 @@ export default defineComponent({
       () => TRONAddress.value,
       val => {
         if (val && transferAsset.value && isTron.value) {
-          checkAsset(transferAsset.value);
+          checkAsset();
         }
       }
     );
 
     const amountErrorTip = ref('');
+    let checkAuthTimer: number;
     watch(
       () => amount.value,
       val => {
+        if (checkAuthTimer) {
+          clearTimeout(checkAuthTimer);
+        }
         if (val) {
           if (
             !balance.value ||
@@ -133,6 +149,10 @@ export default defineComponent({
             amountErrorTip.value = t('transfer.transfer15');
           } else {
             amountErrorTip.value = '';
+
+            checkAuthTimer = window.setTimeout(() => {
+              startCheckAuth();
+            }, 500);
           }
         }
       }
@@ -144,7 +164,8 @@ export default defineComponent({
         !amount.value ||
         !balance.value ||
         amountErrorTip.value ||
-        father.disableTx
+        father.disableTx ||
+        authLoading.value
       );
     });
 
@@ -188,43 +209,69 @@ export default defineComponent({
       assetsList.value.unshift(tempAsset);
     }
 
+    let heterogeneousInfo: HeterogeneousInfo;
     async function selectAsset(asset: AssetItemType) {
       transferAsset.value = asset;
       // console.log(asset, 789654, this.father);
       if (timer) clearInterval(timer);
       if (father.disableTx) return;
-      await checkAsset(asset);
-      timer = window.setInterval(() => {
-        checkAsset(asset);
-      }, 5000);
-    }
-
-    let heterogeneousInfo: HeterogeneousInfo;
-    // 检查资产是否支持从该异构链转入
-    async function checkAsset(asset: AssetItemType) {
-      // needAuth.value = false;
       const heterogeneousList = asset.heterogeneousList || [];
       const heterogeneousChainId = _networkInfo[father.network]?.chainId;
       if (!heterogeneousChainId || !L1Address.value) return;
       heterogeneousInfo = heterogeneousList.find(
         v => v.heterogeneousChainId === heterogeneousChainId
       ) as HeterogeneousInfo;
+
       // console.log(heterogeneousInfo, 123456);
+
+      updateAuthState(heterogeneousInfo?.isToken ? true : false, true);
+
       if (heterogeneousInfo) {
         transferAsset.value = asset;
-        if (heterogeneousInfo.isToken) {
-          getERC20Allowance(heterogeneousInfo, L1Address.value);
-        } else {
-          needAuth.value = false;
-        }
-        await getFee(heterogeneousInfo.isToken);
-        getBalance(
-          heterogeneousInfo,
-          L1Address.value,
-          transferAsset.value.decimals
-        );
+        await checkAsset();
+        timer = window.setInterval(() => {
+          checkAsset();
+        }, 5000);
       } else {
         transferAsset.value = {} as AssetItemType;
+      }
+    }
+
+    async function checkAsset() {
+      if (!heterogeneousInfo) {
+        return;
+      }
+      await getFee(heterogeneousInfo.isToken);
+      getBalance(
+        heterogeneousInfo,
+        L1Address.value,
+        transferAsset.value.decimals
+      );
+    }
+
+    function startCheckAuth() {
+      const asset = transferAsset.value;
+      if (!asset.assetKey) {
+        return;
+      }
+      const heterogeneousList = asset.heterogeneousList || [];
+      const heterogeneousChainId = _networkInfo[father.network]?.chainId;
+      if (!heterogeneousChainId || !L1Address.value) return;
+      heterogeneousInfo = heterogeneousList.find(
+        v => v.heterogeneousChainId === heterogeneousChainId
+      ) as HeterogeneousInfo;
+      // console.log(heterogeneousInfo?.isToken, 321);
+      updateAuthState(
+        heterogeneousInfo?.isToken ? true : false,
+        heterogeneousInfo?.isToken
+      );
+      if (heterogeneousInfo.isToken) {
+        getERC20Allowance(
+          heterogeneousInfo,
+          L1Address.value,
+          amount.value,
+          asset.decimals
+        );
       }
     }
 
@@ -270,7 +317,9 @@ export default defineComponent({
     }
     function handleMsg(data: any, type: string) {
       if (data.hash) {
-        amount.value = '';
+        if (type === 'crossIn') {
+          amount.value = '';
+        }
         toast.success(t('transfer.transfer14'));
         setAccountTxs(father.currentAccount.pub, {
           hash: data.hash,
@@ -299,6 +348,7 @@ export default defineComponent({
       balance,
       fee,
       needAuth,
+      authLoading,
       amountErrorTip,
       disableTransfer,
       assetsList,

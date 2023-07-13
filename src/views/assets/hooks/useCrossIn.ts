@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
 import TronLinkApi from '@/utils/tronLink';
 import { ETransfer } from '@/utils/api';
 import { HeterogeneousInfo } from '@/store/types';
@@ -86,35 +86,64 @@ export default function useCrossIn(isTron = false) {
   }
 
   const needAuth = ref(false);
+  const authLoading = ref(true);
   let refreshAuth = false;
+  let checkAuthTimer: number;
+  let authAmount: string | undefined;
+  let authDecimal: number | undefined;
 
   async function getERC20Allowance(
     heterogeneousInfo: HeterogeneousInfo,
-    address: string
+    address: string,
+    amount?: string,
+    decimals?: number
   ) {
+    authAmount = amount;
+    authDecimal = decimals;
     const { contractAddress, heterogeneousChainMultySignAddress } =
       heterogeneousInfo;
+    let _needAuth = true;
     if (isTron) {
-      needAuth.value = await TronTransfer.getTrc20Allowance(
+      _needAuth = await TronTransfer.getTrc20Allowance(
         TRONAddress.value,
         heterogeneousChainMultySignAddress,
         contractAddress
       );
     } else {
-      needAuth.value = await EvmTransfer.getERC20Allowance(
+      _needAuth = await EvmTransfer.getERC20Allowance(
         contractAddress,
         heterogeneousChainMultySignAddress,
-        address
+        address,
+        amount!,
+        decimals!
       );
     }
+    setTimeout(() => {
+      updateAuthState(_needAuth, false);
+    }, 2000);
+
     if (!needAuth.value) {
       refreshAuth = false;
     }
+    if (checkAuthTimer) {
+      clearTimeout(checkAuthTimer);
+    }
     if (refreshAuth) {
-      setTimeout(() => {
-        getERC20Allowance(heterogeneousInfo, address);
+      checkAuthTimer = window.setTimeout(() => {
+        // @ts-ignore
+        getERC20Allowance(heterogeneousInfo, address, amount, decimals);
       }, 5000);
     }
+  }
+  onBeforeUnmount(() => {
+    if (checkAuthTimer) {
+      clearTimeout(checkAuthTimer);
+    }
+  });
+
+  async function updateAuthState(_needAuth: boolean, _authLoading: boolean) {
+    needAuth.value = _needAuth;
+    authLoading.value = _authLoading;
   }
 
   async function approveERC20(
@@ -139,7 +168,7 @@ export default function useCrossIn(isTron = false) {
     }
     if (res.hash) {
       refreshAuth = true;
-      getERC20Allowance(heterogeneousInfo, address);
+      getERC20Allowance(heterogeneousInfo, address, authAmount, authDecimal);
     }
     return res;
   }
@@ -184,6 +213,8 @@ export default function useCrossIn(isTron = false) {
     fee,
     getFee,
     needAuth,
+    authLoading,
+    updateAuthState,
     getERC20Allowance,
     approveERC20,
     sendTx

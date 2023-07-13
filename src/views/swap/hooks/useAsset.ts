@@ -12,6 +12,10 @@ import { isBeta } from '@/utils/util';
 const LpSource = [10, 11, 12];
 
 const USDTN_kEY = isBeta ? '5-102' : '9-220';
+const ETHN_KEY = '9-628';
+const USDCN_KEY = '9-388';
+
+const FORBID_KEY = [USDTN_kEY, ETHN_KEY, USDCN_KEY];
 
 export default function useAsset(isLiquidity = false) {
   const route = useRoute();
@@ -89,7 +93,8 @@ export default function useAsset(isLiquidity = false) {
           liquidityAssets.value = val.filter(v => v);
         } else {
           liquidityAssets.value = val.filter(v => {
-            return sCoins[v.assetKey] !== USDTN_kEY;
+            return !FORBID_KEY.includes(sCoins[v.assetKey]);
+            // return sCoins[v.assetKey] !== USDTN_kEY;
           });
         }
         if (!isLoaded) {
@@ -99,11 +104,14 @@ export default function useAsset(isLiquidity = false) {
             item => item.symbol === defaultSymbol
           ) as AssetItem;
           if (fromAsset || toAsset) {
+            // console.log(sCoins, '34656667', toAsset);
             const from = val.find(
-              item => item.assetKey === fromAsset && !sCoins[fromAsset]
+              // item => item.assetKey === fromAsset && !sCoins[fromAsset]
+              item => item.assetKey === fromAsset
             );
             const to = val.find(
-              item => item.assetKey === toAsset && !sCoins[toAsset]
+              // item => item.assetKey === toAsset && !sCoins[toAsset]
+              item => item.assetKey === toAsset
             );
             if (from || to) {
               hasQuery.value = true;
