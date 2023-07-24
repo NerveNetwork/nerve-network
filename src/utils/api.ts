@@ -976,7 +976,7 @@ export class ETransfer {
   }
 
   async sendTransaction(transactionParameters: any) {
-    console.log(this.provider, 99888);
+    // console.log(this.provider, 99888);
     const wallet = this.provider.getSigner();
     return await wallet.sendTransaction(transactionParameters);
   }
@@ -1006,7 +1006,7 @@ export class ETransfer {
       .then((allowance: any) => {
         // const baseAllowance = '39600000000000000000000000000';
         //已授权额度小于baseAllowance，则需要授权
-        console.log(needAllowance, allowance, 33);
+        // console.log(needAllowance, allowance, 33);
         return Minus(allowance, needAllowance).toNumber() < 0;
       })
       .catch((e: Error) => {

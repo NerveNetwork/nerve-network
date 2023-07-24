@@ -24,6 +24,9 @@ import KavaLogo from '@/assets/img/chainLogo/KAVA.png';
 import ETHWLogo from '@/assets/img/chainLogo/ETHW.png';
 import REILogo from '@/assets/img/chainLogo/REI.png';
 import ZKLogo from '@/assets/img/chainLogo/zksync.png';
+import EOSEVM from '@/assets/img/chainLogo/EOSEVM.png';
+import PolygonZkEVM from '@/assets/img/chainLogo/PolygonzkEVM.png';
+import Linea from '@/assets/img/chainLogo/Linea.png';
 
 const isBeta = config.isBeta;
 
@@ -101,6 +104,16 @@ const ZKOrigin = isBeta
   ? 'https://zksync2-testnet.zkscan.io'
   : 'https://explorer.zksync.io';
 
+const EOSEVMOrigin = isBeta
+  ? 'https://explorer.testnet.evm.eosnetwork.com'
+  : 'https://explorer.evm.eosnetwork.com';
+const PolygonZkEVMOrigin = isBeta
+  ? 'https://testnet-zkevm.polygonscan.com'
+  : 'https://zkevm.polygonscan.com';
+const LineaOrigin = isBeta
+  ? 'https://goerli.lineascan.build'
+  : 'https://explorer.linea.build';
+
 export const RPC_URL = {
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
@@ -146,8 +159,20 @@ export const RPC_URL = {
   ENULS: isBeta ? 'https://beta.evmapi.nuls.io' : 'https://evmapi.nuls.io',
   KAVA: isBeta ? 'https://evm.testnet.kava.io' : 'https://evm.kava.io',
   ETHW: 'https://mainnet.ethereumpow.org/',
-  REI: isBeta ? 'https://rpc-testnet.rei.network' : 'https://rpc-mainnet.rei.network',
-  zkSync: isBeta ? 'https://zksync2-testnet.zksync.dev' : 'https://zksync2-mainnet.zksync.io'
+  REI: isBeta
+    ? 'https://rpc-testnet.rei.network'
+    : 'https://rpc-mainnet.rei.network',
+  zkSync: isBeta
+    ? 'https://zksync2-testnet.zksync.dev'
+    : 'https://zksync2-mainnet.zksync.io',
+  eosEVM: isBeta
+    ? 'https://api.testnet.evm.eosnetwork.com'
+    : 'https://api.evm.eosnetwork.com',
+  polygonZkEVM: isBeta
+    ? 'https://rpc.public.zkevm-test.net'
+    : 'https://zkevm-rpc.com',
+
+  linea: isBeta ? 'https://rpc.goerli.linea.build' : 'https://rpc.linea.build'
 };
 
 export const _networkInfo = {
@@ -446,6 +471,45 @@ export const _networkInfo = {
     logo: ZKLogo,
     decimals: 18,
     rpcUrl: RPC_URL.zkSync
+  },
+  EOSEVM: {
+    name: 'EOSEVM',
+    chainName: isBeta ? 'EOSEVM_Beta' : 'EOSEVM',
+    chainId: 124,
+    assetKey: isBeta ? '5-148' : '',
+    origin: EOSEVMOrigin,
+    mainAsset: 'EOS',
+    nativeId: isBeta ? '0x3cc5' : '0x4571',
+    supported: true,
+    logo: EOSEVM,
+    decimals: 18,
+    rpcUrl: RPC_URL.eosEVM
+  },
+  'Polygon zkEVM': {
+    name: 'Polygon zkEVM',
+    chainName: isBeta ? 'Polygon zkEVM_Beta' : 'Polygon zkEVM',
+    chainId: 125,
+    assetKey: isBeta ? '5-149' : '',
+    origin: PolygonZkEVMOrigin,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0x5a2' : '0x44d',
+    supported: true,
+    logo: PolygonZkEVM,
+    decimals: 18,
+    rpcUrl: RPC_URL.polygonZkEVM
+  },
+  Linea: {
+    name: 'Linea',
+    chainName: isBeta ? 'Linea_Beta' : 'Linea',
+    chainId: 126,
+    assetKey: isBeta ? '5-150' : '',
+    origin: LineaOrigin,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0xe704' : '0xe708',
+    supported: true,
+    logo: Linea,
+    decimals: 18,
+    rpcUrl: RPC_URL.linea
   },
   NULS: {
     name: 'NULS',

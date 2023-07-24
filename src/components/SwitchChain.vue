@@ -10,7 +10,7 @@
           @click.stop="switchChain(item)"
         >
           <img :src="item.logo" alt="" />
-          {{ item.name }}
+          <span>{{ item.name }}</span>
         </li>
         <div class="pop-arrow"></div>
       </ul>
@@ -160,6 +160,13 @@ export default defineComponent({
       margin-right: 10px;
       width: 28px;
       height: 28px;
+    }
+    span {
+      flex: 1;
+      text-align: left;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
   .pop-arrow,
