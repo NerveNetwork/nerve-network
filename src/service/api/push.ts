@@ -77,7 +77,7 @@ export async function getPushOrderList(type: 1 | 2, assetId = '') {
       v.baseAssetKey = v.baseAssetChainId + '-' + v.baseAssetId;
     });
   }
-  return result;
+  return result || [];
 }
 
 // 当前账户挂单
@@ -102,5 +102,5 @@ export async function getPendingOrderList(address: string) {
       v.baseAssetKey = v.baseAssetChainId + '-' + v.baseAssetId;
     });
   }
-  return result;
+  return result || [];
 }

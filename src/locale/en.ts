@@ -468,7 +468,7 @@ const en = {
     home12: 'Staking',
     home13: 'Total Assets on Nerve',
     home14: 'Total Flow on Nerve / 24H',
-    home15: 'Support 21 Networks'
+    home15: 'Support 26 Networks'
   },
   assets: {
     assets1: 'Layer2 Asset',

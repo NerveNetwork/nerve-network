@@ -38,6 +38,11 @@ import NULS from '@/assets/img/supportChains/NULS.png';
 import KAVA from '@/assets/img/supportChains/KAVA.png';
 import ETHW from '@/assets/img/supportChains/ETHW.png';
 import ENULS from '@/assets/img/supportChains/ENULS.png';
+import REI from '@/assets/img/supportChains/REI.jpg';
+import zkSync from '@/assets/img/supportChains/zkSync.jpg';
+import EOSEVM from '@/assets/img/supportChains/EOSEVM.jpg';
+import PolygonEVM from '@/assets/img/supportChains/polygonEVM.jpg';
+import Linea from '@/assets/img/supportChains/Linea.jpg';
 
 const supportChains = [
   { src: Ethereum },
@@ -60,7 +65,12 @@ const supportChains = [
   { src: NULS },
   { src: KAVA },
   { src: ETHW },
-  { src: ENULS }
+  { src: ENULS },
+  { src: REI },
+  { src: zkSync },
+  { src: EOSEVM },
+  { src: PolygonEVM },
+  { src: Linea }
 ];
 </script>
 
