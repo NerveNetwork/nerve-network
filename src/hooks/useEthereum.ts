@@ -210,7 +210,7 @@ export default function useEthereum() {
     let isWrongChain = !chainInfo;
     let currentAddress = address;
     let network = storage.get('network', 'session');
-    if (network && network !== 'undefined') {
+    if (network && network !== 'undefined' && network === chainInfo?.name) {
       if (specialChain.indexOf(network) > -1) {
         isWrongChain = false;
         // 新账户、且bridge之前在NULS链，会导致currentAccount为null
@@ -310,6 +310,7 @@ export default function useEthereum() {
 
   function disconnect() {
     storage.remove('providerType');
+    storage.remove('network', 'session');
     state.address = '';
     reload();
   }

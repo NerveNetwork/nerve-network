@@ -503,7 +503,8 @@ const cn = {
     transfer31: '追加手续费',
     transfer32: '已支付手续费',
     transfer33: '追加',
-    transfer34: '不支持跨链到NULS'
+    transfer34: '不支持跨链到NULS',
+    transfer35: '请切换钱包当前网络'
   },
   trading: {
     trading1: '订单历史',

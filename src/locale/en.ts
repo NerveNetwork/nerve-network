@@ -519,7 +519,8 @@ const en = {
     transfer31: 'Additional fee',
     transfer32: 'Paid',
     transfer33: 'Append',
-    transfer34: 'Does not support cross-chain to NULS'
+    transfer34: 'Does not support cross-chain to NULS',
+    transfer35: 'Please switch network in wallet'
   },
   trading: {
     trading1: 'Order History',

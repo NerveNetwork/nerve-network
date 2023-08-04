@@ -39,7 +39,9 @@
           :disabled="disableTransfer"
         >
           {{
-            amountErrorTip
+            unknowChainError
+              ? $t('transfer.transfer35')
+              : amountErrorTip
               ? $t('transfer.transfer15')
               : $t('transfer.transfer9')
           }}
@@ -80,6 +82,8 @@ import { rootCmpKey, RootComponent, AssetItemType } from '../types';
 import { HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { setAccountTxs } from '@/hooks/useBroadcastNerveHex';
+import useStoreState from '@/hooks/useStoreState';
+import { getProvider } from '@/hooks/useEthereum';
 
 export default defineComponent({
   name: 'crossIn',
@@ -111,6 +115,8 @@ export default defineComponent({
       approveERC20,
       sendTx
     } = useCrossIn(isTron.value);
+
+    const { chain } = useStoreState();
 
     const L1Address = computed(() => {
       return isTron.value ? TRONAddress.value : father.address;
@@ -157,6 +163,20 @@ export default defineComponent({
         }
       }
     );
+    const unknowChainError = computed(() => {
+      if (isTron.value) {
+        return false;
+      }
+      const provider = getProvider();
+      const chainInfo = _networkInfo[chain.value];
+      if (
+        !chainInfo ||
+        Number(chainInfo.nativeId) !== Number(provider.chainId)
+      ) {
+        return true;
+      }
+      return false;
+    });
     // const { father, loading, amount, balance, amountErrorTip } = useTransfer();
     const disableTransfer = computed(() => {
       return !!(
@@ -165,7 +185,8 @@ export default defineComponent({
         !balance.value ||
         amountErrorTip.value ||
         father.disableTx ||
-        authLoading.value
+        authLoading.value ||
+        unknowChainError
       );
     });
 
@@ -350,6 +371,7 @@ export default defineComponent({
       needAuth,
       authLoading,
       amountErrorTip,
+      unknowChainError,
       disableTransfer,
       assetsList,
       transferAsset,
