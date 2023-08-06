@@ -186,7 +186,7 @@ export default defineComponent({
         amountErrorTip.value ||
         father.disableTx ||
         authLoading.value ||
-        unknowChainError
+        unknowChainError.value
       );
     });
 
