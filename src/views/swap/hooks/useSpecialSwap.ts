@@ -34,7 +34,9 @@ export default function useSpecialSwap() {
       stablePairList.value = res;
       res.map((v: any) => {
         Object.keys(v.groupCoin).map((coin: any) => {
-          stableCoins.value[coin] = v.lpToken;
+          if (!v.groupCoin[coin].removed) {
+            stableCoins.value[coin] = v.lpToken;
+          }
         });
       });
     }
@@ -105,6 +107,13 @@ export default function useSpecialSwap() {
         stableCoins.value[fromKey] === toKey ||
         stableCoins.value[toKey] === fromKey;
     }
+    console.log(
+      fromKey,
+      toKey,
+      stableCoins.value,
+      '3-----2222',
+      isStableCoinSwap.value
+    );
   }
 
   async function getReceiveOrderIndex(
@@ -145,6 +154,7 @@ export default function useSpecialSwap() {
   }
 
   return {
+    getStablePairList,
     isStableCoinForStableCoin,
     isStableCoinForOthers,
     isOthersForStableCoin,

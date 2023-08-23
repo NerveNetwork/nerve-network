@@ -246,6 +246,7 @@ export default defineComponent({
     const toast = useToast();
     const { nerveAddress } = useStoreState();
     const {
+      getStablePairList,
       isStableCoinForStableCoin,
       isStableCoinForOthers,
       isOthersForStableCoin,
@@ -344,23 +345,8 @@ export default defineComponent({
       getSwapRate(true);
       context.emit('updateRate', '');
 
-      checkIsStableCoinForStableCoin(
-        state?.fromAsset?.assetKey,
-        state?.toAsset?.assetKey
-      );
+      checkIsSpecialSwap();
 
-      checkIsStableCoinForOthers(
-        state?.fromAsset?.assetKey,
-        state?.toAsset?.assetKey
-      );
-      checkIsOthersForStableCoin(
-        state?.fromAsset?.assetKey,
-        state?.toAsset?.assetKey
-      );
-      checkIsStableCoinSwap(
-        state?.fromAsset?.assetKey,
-        state?.toAsset?.assetKey
-      );
       if (
         state.toAsset &&
         state.fromAsset &&
@@ -387,6 +373,26 @@ export default defineComponent({
       } else {
         context.emit('updateRate', '');
       }
+    }
+
+    function checkIsSpecialSwap() {
+      checkIsStableCoinForStableCoin(
+        state?.fromAsset?.assetKey,
+        state?.toAsset?.assetKey
+      );
+
+      checkIsStableCoinForOthers(
+        state?.fromAsset?.assetKey,
+        state?.toAsset?.assetKey
+      );
+      checkIsOthersForStableCoin(
+        state?.fromAsset?.assetKey,
+        state?.toAsset?.assetKey
+      );
+      checkIsStableCoinSwap(
+        state?.fromAsset?.assetKey,
+        state?.toAsset?.assetKey
+      );
     }
 
     // 获取稳定币换NVT中间路由资产
@@ -509,18 +515,7 @@ export default defineComponent({
       const tempFromAsset = { ...state.fromAsset };
       state.fromAsset = tempToAsset;
       state.toAsset = tempFromAsset;
-      checkIsStableCoinForOthers(
-        state?.fromAsset?.assetKey,
-        state?.toAsset?.assetKey
-      );
-      checkIsOthersForStableCoin(
-        state?.fromAsset?.assetKey,
-        state?.toAsset?.assetKey
-      );
-      checkIsStableCoinSwap(
-        state?.fromAsset?.assetKey,
-        state?.toAsset?.assetKey
-      );
+      checkIsSpecialSwap();
       if (
         (isStableCoinForOthers.value || isOthersForStableCoin.value) &&
         !isStableCoinSwap.value
@@ -643,7 +638,13 @@ export default defineComponent({
         if (val) {
           state.fromAsset = val.from;
           state.toAsset = val.to || null;
-          storeSwapPairInfo();
+          if (val.from && val.to) {
+            getStablePairList().then(() => {
+              checkIsSpecialSwap();
+              console.log(isStableCoinSwap.value, '33');
+              storeSwapPairInfo();
+            });
+          }
         }
       },
       { immediate: true, deep: true }
@@ -833,6 +834,7 @@ export default defineComponent({
           type,
           getInitialRate
         );
+        console.log(isStableCoinForOthers.value, isOthersForStableCoin.value, '334455')
         if (isStableCoinForOthers.value || isOthersForStableCoin.value) {
           if (isStableCoinForOthers.value) {
             const routeCoinKey = stableCoins.value[fromAssetKey];
@@ -1062,6 +1064,7 @@ export default defineComponent({
           }
           const fromAmount = type === 'to' ? inAmount : outAmount;
           const toAmount = type === 'to' ? outAmount : inAmount;
+          console.log(tokenPathArray, '333')
           const priceImpact = nerve.swap.getPriceImpact(
             [fromAmount, toAmount],
             tokenPathArray,

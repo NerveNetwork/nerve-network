@@ -197,7 +197,7 @@ const unConfirmedTx = computed(() => {
 async function checkTxStatus() {
   if (!address.value || !nerveAddress.value) return;
   const account = getCurrentAccount(address.value);
-  const txs = account?.txs;
+  const txs: TxInfo[] = account?.txs;
   if (txs && txs.length && !isQuery) {
     isQuery = true;
     try {
@@ -205,13 +205,27 @@ async function checkTxStatus() {
       const pendingTx = txs.filter((v: TxInfo) => !v.status);
       if (pendingTx.length) {
         const newTxs = await pollingTx(pendingTx);
-        newTxs.map(tx => {
-          txs.map((v: TxInfo) => {
-            if (tx.hash === v.hash) {
-              v.status = tx.status;
-            }
-          });
+        newTxs.map(v => {
+          if (!v.result) {
+            txs.map(tx => {
+              if (tx.hash === v.hash) {
+                const retryCount = tx.retryCount || 0;
+                tx.retryCount = retryCount + 1;
+              }
+            });
+          } else {
+            txs.map(tx => {
+              if (tx.hash === v.hash) {
+                tx.retryCount = 0;
+                tx.status = v.result.status;
+              }
+            });
+          }
         });
+        const deleteItemIndex = txs.findIndex(v => v.retryCount === 20);
+        if (deleteItemIndex !== -1) {
+          txs.splice(deleteItemIndex, 1);
+        }
         accountTxs.value = txs;
         const accountList: Account[] = storage.get('accountList') || [];
         accountList.map(v => {
@@ -238,36 +252,53 @@ async function pollingTx(txs: TxInfo[]) {
         // 提现，目标链未确认前显示追加手续费按钮
         return handleWithdrawalTx(v);
       } else {
-        return getTx(v.hash);
+        return handleTx(v);
       }
     } else if (v.L1Chain === 'TRON') {
-      return getTronTx(v.hash);
+      return handleTronTx(v);
     } else {
-      const transfer = new ETransfer(v.L1Chain);
-      return transfer.provider.getTransactionReceipt(v.hash);
+      return handleEVMTx(v);
     }
   });
   const res = await Promise.all(txsQuery);
-  res.map(v => {
-    if (!v) return;
-    txs.map(tx => {
-      if (tx.hash === v.hash || tx.hash === v.transactionHash) {
-        tx.status = v.status;
-      }
-    });
-  });
-  return txs;
+  return res;
+}
+
+async function handleTx(tx: TxInfo) {
+  const txState = { hash: tx.hash, result: null };
+  const res = await getTx(tx.hash);
+  if (res) {
+    return { hash: tx.hash, result: res };
+  }
+  return txState;
 }
 
 async function handleWithdrawalTx(tx: TxInfo) {
-  const txState = { status: 0, hash: tx.hash };
+  const txState = { hash: tx.hash, result: null };
   const res = await getTx(tx.hash);
   if (res) {
+    let status = 0;
     if (res.txData?.state !== 'Unconfirmed') {
-      return res;
+      status = 1;
     }
+    return { hash: tx.hash, result: { ...res, status } };
+  } else {
+    return txState;
   }
-  return txState;
+}
+
+async function handleTronTx(tx: TxInfo) {
+  return {
+    hash: tx.hash,
+    result: await getTronTx(tx.hash)
+  };
+}
+async function handleEVMTx(tx: TxInfo) {
+  const transfer = new ETransfer(tx.L1Chain);
+  return {
+    hash: tx.hash,
+    result: await transfer.provider.getTransactionReceipt(tx.hash)
+  };
 }
 </script>
 

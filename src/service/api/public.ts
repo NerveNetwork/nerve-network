@@ -203,12 +203,26 @@ export async function getTx(hash: string) {
 }
 
 export async function getTronTx(hash: string) {
-  const origin = config.isBeta ? 'https://shastapi.tronscan.org' : 'https://apilist.tronscan.org';
+  const origin = config.isBeta
+    ? 'https://shastapi.tronscan.org'
+    : 'https://apilist.tronscan.org';
   const baseUrl = origin.split('/#')[0];
   const res = await http.get({
     url: baseUrl + '/api/transaction-info?hash=' + hash
   });
-  if (res && res.confirmed === true) {
+  let status = 0;
+  if (res && res.block) {
+    if (res.confirmed) {
+      status = res.contractRet === 'SUCCESS' ? 1 : -1;
+    }
+    return {
+      status,
+      ...res
+    };
+  } else {
+    return null;
+  }
+  /* if (res && res.confirmed === true) {
     return {
       status: 1,
       ...res
@@ -217,7 +231,7 @@ export async function getTronTx(hash: string) {
   return {
     status: 0,
     ...res
-  };
+  }; */
 }
 
 // withdrawal gasLimit

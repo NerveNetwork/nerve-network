@@ -54,6 +54,7 @@ export interface TxInfo {
   L1Chain?: string;
   L1Type?: string;
   expand?: boolean;
+  retryCount?: number;
 }
 
 // 手动声明 state 类型

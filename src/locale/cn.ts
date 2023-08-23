@@ -452,7 +452,7 @@ const cn = {
     home12: '质押量',
     home13: '链上资金总量',
     home14: '链上资金流动/24H',
-    home15: '支持26个网络'
+    home15: '支持29个网络'
   },
   assets: {
     assets1: 'Layer2资产',

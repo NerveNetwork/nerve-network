@@ -43,6 +43,11 @@ import zkSync from '@/assets/img/supportChains/zkSync.jpg';
 import EOSEVM from '@/assets/img/supportChains/EOSEVM.jpg';
 import PolygonEVM from '@/assets/img/supportChains/polygonEVM.jpg';
 import Linea from '@/assets/img/supportChains/Linea.jpg';
+import CELO from '@/assets/img/supportChains/CELO.png';
+import ETC from '@/assets/img/supportChains/ETC.png';
+import BASE from '@/assets/img/supportChains/BASE.png';
+import Scroll from '@/assets/img/supportChains/Scroll.png';
+
 
 const supportChains = [
   { src: Ethereum },
@@ -70,7 +75,11 @@ const supportChains = [
   { src: zkSync },
   { src: EOSEVM },
   { src: PolygonEVM },
-  { src: Linea }
+  { src: Linea },
+  { src: CELO },
+  { src: ETC },
+  { src: BASE }
+  // { src: Scroll }
 ];
 </script>
 

@@ -27,6 +27,10 @@ import ZKLogo from '@/assets/img/chainLogo/zksync.png';
 import EOSEVM from '@/assets/img/chainLogo/EOSEVM.png';
 import PolygonZkEVM from '@/assets/img/chainLogo/PolygonzkEVM.png';
 import Linea from '@/assets/img/chainLogo/Linea.png';
+import CELOLogo from '@/assets/img/chainLogo/CELO.svg';
+import ETCLogo from '@/assets/img/chainLogo/ETC.png';
+import BASELogo from '@/assets/img/chainLogo/BASE.svg';
+import ScrollLogo from '@/assets/img/chainLogo/SCROLL.png';
 
 const isBeta = config.isBeta;
 
@@ -112,7 +116,18 @@ const PolygonZkEVMOrigin = isBeta
   : 'https://zkevm.polygonscan.com';
 const LineaOrigin = isBeta
   ? 'https://goerli.lineascan.build'
-  : 'https://explorer.linea.build';
+  : 'https://lineascan.build/';
+
+const CELOOrigin = isBeta
+  ? 'https://alfajores.celoscan.io'
+  : 'https://celoscan.io';
+const ETCOrigin = isBeta
+  ? 'https://blockscout.com/etc/mordor'
+  : 'https://blockscout.com/etc/mainnet';
+const BASEOrigin = isBeta
+  ? 'https://goerli.basescan.org'
+  : 'https://basescan.org';
+const ScrollOrigin = isBeta ? 'https://alpha-blockscout.scroll.io' : '';
 
 export const RPC_URL = {
   BSC: isBeta
@@ -172,7 +187,15 @@ export const RPC_URL = {
     ? 'https://rpc.public.zkevm-test.net'
     : 'https://zkevm-rpc.com',
 
-  linea: isBeta ? 'https://rpc.goerli.linea.build' : 'https://rpc.linea.build'
+  linea: isBeta ? 'https://rpc.goerli.linea.build' : 'https://rpc.linea.build',
+  CELO: isBeta
+    ? 'https://alfajores-forno.celo-testnet.org'
+    : 'https://forno.celo.org',
+  ETC: isBeta
+    ? 'https://rpc.mordor.etccooperative.org'
+    : 'https://etc.rivet.link',
+  BASE: isBeta ? 'https://goerli.base.org' : 'https://mainnet.base.org',
+  Scroll: isBeta ? 'https://alpha-rpc.scroll.io/l2' : ''
 };
 
 export const _networkInfo = {
@@ -511,6 +534,59 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.linea
   },
+  CELO: {
+    name: 'CELO',
+    chainName: isBeta ? 'CELO_Beta' : 'CELO',
+    chainId: 127,
+    assetKey: isBeta ? '5-151' : '',
+    origin: CELOOrigin,
+    mainAsset: 'CELO',
+    nativeId: isBeta ? '0xaef3' : '0xa4ec',
+    supported: true,
+    logo: CELOLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.CELO
+  },
+  ETC: {
+    name: 'ETC',
+    chainName: isBeta ? 'ETC_Beta' : 'ETC',
+    chainId: 128,
+    assetKey: isBeta ? '5-152' : '',
+    origin: ETCOrigin,
+    // mainAsset: isBeta ? 'ETC' : 'METC',
+    mainAsset: 'ETC',
+    nativeId: isBeta ? '0x3f' : '0x3d',
+    supported: true,
+    logo: ETCLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.ETC
+  },
+  BASE: {
+    name: 'BASE',
+    chainName: isBeta ? 'BASE_Beta' : 'BASE',
+    chainId: 129,
+    assetKey: isBeta ? '5-153' : '',
+    origin: BASEOrigin,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0x14a33' : '0x2105',
+    supported: true,
+    logo: BASELogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.BASE
+  },
+  Scroll: {
+    name: 'Scroll',
+    chainName: isBeta ? 'Scroll_Beta' : 'Scroll',
+    chainId: 130,
+    assetKey: isBeta ? '5-154' : '',
+    origin: ScrollOrigin,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0x82751' : '',
+    supported: true,
+    logo: ScrollLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Scroll
+  },
   NULS: {
     name: 'NULS',
     chainName: 'NULS',
@@ -537,7 +613,9 @@ export const _networkInfo = {
 if (!isBeta) {
   // @ts-ignore
   delete _networkInfo.Goerli;
+  // @ts-ignore
+  delete _networkInfo.Scroll;
 } else {
   // @ts-ignore
-  // delete _networkInfo.ETHW;
+  delete _networkInfo.ETHW;
 }
