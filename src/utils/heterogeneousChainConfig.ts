@@ -30,7 +30,7 @@ import Linea from '@/assets/img/chainLogo/Linea.png';
 import CELOLogo from '@/assets/img/chainLogo/CELO.svg';
 import ETCLogo from '@/assets/img/chainLogo/ETC.png';
 import BASELogo from '@/assets/img/chainLogo/BASE.svg';
-import ScrollLogo from '@/assets/img/chainLogo/SCROLL.png';
+import ScrollLogo from '@/assets/img/chainLogo/Scroll.jpg';
 
 const isBeta = config.isBeta;
 
