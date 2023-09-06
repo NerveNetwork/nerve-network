@@ -9,7 +9,7 @@ export default function useLang() {
   const { locale } = useI18n();
   // 切换的语言
   const lang = computed(() => {
-    return locale.value === 'en' ? 'CN' : 'EN';
+    return locale.value === 'en' ? 'ZH' : 'EN';
   });
   function switchLang() {
     locale.value = lang.value === 'EN' ? 'en' : 'zh-cn';

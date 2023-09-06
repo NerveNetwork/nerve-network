@@ -110,6 +110,7 @@ export interface MultiPairItem {
   name: string;
   pairAddress: string;
   price: string;
+  reserve: string;
   reserveUsdtValue: string;
   tokenList: SupportChain[];
   logo: string;

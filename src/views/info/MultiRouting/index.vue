@@ -16,7 +16,8 @@
       </template>
       <template #tx_24="scope">${{ $format(scope.row.tx_24) }}</template>
       <template #tx_7d="scope">${{ $format(scope.row.tx_7d) }}</template>
-      <template #liq="scope">${{ $format(scope.row.liq) }}</template>
+      <template #liq="scope">{{ $format(scope.row.liq) }}</template>
+      <template #liqTvl="scope">${{ $format(scope.row.liqTvl) }}</template>
       <template #supportChain="scope">
         <div class="chain-list">
           <template v-for="item in scope.row.supportChain" :key="item">
@@ -55,7 +56,18 @@ const columns = computed(() => {
     { prop: 'tx_24', label: t('info.info11'), width: 140, slotName: 'tx_24' },
     { prop: 'tx_7d', label: t('info.info12'), width: 140, slotName: 'tx_7d' },
     { prop: 'liq', label: t('info.info4'), width: 140, slotName: 'liq' },
-    { prop: 'supportChain', label: t('info.info38'), 'min-width': 180, slotName: 'supportChain' },
+    {
+      prop: 'liqTvl',
+      label: t('info.info4') + 'TVL',
+      width: 140,
+      slotName: 'liqTvl'
+    },
+    {
+      prop: 'supportChain',
+      label: t('info.info38'),
+      'min-width': 180,
+      slotName: 'supportChain'
+    }
   ];
 });
 
@@ -80,7 +92,8 @@ async function getList(pageIndex = 1) {
         price: v.price,
         tx_24: divisionAndFix(v.amountUsdtValue24H, 18, 2),
         tx_7d: divisionAndFix(v.amountUsdtValue7D, 18, 2),
-        liq: divisionAndFix(v.reserveUsdtValue, 18, 2),
+        liq: v.reserve,
+        liqTvl: divisionAndFix(v.reserveUsdtValue, 18, 2),
         supportChain: v.tokenList.map(v =>
           getChainNameById(v.sourceChainId, v.assetChainId)
         )

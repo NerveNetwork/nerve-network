@@ -3,6 +3,8 @@ export interface OverviewData {
   nvtTotalUsdtValue: string;
   nvtStackTotal: string;
   nvtUsdtValue: string;
+  nvtPublishAmount: string;
+  nvtTotal: string;
 }
 
 export interface SummaryData {

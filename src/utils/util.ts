@@ -437,7 +437,10 @@ export function sortAssetsByValuation(symbol1: string, symbol2: string) {
  * @param heterogeneousChainId 异构链id
  * @param assetChainId 资产id
  */
-export function getOriginChain(heterogeneousChainId: number, assetChainId?: number) {
+export function getOriginChain(
+  heterogeneousChainId: number,
+  assetChainId?: number
+) {
   const chainsInfo = Object.values(_networkInfo);
   let chainName = '';
   if (heterogeneousChainId !== 0) {

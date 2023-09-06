@@ -105,6 +105,7 @@ export interface MultiRoutingItem {
   tx_24: string;
   tx_7d: string;
   liq: string;
+  liqTvl: string;
   supportChain: string[];
   address: string;
 }
