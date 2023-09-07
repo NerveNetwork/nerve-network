@@ -549,7 +549,7 @@ export const _networkInfo = {
   },
   ETC: {
     name: 'ETC',
-    chainName: isBeta ? 'ETC_Beta' : 'ETC',
+    chainName: isBeta ? 'ETC_Beta' : 'Ethereum Classic Mainnet',
     chainId: 128,
     assetKey: isBeta ? '5-152' : '9-704',
     origin: ETCOrigin,
