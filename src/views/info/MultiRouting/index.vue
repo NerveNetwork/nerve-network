@@ -58,7 +58,7 @@ const columns = computed(() => {
     { prop: 'liq', label: t('info.info4'), width: 140, slotName: 'liq' },
     {
       prop: 'liqTvl',
-      label: t('info.info4') + 'TVL',
+      label: t('info.info45'),
       width: 140,
       slotName: 'liqTvl'
     },

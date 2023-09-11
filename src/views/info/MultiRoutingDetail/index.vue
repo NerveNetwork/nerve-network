@@ -120,13 +120,15 @@ async function getTokenDetail() {
       price: priceFormat(divisionAndFix(res.price, 18, 18)),
       tx_24: divisionAndFix(res.amountUsdtValue24H, 18, 2),
       tx_7d: divisionAndFix(res.amountUsdtValue7D, 18, 2),
-      liq: divisionAndFix(res.reserveUsdtValue, 18, 2)
+      liq: res.reserve,
+      liqTvl: divisionAndFix(res.reserveUsdtValue, 18, 2)
     };
     res.tokenList.map(v => {
       multiChains.value.push({
         name: getChainNameById(v.sourceChainId, v.assetChainId),
         contractAddress: v.contractAddress,
-        liq: divisionAndFix(v.reserveUsdtValue, 18, 2),
+        liq: v.reserve,
+        liqTvl: divisionAndFix(v.reserveUsdtValue, 18, 2),
         ratio: fixNumber(v.ratio / 100, 2),
         nerveId: v.assetChainId + '-' + v.assetId
       });

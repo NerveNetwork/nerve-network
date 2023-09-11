@@ -60,12 +60,12 @@ onUnmounted(() => {
   //position: relative;
   margin-top: -80px;
   .pc {
-    height: 460px;
+    height: 500px;
   }
   .left {
     width: 45%;
     height: 100%;
-    padding-bottom: 50px;
+    // padding-bottom: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;

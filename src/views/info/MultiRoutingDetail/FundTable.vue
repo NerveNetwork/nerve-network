@@ -16,7 +16,8 @@
         </span>
         <span v-else>{{ mainAsset }}</span>
       </template>
-      <template #liq="scope">${{ $format(scope.row.liq) }}</template>
+      <template #liq="scope">{{ $format(scope.row.liq) }}</template>
+      <template #liqTvl="scope">${{ $format(scope.row.liqTvl) }}</template>
       <template #ratio="scope">
         <el-progress :percentage="Number(scope.row.ratio || '')" color="#2688F7" :stroke-width="8" />
       </template>
@@ -74,6 +75,12 @@ const columns = computed(() => {
       slotName: 'nerveId'
     },
     { prop: 'liq', label: t('info.info4'), width: 160, slotName: 'liq' },
+    {
+      prop: 'liqTvl',
+      label: t('info.info45'),
+      width: 140,
+      slotName: 'liqTvl'
+    },
     {
       prop: 'ratio',
       label: t('info.info42'),
