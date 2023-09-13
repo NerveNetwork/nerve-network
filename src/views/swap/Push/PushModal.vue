@@ -72,7 +72,13 @@
 <script lang="ts" setup>
 import { computed, ref, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { toThousands, Times, divisionDecimals, timesDecimals, priceFormat } from '@/utils/util';
+import {
+  toThousands,
+  Times,
+  divisionDecimals,
+  timesDecimals,
+  priceFormat
+} from '@/utils/util';
 import { IPushOrderItem, IPushAssetItem } from '@/service/api/types/push';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
@@ -158,14 +164,15 @@ const btnConfig = computed(() => {
       title: t('transfer.transfer15'),
       disable: true
     };
-  } else if (txAmount.value - maxAmount > 0) {
+  } /* else if (txAmount.value - maxAmount > 0) {
+    // 不验证当前单子最大可购买数量，超出的部分自动挂单
     return {
       title:
         (props.buyMode ? t('trading.trading46') : t('trading.trading47')) +
         maxAmount,
       disable: true
     };
-  } else {
+  }  */ else {
     return {
       title: props.buyMode ? t('trading.trading38') : t('trading.trading39'),
       disable: false

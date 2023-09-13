@@ -1,7 +1,17 @@
 import { computed, onBeforeUnmount, onMounted, Ref, ref, watch } from 'vue';
 import useStoreState from '@/hooks/useStoreState';
-import { getPairInfo, getPendingOrderList, getPushAssetList, getPushOrderList } from '@/service/api/push';
-import { IMyOrderItem, IPushAssetItem, IPushOrderItem, IPushPairInfo } from '@/service/api/types/push';
+import {
+  getPairInfo,
+  getPendingOrderList,
+  getPushAssetList,
+  getPushOrderList
+} from '@/service/api/push';
+import {
+  IMyOrderItem,
+  IPushAssetItem,
+  IPushOrderItem,
+  IPushPairInfo
+} from '@/service/api/types/push';
 import { divisionDecimals } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
 

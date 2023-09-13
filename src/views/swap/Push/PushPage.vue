@@ -16,7 +16,14 @@
         <div class="price-wrap">
           <div class="info flex-between">
             <span>{{ $t('trading.trading29') }}</span>
-            <span>{{ $t('public.public12') }} {{ toThousands(quoteAsset.listAvailable || 0) }} {{ quoteAsset.symbol }}</span>
+            <span>
+              {{ $t('public.public12') }}
+              {{
+                toThousands(quoteAsset.listAvailable || 0) +
+                ' ' +
+                quoteAsset.symbol
+              }}
+            </span>
           </div>
           <div class="inner flex-between">
             <el-input
@@ -26,17 +33,27 @@
               placeholder="0.0"
             />
             <div class="select-wrap flex-center" @click="showDialog = true">
-              <SymbolIcon :icon="quoteAsset.symbol" :asset-key="quoteAsset.assetKey" />
+              <SymbolIcon
+                :icon="quoteAsset.symbol"
+                :asset-key="quoteAsset.assetKey"
+              />
               <span>{{ quoteAsset.symbol }}</span>
             </div>
           </div>
         </div>
         <div class="fee-wrap flex-between">
           <span>{{ $t('trading.trading30') }}</span>
-          <span>{{ total }} {{ buyMode ? quoteAsset.symbol : asset.symbol }}</span>
+          <span>
+            {{ total }} {{ buyMode ? quoteAsset.symbol : asset.symbol }}
+          </span>
         </div>
         <div class="confirm-wrap">
-          <el-button type="primary" v-if="nerveAddress" @click="creatOrder" :disabled="btnConfig.disable">
+          <el-button
+            type="primary"
+            v-if="nerveAddress"
+            @click="creatOrder"
+            :disabled="btnConfig.disable"
+          >
             {{ btnConfig.title }}
           </el-button>
           <template v-else>
@@ -47,7 +64,6 @@
       <div class="order-list right-content" v-show="activeTab === '2'">
         <div class="list-head">
           <div class="list-head-item asset-select">
-<!--            <span class="label">{{ $t('trading.trading31') }}</span>-->
             <el-select
               v-model="selectValue"
               :placeholder="$t('trading.trading31')"
@@ -77,10 +93,16 @@
           <template v-if="orderList.length">
             <div class="list-item" v-for="item in orderList" :key="item.id">
               <div class="flex-center">
-                <SymbolIcon :icon="item.baseSymbol" :asset-key="item.baseAssetKey" style="margin-right: 10px" />
+                <SymbolIcon
+                  :icon="item.baseSymbol"
+                  :asset-key="item.baseAssetKey"
+                  style="margin-right: 10px"
+                />
                 <div class="border">
                   <p class="fw">{{ item.baseSymbol }}</p>
-                  <p class="font12" style="color: #94a6ce">ID:{{ item.baseAssetKey }}</p>
+                  <p class="font12" style="color: #94a6ce">
+                    ID:{{ item.baseAssetKey }}
+                  </p>
                 </div>
               </div>
               <div class="border">
@@ -131,7 +153,10 @@
         <template v-if="myOrderList.length">
           <div class="list-item" v-for="item in myOrderList" :key="item.hash">
             <div class="flex-center">
-              <SymbolIcon :icon="item.baseSymbol" :asset-key="item.baseAssetKey" />
+              <SymbolIcon
+                :icon="item.baseSymbol"
+                :asset-key="item.baseAssetKey"
+              />
               <div class="border">
                 <p class="fw">{{ item.baseSymbol }}</p>
                 <p class="font12" style="color: #94a6ce">
@@ -191,13 +216,23 @@ import SymbolIcon from '@/components/SymbolIcon.vue';
 import AuthButton from '@/components/AuthButton.vue';
 import PushModal from './PushModal.vue';
 import useStoreState from '@/hooks/useStoreState';
-import { Times, toThousands, timesDecimals, divisionDecimals, priceFormat } from '@/utils/util';
+import {
+  Times,
+  toThousands,
+  timesDecimals,
+  divisionDecimals,
+  priceFormat
+} from '@/utils/util';
 import usePushData from '../hooks/usePushData';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { useToast } from 'vue-toastification';
 import config from '@/config';
 import { AssetItem } from '@/store/types';
-import { IPushAssetItem, IPushOrderItem, IMyOrderItem } from '@/service/api/types/push';
+import {
+  IPushAssetItem,
+  IPushOrderItem,
+  IMyOrderItem
+} from '@/service/api/types/push';
 
 const { t } = useI18n();
 const { nerveAddress, assetsList } = useStoreState();
@@ -264,7 +299,9 @@ const btnConfig = computed(() => {
   const minBase = divisionDecimals(minBaseAmount, baseDecimals);
   const minQuote = divisionDecimals(minQuoteAmount, quoteDecimals);
   const quoteAmount = Times(txAmount.value, price.value);
-  const payAssetKey = buyMode.value ? quoteAsset.value.assetKey : asset.value.assetKey;
+  const payAssetKey = buyMode.value
+    ? quoteAsset.value.assetKey
+    : asset.value.assetKey;
   const payAsset = assetsList.value.find(v => v.assetKey === payAssetKey);
   if (
     !asset.value.assetKey ||
@@ -480,21 +517,22 @@ const revokeOrder = async (item: IMyOrderItem) => {
           }
         }
         .el-input--large .el-input__suffix {
-          right: 5px
+          right: 5px;
         }
       }
     }
   }
   .my-order-list {
     .list-head {
-      grid-template-columns: repeat(3, 3fr) 1.5fr 1.5fr;
+      grid-template-columns: repeat(3, 3fr) 2fr 2fr;
     }
     .list-body .list-item {
       display: grid;
-      grid-template-columns: repeat(3, 3fr) 1.5fr 1.5fr;
+      grid-template-columns: repeat(3, 3fr) 2fr 2fr;
     }
   }
-  .order-list, .my-order-list {
+  .order-list,
+  .my-order-list {
     .label {
       font-size: 14px;
       color: $subLabelColor;
@@ -638,7 +676,8 @@ const revokeOrder = async (item: IMyOrderItem) => {
     //padding: 20px !important;
   }
   @media screen and (max-width: 500px) {
-    .push, .my-order-list {
+    .push,
+    .my-order-list {
       width: 100%;
       min-width: 100%;
     }
@@ -658,7 +697,7 @@ const revokeOrder = async (item: IMyOrderItem) => {
         font-size: 13px;
       }
     }
-    .my-order-list h3{
+    .my-order-list h3 {
       padding: 0 12px;
     }
   }
