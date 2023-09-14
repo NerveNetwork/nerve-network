@@ -539,7 +539,7 @@ const en = {
     trading11: 'Setting',
     trading12: 'Slippage Tolerance',
     trading13: 'Tx Deadline',
-    trading14: 'mins',
+    trading14: 'Mins',
     trading15: 'Max',
     trading16: 'Enter 0-100',
     trading17: ' Insufficient Liquidity',
@@ -562,10 +562,10 @@ const en = {
     trading33: 'Price',
     trading34: 'Operation',
     trading35: 'Asset',
-    trading36: 'Available for sale',
-    trading37: 'Can buy',
-    trading38: 'Confirm the sale',
-    trading39: 'Confirm Purchase',
+    trading36: 'Available for Sale',
+    trading37: 'Can Buy',
+    trading38: 'Confirm',
+    trading39: 'Confirm',
     trading40: 'Current Order',
     trading41: 'Direction',
     trading42: 'Buy',
@@ -647,8 +647,8 @@ const en = {
     createFarm13: 'My Farm:'
   },
   farmRankType: {
-    apr: 'Rank By APR',
-    usd: 'Rank By Liquidity'
+    apr: 'Rank by APR',
+    usd: 'Rank by Liquidity'
   },
   staking: {
     staking0: 'Staking Pool',

@@ -534,9 +534,9 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.linea
   },
-  CELO: {
-    name: 'CELO',
-    chainName: isBeta ? 'CELO_Beta' : 'CELO',
+  Celo: {
+    name: 'Celo',
+    chainName: isBeta ? 'Celo_Beta' : 'Celo',
     chainId: 127,
     assetKey: isBeta ? '5-151' : '9-703',
     origin: CELOOrigin,
@@ -561,9 +561,9 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.ETC
   },
-  BASE: {
-    name: 'BASE',
-    chainName: isBeta ? 'BASE_Beta' : 'BASE',
+  Base: {
+    name: 'Base',
+    chainName: isBeta ? 'Base_Beta' : 'Base',
     chainId: 129,
     assetKey: isBeta ? '5-153' : '9-705',
     origin: BASEOrigin,
