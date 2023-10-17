@@ -114,6 +114,7 @@ export interface MultiChainInfo {
   name: string;
   contractAddress: string;
   liq: string;
+  liqTvl: string;
   ratio: string;
   nerveId: string;
 }

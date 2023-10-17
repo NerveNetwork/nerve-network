@@ -31,7 +31,7 @@
         <div class="base-info bg_white radius">
           <div class="info-item">
             <p class="label mb_5">{{ $t('info.info4') }}</p>
-            <p class="value fw">${{ $format(tokenInfo.liq) }}</p>
+            <p class="value fw">${{ $format(tokenInfo.liqTvl) }}</p>
           </div>
           <div class="info-item">
             <p class="label mb_5">{{ $t('info.info11') }}</p>
