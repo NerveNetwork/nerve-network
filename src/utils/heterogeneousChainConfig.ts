@@ -1,4 +1,5 @@
 import config from '@/config';
+const isBeta = config.isBeta;
 
 import NULSLogo from '@/assets/img/chainLogo/NULS.png';
 import NERVELogo from '@/assets/img/chainLogo/NERVE.png';
@@ -13,7 +14,7 @@ import CROLogo from '@/assets/img/chainLogo/Cronos.png';
 import AVAVLogo from '@/assets/img/chainLogo/AVAX.png';
 import ARBILogo from '@/assets/img/chainLogo/arbitrum.png';
 import FTMLogo from '@/assets/img/chainLogo/fantom.png';
-import TRONLogo from '@/assets/img/chainLogo/tron.svg';
+import TRONLogo from '@/assets/img/chainLogo/tron.png';
 import MetisLogo from '@/assets/img/chainLogo/Metis.png';
 import LotexLogo from '@/assets/img/chainLogo/LOTEX.png';
 import OptimismLogo from '@/assets/img/chainLogo/optimism.png';
@@ -31,8 +32,7 @@ import CELOLogo from '@/assets/img/chainLogo/CELO.svg';
 import ETCLogo from '@/assets/img/chainLogo/ETC.png';
 import BASELogo from '@/assets/img/chainLogo/BASE.svg';
 import ScrollLogo from '@/assets/img/chainLogo/Scroll.jpg';
-
-const isBeta = config.isBeta;
+import BitgertLogo from '@/assets/img/chainLogo/Bitgert.jpg';
 
 const NERVEOrigin = isBeta
   ? 'http://beta.scan.nerve.network'
@@ -127,7 +127,8 @@ const ETCOrigin = isBeta
 const BASEOrigin = isBeta
   ? 'https://goerli.basescan.org'
   : 'https://basescan.org';
-const ScrollOrigin = isBeta ? 'https://alpha-blockscout.scroll.io' : '';
+const ScrollOrigin = isBeta ? 'https://alpha-blockscout.scroll.io' : 'https://scrollscan.com';
+const BitgertOrigin = isBeta ? 'https://testnet-explorer.brisescan.com' : 'https://brisescan.com';
 
 export const RPC_URL = {
   BSC: isBeta
@@ -195,7 +196,8 @@ export const RPC_URL = {
     ? 'https://rpc.mordor.etccooperative.org'
     : 'https://etc.rivet.link',
   BASE: isBeta ? 'https://goerli.base.org' : 'https://mainnet.base.org',
-  Scroll: isBeta ? 'https://alpha-rpc.scroll.io/l2' : ''
+  Scroll: isBeta ? 'https://alpha-rpc.scroll.io/l2' : 'https://rpc.scroll.io',
+  Bitgert: isBeta ? 'https://testnet-rpc.brisescan.com' : 'https://mainnet-rpc.brisescan.com',
 };
 
 export const _networkInfo = {
@@ -581,11 +583,24 @@ export const _networkInfo = {
     assetKey: isBeta ? '5-154' : '',
     origin: ScrollOrigin,
     mainAsset: 'ETH',
-    nativeId: isBeta ? '0x82751' : '',
+    nativeId: isBeta ? '0x82751' : '0x82750',
     supported: true,
     logo: ScrollLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Scroll
+  },
+  Bitgert: {
+    name: 'Bitgert',
+    chainName: isBeta ? 'Bitgert_Beta' : 'Bitgert',
+    chainId: 131,
+    assetKey: isBeta ? '5-159' : '',
+    origin: BitgertOrigin,
+    mainAsset: 'BRISE',
+    nativeId: isBeta ? '0xfc9c' : '0x7f08',
+    supported: true,
+    logo: BitgertLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Bitgert
   },
   NULS: {
     name: 'NULS',

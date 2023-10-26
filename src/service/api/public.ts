@@ -1,11 +1,10 @@
 import {
   divisionAndFix,
-  Plus,
   Times,
   checkCanToL1,
   genId,
   isBeta,
-  checkCanToL1OnCurrent, createRPCParams, Minus
+  checkCanToL1OnCurrent
 } from '@/utils/util';
 import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
@@ -168,7 +167,10 @@ export async function getAssetList(address = config.destroyAddress) {
     )?.name;
     item.canToL1 = checkCanToL1(item);
     item.canToL1OnCurrent = checkCanToL1OnCurrent(item);
-    item.registerContract = getContractAddress(item.heterogeneousList, item.registerChainId);
+    item.registerContract = getContractAddress(
+      item.heterogeneousList,
+      item.registerChainId
+    );
   });
   // 返回按字母排序
   const sortDataBySymbol = [...res]

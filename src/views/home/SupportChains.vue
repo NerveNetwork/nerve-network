@@ -47,7 +47,7 @@ import CELO from '@/assets/img/supportChains/CELO.png';
 import ETC from '@/assets/img/supportChains/ETC.png';
 import BASE from '@/assets/img/supportChains/BASE.png';
 import Scroll from '@/assets/img/supportChains/Scroll.png';
-
+import Bitgert from '@/assets/img/supportChains/Bitgert.jpg';
 
 const supportChains = [
   { src: Ethereum },
@@ -78,8 +78,9 @@ const supportChains = [
   { src: Linea },
   { src: CELO },
   { src: ETC },
-  { src: BASE }
-  // { src: Scroll }
+  { src: BASE },
+  { src: Scroll },
+  { src: Bitgert }
 ];
 </script>
 

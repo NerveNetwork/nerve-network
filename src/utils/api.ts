@@ -1116,8 +1116,8 @@ export class ETransfer {
     if (isMainAsset) {
       return this.formatEthers(gasLimit_big.mul(gasPrice), feeDecimals);
     }
-    const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 6);
-    const mainAssetUSDBig = ethers.utils.parseUnits(mainAssetUSD.toString(), 6);
+    const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);
+    const mainAssetUSDBig = ethers.utils.parseUnits(mainAssetUSD.toString(), 18);
     let result: any = mainAssetUSDBig
       .mul(gasPrice)
       .mul(gasLimit_big)

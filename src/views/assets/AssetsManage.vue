@@ -43,10 +43,13 @@
           v-for="item in list"
           :key="item.assetKey"
           @click="changeSelect(item.assetKey)"
-          :class="{ 'disable-item': noCancel(item.chainId, item.assetId) }"
+          :class="{ 'disable-item': unCancelbleKey(item.assetKey) }"
         >
           <div class="flex-center">
-            <symbol-icon :icon="item.symbol" :asset-key="item.assetKey"></symbol-icon>
+            <symbol-icon
+              :icon="item.symbol"
+              :asset-key="item.assetKey"
+            ></symbol-icon>
             <div class="asset-base-info">
               <div>
                 {{ item.symbol }}
@@ -97,6 +100,7 @@ export default defineComponent({
   },
 
   props: {
+    mainAssetKey: String,
     showAssetManage: Boolean,
     assetList: {
       type: Array as PropType<AssetItemType[]>,
@@ -158,8 +162,8 @@ export default defineComponent({
       }
     }
     function changeSelect(key: string) {
-      const nvtKey = config.chainId + '-' + config.assetId;
-      if (key === nvtKey) return;
+      const isUnCancelble = unCancelbleKey(key);
+      if (isUnCancelble) return;
       backupList.map(v => {
         if (v.assetKey === key) {
           v.added = !v.added;
@@ -192,9 +196,11 @@ export default defineComponent({
       // virtualList.value?.resetScroll();
     }
 
-    // 不能取消勾选
-    function noCancel(assetChainId: number, assetsId: number) {
-      return config.chainId === assetChainId && config.assetId === assetsId;
+    // 不可取消的资产
+    function unCancelbleKey(key: string) {
+      const nvtKey = config.chainId + '-' + config.assetId;
+      const mainAssetKey = props.mainAssetKey;
+      return key === nvtKey || key === mainAssetKey;
     }
 
     function submitToken() {
@@ -210,7 +216,7 @@ export default defineComponent({
       searchVal,
       closed,
       confirm,
-      noCancel,
+      unCancelbleKey,
       submitToken
     };
   }

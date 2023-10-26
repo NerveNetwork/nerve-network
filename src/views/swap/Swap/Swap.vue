@@ -1,170 +1,177 @@
 <template>
-  <div class="swap pd_40_rd_20" v-loading="loading">
-    <div class="icon-wrap flex-between">
-      <div class="left">
-        <i
-          class="iconfont icon-zhankai click"
-          @click="toggleExpand"
-          v-if="fromAsset && toAsset"
-        ></i>
+  <div>
+    <div class="swap pd_40_rd_20" v-loading="loading">
+      <div class="icon-wrap flex-between">
+        <div class="left">
+          <i
+            class="iconfont icon-zhankai click"
+            @click="toggleExpand"
+            v-if="fromAsset && toAsset"
+          ></i>
+        </div>
+        <div class="right flex-center">
+          <span
+            @click="forceRefresh"
+            :class="{ refreshing: !canRefresh }"
+            :style="{ cursor: canRefresh ? 'pointer' : 'not-allowed' }"
+          >
+            <i class="iconfont icon-shuaxin"></i>
+          </span>
+          <span><i class="iconfont icon-fenxiang" @click="copyPair"></i></span>
+          <span @click="toggleSettingDialog">
+            <i class="iconfont icon-shezhi"></i>
+          </span>
+        </div>
       </div>
-      <div class="right flex-center">
-        <span
-          @click="forceRefresh"
-          :class="{ refreshing: !canRefresh }"
-          :style="{ cursor: canRefresh ? 'pointer' : 'not-allowed' }"
-        >
-          <i class="iconfont icon-shuaxin"></i>
-        </span>
-        <span><i class="iconfont icon-fenxiang" @click="copyPair"></i></span>
-        <span @click="toggleSettingDialog">
-          <i class="iconfont icon-shezhi"></i>
-        </span>
-      </div>
-    </div>
-    <div class="swap-area">
-      <div class="from-symbol">
-        <custom-input
-          v-model:inputVal="fromAmount"
-          ref="customInput"
-          :label="$t('trading.trading4')"
-          :icon="fromAsset && fromAsset.symbol"
-          :assetList="assetsList"
-          :hotAssets="hotAssets"
-          :balance="fromAsset && fromAsset.available"
-          :selectedAsset="fromAsset || null"
-          @selectAsset="selectAsset($event, 'from')"
-          @max="max('from')"
-        ></custom-input>
-      </div>
-      <div class="change-direction">
-        <img
-          @click="changeDirection"
-          class="click"
-          src="../../../assets/img/swap-to.svg"
-          alt=""
-        />
-      </div>
-      <div class="to-symbol">
-        <custom-input
-          v-model:inputVal="toAmount"
-          :label="$t('trading.trading3')"
-          :icon="toAsset && toAsset.symbol"
-          :assetList="assetsList"
-          :hotAssets="hotAssets"
-          :balance="toAsset && toAsset.available"
-          :selectedAsset="toAsset || null"
-          @selectAsset="asset => selectAsset(asset, 'to')"
-          @max="max('to')"
-        ></custom-input>
-      </div>
-      <div class="exchange-rate" v-if="swapRate">
-        {{ swapRate }}
-        <span class="change-icon" @click="toggleDirection">
-          <img src="@/assets/img/exchange.svg" alt="" />
-        </span>
-      </div>
-      <div class="confirm-wrap">
-        <el-button
-          type="primary"
-          v-if="nerveAddress"
-          :class="{
-            deep_color:
-              !toAmountError &&
-              !fromAmountError &&
-              !insufficient &&
-              priceImpactColor === 'red'
-          }"
-          :disabled="
-            disableTx ||
-            !!fromAmountError ||
-            !!toAmountError ||
-            impactButton === 2
-          "
-          @click="swapTrade"
-        >
-          {{
-            confirmText
-            /* insufficient
+      <div class="swap-area">
+        <div class="from-symbol">
+          <custom-input
+            v-model:inputVal="fromAmount"
+            ref="customInput"
+            :label="$t('trading.trading4')"
+            :icon="fromAsset && fromAsset.symbol"
+            :assetList="assetsList"
+            :hotAssets="hotAssets"
+            :balance="fromAsset && fromAsset.available"
+            :selectedAsset="fromAsset || null"
+            @selectAsset="selectAsset($event, 'from')"
+            @max="max('from')"
+          ></custom-input>
+        </div>
+        <div class="change-direction">
+          <img
+            @click="changeDirection"
+            class="click"
+            src="../../../assets/img/swap-to.svg"
+            alt=""
+          />
+        </div>
+        <div class="to-symbol">
+          <custom-input
+            v-model:inputVal="toAmount"
+            :label="$t('trading.trading3')"
+            :icon="toAsset && toAsset.symbol"
+            :assetList="assetsList"
+            :hotAssets="hotAssets"
+            :balance="toAsset && toAsset.available"
+            :selectedAsset="toAsset || null"
+            @selectAsset="asset => selectAsset(asset, 'to')"
+            @max="max('to')"
+          ></custom-input>
+        </div>
+        <div class="exchange-rate" v-if="swapRate">
+          {{ swapRate }}
+          <span class="change-icon" @click="toggleDirection">
+            <img src="@/assets/img/exchange.svg" alt="" />
+          </span>
+        </div>
+        <div class="confirm-wrap">
+          <el-button
+            type="primary"
+            v-if="nerveAddress"
+            :class="{
+              deep_color:
+                !toAmountError &&
+                !fromAmountError &&
+                !insufficient &&
+                priceImpactColor === 'red'
+            }"
+            :disabled="
+              disableTx ||
+              !!fromAmountError ||
+              !!toAmountError ||
+              impactButton === 2
+            "
+            @click="swapTrade"
+          >
+            {{
+              confirmText
+              /* insufficient
               ? $t("trading.trading17")
               : impactButton === 1
               ? $t("trading.trading19")
               : fromAmountError || $t("public.public10")*/
-          }}
-        </el-button>
-        <template v-else>
-          <AuthButton @loading="handleLoading" />
-        </template>
-      </div>
-    </div>
-    <div
-      v-show="swapRate"
-      :class="['setting-and-route', swapRate ? 'show' : '']"
-    >
-      <div class="swap-setting-info">
-        <div class="info-item flex-between">
-          <div class="left">{{ $t('trading.trading6') }}</div>
-          <div class="right">{{ protectPercent || '0.5' }}%</div>
-        </div>
-        <div class="info-item flex-between">
-          <div class="left">{{ $t('trading.trading7') }}</div>
-          <div
-            class="right"
-            :style="{
-              color:
-                (priceImpactFloat === '<0.01%' && 'green') || priceImpactColor
-            }"
-          >
-            {{ priceImpactFloat }}
-          </div>
-        </div>
-        <div class="info-item flex-between" v-if="customerType === 'from'">
-          <div class="left">{{ $t('trading.trading8') }}</div>
-          <div class="right">
-            {{ minReceive }} {{ toAsset && toAsset.symbol }}
-          </div>
-        </div>
-        <div class="info-item flex-between" v-if="customerType === 'to'">
-          <div class="left">{{ $t('trading.trading15') }}</div>
-          <div class="right">
-            {{ maxSale }} {{ fromAsset && fromAsset.symbol }}
-          </div>
-        </div>
-        <div class="info-item flex-between">
-          <div class="left">{{ $t('trading.trading9') }}</div>
-          <div class="right">{{ fee }} {{ fromAsset && fromAsset.symbol }}</div>
+            }}
+          </el-button>
+          <template v-else>
+            <AuthButton @loading="handleLoading" />
+          </template>
         </div>
       </div>
-      <div class="swap-route">
-        <div class="name">{{ $t('trading.trading10') }}</div>
-        <div class="route-network flex-center">
-          <div
-            class="route-item"
-            v-for="(item, index) in routesSymbol"
-            :key="item.assetKey"
-          >
-            <div class="flex-center">
-              <symbol-icon
-                :icon="item.icon"
-                :asset-key="item.assetKey"
-              ></symbol-icon>
-              <span>{{ item.icon }}</span>
-            </div>
-            <el-icon
-              class="icon-arrow-right"
-              v-if="index !== routesSymbol.length - 1"
+      <div
+        v-show="swapRate"
+        :class="['setting-and-route', swapRate ? 'show' : '']"
+      >
+        <div class="swap-setting-info">
+          <div class="info-item flex-between">
+            <div class="left">{{ $t('trading.trading6') }}</div>
+            <div class="right">{{ protectPercent || '0.5' }}%</div>
+          </div>
+          <div class="info-item flex-between">
+            <div class="left">{{ $t('trading.trading7') }}</div>
+            <div
+              class="right"
+              :style="{
+                color:
+                  (priceImpactFloat === '<0.01%' && 'green') || priceImpactColor
+              }"
             >
-              <arrow-right />
-            </el-icon>
+              {{ priceImpactFloat }}
+            </div>
+          </div>
+          <div class="info-item flex-between" v-if="customerType === 'from'">
+            <div class="left">{{ $t('trading.trading8') }}</div>
+            <div class="right">
+              {{ minReceive }} {{ toAsset && toAsset.symbol }}
+            </div>
+          </div>
+          <div class="info-item flex-between" v-if="customerType === 'to'">
+            <div class="left">{{ $t('trading.trading15') }}</div>
+            <div class="right">
+              {{ maxSale }} {{ fromAsset && fromAsset.symbol }}
+            </div>
+          </div>
+          <div class="info-item flex-between">
+            <div class="left">{{ $t('trading.trading9') }}</div>
+            <div class="right">
+              {{ fee }} {{ fromAsset && fromAsset.symbol }}
+            </div>
+          </div>
+        </div>
+        <div class="swap-route">
+          <div class="name">{{ $t('trading.trading10') }}</div>
+          <div class="route-network flex-center">
+            <div
+              class="route-item"
+              v-for="(item, index) in routesSymbol"
+              :key="item.assetKey"
+            >
+              <div class="flex-center">
+                <symbol-icon
+                  :icon="item.icon"
+                  :asset-key="item.assetKey"
+                ></symbol-icon>
+                <span>{{ item.icon }}</span>
+              </div>
+              <el-icon
+                class="icon-arrow-right"
+                v-if="index !== routesSymbol.length - 1"
+              >
+                <arrow-right />
+              </el-icon>
+            </div>
           </div>
         </div>
       </div>
+      <SwapSetting
+        v-model:show="settingDialog"
+        v-model:slippageTolerance="protectPercent"
+        @close="setUserSlippage"
+      />
     </div>
-    <SwapSetting
-      v-model:show="settingDialog"
-      v-model:slippageTolerance="protectPercent"
-      @close="setUserSlippage"
-    />
+    <p class="swap-to-asset">
+      <span @click="toAsset">{{ $t('trading.trading49') }}</span>
+    </p>
   </div>
 </template>
 
@@ -199,6 +206,7 @@ import {
   getCurrentAccount
 } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import { getWholeTradeExactIn } from '@/service/api';
 import nerve from 'nerve-sdk-js';
 import { useToast } from 'vue-toastification';
@@ -216,6 +224,7 @@ import {
 } from '../types';
 import { Account } from '@/store/types';
 import storage from '@/utils/storage';
+
 
 export default defineComponent({
   name: 'swap',
@@ -241,6 +250,7 @@ export default defineComponent({
   },
   setup(props, context) {
     const { proxy } = getCurrentInstance() as ComponentInternalInstance;
+    const router = useRouter()
     let storedSwapPairInfo = {}; // 缓存的交易对全量的兑换路径
     const { t } = useI18n();
     const toast = useToast();
@@ -361,7 +371,12 @@ export default defineComponent({
           if (isStableCoinForOthers.value || isOthersForStableCoin.value) {
             // 稳定币换NVT，缓存稳定币N兑换NVT交易对信息
             const routeCoin = getStableRouteCoin(isStableCoinForOthers.value);
-            await storeSwapPairInfo(false, false, routeCoin, isStableCoinForOthers.value);
+            await storeSwapPairInfo(
+              false,
+              false,
+              routeCoin,
+              isStableCoinForOthers.value
+            );
           }
           // canRefresh.value = false;
           // 缓存交易对信息
@@ -521,7 +536,12 @@ export default defineComponent({
         !isStableCoinSwap.value
       ) {
         const routeCoin = getStableRouteCoin(isStableCoinForOthers.value);
-        await storeSwapPairInfo(false, false, routeCoin, isStableCoinForOthers.value);
+        await storeSwapPairInfo(
+          false,
+          false,
+          routeCoin,
+          isStableCoinForOthers.value
+        );
       }
       getSwapAmount('1', 'to', true);
       context.emit('selectAsset', state.fromAsset, state.toAsset);
@@ -834,7 +854,6 @@ export default defineComponent({
           type,
           getInitialRate
         );
-        console.log(isStableCoinForOthers.value, isOthersForStableCoin.value, '334455')
         if (isStableCoinForOthers.value || isOthersForStableCoin.value) {
           if (isStableCoinForOthers.value) {
             const routeCoinKey = stableCoins.value[fromAssetKey];
@@ -1064,7 +1083,7 @@ export default defineComponent({
           }
           const fromAmount = type === 'to' ? inAmount : outAmount;
           const toAmount = type === 'to' ? outAmount : inAmount;
-          console.log(tokenPathArray, '333')
+          // console.log(tokenPathArray, '333');
           const priceImpact = nerve.swap.getPriceImpact(
             [fromAmount, toAmount],
             tokenPathArray,
@@ -1450,11 +1469,18 @@ export default defineComponent({
             const lpToken = check.lpToken;
             const lpKey = lpToken.chainId + '-' + lpToken.assetId;
             const lpAsset = props.assetsList.find(v => v.assetKey === lpKey)!;
-            const lpAmountIn = timesDecimals(state.fromAmount, lpAsset.decimals);
+            const lpAmountIn = timesDecimals(
+              state.fromAmount,
+              lpAsset.decimals
+            );
             const key = lpKey + '_' + toAssetKey;
             const pairsInfo = storedSwapPairInfo[key];
             const pairs = Object.values(pairsInfo);
-            const tokenPath = bestTradeExactIn(lpAmountIn, pairs, lpToken)?.path;
+            const tokenPath = bestTradeExactIn(
+              lpAmountIn,
+              pairs,
+              lpToken
+            )?.path;
             tokenPath.unshift(tokenIn);
             tx = await nerve.swap.stableLpSwapTrade(
               fromAddress,
@@ -1487,7 +1513,12 @@ export default defineComponent({
               lpToken.chainId + '-' + lpToken.assetId + '_' + fromAssetKey;
             const pairsInfo = storedSwapPairInfo[key];
             const pairs = Object.values(pairsInfo);
-            const tokenPath = bestTradeExactIn(amountIn, pairs, state.fromAsset, lpToken)?.path;
+            const tokenPath = bestTradeExactIn(
+              amountIn,
+              pairs,
+              state.fromAsset,
+              lpToken
+            )?.path;
             tx = await nerve.swap.swapTradeStableRemoveLp(
               fromAddress,
               amountIn,
@@ -1544,6 +1575,10 @@ export default defineComponent({
       proxy.$copy(`${defaultUrl}/${routeName}/${fromKey}/${toKey}`);
     }
 
+    function toAsset() {
+      router.push('/assets');
+    }
+
     return {
       loading,
       protectSets: ['0.5', '1', '3'],
@@ -1575,7 +1610,8 @@ export default defineComponent({
       confirmText,
       setUserSlippage,
       isStableCoinForOthers,
-      isStableCoinForStableCoin
+      isStableCoinForStableCoin,
+      toAsset
     };
   }
 });
@@ -1875,6 +1911,15 @@ export default defineComponent({
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+.swap-to-asset {
+  text-align: center;
+  padding: 20px 0;
+  span {
+    font-size: 14px;
+    cursor: pointer;
+    color: #608fff;
   }
 }
 </style>

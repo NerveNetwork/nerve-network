@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import useStoreState from '@/hooks/useStoreState';
 import { AssetItemType } from '../types';
 import { Minus } from '@/utils/util';
@@ -23,6 +23,13 @@ export default function useAssetsList() {
   const { assetsList, currentAccount, chain: network } = useStoreState();
 
   hideSmall.value = !!currentAccount.value.hideSmall;
+
+  const mainAssetKey = computed(() => {
+    if (!network.value) {
+      return _networkInfo.NERVE.assetKey;
+    }
+    return _networkInfo[network.value]?.assetKey || _networkInfo.NERVE.assetKey;
+  });
 
   watch(
     () => assetsList.value,
@@ -88,23 +95,35 @@ export default function useAssetsList() {
     let result: AssetItemType[] = [];
     const focusAssets = currentAccount.value.focusAssets;
     if (focusAssets && focusAssets.length) {
-      sortDataByValue.map(v =>
-        currentAccount.value.focusAssets?.map((item: string) => {
+      sortDataByValue.map(v => {
+        if (
+          v.assetKey === mainAssetKey.value &&
+          !focusAssets.includes(mainAssetKey.value)
+        ) {
+          // 默认需要显示L1主资产
+          result.push(v);
+        }
+        focusAssets.map((item: string) => {
           if (item === v.assetKey) {
             result.push(v);
           }
-        })
-      );
-    } else {
-      result = sortDataByValue.filter(v => {
-        return Number(v.available) > 0;
+        });
       });
-      // 账户资产全都没有余额，默认显示nvt
+    } else {
+      const nvtKey = config.chainId + '-' + config.assetId;
+      result = sortDataByValue.filter(v => {
+        return (
+          v.assetKey === nvtKey ||
+          v.assetKey === mainAssetKey.value ||
+          Number(v.available) > 0
+        );
+      });
+      /* // 账户资产全都没有余额，默认显示nvt
       if (!result.length) {
         result = sortDataByValue.filter(v => {
           return v.chainId === config.chainId && v.assetId === config.assetId;
         });
-      }
+      } */
     }
     selectAssets.value = [...result];
     result = result
@@ -168,6 +187,7 @@ export default function useAssetsList() {
     allAssetsList,
     selectAssets,
     filteredAssets,
+    mainAssetKey,
     crossInOutSymbol,
     filterAssets,
     addAssets,

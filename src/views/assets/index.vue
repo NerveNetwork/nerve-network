@@ -181,6 +181,7 @@
     />
     <assets-manage
       v-model:showAssetManage="showAssetManage"
+      :mainAssetKey="mainAssetKey"
       :assetList="allAssetsList"
       :selectAssets="selectAssets"
       @addAssets="addAssets"
@@ -237,6 +238,7 @@ export default defineComponent({
       allAssetsList,
       selectAssets,
       filteredAssets,
+      mainAssetKey,
       crossInOutSymbol,
       addAssets,
       assetClick
@@ -293,6 +295,7 @@ export default defineComponent({
       allAssetsList,
       selectAssets,
       filteredAssets,
+      mainAssetKey,
       crossInOutSymbol,
       showTransfer,
       currentTab,

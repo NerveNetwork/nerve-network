@@ -441,7 +441,7 @@ const cn = {
     home2:
       '旨在打破孤立的区块链价值，建立跨链资产交换网络，为DeFi应用生态提供一切必要的底层支持。让每一位数字资产持有者体验真正安全、免费、透明的 DeFi 应用服务。',
     home3: '2秒确认，0 Gas Fee',
-    home4: '支持21条链',
+    home4: '支持31条链',
     home5: '进入兑换',
     home6: '进入Bridge',
     home7: '总交易量',
@@ -452,7 +452,7 @@ const cn = {
     home12: '质押量',
     home13: '链上资金总量',
     home14: '链上资金流动/24H',
-    home15: '支持29个网络',
+    home15: '支持31个网络',
     home16: '总量',
     home17: '最大总量',
     home18: '流通市值'
@@ -558,7 +558,8 @@ const cn = {
     trading45: '最小挂单额: ',
     trading46: '最多可卖: ',
     trading47: '最多可买: ',
-    trading48: '全部'
+    trading48: '全部',
+    trading49: '转入资产'
   },
   liquidity: {
     liquidity1: '流动性',
