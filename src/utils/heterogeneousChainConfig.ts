@@ -33,102 +33,73 @@ import ETCLogo from '@/assets/img/chainLogo/ETC.png';
 import BASELogo from '@/assets/img/chainLogo/BASE.svg';
 import ScrollLogo from '@/assets/img/chainLogo/Scroll.jpg';
 import BitgertLogo from '@/assets/img/chainLogo/Bitgert.jpg';
+import JanusLogo from '@/assets/img/chainLogo/Janus.jpg';
 
-const NERVEOrigin = isBeta
-  ? 'http://beta.scan.nerve.network'
-  : 'https://scan.nerve.network';
-const NULSOrigin = isBeta ? 'http://beta.nulscan.io' : 'https://nulscan.io';
-const ETHOrigin = isBeta
-  ? 'https://ropsten.etherscan.io'
-  : 'https://etherscan.io';
-const BSCOrigin = isBeta
-  ? 'https://testnet.bscscan.com'
-  : 'https://bscscan.com';
-const HecoOrigin = isBeta
-  ? 'https://testnet.hecoinfo.com'
-  : 'https://hecoinfo.com';
-const OECOrigin = isBeta
-  ? 'https://www.oklink.com/okexchain-test'
-  : 'https://www.oklink.com/okexchain';
-const HarmonyOrigin = isBeta
-  ? 'https://explorer.pops.one'
-  : 'https://explorer.harmony.one';
-const PolygonOrigin = isBeta
-  ? 'https://mumbai.polygonscan.com'
-  : 'https://polygonscan.com';
-const KCCOrigin = isBeta
-  ? 'https://scan-testnet.kcc.network'
-  : 'https://explorer.kcc.io';
-const TRONOrigin = isBeta
-  ? 'https://shasta.tronscan.org/#'
-  : 'https://tronscan.org/#';
-const CronosOrigin = isBeta
-  ? 'https://cronos.crypto.org/explorer/testnet3'
-  : 'https://cronos.crypto.org/explorer';
-const AvalancheOrigin = isBeta
-  ? 'https://testnet.snowtrace.io'
-  : 'https://snowtrace.io';
-const ArbitrumOrigin = isBeta
-  ? 'https://testnet.arbiscan.io'
-  : 'https://arbiscan.io';
-const FantomOrigin = isBeta
-  ? 'https://testnet.ftmscan.com'
-  : 'https://ftmscan.com';
-const MetisOrigin = isBeta
-  ? 'https://stardust-explorer.metis.io'
-  : 'https://andromeda-explorer.metis.io';
-const LotexOrigin = isBeta
-  ? 'https://testnet.iotexscan.io'
-  : 'https://iotexscan.io';
-const OptimismOrigin = isBeta
-  ? 'https://kovan-optimistic.etherscan.io'
-  : 'https://optimistic.etherscan.io';
-const KlaytnOrigin = isBeta
-  ? 'https://baobab.scope.klaytn.com'
-  : 'https://scope.klaytn.com';
-const SmartBCHOrigin = isBeta
-  ? 'https://smartscan.cash'
-  : 'https://smartscan.cash';
-
-const ENULSOrigin = isBeta
-  ? 'https://beta.evmscan.nuls.io'
-  : 'https://evmscan.nuls.io';
-
-const KavaOrigin = isBeta
-  ? 'https://explorer.testnet.kava.io'
-  : 'https://explorer.kava.io';
-
-const ETHWOrigin = 'https://mainnet.ethwscan.com';
-
-const REIOrigin = isBeta
-  ? 'https://scan-test.rei.network'
-  : 'https://scan.rei.network';
-
-const ZKOrigin = isBeta
-  ? 'https://zksync2-testnet.zkscan.io'
-  : 'https://explorer.zksync.io';
-
-const EOSEVMOrigin = isBeta
-  ? 'https://explorer.testnet.evm.eosnetwork.com'
-  : 'https://explorer.evm.eosnetwork.com';
-const PolygonZkEVMOrigin = isBeta
-  ? 'https://testnet-zkevm.polygonscan.com'
-  : 'https://zkevm.polygonscan.com';
-const LineaOrigin = isBeta
-  ? 'https://goerli.lineascan.build'
-  : 'https://lineascan.build/';
-
-const CELOOrigin = isBeta
-  ? 'https://alfajores.celoscan.io'
-  : 'https://celoscan.io';
-const ETCOrigin = isBeta
-  ? 'https://blockscout.com/etc/mordor'
-  : 'https://blockscout.com/etc/mainnet';
-const BASEOrigin = isBeta
-  ? 'https://goerli.basescan.org'
-  : 'https://basescan.org';
-const ScrollOrigin = isBeta ? 'https://alpha-blockscout.scroll.io' : 'https://scrollscan.com';
-const BitgertOrigin = isBeta ? 'https://testnet-explorer.brisescan.com' : 'https://brisescan.com';
+const Origin = {
+  NERVE: isBeta
+    ? 'http://beta.scan.nerve.network'
+    : 'https://scan.nerve.network',
+  NULS: isBeta ? 'http://beta.nulscan.io' : 'https://nulscan.io',
+  ETH: isBeta ? 'https://goerli.etherscan.io' : 'https://etherscan.io',
+  BSC: isBeta ? 'https://testnet.bscscan.com' : 'https://bscscan.com',
+  Polygon: isBeta
+    ? 'https://mumbai.polygonscan.com'
+    : 'https://polygonscan.com',
+  Heco: isBeta ? 'https://testnet.hecoinfo.com' : 'https://hecoinfo.com',
+  OKC: isBeta
+    ? 'https://www.oklink.com/okexchain-test'
+    : 'https://www.oklink.com/okexchain',
+  Avalanche: isBeta ? 'https://testnet.snowtrace.io' : 'https://snowtrace.io',
+  Harmony: isBeta
+    ? 'https://explorer.pops.one'
+    : 'https://explorer.harmony.one',
+  KCC: isBeta ? 'https://scan-testnet.kcc.network' : 'https://explorer.kcc.io',
+  Cronos: isBeta
+    ? 'https://cronos.crypto.org/explorer/testnet3'
+    : 'https://cronos.crypto.org/explorer',
+  Arbitrum: isBeta ? 'https://testnet.arbiscan.io' : 'https://arbiscan.io',
+  Fantom: isBeta ? 'https://testnet.ftmscan.com' : 'https://ftmscan.com',
+  TRON: isBeta ? 'https://shasta.tronscan.org/#' : 'https://tronscan.org/#',
+  Metis: isBeta
+    ? 'https://stardust-explorer.metis.io'
+    : 'https://andromeda-explorer.metis.io',
+  IoTex: isBeta ? 'https://testnet.iotexscan.io' : 'https://iotexscan.io',
+  Optimism: isBeta
+    ? 'https://kovan-optimistic.etherscan.io'
+    : 'https://optimistic.etherscan.io',
+  Klaytn: isBeta
+    ? 'https://baobab.scope.klaytn.com'
+    : 'https://scope.klaytn.com',
+  smartBCH: isBeta ? 'https://smartscan.cash' : 'https://smartscan.cash',
+  ENULS: isBeta ? 'https://beta.evmscan.nuls.io' : 'https://evmscan.nuls.io',
+  KAVA: isBeta
+    ? 'https://explorer.testnet.kava.io'
+    : 'https://explorer.kava.io',
+  ETHW: 'https://mainnet.ethwscan.com',
+  REI: isBeta ? 'https://scan-test.rei.network' : 'https://scan.rei.network',
+  zkSync: isBeta
+    ? 'https://zksync2-testnet.zkscan.io'
+    : 'https://explorer.zksync.io',
+  EOSEVM: isBeta
+    ? 'https://explorer.testnet.evm.eosnetwork.com'
+    : 'https://explorer.evm.eosnetwork.com',
+  polygonZkEVM: isBeta
+    ? 'https://testnet-zkevm.polygonscan.com'
+    : 'https://zkevm.polygonscan.com',
+  Linea: isBeta ? 'https://goerli.lineascan.build' : 'https://lineascan.build/',
+  Celo: isBeta ? 'https://alfajores.celoscan.io' : 'https://celoscan.io',
+  ETC: isBeta
+    ? 'https://blockscout.com/etc/mordor'
+    : 'https://blockscout.com/etc/mainnet',
+  Base: isBeta ? 'https://goerli.basescan.org' : 'https://basescan.org',
+  Scroll: isBeta
+    ? 'https://alpha-blockscout.scroll.io'
+    : 'https://scrollscan.com',
+  Bitgert: isBeta
+    ? 'https://testnet-explorer.brisescan.com'
+    : 'https://brisescan.com',
+  Janus: isBeta ? 'https://beta.scan.janusnetwork.io' : ''
+};
 
 export const RPC_URL = {
   BSC: isBeta
@@ -188,7 +159,7 @@ export const RPC_URL = {
     ? 'https://rpc.public.zkevm-test.net'
     : 'https://zkevm-rpc.com',
 
-  linea: isBeta ? 'https://rpc.goerli.linea.build' : 'https://rpc.linea.build',
+  Linea: isBeta ? 'https://rpc.goerli.linea.build' : 'https://rpc.linea.build',
   CELO: isBeta
     ? 'https://alfajores-forno.celo-testnet.org'
     : 'https://forno.celo.org',
@@ -197,18 +168,21 @@ export const RPC_URL = {
     : 'https://etc.rivet.link',
   BASE: isBeta ? 'https://goerli.base.org' : 'https://mainnet.base.org',
   Scroll: isBeta ? 'https://alpha-rpc.scroll.io/l2' : 'https://rpc.scroll.io',
-  Bitgert: isBeta ? 'https://testnet-rpc.brisescan.com' : 'https://mainnet-rpc.brisescan.com',
+  Bitgert: isBeta
+    ? 'https://testnet-rpc.brisescan.com'
+    : 'https://mainnet-rpc.brisescan.com',
+  Janus: isBeta ? 'https://rpc.test.janusnetwork.io/' : ''
 };
 
 export const _networkInfo = {
   Ethereum: {
-    name: 'Ethereum',
-    chainName: isBeta ? 'Ethereum_Beta' : 'Ethereum', // 用于metamask添加链时显示链名称 区分正式、测试网
-    chainId: 101,
+    name: isBeta ? 'Goerli' : 'Ethereum',
+    chainName: isBeta ? 'Goerli' : 'Ethereum', // 用于metamask添加链时显示链名称 区分正式、测试网
+    chainId: isBeta ? 118 : 101,
     assetKey: isBeta ? '5-2' : '9-2',
-    origin: ETHOrigin,
+    origin: Origin.ETH,
     mainAsset: 'ETH',
-    nativeId: isBeta ? '0x3' : '0x1',
+    nativeId: isBeta ? '0x5' : '0x1',
     supported: true,
     logo: ETHLogo
   },
@@ -217,7 +191,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'BSC_Beta' : 'BSC',
     chainId: 102,
     assetKey: isBeta ? '5-8' : '9-25',
-    origin: BSCOrigin,
+    origin: Origin.BSC,
     mainAsset: 'BNB',
     nativeId: isBeta ? '0x61' : '0x38',
     supported: true,
@@ -230,7 +204,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Polygon_Beta' : 'Polygon',
     chainId: 106,
     assetKey: isBeta ? '5-34' : '9-160',
-    origin: PolygonOrigin,
+    origin: Origin.Polygon,
     mainAsset: 'MATIC',
     nativeId: isBeta ? '0x13881' : '0x89',
     supported: true,
@@ -243,7 +217,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Heco_Beta' : 'Heco',
     chainId: 103,
     assetKey: isBeta ? '5-9' : '9-55',
-    origin: HecoOrigin,
+    origin: Origin.Heco,
     mainAsset: 'HT',
     nativeId: isBeta ? '0x100' : '0x80',
     supported: true,
@@ -256,7 +230,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'OKC_Beta' : 'OKC',
     chainId: 104,
     assetKey: isBeta ? '5-12' : '9-87',
-    origin: OECOrigin,
+    origin: Origin.OKC,
     mainAsset: 'OKT',
     nativeId: isBeta ? '0x41' : '0x42',
     supported: true,
@@ -269,7 +243,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Avalanche_Beta' : 'Avalanche',
     chainId: 110,
     assetKey: isBeta ? '5-94' : '9-267',
-    origin: AvalancheOrigin,
+    origin: Origin.Avalanche,
     mainAsset: 'AVAX',
     nativeId: isBeta ? '0xa869' : '0xa86a',
     supported: true,
@@ -282,7 +256,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Harmony_Beta' : 'Harmony',
     chainId: 105,
     assetKey: isBeta ? '5-33' : '9-159',
-    origin: HarmonyOrigin,
+    origin: Origin.Harmony,
     mainAsset: 'ONE',
     nativeId: isBeta ? '0x6357d2e0' : '0x63564c40',
     supported: true,
@@ -295,7 +269,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'KCC_Beta' : 'KCC',
     chainId: 107,
     assetKey: isBeta ? '5-35' : '9-161',
-    origin: KCCOrigin,
+    origin: Origin.KCC,
     mainAsset: 'KCS',
     nativeId: isBeta ? '0x142' : '0x141',
     supported: true,
@@ -308,7 +282,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Cronos_Beta' : 'Cronos',
     chainId: 109,
     assetKey: isBeta ? '5-93' : '9-266',
-    origin: CronosOrigin,
+    origin: Origin.Cronos,
     mainAsset: 'CRO',
     nativeId: isBeta ? '0x152' : '0x19',
     supported: true,
@@ -321,7 +295,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Arbitrum_Beta' : 'Arbitrum',
     chainId: 111,
     assetKey: isBeta ? '5-95' : '9-268',
-    origin: ArbitrumOrigin,
+    origin: Origin.Arbitrum,
     mainAsset: 'AETH',
     nativeId: isBeta ? '0x66eeb' : '0xa4b1',
     supported: true,
@@ -334,7 +308,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Fantom_Beta' : 'Fantom',
     chainId: 112,
     assetKey: isBeta ? '5-96' : '9-269',
-    origin: FantomOrigin,
+    origin: Origin.Fantom,
     mainAsset: 'FTM',
     nativeId: isBeta ? '0xfa2' : '0xfa',
     supported: true,
@@ -347,7 +321,7 @@ export const _networkInfo = {
     chainName: 'TRON',
     chainId: 108,
     assetKey: isBeta ? '5-55' : '9-218',
-    origin: TRONOrigin,
+    origin: Origin.TRON,
     mainAsset: 'TRX',
     nativeId: '',
     supported: true,
@@ -359,7 +333,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Metis_Beta' : 'Metis',
     chainId: 113,
     assetKey: isBeta ? '5-115' : '9-445',
-    origin: MetisOrigin,
+    origin: Origin.Metis,
     mainAsset: 'METIS',
     nativeId: isBeta ? '0x24c' : '0x440',
     supported: true,
@@ -372,7 +346,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'IoTex_Beta' : 'IoTex',
     chainId: 114,
     assetKey: isBeta ? '5-116' : '9-446',
-    origin: LotexOrigin,
+    origin: Origin.IoTex,
     mainAsset: 'IOTX',
     nativeId: isBeta ? '0x1252' : '0x1251',
     supported: true,
@@ -385,7 +359,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Optimism_Beta' : 'Optimism',
     chainId: 115,
     assetKey: isBeta ? '5-117' : '9-447',
-    origin: OptimismOrigin,
+    origin: Origin.Optimism,
     mainAsset: 'OETH',
     nativeId: isBeta ? '0x45' : '0xa',
     supported: true,
@@ -398,7 +372,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Klaytn_Beta' : 'Klaytn',
     chainId: 116,
     assetKey: isBeta ? '5-118' : '9-448',
-    origin: KlaytnOrigin,
+    origin: Origin.Klaytn,
     mainAsset: 'KLAY',
     nativeId: isBeta ? '0x3e9' : '0x2019',
     supported: true,
@@ -411,7 +385,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'smartBCH_Beta' : 'smartBCH',
     chainId: 117,
     assetKey: isBeta ? '5-119' : '9-449',
-    origin: SmartBCHOrigin,
+    origin: Origin.smartBCH,
     mainAsset: 'BCH',
     nativeId: isBeta ? '0x2711' : '0x2710',
     supported: true,
@@ -419,24 +393,12 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.smartBCH
   },
-  Goerli: {
-    // eth 测试网
-    name: 'Goerli',
-    chainName: 'Goerli',
-    chainId: 118,
-    assetKey: '5-2',
-    origin: 'https://goerli.etherscan.io/',
-    mainAsset: 'ETH',
-    nativeId: '0x5',
-    supported: true,
-    logo: ETHLogo
-  },
   ENULS: {
     name: 'ENULS',
     chainName: isBeta ? 'ENULS_Beta' : 'ENULS',
     chainId: 119,
     assetKey: isBeta ? '2-1' : '1-1',
-    origin: ENULSOrigin,
+    origin: Origin.ENULS,
     mainAsset: 'NULS',
     nativeId: isBeta ? '0x78' : '0x77',
     supported: true,
@@ -449,7 +411,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'KAVA_Beta' : 'KAVA',
     chainId: 120,
     assetKey: isBeta ? '5-136' : '9-597',
-    origin: KavaOrigin,
+    origin: Origin.KAVA,
     mainAsset: 'KAVA',
     nativeId: isBeta ? '0x8ad' : '0x8ae',
     supported: true,
@@ -463,7 +425,7 @@ export const _networkInfo = {
     chainName: isBeta ? '' : 'ETHW',
     chainId: 121,
     assetKey: isBeta ? '' : '9-598',
-    origin: ETHWOrigin,
+    origin: Origin.ETHW,
     mainAsset: 'ETHW',
     nativeId: '0x2711',
     supported: true,
@@ -476,7 +438,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'REI_Beta' : 'REI',
     chainId: 122,
     assetKey: isBeta ? '5-138' : '9-620',
-    origin: REIOrigin,
+    origin: Origin.REI,
     mainAsset: 'REI',
     nativeId: isBeta ? '0x3045' : '0xbabd',
     supported: true,
@@ -489,7 +451,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'zkSync_Beta' : 'zkSync',
     chainId: 123,
     assetKey: isBeta ? '5-139' : '9-621',
-    origin: ZKOrigin,
+    origin: Origin.zkSync,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x118' : '0x144',
     supported: true,
@@ -502,7 +464,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'EOSEVM_Beta' : 'EOSEVM',
     chainId: 124,
     assetKey: isBeta ? '5-148' : '9-692',
-    origin: EOSEVMOrigin,
+    origin: Origin.EOSEVM,
     mainAsset: 'EOS',
     nativeId: isBeta ? '0x3cc5' : '0x4571',
     supported: true,
@@ -515,7 +477,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Polygon zkEVM_Beta' : 'Polygon zkEVM',
     chainId: 125,
     assetKey: isBeta ? '5-149' : '9-693',
-    origin: PolygonZkEVMOrigin,
+    origin: Origin.polygonZkEVM,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x5a2' : '0x44d',
     supported: true,
@@ -528,20 +490,20 @@ export const _networkInfo = {
     chainName: isBeta ? 'Linea_Beta' : 'Linea',
     chainId: 126,
     assetKey: isBeta ? '5-150' : '9-694',
-    origin: LineaOrigin,
+    origin: Origin.Linea,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0xe704' : '0xe708',
     supported: true,
     logo: Linea,
     decimals: 18,
-    rpcUrl: RPC_URL.linea
+    rpcUrl: RPC_URL.Linea
   },
   Celo: {
     name: 'Celo',
     chainName: isBeta ? 'Celo_Beta' : 'Celo',
     chainId: 127,
     assetKey: isBeta ? '5-151' : '9-703',
-    origin: CELOOrigin,
+    origin: Origin.Celo,
     mainAsset: 'CELO',
     nativeId: isBeta ? '0xaef3' : '0xa4ec',
     supported: true,
@@ -554,7 +516,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'ETC_Beta' : 'Ethereum Classic Mainnet',
     chainId: 128,
     assetKey: isBeta ? '5-152' : '9-704',
-    origin: ETCOrigin,
+    origin: Origin.ETC,
     // mainAsset: isBeta ? 'ETC' : 'METC',
     mainAsset: 'ETC',
     nativeId: isBeta ? '0x3f' : '0x3d',
@@ -568,7 +530,7 @@ export const _networkInfo = {
     chainName: isBeta ? 'Base_Beta' : 'Base',
     chainId: 129,
     assetKey: isBeta ? '5-153' : '9-705',
-    origin: BASEOrigin,
+    origin: Origin.Base,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x14a33' : '0x2105',
     supported: true,
@@ -580,8 +542,8 @@ export const _networkInfo = {
     name: 'Scroll',
     chainName: isBeta ? 'Scroll_Beta' : 'Scroll',
     chainId: 130,
-    assetKey: isBeta ? '5-154' : '',
-    origin: ScrollOrigin,
+    assetKey: isBeta ? '5-154' : '9-738',
+    origin: Origin.Scroll,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x82751' : '0x82750',
     supported: true,
@@ -593,8 +555,8 @@ export const _networkInfo = {
     name: 'Bitgert',
     chainName: isBeta ? 'Bitgert_Beta' : 'Bitgert',
     chainId: 131,
-    assetKey: isBeta ? '5-159' : '',
-    origin: BitgertOrigin,
+    assetKey: isBeta ? '5-159' : '9-739',
+    origin: Origin.Bitgert,
     mainAsset: 'BRISE',
     nativeId: isBeta ? '0xfc9c' : '0x7f08',
     supported: true,
@@ -602,12 +564,25 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Bitgert
   },
+  Janus: {
+    name: 'Janus',
+    chainName: isBeta ? 'Janus_Beta' : 'Janus',
+    chainId: 132,
+    assetKey: isBeta ? '5-165' : '',
+    origin: Origin.Janus,
+    mainAsset: 'JNS',
+    nativeId: isBeta ? '0x105ac' : '',
+    supported: true,
+    logo: JanusLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Janus
+  },
   NULS: {
     name: 'NULS',
     chainName: 'NULS',
     chainId: isBeta ? 2 : 1,
     assetKey: isBeta ? '2-1' : '1-1',
-    origin: NULSOrigin,
+    origin: Origin.NULS,
     mainAsset: 'NULS',
     nativeId: '0x-1',
     supported: true,
@@ -618,19 +593,15 @@ export const _networkInfo = {
     chainName: 'NERVE',
     chainId: isBeta ? 5 : 9,
     assetKey: isBeta ? '5-1' : '9-1',
-    origin: NERVEOrigin,
+    origin: Origin.NERVE,
     mainAsset: 'NVT',
     nativeId: '0x-2',
     supported: true,
     logo: NERVELogo
   }
 };
-if (!isBeta) {
-  // @ts-ignore
-  delete _networkInfo.Goerli;
-  // @ts-ignore
-  delete _networkInfo.Scroll;
-} else {
+
+if (isBeta) {
   // @ts-ignore
   delete _networkInfo.ETHW;
 }

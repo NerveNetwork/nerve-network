@@ -1127,7 +1127,7 @@ export class ETransfer {
     if (isNVT || isTRX) {
       // 如果是nvt，向上取整
       const numberStr = ethers.utils.formatUnits(result, feeDecimals);
-      const ceil = Math.ceil(+numberStr);
+      const ceil = Math.ceil(+numberStr) || 1;
       result = ethers.utils.parseUnits(ceil.toString(), feeDecimals).toString();
     }
     return this.formatEthers(result, feeDecimals);
