@@ -604,4 +604,7 @@ export const _networkInfo = {
 if (isBeta) {
   // @ts-ignore
   delete _networkInfo.ETHW;
+} else {
+  // @ts-ignore
+  delete _networkInfo.Janus;
 }
