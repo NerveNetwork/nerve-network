@@ -170,7 +170,7 @@
       />
     </div>
     <p class="swap-to-asset">
-      <span @click="toAsset">{{ $t('trading.trading49') }}</span>
+      <span @click="toAssetPage">{{ $t('trading.trading49') }}</span>
     </p>
   </div>
 </template>
@@ -1575,7 +1575,7 @@ export default defineComponent({
       proxy.$copy(`${defaultUrl}/${routeName}/${fromKey}/${toKey}`);
     }
 
-    function toAsset() {
+    function toAssetPage() {
       router.push('/assets');
     }
 
@@ -1611,7 +1611,7 @@ export default defineComponent({
       setUserSlippage,
       isStableCoinForOthers,
       isStableCoinForStableCoin,
-      toAsset
+      toAssetPage
     };
   }
 });
