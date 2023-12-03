@@ -34,6 +34,7 @@ import BASELogo from '@/assets/img/chainLogo/BASE.svg';
 import ScrollLogo from '@/assets/img/chainLogo/Scroll.jpg';
 import BitgertLogo from '@/assets/img/chainLogo/Bitgert.jpg';
 import JanusLogo from '@/assets/img/chainLogo/Janus.jpg';
+import MantaLogo from '@/assets/img/chainLogo/Manta.jpg';
 
 const Origin = {
   NERVE: isBeta
@@ -98,7 +99,10 @@ const Origin = {
   Bitgert: isBeta
     ? 'https://testnet-explorer.brisescan.com'
     : 'https://brisescan.com',
-  Janus: isBeta ? 'https://beta.scan.janusnetwork.io' : ''
+  Janus: isBeta ? 'https://beta.scan.janusnetwork.io' : '',
+  Manta: isBeta
+    ? 'https://manta-testnet.calderaexplorer.xyz'
+    : 'https://pacific-explorer.manta.network'
 };
 
 export const RPC_URL = {
@@ -171,7 +175,10 @@ export const RPC_URL = {
   Bitgert: isBeta
     ? 'https://testnet-rpc.brisescan.com'
     : 'https://mainnet-rpc.brisescan.com',
-  Janus: isBeta ? 'https://rpc.test.janusnetwork.io/' : ''
+  Janus: isBeta ? 'https://rpc.test.janusnetwork.io/' : '',
+  Manta: isBeta
+    ? 'https://manta-testnet.calderachain.xyz/http'
+    : 'https://pacific-rpc.manta.network/http'
 };
 
 export const _networkInfo = {
@@ -576,6 +583,19 @@ export const _networkInfo = {
     logo: JanusLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Janus
+  },
+  Manta: {
+    name: 'Manta',
+    chainName: isBeta ? 'Manta_Beta' : 'Manta',
+    chainId: 133,
+    assetKey: isBeta ? '5-166' : '9-745',
+    origin: Origin.Manta,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0x34816d' : '0xa9',
+    supported: true,
+    logo: MantaLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Manta
   },
   NULS: {
     name: 'NULS',
