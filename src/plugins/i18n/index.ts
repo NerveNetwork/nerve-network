@@ -8,11 +8,11 @@ import zhLocale from 'element-plus/es/locale/lang/zh-cn';
 import enLocale from 'element-plus/es/locale/lang/en';
 
 const messages = {
-  [zhLocale.name]: {
+  /* [zhLocale.name]: {
     // zh-cn
     el: zhLocale.el,
     ...cn
-  },
+  }, */
   [enLocale.name]: {
     // en
     el: enLocale.el,
@@ -21,7 +21,7 @@ const messages = {
 };
 const navigatorLang = 'en'; //window.navigator.language === "zh-CN" ? "zh-cn" : "en";
 const fallLang = enLocale.name;
-const lang = storage.get('lang') || navigatorLang;
+const lang = 'en'; //storage.get('lang') || navigatorLang;
 
 const i18n = createI18n({
   legacy: false,

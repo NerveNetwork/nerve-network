@@ -54,9 +54,9 @@
             </div>
           </div>
         </div>
-        <span @click="switchLang" class="click pc" style="margin-left: 10px">
+        <!-- <span @click="switchLang" class="click pc" style="margin-left: 10px">
           {{ lang }}
-        </span>
+        </span> -->
         <img
           class="menu-icon mobile click"
           src="../../assets/img/icon-menu.svg"

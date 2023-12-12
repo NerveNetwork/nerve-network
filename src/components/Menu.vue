@@ -12,10 +12,10 @@
         </router-link>
       </div>
     </template>
-    <div class="lang-warp mobile" @click="changeLang">
+    <!-- <div class="lang-warp mobile" @click="changeLang">
       <img src="../assets/img/lang.svg" alt="" />
       {{ lang }}
-    </div>
+    </div> -->
   </div>
 </template>
 
