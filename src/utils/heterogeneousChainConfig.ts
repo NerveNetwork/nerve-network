@@ -142,7 +142,7 @@ export const RPC_URL = {
     : 'https://babel-api.mainnet.iotex.io',
   Optimism: isBeta
     ? 'https://kovan.optimism.io'
-    : 'https://mainnet.optimism.io',
+    : 'https://optimism-mainnet.public.blastapi.io',
   Klaytn: isBeta
     ? 'https://api.baobab.klaytn.net:8651'
     : 'https://public-node-api.klaytnapi.com/v1/cypress',
