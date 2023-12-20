@@ -251,7 +251,8 @@ export default defineComponent({
             '',
             gasLimit,
             decimals,
-            true
+            true,
+            heterogeneousChainId
           );
         }
       } else {
@@ -283,28 +284,12 @@ export default defineComponent({
             gasLimit,
             decimals,
             false,
+            heterogeneousChainId,
             feeIsNVT,
             feeChain === 'TRON'
           );
         }
       }
-      let _times = 1;
-      if (heterogeneousChainId === 115) {
-        // op
-        _times = 20;
-      } else if (heterogeneousChainId === 130) {
-        // scroll
-        _times = 15;
-      } else if (heterogeneousChainId === 129) {
-        // base
-        if (feeIsNVT) {
-          _times = 200;
-        } else {
-          _times = 2000;
-        }
-      }
-      res = Times(res, _times).toFixed();
-
       fee.value = floatToCeil(res, 6);
     }
 

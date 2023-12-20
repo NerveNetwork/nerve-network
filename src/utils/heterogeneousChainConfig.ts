@@ -106,6 +106,9 @@ const Origin = {
 };
 
 export const RPC_URL = {
+  Ethereum: isBeta
+    ? 'https://ethereum-goerli.publicnode.comZ'
+    : 'https://eth.drpc.org',
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
     : 'https://bsc-dataseed.binance.org/',
@@ -191,7 +194,9 @@ export const _networkInfo = {
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x5' : '0x1',
     supported: true,
-    logo: ETHLogo
+    logo: ETHLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Ethereum
   },
   BSC: {
     name: 'BSC',

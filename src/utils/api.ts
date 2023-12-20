@@ -11,6 +11,8 @@ import txsignatures from 'nerve-sdk-js/lib/model/txsignatures';
 import BufferReader from 'nerve-sdk-js/lib/utils/bufferreader';
 // @ts-ignore
 import txs from 'nerve-sdk-js/lib/model/txs';
+// @ts-ignore
+import sdkApi from 'nerve-sdk-js/lib/api/sdk';
 import config from '@/config';
 import { getProvider } from '@/hooks/useEthereum';
 import { broadcastHex, getAssetBalance } from '@/service/api';
@@ -656,21 +658,25 @@ export class NTransfer {
   async additionFee(transferInfo: any) {
     const { assetsChainId, assetsId, from, to, amount } = transferInfo;
     const nonce = await this.getNonce(from, assetsChainId, assetsId);
-    const inputs = [{
-      address: from,
-      assetsChainId,
-      assetsId,
-      amount,
-      locked: 0,
-      nonce
-    }];
-    const outputs = [{
-      address: to,
-      assetsChainId,
-      assetsId,
-      amount,
-      lockTime: 0
-    }];
+    const inputs = [
+      {
+        address: from,
+        assetsChainId,
+        assetsId,
+        amount,
+        locked: 0,
+        nonce
+      }
+    ];
+    const outputs = [
+      {
+        address: to,
+        assetsChainId,
+        assetsId,
+        amount,
+        lockTime: 0
+      }
+    ];
     return { inputs, outputs };
   }
 
@@ -678,21 +684,25 @@ export class NTransfer {
   async tradingOrderTransaction(transferInfo: any) {
     const { assetsChainId, assetsId, from, amount } = transferInfo;
     const nonce = await this.getNonce(from, assetsChainId, assetsId);
-    const inputs = [{
-      address: from,
-      assetsChainId,
-      assetsId,
-      amount,
-      locked: 0,
-      nonce
-    }];
-    const outputs = [{
-      address: from,
-      assetsChainId,
-      assetsId,
-      amount,
-      lockTime: -2
-    }];
+    const inputs = [
+      {
+        address: from,
+        assetsChainId,
+        assetsId,
+        amount,
+        locked: 0,
+        nonce
+      }
+    ];
+    const outputs = [
+      {
+        address: from,
+        assetsChainId,
+        assetsId,
+        amount,
+        lockTime: -2
+      }
+    ];
     return { inputs, outputs };
   }
 
@@ -701,21 +711,25 @@ export class NTransfer {
     const { from } = transferInfo;
     const { chainId, assetId } = config;
     const nonce = await this.getNonce(from, chainId, assetId);
-    const inputs = [{
-      address: from,
-      assetsChainId: chainId,
-      assetsId: assetId,
-      amount: '0',
-      locked: 0,
-      nonce
-    }];
-    const outputs = [{
-      address: from,
-      assetsChainId: chainId,
-      assetsId: assetId,
-      amount: '0',
-      lockTime: 0
-    }];
+    const inputs = [
+      {
+        address: from,
+        assetsChainId: chainId,
+        assetsId: assetId,
+        amount: '0',
+        locked: 0,
+        nonce
+      }
+    ];
+    const outputs = [
+      {
+        address: from,
+        assetsChainId: chainId,
+        assetsId: assetId,
+        amount: '0',
+        lockTime: 0
+      }
+    ];
     return { inputs, outputs };
   }
 
@@ -782,14 +796,17 @@ export class ETransfer {
       const provider = getProvider();
       this.provider = new ethers.providers.Web3Provider(provider);
     } else {
-      if (chain === 'Ethereum') {
+      this.provider = new ethers.providers.JsonRpcProvider(
+        _networkInfo[chain].rpcUrl
+      );
+      /* if (chain === 'Ethereum') {
         const network = config.isBeta ? 'ropsten' : 'homestead';
         this.provider = ethers.getDefaultProvider(network);
       } else {
         this.provider = new ethers.providers.JsonRpcProvider(
           _networkInfo[chain].rpcUrl
         );
-      }
+      }*/
     }
   }
 
@@ -1093,6 +1110,7 @@ export class ETransfer {
    * @param gasLimit
    * @param feeDecimals 手续费精度
    * @param isMainAsset 手续费是否是提现网络主资产
+   * @param htgChainId
    * @param isNVT 手续费是否是NVT
    * @param isTRX 手续费是否是TRX
    * */
@@ -1102,9 +1120,11 @@ export class ETransfer {
     gasLimit: string,
     feeDecimals: number,
     isMainAsset: boolean,
+    htgChainId: number,
     isNVT?: boolean,
     isTRX?: boolean
   ) {
+    // finalFee = baseL1Fee + extraWithdrawalFee
     const gasPrice = await this.getWithdrawGas();
     const gasLimit_big = new ethers.utils.BigNumber(gasLimit);
     /*let gasLimit;
@@ -1113,24 +1133,39 @@ export class ETransfer {
     } else {
       gasLimit = new ethers.utils.BigNumber('190000');
     }*/
+    const ethereumProvider = new ethers.providers.JsonRpcProvider(
+      _networkInfo.Ethereum.rpcUrl
+    );
+    const ethGasPrice = await ethereumProvider.getGasPrice();
+    const extraL1FeeBig = sdkApi.getL1Fee(htgChainId, ethGasPrice);
+    const totalL1Fee = gasLimit_big.mul(gasPrice).add(extraL1FeeBig);
     if (isMainAsset) {
-      return this.formatEthers(gasLimit_big.mul(gasPrice), feeDecimals);
+      const finalFee = this.formatEthers(totalL1Fee, feeDecimals);
+      // const finalFee = Plus(baseFee, extraL1Fee).toFixed();
+      // console.log(baseFee, '--==--', extraL1Fee, '==--==', finalFee);
+      return finalFee;
+    } else {
+      const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);
+      const mainAssetUSDBig = ethers.utils.parseUnits(
+        mainAssetUSD.toString(),
+        18
+      );
+      let result: any = mainAssetUSDBig
+        .mul(totalL1Fee)
+        .mul(ethers.utils.parseUnits('1', feeDecimals))
+        .div(ethers.utils.parseUnits('1', 18))
+        .div(feeUSDBig);
+      if (isNVT || isTRX) {
+        // 如果是nvt，向上取整
+        const numberStr = ethers.utils.formatUnits(result, feeDecimals);
+        const ceil = Math.ceil(+numberStr) || 1;
+        result = ethers.utils
+          .parseUnits(ceil.toString(), feeDecimals)
+          .toString();
+      }
+      const finalFee = this.formatEthers(result, feeDecimals);
+      return finalFee;
     }
-    const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);
-    const mainAssetUSDBig = ethers.utils.parseUnits(mainAssetUSD.toString(), 18);
-    let result: any = mainAssetUSDBig
-      .mul(gasPrice)
-      .mul(gasLimit_big)
-      .mul(ethers.utils.parseUnits('1', feeDecimals))
-      .div(ethers.utils.parseUnits('1', 18))
-      .div(feeUSDBig);
-    if (isNVT || isTRX) {
-      // 如果是nvt，向上取整
-      const numberStr = ethers.utils.formatUnits(result, feeDecimals);
-      const ceil = Math.ceil(+numberStr) || 1;
-      result = ethers.utils.parseUnits(ceil.toString(), feeDecimals).toString();
-    }
-    return this.formatEthers(result, feeDecimals);
   }
 
   /**
