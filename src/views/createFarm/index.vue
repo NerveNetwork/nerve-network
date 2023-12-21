@@ -123,9 +123,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, reactive, ref, computed } from 'vue';
+import { reactive, ref, computed } from 'vue';
 import nerve from 'nerve-sdk-js';
-import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
 import { getBlockInfo } from '@/service/api';
 import { Minus, timesDecimals, Division } from '@/utils/util';
@@ -134,6 +133,7 @@ import dayjs from 'dayjs';
 import AuthButton from '@/components/AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
+import useToast from '@/hooks/useToast';
 import useMyFarm from './hooks/useMyFarm';
 import { ElForm } from 'element-plus';
 
@@ -141,7 +141,7 @@ import { AssetItem } from '@/store/types';
 
 const { nerveAddress, assetsList: assetList } = useStoreState();
 const { t } = useI18n();
-const toast = useToast();
+const { toastError } = useToast();
 const form = ref<InstanceType<typeof ElForm>>();
 const loading = ref(false);
 const model = reactive({
@@ -328,7 +328,7 @@ async function createFarm() {
     }
   } catch (e) {
     console.log(e, 'create-farm-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
   loading.value = false;
 }

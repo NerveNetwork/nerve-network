@@ -4,9 +4,9 @@ import { NTransfer } from '@/utils/api';
 import { broadcastHex } from '@/service/api';
 import storage from '@/utils/storage';
 import { Account, TxInfo } from '@/store/types';
-import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
-import { checkIsNULSLedger } from '@/hooks/useEthereum';
+import { checkIsNULSLedger } from './useEthereum';
+import useToast from './useToast';
 
 /*interface TxInfo {
   inputs: any;
@@ -35,7 +35,7 @@ export function setAccountTxs(pub: string, tx: TxInfo) {
 export default function useBroadcastNerveHex() {
   const { currentAccount } = useStoreState();
   const { t } = useI18n();
-  const toast = useToast();
+  const { toastSuccess, toastError } = useToast();
 
   // 已有交易hex，调用metamask签名，然后广播
   async function handleHex(hex: string, type: number) {
@@ -117,11 +117,11 @@ export default function useBroadcastNerveHex() {
 
   function handleMessage(res: any) {
     if (res.hash) {
-      toast.success(t('transfer.transfer14'));
+      toastSuccess(t('transfer.transfer14'));
     } else if (res.error) {
-      toast.error(t('error.' + res.error.code));
+      toastError(t('error.' + res.error.code));
     } else {
-      toast.error('Unknown Error');
+      toastError('Unknown Error');
     }
   }
 

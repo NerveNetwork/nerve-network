@@ -209,8 +209,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { getWholeTradeExactIn } from '@/service/api';
 import nerve from 'nerve-sdk-js';
-import { useToast } from 'vue-toastification';
 import config from '@/config';
+import useToast from '@/hooks/useToast';
 import useSpecialSwap from '../hooks/useSpecialSwap';
 import useStoreState from '@/hooks/useStoreState';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
@@ -253,7 +253,7 @@ export default defineComponent({
     const router = useRouter()
     let storedSwapPairInfo = {}; // 缓存的交易对全量的兑换路径
     const { t } = useI18n();
-    const toast = useToast();
+    const { toastError } = useToast();
     const { nerveAddress } = useStoreState();
     const {
       getStablePairList,
@@ -1558,7 +1558,7 @@ export default defineComponent({
         }
       } catch (e) {
         console.log(e, 'Swap-error');
-        toast.error(e.message || e);
+        toastError(e);
       }
       loading.value = false;
     }

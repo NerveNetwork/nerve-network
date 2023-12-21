@@ -205,13 +205,13 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, PropType } from 'vue';
-import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 import LpDialog from './LpDialog.vue';
 import { txAbi } from '@/contractConfig/contractConfig';
 import useContractAddress from '@/views/farm/hooks/useContractAddress';
 import useStoreState from '@/hooks/useStoreState';
+import useToast from '@/hooks/useToast';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { ethers } from 'ethers';
 import { getAssetBalance } from '@/service/api';
@@ -241,7 +241,7 @@ const emit = defineEmits(['loading']);
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
-const toast = useToast();
+const { toastSuccess, toastError } = useToast();
 const dialogAddOrMinus = ref(false);
 const addOrMinus = ref<LpDialogType>(LpDialogType.Add);
 const loading = ref(false);
@@ -288,14 +288,14 @@ async function authToken() {
       currentAccount.value?.address?.EVM
     );
     if (res.hash) {
-      toast.success(t('transfer.transfer14'));
+      toastSuccess(t('transfer.transfer14'));
       refreshAuth.value = true;
       getERC20Allowance();
     } else {
-      toast.error(res.message || res);
+      toastError(res);
     }
   } catch (e) {
-    toast.error(e.message || e);
+    toastError(e);
   }
   emit('loading', false);
 }
@@ -331,7 +331,7 @@ async function farmStake(number: string) {
     await handleHex(tx.hex, 66);
   } catch (e) {
     // console.log(e, "gain-profit-error");
-    toast.error(e.message || e);
+    toastError(e);
   }
 }
 
@@ -424,7 +424,7 @@ async function farmWithdrawal(number: string) {
     await handleHex(tx.hex, 67);
   } catch (e) {
     // console.log(e, "gain-profit-error");
-    toast.error(e.message || e);
+    toastError(e);
   }
 }
 
@@ -448,14 +448,14 @@ async function LPOperation(type: string, value: string) {
       res = await contracts.deposit(pid, amount);
     }
     if (res.hash) {
-      toast.success(t('transfer.transfer14'));
+      toastSuccess(t('transfer.transfer14'));
       dialogAddOrMinus.value = false;
     } else {
-      toast.error(res.message || res);
+      toastError(res);
     }
   } catch (e) {
     // console.error(e, 6666)
-    toast.error(e.message || e);
+    toastError(e);
   }
 }
 

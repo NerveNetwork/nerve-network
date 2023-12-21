@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 
 const props = defineProps<{
   txInfo: any;
@@ -43,7 +43,7 @@ const props = defineProps<{
 const emit = defineEmits(['confirm', 'cancel']);
 
 const { t } = useI18n();
-const toast = useToast();
+const { toastError } = useToast();
 
 const isLoading = ref(true);
 watch(
@@ -76,7 +76,7 @@ function changeInput(e: Event) {
 }
 async function confirm() {
   if (!amount.value) {
-    toast.error(t('transfer.transfer34'));
+    toastError(t('transfer.transfer34'));
   } else {
     await emit('confirm', amount.value);
     amount.value = '';

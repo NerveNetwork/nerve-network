@@ -72,7 +72,7 @@ import {
   onMounted,
   onBeforeUnmount
 } from 'vue';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import CustomInput from '@/components/CustomInput.vue';
 import { superLong, Minus } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
@@ -94,7 +94,7 @@ export default defineComponent({
     const father = inject(rootCmpKey, {} as RootComponent);
     console.log(father.network, 88777);
     const { t } = useI18n();
-    const toast = useToast();
+    const { toastSuccess, toastError } = useToast();
 
     const isTron = computed(() => {
       return father.network === 'TRON';
@@ -126,7 +126,7 @@ export default defineComponent({
       try {
         await connect();
       } catch (e) {
-        toast.error(e.message || e);
+        toastError(e);
       }
     }
 
@@ -314,7 +314,7 @@ export default defineComponent({
         const res = await approveERC20(heterogeneousInfo, L1Address.value);
         handleMsg(res, 'approve');
       } catch (e) {
-        toast.error(e.message || e);
+        toastError(e);
       }
       loading.value = false;
     }
@@ -332,7 +332,7 @@ export default defineComponent({
         handleMsg(res, 'crossIn');
       } catch (e) {
         console.log(e, 'crossin-transfer-error');
-        toast.error(e.message || e);
+        toastError(e);
       }
       loading.value = false;
     }
@@ -341,7 +341,7 @@ export default defineComponent({
         if (type === 'crossIn') {
           amount.value = '';
         }
-        toast.success(t('transfer.transfer14'));
+        toastSuccess(t('transfer.transfer14'));
         setAccountTxs(father.currentAccount.pub, {
           hash: data.hash,
           time: new Date().getTime(),
@@ -350,7 +350,7 @@ export default defineComponent({
           L1Type: type
         });
       } else {
-        toast.error(data.message || data);
+        toastError(data);
       }
     }
     function openUrl(address: string, network: string) {

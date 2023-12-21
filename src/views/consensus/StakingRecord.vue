@@ -25,7 +25,7 @@ import { getStakingListByAddress } from '@/service/api';
 import { divisionDecimals, Times, Plus, Minus } from '@/utils/util';
 import useStoreState from '@/hooks/useStoreState';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import config from '@/config';
 import {
   CanStakingListItem,
@@ -40,7 +40,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['refresh']);
 
-const toast = useToast();
+const { toastError } = useToast();
 const { handleTxInfo } = useBroadcastNerveHex();
 
 const loading = ref(true);
@@ -143,7 +143,7 @@ async function quitStaking(asset: StakingListItem) {
     }
   } catch (e) {
     console.log(e, 'quit-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
   loading.value = false;
 }
@@ -159,7 +159,7 @@ async function batchHandle(info: any) {
     }
   } catch (e) {
     console.log(e, 'batch-handle-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
   loading.value = false;
 }

@@ -65,7 +65,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch, inject, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import CustomInput from '@/components/CustomInput.vue';
 import AssetsDialog from '@/components/AssetsDialog.vue';
 import {
@@ -73,8 +73,7 @@ import {
   Minus,
   timesDecimals,
   Plus,
-  floatToCeil,
-  Times
+  floatToCeil
 } from '@/utils/util';
 import { ETransfer } from '@/utils/api';
 import TronLinkApi from '@/utils/tronLink';
@@ -97,7 +96,7 @@ export default defineComponent({
   setup() {
     const father = inject(rootCmpKey, {} as RootComponent);
     const { t } = useI18n();
-    const toast = useToast();
+    const { toastError } = useToast();
 
     const loading = ref(false);
     const toAddress = ref(father.address);
@@ -385,7 +384,7 @@ export default defineComponent({
         }
       } catch (e) {
         console.log(e, 'withdrawal-error');
-        toast.error(e.message || e);
+        toastError(e);
       }
       loading.value = false;
     }

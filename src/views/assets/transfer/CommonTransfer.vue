@@ -36,7 +36,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch, inject } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import CustomInput from '@/components/CustomInput.vue';
 import { Minus, timesDecimals, Plus } from '@/utils/util';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
@@ -53,7 +53,7 @@ export default defineComponent({
   setup() {
     const father = inject(rootCmpKey, {} as RootComponent);
     const { t } = useI18n();
-    const toast = useToast();
+    const { toastError } = useToast();
 
     const loading = ref(false);
     const amount = ref('');
@@ -239,7 +239,7 @@ export default defineComponent({
         }
       } catch (e) {
         console.log(e, 'common-transfer-error');
-        toast.error(e.message || e);
+        toastError(e);
       }
       loading.value = false;
     }

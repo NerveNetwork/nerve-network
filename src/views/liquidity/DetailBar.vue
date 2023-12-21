@@ -54,7 +54,7 @@ import {
   calMinAmountOnSwapRemoveLiquidity,
   getSwapPairInfo
 } from '@/service/api';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import { LiquidityItem } from './types';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 
@@ -69,7 +69,7 @@ const props = defineProps({
 const emit = defineEmits(['loading', 'updateList']);
 
 const { t } = useI18n();
-const toast = useToast();
+const { toastError } = useToast();
 const rates = ref([25, 50, 75, 100]);
 const quitNumber = ref('');
 const showInfo = ref(false);
@@ -195,7 +195,7 @@ async function quit() {
     }
   } catch (e) {
     console.log(e, 'Remove-liquidity-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
   emit('loading', false);
 }

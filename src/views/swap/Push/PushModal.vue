@@ -82,7 +82,7 @@ import {
 import { IPushOrderItem, IPushAssetItem } from '@/service/api/types/push';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 
 const props = withDefaults(
   defineProps<{
@@ -95,7 +95,7 @@ const props = withDefaults(
 );
 
 const { t } = useI18n();
-const toast = useToast();
+const { toastError } = useToast();
 const txAmount = ref('');
 
 const total = computed(() => {
@@ -227,7 +227,7 @@ const createOrder = async () => {
     }
   } catch (e) {
     console.log(e, 'withdrawal-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
   loading.value = false;
 };

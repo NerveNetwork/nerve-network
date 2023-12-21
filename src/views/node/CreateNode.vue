@@ -70,7 +70,7 @@ import { reactive, ref, onMounted } from 'vue';
 import AuthButton from '@/components/AuthButton.vue';
 import { ElForm } from 'element-plus';
 import { useI18n } from 'vue-i18n';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import { timesDecimals, isValidNerveAddress } from '@/utils/util';
 import { getPunishList } from '@/service/api';
 import config from '@/config';
@@ -83,7 +83,7 @@ const props = defineProps<{
 const emit = defineEmits(['refresh']);
 
 const { t } = useI18n();
-const toast = useToast();
+const { toast, toastError} = useToast();
 const { handleTxInfo } = useBroadcastNerveHex();
 
 const formRef = ref<InstanceType<typeof ElForm>>();
@@ -181,7 +181,7 @@ function createForm() {
         }
       } catch (e) {
         console.log(e, 'create-node-error');
-        toast.error(e.message || e);
+        toastError(e);
       }
       loading.value = false;
     }

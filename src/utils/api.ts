@@ -1,5 +1,5 @@
 import nerve from 'nerve-sdk-js';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { Minus, Plus, timesDecimals } from './util';
 // const Signature = require("elliptic/lib/elliptic/ec/signature");
 // const txsignatures = require("nerve-sdk-js/lib/model/txsignatures");
@@ -858,7 +858,7 @@ export class ETransfer {
       // token 转入
       const numberOfTokens = ethers.utils.parseUnits(numbers, decimals);
       const iface = new ethers.utils.Interface(CROSS_OUT_ABI);
-      const data = iface.functions.crossOut.encode([
+      const data = iface.encodeFunctionData('crossOut', [
         nerveAddress,
         numberOfTokens,
         contractAddress
@@ -873,7 +873,7 @@ export class ETransfer {
     } else {
       const amount = ethers.utils.parseEther(numbers);
       const iface = new ethers.utils.Interface(CROSS_OUT_ABI);
-      const data = iface.functions.crossOut.encode([
+      const data = iface.encodeFunctionData('crossOut', [
         nerveAddress,
         amount,
         '0x0000000000000000000000000000000000000000'
@@ -1018,13 +1018,12 @@ export class ETransfer {
     );
     const allowancePromise = contract.allowance(address, multySignAddress);
     // console.log(contractAddress, multySignAddress, address, 66333)
-    const needAllowance = ethers.utils.parseUnits(amount, decimals).toString();
+    const needAllowance = ethers.utils.parseUnits(amount, decimals);
     return allowancePromise
       .then((allowance: any) => {
         // const baseAllowance = '39600000000000000000000000000';
-        //已授权额度小于baseAllowance，则需要授权
-        // console.log(needAllowance, allowance, 33);
-        return Minus(allowance, needAllowance).toNumber() < 0;
+        //已授权额度(allowance)小于needAllowance，则需要授权
+        return allowance.sub(needAllowance).lt('0');
       })
       .catch((e: Error) => {
         console.error('获取erc20资产授权额度失败' + e);
@@ -1041,9 +1040,9 @@ export class ETransfer {
     this.validateAddress(multySignAddress);
     this.validateAddress(address);
     const iface = new ethers.utils.Interface(ERC20_ABI);
-    const data = iface.functions.approve.encode([
+    const data = iface.encodeFunctionData('approve', [
       multySignAddress,
-      new ethers.utils.BigNumber(
+      BigNumber.from(
         '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
       )
     ]);
@@ -1056,8 +1055,8 @@ export class ETransfer {
     };
     const failed = await this.validate(transactionParameters);
     if (failed) {
-      console.error('failed approveERC20' + failed);
-      return { success: false, message: 'failed approveERC20' + failed };
+      console.error('approve failed: ' + failed);
+      return { success: false, message: 'approve failed: ' + failed };
     }
     if (this.provider._web3Provider?.chainId === _networkInfo.Klaytn.nativeId) {
       // @ts-ignore
@@ -1065,7 +1064,7 @@ export class ETransfer {
       transactionParameters.gasPrice = '0x3a35294400';
     }
     // @ts-ignore
-    delete transactionParameters.from; //etherjs 4.0 from参数无效 报错
+    // delete transactionParameters.from; //etherjs 4.0 from参数无效 报错
     // console.log(transactionParameters, 333333333333333);
     return this.sendTransaction(transactionParameters);
   }
@@ -1126,13 +1125,7 @@ export class ETransfer {
   ) {
     // finalFee = baseL1Fee + extraWithdrawalFee
     const gasPrice = await this.getWithdrawGas();
-    const gasLimit_big = new ethers.utils.BigNumber(gasLimit);
-    /*let gasLimit;
-    if (isToken) {
-      gasLimit = new ethers.utils.BigNumber('210000');
-    } else {
-      gasLimit = new ethers.utils.BigNumber('190000');
-    }*/
+    const gasLimit_big = BigNumber.from(gasLimit);
     const ethereumProvider = new ethers.providers.JsonRpcProvider(
       _networkInfo.Ethereum.rpcUrl
     );
@@ -1141,8 +1134,6 @@ export class ETransfer {
     const totalL1Fee = gasLimit_big.mul(gasPrice).add(extraL1FeeBig);
     if (isMainAsset) {
       const finalFee = this.formatEthers(totalL1Fee, feeDecimals);
-      // const finalFee = Plus(baseFee, extraL1Fee).toFixed();
-      // console.log(baseFee, '--==--', extraL1Fee, '==--==', finalFee);
       return finalFee;
     } else {
       const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);

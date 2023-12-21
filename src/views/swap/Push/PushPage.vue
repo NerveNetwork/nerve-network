@@ -225,7 +225,7 @@ import {
 } from '@/utils/util';
 import usePushData from '../hooks/usePushData';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import config from '@/config';
 import { AssetItem } from '@/store/types';
 import {
@@ -236,7 +236,7 @@ import {
 
 const { t } = useI18n();
 const { nerveAddress, assetsList } = useStoreState();
-const toast = useToast();
+const { toastError } = useToast();
 
 const buyMode = ref(true); // true 挂买单 false 挂卖单
 const {
@@ -379,7 +379,7 @@ const creatOrder = async () => {
     }
   } catch (e) {
     console.log(e, 'withdrawal-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
   loading.value = false;
 };

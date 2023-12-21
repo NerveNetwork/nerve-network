@@ -123,10 +123,10 @@ import {
 import { useI18n } from 'vue-i18n';
 import { getSwapPairInfo, calMinAmountOnSwapAddLiquidity } from '@/service/api';
 import nerve from 'nerve-sdk-js';
-import { useToast } from 'vue-toastification';
 
 import { AssetItem, AddLiquidityState } from './types';
 import { DefaultAsset, SwapPairInfo } from '@/views/swap/types';
+import useToast from '@/hooks/useToast';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 
@@ -145,7 +145,7 @@ const props = defineProps({
 const emit = defineEmits(['updateList', 'update:show']);
 
 const { t } = useI18n();
-const toast = useToast();
+const { toastError } = useToast();
 let storedSwapPairInfo = {}; // 缓存的swapPairInfo
 const state = reactive<AddLiquidityState>({
   feeRate: '0.3', // 千三的手续费
@@ -582,7 +582,7 @@ async function createPair() {
       }
     } catch (e) {
       console.log(e, 'Create Pair-error');
-      toast.error(e.message || e);
+      toastError(e);
     }
     state.loading = false;
   }
@@ -657,7 +657,7 @@ async function addLiquidity() {
       }
     } catch (e) {
       console.log(e, 'Add-Liquidity-error');
-      toast.error(e.message || e);
+      toastError(e);
     }
     state.loading = false;
   }

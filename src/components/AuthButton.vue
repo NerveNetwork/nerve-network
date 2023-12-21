@@ -18,8 +18,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { useToast } from 'vue-toastification';
 import { generateAddress } from '@/hooks/useEthereum';
+import useToast from '@/hooks/useToast';
 import { useI18n } from 'vue-i18n';
 import config from '@/config';
 import storage from '@/utils/storage';
@@ -29,7 +29,7 @@ const emit = defineEmits(['loading']);
 
 const store = useStore();
 const { t } = useI18n();
-const toast = useToast();
+const { toastError } = useToast();
 
 const address = computed(() => {
   return store.state.address;
@@ -70,7 +70,7 @@ async function derivedAddress() {
     result = true;
   } catch (e) {
     // console.log(e, 4444)
-    toast.error(t('login.login3'));
+    toastError(t('login.login3'));
   }
   emit('loading', false);
   return result;

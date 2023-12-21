@@ -30,8 +30,8 @@ import NodeInfoCpm from './NodeInfo.vue';
 import RecordList from './RecordList.vue';
 import Pagination from '@/components/Pagination.vue';
 import DepositDialog from './DepositDialog.vue';
-import { useToast } from 'vue-toastification';
 import { useRouter } from 'vue-router';
+import useToast from '@/hooks/useToast';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import {
   divisionAndFix,
@@ -60,7 +60,7 @@ const props = defineProps<{
   nvtBalance: string;
 }>();
 
-const toast = useToast();
+const { toastError } = useToast();
 const { handleTxInfo } = useBroadcastNerveHex();
 const router = useRouter();
 
@@ -140,7 +140,7 @@ async function stopNode() {
     }
   } catch (e) {
     console.log(e, 'stop-node-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
 }
 
@@ -194,7 +194,7 @@ async function handleDeposit(amount: string, type: HandleType) {
     }
   } catch (e) {
     console.log(e, 'deposit-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
   depositLoading.value = false;
 }

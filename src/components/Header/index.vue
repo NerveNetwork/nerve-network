@@ -84,7 +84,6 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { useToast } from 'vue-toastification';
 import Menu from '../Menu.vue';
 import ConnectWallet from './ConnectWallet.vue';
 import AccountManage from './AccountManage.vue';
@@ -94,6 +93,7 @@ import useEthereum from '@/hooks/useEthereum';
 import useLang from '@/hooks/useLang';
 import AuthButton from '../AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
+import useToast from '@/hooks/useToast';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getTronTx, getTx } from '@/service/api';
 import { getCurrentAccount, superLong } from '@/utils/util';
@@ -104,7 +104,7 @@ import { ETransfer } from '@/utils/api';
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
-const toast = useToast();
+const { toastError } = useToast();
 
 const { address, initProvider, connect, disconnect } = useEthereum();
 const { nerveAddress, wrongChain, chain } = useStoreState();
@@ -135,7 +135,7 @@ async function connectProvider(provider: string) {
     await connect(provider);
   } catch (e) {
     // console.log(e, typeof e, e.message);
-    toast.error(e.message || e);
+    toastError(e);
   }
   store.commit('changeConnectShow', false);
 }

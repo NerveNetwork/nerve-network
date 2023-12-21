@@ -357,7 +357,7 @@
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import { ElMessageBox } from 'element-plus';
 import { Plus, superLong } from '@/utils/util';
 import config from '@/config';
@@ -372,7 +372,7 @@ const props = defineProps<{
 const emit = defineEmits(['batchHandle', 'quitStaking']);
 
 const { t } = useI18n();
-const toast = useToast();
+const { toast } = useToast();
 
 const tableData = ref<StakingListItem[]>([]);
 const selectAll = ref(false); // 全选

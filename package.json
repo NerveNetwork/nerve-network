@@ -16,7 +16,7 @@
     "countup.js": "^2.0.8",
     "echarts": "^5.2.2",
     "element-plus": "^2.0.1",
-    "ethers": "^4.0.47",
+    "ethers": "^5.7.2",
     "nerve-sdk-js": "^1.0.26",
     "tronweb": "^4.1.0",
     "vconsole": "^3.14.6",

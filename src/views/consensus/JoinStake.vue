@@ -92,7 +92,7 @@ import { useI18n } from 'vue-i18n';
 import { Division, fixNumber, Minus, Times, timesDecimals } from '@/utils/util';
 import { ElForm } from 'element-plus';
 import useStoreState from '@/hooks/useStoreState';
-import { useToast } from 'vue-toastification';
+import useToast from '@/hooks/useToast';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { CanStakingListItem } from './types';
 
@@ -105,7 +105,7 @@ const props = defineProps<{
 const emit = defineEmits(['update:show', 'refresh']);
 
 const { t } = useI18n();
-const toast = useToast();
+const { toastError } = useToast();
 const { handleTxInfo } = useBroadcastNerveHex();
 const { assetsList } = useStoreState();
 
@@ -328,7 +328,7 @@ function joinStaking() {
         }
       } catch (e) {
         console.log(e, 'join-error');
-        toast.error(e.message || e);
+        toastError(e);
       }
       loading.value = false;
     }

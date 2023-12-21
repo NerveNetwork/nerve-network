@@ -76,7 +76,6 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { useToast } from 'vue-toastification';
 import AdditionFee from './AdditionFee.vue';
 import {
   superLong,
@@ -86,6 +85,7 @@ import {
   timesDecimals
 } from '@/utils/util';
 import useCopy from '@/hooks/useCopy';
+import useToast from '@/hooks/useToast';
 import dayjs from 'dayjs';
 import { getTx } from '@/service/api';
 import useStoreState from '@/hooks/useStoreState';
@@ -102,7 +102,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:show', 'disconnect', 'connect']);
 
-const toast = useToast();
+const { toastError } = useToast();
 const { copy } = useCopy();
 
 const visible = computed({
@@ -196,7 +196,7 @@ async function additionFee(amount: string) {
     }
   } catch (e) {
     console.log(e, 'addition-fee-error');
-    toast.error(e.message || e);
+    toastError(e);
   }
   showLoading.value = false;
 }

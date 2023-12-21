@@ -114,8 +114,9 @@ export async function generateAddress(
     pub = await window.nabox.getPub({
       address: address
     });
+    pub = pub = pub.startsWith('0x') ? pub : '0x' + pub;
     heterogeneousAddress = ethers.utils.computeAddress(
-      ethers.utils.hexZeroPad(ethers.utils.hexStripZeros('0x' + pub), 33)
+      ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(pub), 33)
     );
   } else {
     const provider = getProvider();
