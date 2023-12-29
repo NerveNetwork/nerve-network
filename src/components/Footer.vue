@@ -26,7 +26,7 @@
         </ul>
       </div>
       <p class="copy-right mobile">
-        Copyright 2019-2023 @ All rights Reserved. NerveNetwork
+        Copyright 2019-2024 @ All rights Reserved. NerveNetwork
       </p>
     </div>
   </div>
