@@ -112,12 +112,12 @@ if (props.isPool) {
   current.value = FarmType.NerveFarm;
 }
 const state = reactive<SearchState>({
-  sortValue: '1', // 下拉框值 apr -1 liquid -2
-  farmStatus: 'pending', // farm状态 进行中-pending end -已结束
-  mortgageValue: false // 只看已质押
+  sortValue: '1', // apr -1 liquid -2
+  farmStatus: 'pending', // pending | end
+  mortgageValue: false
 });
 const { nerveList, getFarmData, getUserFarm, uniList, getUniData, filterList } =
-  useFarmData(props.isPool);
+  useFarmData();
 watch(
   () =>
     [state.sortValue, state.mortgageValue, state.farmStatus] as [

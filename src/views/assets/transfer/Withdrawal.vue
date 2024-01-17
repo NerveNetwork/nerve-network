@@ -2,7 +2,7 @@
   <div class="cross-out" v-loading="loading">
     <div class="title">
       {{ 'To ' + father.network }}
-<!--      <span class="click" @click="openUrl(father.address, father.network)">
+      <!--      <span class="click" @click="openUrl(father.address, father.network)">
         {{ superLong(father.address) }}
         <i class="iconfont icon-tiaozhuanlianjie"></i>
       </span>-->
@@ -86,6 +86,7 @@ import { HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import storage from '@/utils/storage';
 import { getWithdrawalGasLimit } from '@/utils/getSystemConfig';
+import nerveswap from 'nerveswap-sdk';
 
 export default defineComponent({
   name: 'withdrawal',
@@ -350,7 +351,7 @@ export default defineComponent({
       }
     }
 
-    const { handleTxInfo } = useBroadcastNerveHex();
+    const { getWalletInfo, handleResult } = useBroadcastNerveHex();
     async function sendTx() {
       loading.value = true;
       try {
@@ -378,10 +379,58 @@ export default defineComponent({
           heterogeneousAddress: toAddress.value,
           heterogeneousChainId: heterogeneousInfo.heterogeneousChainId
         };
-        const result: any = await handleTxInfo(transferInfo, 43, txData);
-        if (result && result.hash) {
-          amount.value = '';
-        }
+
+        /* await sendAdditionFeeTx({
+          provider: 'ethereum',
+          from: nerveAddress,
+          amount: timesDecimals(fee.value, decimals),
+          assetChainId: chainId,
+          assetId: assetId,
+          txHash:
+            'bb8abc5679e4f4e1ca9f8101b6ea0443c5f65b2a8ab6f34ecec7fa9808ae2f3c',
+          EVMAddress: '0xc11D9943805e56b630A401D4bd9A29550353EFa1',
+          pub: '0369b20002bc58c74cb6fd5ef564f603834393f53bed20c3314b4b7aba8286a7e0'
+        }); */
+        const { provider, EVMAddress, pub } = getWalletInfo();
+        const result = await nerveswap.transfer.withdrawal({
+          provider,
+          from: nerveAddress,
+          assetChainId: chainId,
+          assetId: assetId,
+          amount: timesDecimals(amount.value, decimals),
+          feeInfo: {
+            amount: timesDecimals(1, feeDecimals),
+            assetChainId: feeChainId,
+            assetId: feeAssetId
+          },
+          heterogeneousAddress: toAddress.value,
+          heterogeneousChainId: heterogeneousInfo.heterogeneousChainId,
+          EVMAddress,
+          pub
+        });
+        handleResult(43, result);
+
+        /* await sendWithdrawalTx({
+          provider: 'ethereum',
+          from: nerveAddress,
+          assetChainId: chainId,
+          assetId: assetId,
+          amount: timesDecimals(amount.value, decimals),
+          feeInfo: {
+            amount: timesDecimals(1, feeDecimals),
+            chainId: feeChainId,
+            assetId: feeAssetId
+          },
+          heterogeneousAddress: toAddress.value,
+          heterogeneousChainId: heterogeneousInfo.heterogeneousChainId,
+          EVMAddress: '0xc11D9943805e56b630A401D4bd9A29550353EFa1',
+          pub: '0369b20002bc58c74cb6fd5ef564f603834393f53bed20c3314b4b7aba8286a7e0'
+        }); */
+
+        // const result: any = await handleTxInfo(transferInfo, 43, txData);
+        // if (result && result.hash) {
+        //   amount.value = '';
+        // }
       } catch (e) {
         console.log(e, 'withdrawal-error');
         toastError(e);

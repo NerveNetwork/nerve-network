@@ -3,11 +3,16 @@ import TronLinkApi from '@/utils/tronLink';
 import { ETransfer } from '@/utils/api';
 import { HeterogeneousInfo } from '@/store/types';
 import { useI18n } from 'vue-i18n';
+import { ethers } from 'ethers';
+import nerveswap from 'nerveswap-sdk';
+import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 
 export default function useCrossIn(isTron = false) {
   const { t } = useI18n();
   let TronTransfer: any;
   const EvmTransfer = new ETransfer();
+  const { getWalletInfo } = useBroadcastNerveHex();
+  const { provider } = getWalletInfo();
 
   if (isTron) {
     TronTransfer = new TronLinkApi();
@@ -110,13 +115,20 @@ export default function useCrossIn(isTron = false) {
         contractAddress
       );
     } else {
-      _needAuth = await EvmTransfer.getERC20Allowance(
+      _needAuth = await nerveswap.evm.checkAuth({
+        provider,
+        tokenContract: contractAddress,
+        multySignContract: heterogeneousChainMultySignAddress,
+        address: address,
+        amount: ethers.utils.parseUnits(amount!, decimals)
+      });
+      /* _needAuth = await EvmTransfer.getERC20Allowance(
         contractAddress,
         heterogeneousChainMultySignAddress,
         address,
         amount!,
         decimals!
-      );
+      ); */
     }
     setTimeout(() => {
       updateAuthState(_needAuth, false);
@@ -160,11 +172,17 @@ export default function useCrossIn(isTron = false) {
         contractAddress
       );
     } else {
-      res = await EvmTransfer.approveERC20(
+      res = await nerveswap.evm.approve({
+        provider,
+        tokenContract: contractAddress,
+        multySignContract: heterogeneousChainMultySignAddress,
+        address: address
+      });
+      /* res = await EvmTransfer.approveERC20(
         contractAddress,
         heterogeneousChainMultySignAddress,
         address
-      );
+      ); */
     }
     if (res.hash) {
       refreshAuth = true;
@@ -192,7 +210,15 @@ export default function useCrossIn(isTron = false) {
       );
       return { hash };
     } else {
-      const params = {
+      return await nerveswap.evm.crossIn({
+        provider,
+        multySignContract: heterogeneousChainMultySignAddress,
+        nerveAddress,
+        amount: ethers.utils.parseUnits(amount, decimal),
+        from: address,
+        tokenContract: contractAddress
+      });
+      /* const params = {
         multySignAddress: heterogeneousChainMultySignAddress,
         nerveAddress: nerveAddress,
         numbers: amount,
@@ -201,7 +227,7 @@ export default function useCrossIn(isTron = false) {
         decimals: decimal
       };
       // console.log(params);
-      return await EvmTransfer.crossIn(params);
+      return await EvmTransfer.crossIn(params); */
     }
   }
 

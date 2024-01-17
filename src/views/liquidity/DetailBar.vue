@@ -48,12 +48,8 @@
 <script lang="ts" setup>
 import { ref, PropType } from 'vue';
 import { Times, timesDecimals, divisionDecimals, Minus } from '@/utils/util';
-import nerve from 'nerve-sdk-js';
 import { useI18n } from 'vue-i18n';
-import {
-  calMinAmountOnSwapRemoveLiquidity,
-  getSwapPairInfo
-} from '@/service/api';
+import nerveswap from 'nerveswap-sdk';
 import useToast from '@/hooks/useToast';
 import { LiquidityItem } from './types';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
@@ -83,12 +79,16 @@ function handleInput(val: string) {
   currentIndex.value = -1;
   if (Minus(availableLiquidity, val).toNumber() < 0) {
     showInfo.value = false;
-    // amountError.value = "超过最大撤出数量";
     amountError.value = t('liquidity.liquidity16');
     return;
   } else {
     amountError.value = '';
-    Number(val) !== 0 && calRemoveLiquidity();
+    if (Number(val) !== 0) {
+      showInfo.value = true;
+      calRemoveLiquidity();
+    } else {
+      showInfo.value = false;
+    }
   }
 }
 
@@ -101,48 +101,25 @@ async function getNumber(item: number, index: number) {
 }
 // 计算撤出流动性将获得的资产
 async function calRemoveLiquidity() {
-  const { token0, token1 } = props.info;
+  const { token0, token1, lpTokenAmount } = props.info;
   const tokenAStr = `${token0['assetChainId']}-${token0['assetId']}`;
   const tokenBStr = `${token1['assetChainId']}-${token1['assetId']}`;
-  const params = {
-    tokenAStr,
-    tokenBStr
-  };
-  const {
-    token0: tempToken0,
-    token1: tempToken1,
-    reserve0,
-    reserve1,
-    tokenLP,
-    totalLP
-  }: any = await getSwapPairInfo(params);
-  const tempNervePair = nerve.swap.pair(
-    tempToken0,
-    tempToken1,
-    reserve0,
-    reserve1
-  );
-  const nervePair = { ...tempNervePair, totalSupply: totalLP };
-  // console.log(tempToken0, tempToken1, "tempToken0tempToken0tempToken0");
-  const tokenA = nerve.swap.token(tempToken0.assetChainId, tempToken0.assetId);
-  const tokenB = nerve.swap.token(tempToken1.assetChainId, tempToken1.assetId);
-  const { amountA, amountB } = nerve.swap.calRemoveLiquidity(
-    timesDecimals(quitNumber.value, tokenLP.decimals),
-    tokenA,
-    tokenB,
-    nervePair
-  );
-  expectedAmountA.value = divisionDecimals(amountA.toString(), token0.decimals);
-  expectedAmountB.value = divisionDecimals(amountB.toString(), token1.decimals);
+  const { tokenAAmount, tokenBAmount } =
+    await nerveswap.liquidity.calRemoveLiquidity({
+      tokenAKey: tokenAStr,
+      tokenBKey: tokenBStr,
+      amount: timesDecimals(quitNumber.value, lpTokenAmount.token.decimals)
+    });
+  expectedAmountA.value = divisionDecimals(tokenAAmount, token0.decimals);
+  expectedAmountB.value = divisionDecimals(tokenBAmount, token1.decimals);
 }
 
-const { handleHex } = useBroadcastNerveHex();
+const { handleResult, getWalletInfo } = useBroadcastNerveHex();
 async function quit() {
   if (!Number(quitNumber.value)) return;
+  const { provider, EVMAddress, pub } = getWalletInfo();
   try {
     emit('loading', true);
-    const fromAddress = props.nerveAddress;
-    const toAddress = props.nerveAddress;
     const LP = props.info.lpTokenAmount;
     const tokenA = props.info.token0;
     const tokenB = props.info.token1;
@@ -150,43 +127,27 @@ async function quit() {
       quitNumber.value,
       LP.token.decimals
     ).split('.')[0];
-    // 移除的资产LP的数量
-    const tokenAmountLP = nerve.swap.tokenAmount(
-      LP.token.assetChainId,
-      LP.token.assetId,
-      removeAmount
-    );
-    const minRemove: any = await calMinAmountOnSwapRemoveLiquidity({
-      amountLP: removeAmount, //LP.amount,
-      tokenAStr: tokenA.assetChainId + '-' + tokenA.assetId,
-      tokenBStr: tokenB.assetChainId + '-' + tokenB.assetId
+
+    const res = await nerveswap.liquidity.removeLiquidity({
+      provider,
+      from: props.nerveAddress!,
+      removeAmount,
+      tokenA: {
+        assetChainId: tokenA.assetChainId,
+        assetId: tokenA.assetId
+      },
+      tokenB: {
+        assetChainId: tokenB.assetChainId,
+        assetId: tokenB.assetId
+      },
+      tokenLP: {
+        assetChainId: LP.token.assetChainId,
+        assetId: LP.token.assetId
+      },
+      EVMAddress,
+      pub
     });
-    if (!minRemove) {
-      throw 'Cal min removeAmount failed';
-    }
-    // 资产A最小移除值
-    const tokenAmountAMin = nerve.swap.tokenAmount(
-      tokenA.assetChainId,
-      tokenA.assetId,
-      minRemove.amountAMin
-    );
-    // 资产B最小移除值
-    const tokenAmountBMin = nerve.swap.tokenAmount(
-      tokenB.assetChainId,
-      tokenB.assetId,
-      minRemove.amountBMin
-    );
-    const deadline = nerve.swap.currentTime() + 300;
-    const tx = await nerve.swap.swapRemoveLiquidity(
-      fromAddress,
-      tokenAmountLP,
-      tokenAmountAMin,
-      tokenAmountBMin,
-      deadline,
-      toAddress,
-      ''
-    );
-    const res: any = await handleHex(tx.hex, 65);
+    handleResult(65, res);
     if (res && res.hash) {
       quitNumber.value = '';
       setTimeout(() => {

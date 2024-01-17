@@ -81,10 +81,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item class="checkbox-item" prop="check">
-          <el-checkbox
-            :label="$t('farm.farm26')"
-            v-model="model.checkContact"
-          >
+          <el-checkbox :label="$t('farm.farm26')" v-model="model.checkContact">
             <i18n-t keypath="farm.farm26" tag="label">
               <a href="https://discord.gg/PBkHeD7" target="_blank" class="link">
                 {{ $t('farm.farm27') }}
@@ -136,6 +133,7 @@ import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import useToast from '@/hooks/useToast';
 import useMyFarm from './hooks/useMyFarm';
 import { ElForm } from 'element-plus';
+import nerveswap from 'nerveswap-sdk';
 
 import { AssetItem } from '@/store/types';
 
@@ -199,7 +197,7 @@ const rules = reactive({
       message: t('createFarm.createFarm6'),
       trigger: 'change'
     }
-  ],
+  ]
   /*checkContact: [{ validator: validateCheck, trigger: 'blur' }],
   check: [{ validator: validateCheck, trigger: 'blur' }]*/
 });
@@ -281,10 +279,11 @@ function submitForm() {
     }
   });
 }
-const { handleHex } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult, handleHex } = useBroadcastNerveHex();
 async function createFarm() {
   loading.value = true;
   try {
+    const { provider, EVMAddress, pub } = getWalletInfo();
     const { lockedTime, syrupPerDay, syrupTotalAmount, startTime } = model;
     const tokenA = assetList.value.find(
       (v: AssetItem) => v.assetKey === model.tokenA
@@ -297,7 +296,6 @@ async function createFarm() {
       syrupPerDay_amount,
       tokenB.decimals
     ).split('.')[0];
-    const remark = '';
     const blockInfo: any = await getBlockInfo();
     const currentHeight = blockInfo.blockHeight;
     const diffSeconds = dayjs(startTime).diff(dayjs(new Date()), 'seconds');
@@ -305,19 +303,20 @@ async function createFarm() {
       ? Math.floor(Number(currentHeight) + diffSeconds / 2)
       : 1;
     const lockTo = advanced.value ? dayjs(lockedTime).unix() : 1;
-    const tx = await nerve.swap.farmCreate(
-      nerveAddress.value,
-      nerve.swap.token(tokenA.chainId, tokenA.assetId),
-      nerve.swap.token(tokenB.chainId, tokenB.assetId),
-      config.chainId,
-      timesDecimals(syrupTotalAmount, tokenB.decimals),
-      syrupPerBlock,
+    const result = await nerveswap.farm.createFarm({
+      provider,
+      from: nerveAddress.value,
+      stakeAssetKey: tokenA.chainId + '-' + tokenA.assetId,
+      rewardAssetKey: tokenB.chainId + '-' + tokenB.assetId,
+      totalReward: timesDecimals(syrupTotalAmount, tokenB.decimals),
+      rewardPerBlock: syrupPerBlock,
       startBlockHeight,
-      lockTo,
-      config.prefix,
-      remark
-    );
-    const result: any = await handleHex(tx.hex, 62);
+      lockedTime: lockTo,
+      remark: '',
+      EVMAddress,
+      pub
+    });
+    handleResult(62, result);
     if (result && result.hash) {
       updateMyFarms({
         type: tokenA.symbol.indexOf('_') > -1 ? 'farm' : 'pool',
@@ -437,8 +436,8 @@ const advanced = ref(false);
     .el-switch__label span {
       color: #475472;
     }
-    .is-active span{
-      color: #2688F7;
+    .is-active span {
+      color: #2688f7;
     }
   }
   .my-farms {

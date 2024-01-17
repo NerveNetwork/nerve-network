@@ -233,6 +233,7 @@ import {
   IPushOrderItem,
   IMyOrderItem
 } from '@/service/api/types/push';
+import nerveswap from 'nerveswap-sdk';
 
 const { t } = useI18n();
 const { nerveAddress, assetsList } = useStoreState();
@@ -324,7 +325,10 @@ const btnConfig = computed(() => {
       title: t('trading.trading45') + minQuote + quoteSymbol,
       disable: true
     };
-  } else if (!payAsset?.listAvailable || total.value - payAsset.listAvailable > 0) {
+  } else if (
+    !payAsset?.listAvailable ||
+    total.value - payAsset.listAvailable > 0
+  ) {
     return {
       title: t('transfer.transfer15'),
       disable: true
@@ -337,10 +341,11 @@ const btnConfig = computed(() => {
   }
 });
 
-const { handleTxInfo } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult, handleTxInfo } = useBroadcastNerveHex();
 
 const loading = ref(false);
 const creatOrder = async () => {
+  const { provider, EVMAddress, pub } = getWalletInfo();
   if (btnConfig.value.disable) {
     return;
   }
@@ -373,7 +378,20 @@ const creatOrder = async () => {
       feeAddress: config.pushFeeAddress,
       feeScale: config.pushFeeScale
     };
-    const result: any = await handleTxInfo(transferInfo, 229, txData);
+    // const result: any = await handleTxInfo(transferInfo, 229, txData);
+    const result = await nerveswap.push.createOrder({
+      provider,
+      from: nerveAddress.value,
+      payAmount,
+      payAssetKey: assetsChainId + '-' + assetsId,
+      orderAmount: transferAmount,
+      price: timesDecimals(price.value, quoteAsset.value.decimals),
+      tradingHash: pairInfo.value.hash,
+      orderType: buyMode.value ? 1 : 2,
+      EVMAddress,
+      pub
+    });
+    handleResult(229, result);
     if (result && result.hash) {
       //
     }
@@ -410,6 +428,7 @@ const revokeLoading = ref(false);
 const revokeOrder = async (item: IMyOrderItem) => {
   revokeLoading.value = true;
   try {
+    const { provider, EVMAddress, pub } = getWalletInfo();
     const transferInfo = {
       from: nerveAddress.value
     };
@@ -417,7 +436,15 @@ const revokeOrder = async (item: IMyOrderItem) => {
       orderHash: item.hash, //委托挂单hash
       address: nerveAddress.value
     };
-    const result: any = await handleTxInfo(transferInfo, 230, txData);
+    const result = await nerveswap.push.revokeOrder({
+      provider,
+      from: nerveAddress.value,
+      orderHash: item.hash,
+      EVMAddress,
+      pub
+    });
+    handleResult(230, result);
+    // const result: any = await handleTxInfo(transferInfo, 230, txData);
     if (result && result.hash) {
       //
     }

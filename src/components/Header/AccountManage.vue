@@ -93,6 +93,7 @@ import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import _ from 'lodash';
 import config from '@/config';
 import { TxInfo } from '@/store/types';
+import nerveswap from 'nerveswap-sdk';
 
 const props = defineProps<{
   show: boolean;
@@ -141,7 +142,7 @@ function openUrl(item: TxInfo) {
 }
 
 const activeTx: any = ref({});
-const { assetsList, nerveAddress } = useStoreState();
+const { assetsList, nerveAddress, currentAccount } = useStoreState();
 let feeCoin: any = {};
 function showAdditionFee(hash: string, isExpand: boolean) {
   activeTx.value = {};
@@ -173,11 +174,22 @@ function showAdditionFee(hash: string, isExpand: boolean) {
 }
 
 const showLoading = ref(false);
-const { handleTxInfo } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 async function additionFee(amount: string) {
   showLoading.value = true;
   try {
-    const transferInfo = {
+    const { provider, EVMAddress, pub } = getWalletInfo();
+    const result = await nerveswap.transfer.addFee({
+      provider,
+      from: nerveAddress.value,
+      amount: timesDecimals(amount, feeCoin.decimals),
+      assetChainId: feeCoin.chainId,
+      assetId: feeCoin.assetId,
+      txHash: activeTx.value.hash,
+      EVMAddress,
+      pub
+    });
+    /* const transferInfo = {
       from: nerveAddress.value,
       to: config.feeAddress,
       assetsChainId: feeCoin.chainId,
@@ -186,7 +198,8 @@ async function additionFee(amount: string) {
     };
     const result: any = await handleTxInfo(transferInfo, 56, {
       txHash: activeTx.value.hash
-    });
+    }); */
+    handleResult(56, result);
     if (result && result.hash) {
       newList.value.map(v => {
         if (v.hash === activeTx.value.hash) {

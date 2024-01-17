@@ -25,8 +25,15 @@
       </div>
     </div>
     <div class="confirm-wrap">
-      <el-button v-if="disableToNULS" type="primary" disabled>{{ $t('transfer.transfer34') }}</el-button>
-      <el-button type="primary" @click="sendTx" :disabled="disableTransfer" v-else>
+      <el-button v-if="disableToNULS" type="primary" disabled>
+        {{ $t('transfer.transfer34') }}
+      </el-button>
+      <el-button
+        type="primary"
+        @click="sendTx"
+        :disabled="disableTransfer"
+        v-else
+      >
         {{ amountErrorTip || $t('transfer.transfer10') }}
       </el-button>
     </div>
@@ -43,6 +50,7 @@ import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import nerve from 'nerve-sdk-js';
 import config from '@/config';
 import { rootCmpKey, RootComponent, AssetItemType } from '../types';
+import nerveswap from 'nerveswap-sdk';
 
 export default defineComponent({
   name: 'commonTransfer',
@@ -219,12 +227,25 @@ export default defineComponent({
       }*/
     }
 
-    const { handleTxInfo } = useBroadcastNerveHex();
+    const { getWalletInfo, handleResult } = useBroadcastNerveHex();
     async function sendTx() {
       try {
         loading.value = true;
         const { chainId, assetId, decimals } = transferAsset.value;
-        const transferInfo = {
+        const { provider, EVMAddress, pub } = getWalletInfo();
+        const result: any = await nerveswap.transfer.transfer({
+          provider,
+          from: father.nerveAddress,
+          to: toAddress.value,
+          assetChainId: chainId,
+          assetId: assetId,
+          amount: timesDecimals(amount.value, decimals),
+          type: type.value,
+          EVMAddress,
+          pub
+        });
+        handleResult(type.value, result);
+        /* const transferInfo = {
           from: father.nerveAddress,
           to: toAddress.value,
           assetsChainId: chainId,
@@ -236,7 +257,7 @@ export default defineComponent({
         if (result && result.hash) {
           amount.value = '';
           toAddress.value = '';
-        }
+        } */
       } catch (e) {
         console.log(e, 'common-transfer-error');
         toastError(e);

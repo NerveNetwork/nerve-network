@@ -176,7 +176,7 @@
           }}
         </span>
       </div>
-<!--      <div class="d-flex align-items-center space-between mt-8 size-14">
+      <!--      <div class="d-flex align-items-center space-between mt-8 size-14">
         <span>{{ $t('farm.farm5') }}</span>
         <span>
           {{ $thousands(tokenInfo.rewardBalance) }}
@@ -219,6 +219,7 @@ import nerve from 'nerve-sdk-js';
 import { ETransfer } from '@/utils/api';
 import { timesDecimals, divisionDecimals } from '@/utils/util';
 import config from '@/config';
+import nerveswap from 'nerveswap-sdk';
 
 import { UniFarmItem, NerveFarmItem, LpOperate, LpDialogType } from './types';
 
@@ -250,6 +251,9 @@ const refreshAuth = ref(false);
 const { currentAccount } = useStoreState();
 const balance = ref('0');
 const contractAddress = useContractAddress().value;
+
+const { handleResult, getWalletInfo } = useBroadcastNerveHex();
+
 onMounted(() => {
   // console.log(props.tokenInfo, 9696);
   getERC20Allowance();
@@ -314,21 +318,51 @@ async function gether() {
 // 收取收益(number = 0) / 增加LP
 async function farmStake(number: string) {
   try {
+    const { provider, pub, EVMAddress } = getWalletInfo();
     const tokenInfo = props.tokenInfo as NerveFarmItem;
     const { stakeTokenChainId, stakeTokenAssetId, stakeTokenDecimals } =
       tokenInfo;
     const farmHash = props.tokenInfo.farmHash || route.params?.hash;
     const amount = timesDecimals(number, stakeTokenDecimals);
-    const tx = await nerve.swap.farmStake(
-      currentAccount.value?.address?.NERVE,
-      nerve.swap.token(stakeTokenChainId, stakeTokenAssetId),
-      config.chainId,
-      config.prefix,
-      amount,
-      farmHash,
-      ''
-    );
-    await handleHex(tx.hex, 66);
+    // const tx = await nerve.swap.farmStake(
+    //   currentAccount.value?.address?.NERVE,
+    //   nerve.swap.token(stakeTokenChainId, stakeTokenAssetId),
+    //   config.chainId,
+    //   config.prefix,
+    //   amount,
+    //   farmHash,
+    //   ''
+    // );
+    // await handleHex(tx.hex, 66);
+    let result;
+    if (number !== '0') {
+      result = await nerveswap.farm.stake({
+        provider,
+        from: currentAccount.value?.address?.NERVE,
+        assetChainId: stakeTokenChainId,
+        assetId: stakeTokenAssetId,
+        amount,
+        farmHash,
+        remark: '',
+        EVMAddress,
+        pub
+      });
+    } else {
+      result = await nerveswap.farm.claim({
+        provider,
+        from: currentAccount.value?.address?.NERVE,
+        assetChainId: stakeTokenChainId,
+        assetId: stakeTokenAssetId,
+        farmHash,
+        remark: '',
+        EVMAddress,
+        pub
+      });
+    }
+    handleResult(66, result);
+    if (result.hash) {
+      dialogAddOrMinus.value = false;
+    }
   } catch (e) {
     // console.log(e, "gain-profit-error");
     toastError(e);
@@ -403,6 +437,7 @@ async function confirmAddOrMinus(amount: string) {
 
 // 退出质押
 async function farmWithdrawal(number: string) {
+  const { provider, pub, EVMAddress } = getWalletInfo();
   const tokenInfo = props.tokenInfo as NerveFarmItem;
   try {
     const {
@@ -412,7 +447,7 @@ async function farmWithdrawal(number: string) {
       farmHash
     } = tokenInfo;
     const amount = timesDecimals(number, stakeTokenDecimals);
-    const tx = await nerve.swap.farmWithdraw(
+    /* const tx = await nerve.swap.farmWithdraw(
       currentAccount.value?.address?.NERVE,
       nerve.swap.token(stakeTokenChainId, stakeTokenAssetId),
       // config.chainId,
@@ -421,7 +456,22 @@ async function farmWithdrawal(number: string) {
       farmHash,
       ''
     );
-    await handleHex(tx.hex, 67);
+    await handleHex(tx.hex, 67); */
+    const result = await nerveswap.farm.withdrawal({
+      provider,
+      from: currentAccount.value?.address?.NERVE,
+      assetChainId: stakeTokenChainId,
+      assetId: stakeTokenAssetId,
+      amount,
+      farmHash,
+      remark: '',
+      EVMAddress,
+      pub
+    });
+    handleResult(67, result);
+    if (result.hash) {
+      dialogAddOrMinus.value = false;
+    }
   } catch (e) {
     // console.log(e, "gain-profit-error");
     toastError(e);
@@ -429,7 +479,7 @@ async function farmWithdrawal(number: string) {
 }
 
 // evm 添加 - Add、减少 - Remove lp, 领取收益 -Claim
-async function LPOperation(type: string, value: string) {
+async function LPOperation(type: LpOperate, value: string) {
   try {
     const transfer = new ETransfer();
     const { stakeTokenDecimals } = props.tokenInfo;
@@ -459,14 +509,13 @@ async function LPOperation(type: string, value: string) {
   }
 }
 
-const { handleHex: handleNerveHex } = useBroadcastNerveHex();
 // nerve 签名hash&广播hex
-async function handleHex(hex: string, type: number) {
+/* async function handleHex(hex: string, type: number) {
   const result: any = await handleNerveHex(hex, type);
   if (result && result.hash) {
     dialogAddOrMinus.value = false;
   }
-}
+} */
 
 function toAddLiquidity() {
   const {

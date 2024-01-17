@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import CreateNode from './CreateNode.vue';
 import NodeDetail from './NodeDetail.vue';
 import useStoreState from '@/hooks/useStoreState';
@@ -29,11 +29,19 @@ const { nerveAddress, assetsList } = useStoreState();
 const nodeHash = ref('');
 const nodeDeposit = ref(0);
 
-onMounted(() => {
-  getNodeInfo();
-});
-
 const loading = ref(true);
+watch(
+  () => nerveAddress.value,
+  val => {
+    if (val) {
+      getNodeInfo();
+    }
+  },
+  {
+    immediate: true
+  }
+);
+
 async function getNodeInfo() {
   const address = nerveAddress.value;
   // const address = 'TNVTdTSPSaKU5hqs4NAG1FNExqXm4qsxKHrd2';

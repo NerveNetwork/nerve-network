@@ -95,6 +95,7 @@ import useStoreState from '@/hooks/useStoreState';
 import useToast from '@/hooks/useToast';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { CanStakingListItem } from './types';
+import nerveswap from 'nerveswap-sdk';
 
 const props = defineProps<{
   address?: string;
@@ -106,7 +107,7 @@ const emit = defineEmits(['update:show', 'refresh']);
 
 const { t } = useI18n();
 const { toastError } = useToast();
-const { handleTxInfo } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 const { assetsList } = useStoreState();
 
 const visible = computed({
@@ -302,10 +303,10 @@ function joinStaking() {
       try {
         const { chainId, assetId, decimals } = currentCurrency.value;
         const amount = timesDecimals(joinStakingModel.amount, decimals),
-          depositType = joinStakingModel.deadline === 0 ? 0 : 1, // 委托类型
+          depositType = joinStakingModel.deadline === 0 ? 0 : 1,
           timeType = joinStakingModel.deadline
             ? joinStakingModel.deadline - 1
-            : 0; // 委托时长
+            : 0;
         const transferInfo = {
           from: props.address,
           assetsChainId: chainId,
@@ -316,16 +317,29 @@ function joinStaking() {
         const txData = {
           address: props.address,
           deposit: amount,
-          assetsChainId: chainId, // 链ID
-          assetsId: assetId, // 资产ID
-          depositType: depositType, // 委托类型
-          timeType: timeType //委托时长
+          assetsChainId: chainId,
+          assetsId: assetId,
+          depositType: depositType,
+          timeType: timeType
         };
-        const result: any = await handleTxInfo(transferInfo, 5, txData);
+        const { provider, EVMAddress, pub } = getWalletInfo();
+        const result = await nerveswap.staking.joinStaking({
+          provider,
+          from: props.address!,
+          assetChainId: chainId as number,
+          assetId: assetId as number,
+          amount: amount,
+          depositType: depositType,
+          timeType: timeType,
+          EVMAddress,
+          pub
+        });
+        handleResult(5, result);
+        /* const result: any = await handleTxInfo(transferInfo, 5, txData);
         if (result && result.hash) {
           emit('refresh');
           visible.value = false;
-        }
+        } */
       } catch (e) {
         console.log(e, 'join-error');
         toastError(e);

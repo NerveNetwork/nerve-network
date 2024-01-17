@@ -43,7 +43,7 @@ export interface SwapState {
   routesSymbol: { icon: string; assetKey: string }[];
   fee: string;
   priceImpact: string;
-  customerType: string;
+  direction: string;
   protectError: string;
   showLoading: boolean;
 }

@@ -13,7 +13,7 @@ const proxyUrl =
 
 const port = process.env.BUILD_ENV === 'prod' ? 8031 : 8033;
 module.exports = {
-  // transpileDependencies: ['@injectivelabs'], // 使用babel-loader编译node_modules里的包
+  // transpileDependencies: ['@injectivelabs'],
   publicPath: '/',
   configureWebpack: config => {
     // element-plus import es-module
@@ -31,16 +31,15 @@ module.exports = {
           minRatio: 0.8
         })
       );
+      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
     }
     config.plugins.push(
       new webpack.DefinePlugin({
-        //定义全局变量
         'process.env': {
           BUILD_ENV: JSON.stringify(process.env.BUILD_ENV)
         }
       })
     );
-    // element-plus按需引入
     /*config.plugins.push(
       AutoImport({
         resolvers: [ElementPlusResolver()]
@@ -52,10 +51,9 @@ module.exports = {
       })
     );
     config.optimization.splitChunks = {
-      // 添加分包
       chunks: 'all',
-      maxAsyncRequests: 5, // 每个异步加载模块最多能被拆分的数量
-      maxInitialRequests: 5, // 每个入口和它的同步依赖最多能被拆分的数量
+      maxAsyncRequests: 5,
+      maxInitialRequests: 5,
       cacheGroups: {
         'nerve-sdk-js': {
           name: 'sdk-chunk',
@@ -90,7 +88,6 @@ module.exports = {
     // config.plugins.push(new BundleAnalyzerPlugin());
   },
   css: {
-    // 提取 CSS 在开发环境模式下是默认不开启的，因为它和 CSS 热重载不兼容
     extract: !isProduction ? false : { ignoreOrder: true },
     sourceMap: !isProduction
   },

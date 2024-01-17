@@ -121,11 +121,9 @@ import {
   isBeta
 } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
-import { getSwapPairInfo, calMinAmountOnSwapAddLiquidity } from '@/service/api';
-import nerve from 'nerve-sdk-js';
-
+import nerveswap from 'nerveswap-sdk';
 import { AssetItem, AddLiquidityState } from './types';
-import { DefaultAsset, SwapPairInfo } from '@/views/swap/types';
+import { DefaultAsset } from '@/views/swap/types';
 import useToast from '@/hooks/useToast';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
@@ -254,29 +252,19 @@ async function storeSwapPairInfo(refresh = false) {
   const toAssetKey = state.toAsset?.assetKey;
   const key = fromAssetKey + '_' + toAssetKey;
   if (fromAssetKey && toAssetKey) {
-    if (storedSwapPairInfo[key] && !refresh) {
-      // 如果存在切不需要刷新 则跳过
-    } else {
-      const result = (await getSwapPairInfo({
-        tokenAStr: fromAssetKey,
-        tokenBStr: toAssetKey
-      })) as SwapPairInfo;
-      if (result) {
-        const token0Key =
-          result.token0.assetChainId + '-' + result.token0.assetId;
-        storedSwapPairInfo[key] = {
-          reserveFrom:
-            token0Key === fromAssetKey ? result.reserve0 : result.reserve1, // fromAsset的池子余额
-          reserveTo:
-            token0Key === fromAssetKey ? result.reserve1 : result.reserve0 // // toAsset的池子余额
-        };
-        state.insufficient = false;
-        if (state.fromAmount && state.toAmount) {
-          refreshRate();
-        }
-      } else {
-        state.insufficient = true;
+    const info = await nerveswap.liquidity.getPairInfo(
+      fromAssetKey,
+      toAssetKey,
+      refresh
+    );
+    if (info) {
+      storedSwapPairInfo[key] = info;
+      state.insufficient = false;
+      if (state.fromAmount && state.toAmount) {
+        refreshRate();
       }
+    } else {
+      state.insufficient = true;
     }
   }
 }
@@ -324,7 +312,7 @@ watch(
       }
       if (state.insufficient) return;
       if (!state.disableWatchFromAmount) {
-        const res = getLiquidAmount(val, 'to'); // 通过from计算to
+        const res = await getLiquidAmount(val, 'to'); // 通过from计算to
         if (res) {
           state.disableWatchToAmount = true; // 避免进入无限循环计算
           state.toAmount = res;
@@ -362,7 +350,7 @@ watch(
       }
       if (state.insufficient) return;
       if (!state.disableWatchToAmount) {
-        const res = getLiquidAmount(val, 'from'); // 通过to计算from
+        const res = await getLiquidAmount(val, 'from'); // 通过to计算from
         if (res) {
           state.disableWatchFromAmount = true;
           state.fromAmount = res;
@@ -409,7 +397,7 @@ watch(
 );
 
 // 计算需添加的数量 type- 计算from/to的数量
-function getLiquidAmount(amount: string, type: string) {
+async function getLiquidAmount(amount: string, type: string) {
   const amount_number = Number(amount);
   if (
     state.fromAsset &&
@@ -424,24 +412,15 @@ function getLiquidAmount(amount: string, type: string) {
     const toDecimal =
       type === 'from' ? state.fromAsset.decimals : state.toAsset.decimals;
     amount = timesDecimals(amount, fromDecimal);
-    const key = fromAssetKey + '_' + toAssetKey;
-    const info = storedSwapPairInfo[key];
-    if (!info) {
-      // setTimeout(() => {
-      //   getLiquidAmount(amount, type);
-      // }, 200);
-      return '';
-    } else {
-      const reserveA = type === 'from' ? info.reserveTo : info.reserveFrom;
-      const reserveB = type === 'from' ? info.reserveFrom : info.reserveTo;
-      try {
-        const res = nerve.swap.quote(amount, reserveA, reserveB); // from,reverseFrom,reverseTo / to,reverseTo,reverseFrom
-        return divisionAndFix(res.toString(), toDecimal, toDecimal);
-      } catch (e) {
-        console.log(e, '===计算失败===');
-        return '';
-      }
-    }
+
+    const amountRes = await nerveswap.liquidity.calAddLiquidity({
+      tokenAKey: fromAssetKey,
+      tokenBKey: toAssetKey,
+      amount
+    });
+    return amountRes
+      ? divisionAndFix(amountRes.toString(), toDecimal, toDecimal)
+      : '';
   } else {
     return '';
   }
@@ -451,9 +430,9 @@ async function refreshRate() {
   if (!state.fromAmount && !state.toAmount) return;
   let res;
   if (customType === 'from') {
-    res = getLiquidAmount(state.fromAmount, 'to'); // 通过from计算to
+    res = await getLiquidAmount(state.fromAmount, 'to'); // 通过from计算to
   } else if (customType === 'to') {
-    res = getLiquidAmount(state.toAmount, 'from'); // 通过from计算to
+    res = await getLiquidAmount(state.toAmount, 'from'); // 通过from计算to
   }
   if (res) {
     state.disableWatchFromAmount = true;
@@ -562,21 +541,30 @@ const disableAdd = computed(() => {
   );
 });
 
-const { handleHex } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult } = useBroadcastNerveHex();
+
 async function createPair() {
+  const { provider, EVMAddress, pub } = getWalletInfo();
   const { fromAsset, toAsset } = state;
   if (fromAsset && toAsset) {
     state.loading = true;
     try {
-      const tokenA = nerve.swap.token(fromAsset.chainId, fromAsset.assetId); // 资产A的类型
-      const tokenB = nerve.swap.token(toAsset.chainId, toAsset.assetId); // 资产B的类型
-      const tx = await nerve.swap.swapCreatePair(
-        props.nerveAddress,
-        tokenA,
-        tokenB,
-        ''
-      );
-      const res: any = await handleHex(tx.hex, 61);
+      const res = await nerveswap.liquidity.createPair({
+        provider,
+        from: props.nerveAddress!,
+        tokenA: {
+          assetChainId: fromAsset.chainId,
+          assetId: fromAsset.assetId
+        },
+        tokenB: {
+          assetChainId: toAsset.chainId,
+          assetId: toAsset.assetId
+        },
+        remark: '',
+        EVMAddress,
+        pub
+      });
+      handleResult(61, res);
       if (res && res.hash) {
         refreshNewPair(fromAsset.assetKey, toAsset.assetKey);
       }
@@ -608,46 +596,32 @@ onBeforeUnmount(() => {
 
 async function addLiquidity() {
   const { fromAsset, toAsset, fromAmount, toAmount } = state;
+  const { provider, EVMAddress, pub } = getWalletInfo();
   if (fromAsset && toAsset) {
     state.loading = true;
     try {
       const amountA = timesDecimals(fromAmount, fromAsset.decimals);
       const amountB = timesDecimals(toAmount, toAsset.decimals);
-      let { amountAMin, amountBMin }: any =
-        await calMinAmountOnSwapAddLiquidity({
-          amountA,
-          amountB,
-          tokenAStr: fromAsset.assetKey,
-          tokenBStr: toAsset.assetKey
-        });
-      if (amountAMin == 0 || amountBMin == 0) {
-        amountAMin = amountA;
-        amountBMin = amountB;
-      }
-      const tokenAmountA = nerve.swap.tokenAmount(
-        fromAsset.chainId,
-        fromAsset.assetId,
-        amountA
-      );
-      const tokenAmountB = nerve.swap.tokenAmount(
-        toAsset.chainId,
-        toAsset.assetId,
-        amountB
-      );
-      const deadline = nerve.swap.currentTime() + 300; // 过期时间
-      const fromAddress = props.nerveAddress;
-      const toAddress = props.nerveAddress;
-      const tx = await nerve.swap.swapAddLiquidity(
-        fromAddress,
-        tokenAmountA,
-        tokenAmountB,
-        amountAMin,
-        amountBMin,
-        deadline,
-        toAddress,
-        ''
-      );
-      const res: any = await handleHex(tx.hex, 64);
+
+      const res = await nerveswap.liquidity.addLiquidity({
+        provider,
+        from: props.nerveAddress!,
+        tokenA: {
+          assetChainId: fromAsset.chainId,
+          assetId: fromAsset.assetId,
+          amount: amountA
+        },
+        tokenB: {
+          assetChainId: toAsset.chainId,
+          assetId: toAsset.assetId,
+          amount: amountB
+        },
+        remark: '',
+        EVMAddress,
+        pub
+      });
+      handleResult(64, res);
+
       if (res && res.hash) {
         state.fromAmount = '';
         state.toAmount = '';
@@ -669,8 +643,8 @@ function handleBack() {
 
 let timer: number; // 5s刷新一次流动性兑换比例
 onMounted(() => {
-  timer = window.setInterval(async () => {
-    await storeSwapPairInfo(true);
+  timer = window.setInterval(() => {
+    storeSwapPairInfo(true);
   }, 5000);
 });
 onBeforeUnmount(() => {

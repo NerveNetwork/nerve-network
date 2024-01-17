@@ -83,6 +83,7 @@ import { IPushOrderItem, IPushAssetItem } from '@/service/api/types/push';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import useToast from '@/hooks/useToast';
+import nerveswap from 'nerveswap-sdk';
 
 const props = withDefaults(
   defineProps<{
@@ -182,7 +183,8 @@ const btnConfig = computed(() => {
 
 const loading = ref(false);
 
-const { handleTxInfo } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult, handleTxInfo } = useBroadcastNerveHex();
+const { provider, EVMAddress, pub } = getWalletInfo();
 
 const createOrder = async () => {
   if (btnConfig.value.disable) {
@@ -220,7 +222,20 @@ const createOrder = async () => {
       feeAddress: config.pushFeeAddress,
       feeScale: config.pushFeeScale
     };
-    const result: any = await handleTxInfo(transferInfo, 229, txData);
+    const result = await nerveswap.push.createOrder({
+      provider,
+      from: address,
+      payAmount,
+      payAssetKey: assetsChainId + '-' + assetsId,
+      orderAmount: transferAmount,
+      price: timesDecimals(props.orderItem.price, orderItem.quoteDecimals),
+      tradingHash: orderItem.hash,
+      orderType: buyMode ? 2 : 1,
+      EVMAddress,
+      pub
+    });
+    handleResult(229, result);
+    // const result: any = await handleTxInfo(transferInfo, 229, txData);;
     if (result && result.hash) {
       //
       showConfirmModal.value = false;

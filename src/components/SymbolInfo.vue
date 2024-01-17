@@ -15,7 +15,7 @@ import SymbolIcon from '@/components/SymbolIcon.vue';
 const props = defineProps<{
   logo?: string;
   name: string;
-  chain: string;
+  chain?: string;
   assetKey: string;
 }>();
 

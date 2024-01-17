@@ -75,6 +75,7 @@ import { timesDecimals, isValidNerveAddress } from '@/utils/util';
 import { getPunishList } from '@/service/api';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
+import nerveswap from 'nerveswap-sdk';
 
 const props = defineProps<{
   address: string;
@@ -84,7 +85,7 @@ const emit = defineEmits(['refresh']);
 
 const { t } = useI18n();
 const { toast, toastError} = useToast();
-const { handleTxInfo } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 
 const formRef = ref<InstanceType<typeof ElForm>>();
 const formData = reactive({
@@ -161,6 +162,7 @@ function createForm() {
     if (valid) {
       try {
         loading.value = true;
+        const { provider, EVMAddress, pub } = getWalletInfo();
         const { blockAddress, rewardAddress, amount } = formData;
         const transferInfo = {
           from: props.address,
@@ -175,10 +177,20 @@ function createForm() {
           rewardAddress: rewardAddress,
           deposit: timesDecimals(amount, 8)
         };
-        const result: any = await handleTxInfo(transferInfo, 4, txData);
-        if (result && result.hash) {
-          emit('refresh');
-        }
+        const result = await nerveswap.node.createNode({
+          provider,
+          from: props.address!,
+          amount: timesDecimals(amount, 8),
+          packingAddress: blockAddress,
+          rewardAddress,
+          EVMAddress,
+          pub
+        });
+        handleResult(4, result);
+        // const result: any = await handleTxInfo(transferInfo, 4, txData);
+        // if (result && result.hash) {
+        //   emit('refresh');
+        // }
       } catch (e) {
         console.log(e, 'create-node-error');
         toastError(e);

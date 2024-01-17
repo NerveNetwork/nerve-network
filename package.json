@@ -1,6 +1,7 @@
 {
-  "name": "nerve-dex",
+  "name": "nerveswap",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "serve-beta": "cross-env BUILD_ENV=beta vue-cli-service serve",
     "serve-prod": "cross-env BUILD_ENV=prod vue-cli-service serve",
@@ -18,6 +19,7 @@
     "element-plus": "^2.0.1",
     "ethers": "^5.7.2",
     "nerve-sdk-js": "^1.0.26",
+    "nerveswap-sdk": "^1.0.4",
     "tronweb": "^4.1.0",
     "vconsole": "^3.14.6",
     "vue": "^3.2.9",

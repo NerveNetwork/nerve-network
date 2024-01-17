@@ -53,6 +53,7 @@ import {
   RecordTableData
 } from '@/views/node/types';
 import { Pager } from '@/views/swap/types';
+import nerveswap from 'nerveswap-sdk';
 
 const props = defineProps<{
   address: string;
@@ -61,8 +62,8 @@ const props = defineProps<{
 }>();
 
 const { toastError } = useToast();
-const { handleTxInfo } = useBroadcastNerveHex();
 const router = useRouter();
+const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 
 const pager = reactive<Pager>({
   index: 1,
@@ -119,6 +120,7 @@ async function getRecordList() {
 // 注销节点
 async function stopNode() {
   try {
+    const { provider, EVMAddress, pub } = getWalletInfo();
     const { address, hash } = props;
     const reduceNonceList: any = await getReduceNonceList(hash, '0', 1);
     const transferInfo = {
@@ -134,10 +136,20 @@ async function stopNode() {
       address: address,
       agentHash: hash
     };
-    const result: any = await handleTxInfo(transferInfo, 9, txData);
-    if (result && result.hash) {
-      router.push('/');
-    }
+    const result = await nerveswap.node.stopNode({
+      provider,
+      from: address,
+      amount: timesDecimals(nodeInfo.value.deposit, 8),
+      reduceList: reduceNonceList,
+      agentHash: hash,
+      EVMAddress,
+      pub
+    });
+    handleResult(9, result);
+    // const result: any = await handleTxInfo(transferInfo, 9, txData);
+    // if (result && result.hash) {
+    //   router.push('/');
+    // }
   } catch (e) {
     console.log(e, 'stop-node-error');
     toastError(e);
@@ -163,6 +175,7 @@ const depositLoading = ref(false);
 async function handleDeposit(amount: string, type: HandleType) {
   depositLoading.value = true;
   try {
+    const { provider, EVMAddress, pub } = getWalletInfo();
     const { address, hash } = props;
     const newAmount = timesDecimals(amount, 8);
     const transferInfo = {
@@ -175,18 +188,37 @@ async function handleDeposit(amount: string, type: HandleType) {
     };
     let result: any;
     if (type === HandleType.ADDITION) {
-      const txData = {
+      /* const txData = {
         address: address,
         agentHash: hash,
         amount: newAmount
       };
-      result = await handleTxInfo(transferInfo, 28, txData);
+      result = await handleTxInfo(transferInfo, 28, txData); */
+      result = await nerveswap.node.addDeposit({
+        provider,
+        from: address,
+        amount: timesDecimals(amount, 8),
+        agentHash: hash,
+        EVMAddress,
+        pub
+      });
+      handleResult(28, result);
     } else {
       const reduceNonceList = await getReduceNonceList<any>(hash, newAmount, 0);
       transferInfo.fee = 100000; // 退出时底层未支持减免
       transferInfo.nonceList = reduceNonceList;
-      const txData = { agentHash: hash, address: address, amount: newAmount };
-      result = await handleTxInfo(transferInfo, 29, txData);
+      /* const txData = { agentHash: hash, address: address, amount: newAmount };
+      result = await handleTxInfo(transferInfo, 29, txData); */
+      result = await nerveswap.node.addDeposit({
+        provider,
+        from: address,
+        amount: timesDecimals(amount, 8),
+        reduceList: reduceNonceList,
+        agentHash: hash,
+        EVMAddress,
+        pub
+      });
+      handleResult(29, result);
     }
     if (result && result.hash) {
       showDepositDialog.value = false;

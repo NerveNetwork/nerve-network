@@ -1,3 +1,4 @@
+import { computed, watch } from 'vue';
 import useStoreState from '@/hooks/useStoreState';
 import nerve from 'nerve-sdk-js';
 import { NTransfer } from '@/utils/api';
@@ -89,7 +90,9 @@ export default function useBroadcastNerveHex() {
         outputs: inputOuput.outputs,
         txData
       });
-      signedHex = await window.nabox.signNULSTransaction({ txHex: unsignedHex });
+      signedHex = await window.nabox.signNULSTransaction({
+        txHex: unsignedHex
+      });
     } else {
       signedHex = await transfer.getTxHex({
         inputs: inputOuput.inputs,
@@ -125,8 +128,31 @@ export default function useBroadcastNerveHex() {
     }
   }
 
+  function handleResult(type: number, res: any) {
+    if (res && res.hash) {
+      const txInfo: TxInfo = {
+        type,
+        hash: res.hash,
+        time: new Date().getTime(),
+        status: 0
+      };
+      setAccountTxs(currentAccount.value?.pub, txInfo);
+    }
+    handleMessage(res);
+  }
+
+  const getWalletInfo = () => {
+    return {
+      provider: storage.get('providerType'),
+      EVMAddress: currentAccount.value?.address?.EVM,
+      pub: currentAccount.value?.pub
+    };
+  };
+
   return {
     handleHex,
-    handleTxInfo
+    handleTxInfo,
+    handleResult,
+    getWalletInfo
   };
 }

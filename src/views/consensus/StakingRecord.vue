@@ -33,6 +33,7 @@ import {
   StakingInfo,
   BatchHandle
 } from './types';
+import nerveswap from 'nerveswap-sdk';
 
 const props = defineProps<{
   address?: string;
@@ -41,7 +42,7 @@ const props = defineProps<{
 const emit = defineEmits(['refresh']);
 
 const { toastError } = useToast();
-const { handleTxInfo } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 
 const loading = ref(true);
 
@@ -119,6 +120,7 @@ async function changeList() {
 async function quitStaking(asset: StakingListItem) {
   try {
     loading.value = true;
+    const { provider, EVMAddress, pub } = getWalletInfo();
     const { assetChainId, assetId, amountStr, txHash } = asset;
     const transferInfo = {
       from: props.address,
@@ -137,10 +139,21 @@ async function quitStaking(asset: StakingListItem) {
       depositType: 0, //委托类型 只能退出活期 0:代表活期
       timeType: 0 //委托时长
     };
-    const result: any = await handleTxInfo(transferInfo, 6, txData);
+    const result = await nerveswap.staking.withdrawal({
+      provider,
+      from: props.address!,
+      assetChainId: assetChainId,
+      assetId: assetId,
+      amount: amountStr,
+      agentHash: txHash,
+      EVMAddress,
+      pub
+    });
+    handleResult(6, result);
+    /* const result: any = await handleTxInfo(transferInfo, 6, txData);
     if (result && result.hash) {
       refreshList();
-    }
+    } */
   } catch (e) {
     console.log(e, 'quit-error');
     toastError(e);
@@ -165,6 +178,7 @@ async function batchHandle(info: any) {
 }
 // 批量转定期/合并
 async function batchJoin(info: StakingInfo) {
+  const { provider, EVMAddress, pub } = getWalletInfo();
   let amount = '0',
     agentHash: string[] = [],
     nonceList: string[] = [],
@@ -205,14 +219,31 @@ async function batchJoin(info: StakingInfo) {
     timeType: timeType, //委 托时长
     agentHash: agentHash
   };
-  const result: any = await handleTxInfo(transferInfo, 33, txData);
+  const stakingList = batchItems.map(v => ({
+    assetChainId: v.assetChainId,
+    assetId: v.assetId,
+    amount: v.amountStr,
+    txHash: v.txHash
+  }));
+  const result = await nerveswap.staking.batchJoin({
+    provider,
+    from: props.address!,
+    stakingList: stakingList,
+    depositType,
+    timeType,
+    EVMAddress,
+    pub
+  });
+  handleResult(33, result);
+  /* const result: any = await handleTxInfo(transferInfo, 33, txData);
   if (result && result.hash) {
     refreshList();
-  }
+  } */
 }
 
 // 批量退出
 async function batchQuit(info: StakingInfo) {
+  const { provider, EVMAddress, pub } = getWalletInfo();
   const agentHash: string[] = [];
   const batchItems = info.items;
   batchItems.map(item => {
@@ -227,10 +258,25 @@ async function batchQuit(info: StakingInfo) {
     address: props.address,
     agentHash: agentHash
   };
-  const result: any = await handleTxInfo(transferInfo, 32, txData);
+
+  const stakingList: any = batchItems.map(v => ({
+    assetChainId: v.assetChainId,
+    assetId: v.assetId,
+    amount: v.amountStr,
+    txHash: v.txHash
+  }));
+  const result = await nerveswap.staking.batchQuit({
+    provider,
+    from: props.address!,
+    stakingList: stakingList,
+    EVMAddress,
+    pub
+  });
+  handleResult(32, result);
+  /* const result: any = await handleTxInfo(transferInfo, 32, txData);
   if (result && result.hash) {
     refreshList();
-  }
+  } */
 }
 
 function refreshList() {

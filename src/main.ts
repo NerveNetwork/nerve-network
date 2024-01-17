@@ -7,6 +7,14 @@ import AddChain from '@/utils/AddChain';
 import { getLogoConfig } from '@/utils/logoConfig';
 import { getSystemConfig } from '@/utils/getSystemConfig';
 // @ts-ignore
+import { testnet, mainnet } from 'nerveswap-sdk';
+import config from './config';
+if (config.isBeta) {
+  testnet();
+} else {
+  mainnet();
+}
+// @ts-ignore
 // import VConsole from 'vconsole'
 // new VConsole()
 
@@ -19,7 +27,7 @@ getLogoConfig();
 getSystemConfig();
 
 setTimeout(() => {
-  // 不延迟有时刷新会拿不到ethereum.selectedAddress???
+  // setTimeout to get ethereum.selectedAddress???
   const app = createApp(App);
   app.use(router).use(store).use(usePlugins).mount('#app');
 }, 500);
