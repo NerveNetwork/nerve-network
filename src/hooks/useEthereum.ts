@@ -15,12 +15,10 @@ import coin98 from '@/assets/img/provider/coin98.svg';
 import bitkeep from '@/assets/img/provider/bitkeep.jpg';
 import onto from '@/assets/img/provider/ONTO.png';
 
-import { ethers } from 'ethers';
-import nerve from 'nerve-sdk-js';
 import storage from '@/utils/storage';
 import { getCurrentAccount } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-import { generateTronAddress } from '@/utils/tronLink';
+import nerveswap from 'nerveswap-sdk';
 
 interface State {
   address: string | null;
@@ -100,12 +98,16 @@ export function getAddress() {
   return provider?.selectedAddress;
 }
 
-export async function generateAddress(
-  address: string,
-  NerveConfig: GenerateAddressConfig,
-  NULSConfig: GenerateAddressConfig
-) {
-  let heterogeneousAddress = '',
+export async function generateAddress(address: string) {
+  const providerType = storage.get('providerType');
+  const account = await nerveswap.getAccount({
+    provider: providerType,
+    address,
+    message: 'Generate L2 address'
+  });
+  // console.log(account, 333)
+  return account;
+  /* let heterogeneousAddress = '',
     pub = '';
   if (!address.startsWith('0x')) {
     if (!window.nabox) {
@@ -155,7 +157,7 @@ export async function generateAddress(
       TRON: generateTronAddress(pub)
     },
     pub
-  };
+  }; */
 }
 
 export const specialChain = ['NULS', 'NERVE', 'TRON'];

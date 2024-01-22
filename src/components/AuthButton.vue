@@ -21,7 +21,6 @@ import { useStore } from 'vuex';
 import { generateAddress } from '@/hooks/useEthereum';
 import useToast from '@/hooks/useToast';
 import { useI18n } from 'vue-i18n';
-import config from '@/config';
 import storage from '@/utils/storage';
 import { Account } from '@/store/types';
 
@@ -47,16 +46,7 @@ async function derivedAddress() {
       showConnect();
       return;
     }
-    const { chainId, assetId, prefix, NULSConfig } = config;
-    const account = await generateAddress(
-      address.value,
-      {
-        chainId,
-        assetId,
-        prefix
-      },
-      NULSConfig
-    );
+    const account = await generateAddress(address.value);
     const accountList: Account[] = storage.get('accountList') || [];
     const existIndex = accountList.findIndex(v => v.pub === account.pub);
     // 原来存在就替换，找不到就push
