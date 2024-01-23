@@ -12,7 +12,7 @@
             </el-button>
           </p>
         </div>
-        <p class="copy-right pc">Copyright 2019-2023 @ All rights Reserved. NerveNetwork</p>
+        <p class="copy-right pc">{{ copyRight }}</p>
       </div>
       <div class="right flex-between">
         <ul v-for="linkItem in linkConfig" :key="linkItem.label">
@@ -26,7 +26,7 @@
         </ul>
       </div>
       <p class="copy-right mobile">
-        Copyright 2019-2024 @ All rights Reserved. NerveNetwork
+        {{ copyRight }}
       </p>
     </div>
   </div>
@@ -46,6 +46,8 @@ const router = useRouter();
 
 const { lang } = useLang();
 console.log(lang, 77);
+
+const copyRight = 'Copyright 2019-2024 @ All rights Reserved. NerveNetwork';
 
 const linkConfig = computed(() => {
   return [
