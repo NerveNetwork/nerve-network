@@ -8043,10 +8043,10 @@ nerve-sdk-js@^1.0.26:
   optionalDependencies:
     secp256k1 "3.7.1"
 
-nerveswap-sdk@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.npmmirror.com/nerveswap-sdk/-/nerveswap-sdk-1.0.7.tgz#7ad5dcb3eb50988135abafc75a73f26d8c82cafe"
-  integrity sha512-iWkUpoyIw9QkEvV4vqdhP9FCs2DV1EzklRfPR0bgdKKY07reE8OwpH9Am2Rj8gwruLbRniNuxpWFNG0Drr57tA==
+nerveswap-sdk@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.npmmirror.com/nerveswap-sdk/-/nerveswap-sdk-1.0.8.tgz#05b4de2c11851bbeb1f4da89b8bb26720178988e"
+  integrity sha512-sRwXeSGP7OsYDz7D/3Z9feUUyHa0pqoAsWF2+3f08t96Nk6geLsd0NTVN/Oh1oux57GR5F0UXRcg3L/mDCba5g==
   dependencies:
     axios "^1.6.2"
     bignumber.js "^9.1.2"

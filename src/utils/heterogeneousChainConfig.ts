@@ -102,7 +102,8 @@ const Origin = {
   Janus: isBeta ? 'https://beta.scan.janusnetwork.io' : '',
   Manta: isBeta
     ? 'https://manta-testnet.calderaexplorer.xyz'
-    : 'https://pacific-explorer.manta.network'
+    : 'https://pacific-explorer.manta.network',
+  X1: isBeta ? 'https://www.oklink.com/x1-test' : ''
 };
 
 export const RPC_URL = {
@@ -181,7 +182,8 @@ export const RPC_URL = {
   Janus: isBeta ? 'https://rpc.test.janusnetwork.io/' : '',
   Manta: isBeta
     ? 'https://manta-testnet.calderachain.xyz/http'
-    : 'https://pacific-rpc.manta.network/http'
+    : 'https://pacific-rpc.manta.network/http',
+  X1: isBeta ? 'https://x1testrpc.okx.com' : ''
 };
 
 export const _networkInfo = {
@@ -602,6 +604,19 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Manta
   },
+  X1: {
+    name: 'X1',
+    chainName: isBeta ? 'X1_Beta' : 'X1',
+    chainId: 134,
+    assetKey: isBeta ? '5-170' : '',
+    origin: Origin.X1,
+    mainAsset: 'OKB',
+    nativeId: isBeta ? '0xc3' : '',
+    supported: true,
+    logo: OECLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.X1
+  },
   NULS: {
     name: 'NULS',
     chainName: 'NULS',
@@ -632,4 +647,6 @@ if (isBeta) {
 } else {
   // @ts-ignore
   delete _networkInfo.Janus;
+  // @ts-ignore
+  delete _networkInfo.X1;
 }
