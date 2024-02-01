@@ -5,7 +5,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 // const AutoImport = require('unplugin-auto-import/webpack');
 const Components = require('unplugin-vue-components/webpack');
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 // const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
 const proxyUrl =
   process.env.BUILD_ENV === 'prod'
     ? 'https://wallet.nerve.network/'
@@ -31,7 +33,10 @@ module.exports = {
           minRatio: 0.8
         })
       );
-      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
+      config.optimization.minimizer[0].options.compress = {
+        drop_console: true
+      };
+      // config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
     }
     config.plugins.push(
       new webpack.DefinePlugin({
@@ -75,7 +80,7 @@ module.exports = {
           name: 'ethers-chunk',
           test: /[\\/]node_modules[\\/](ethers|web3)/,
           priority: -10
-        },
+        }
         /*vendors: {
           name: 'vendors',
           test: /[\\/]node_modules[\\/]/,
@@ -84,7 +89,17 @@ module.exports = {
       }
     };
     config.devtool = !isProduction ? 'cheap-module-source-map' : false;
-    config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
+
+    // fix node env
+    config.plugins.push(new NodePolyfillPlugin());
+    // fix tiny-secp256k1 wasm
+    config.experiments = {
+      asyncWebAssembly: true,
+      topLevelAwait: true
+    };
+    config.optimization.minimizer[0].options.compress = {
+      drop_console: true
+    };
     // config.plugins.push(new BundleAnalyzerPlugin());
   },
   css: {
@@ -112,6 +127,9 @@ module.exports = {
           '^/test': ''
         }
       }
+    },
+    client: {
+      overlay: false
     }
   }
 };

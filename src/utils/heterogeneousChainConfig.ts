@@ -35,6 +35,8 @@ import ScrollLogo from '@/assets/img/chainLogo/Scroll.jpg';
 import BitgertLogo from '@/assets/img/chainLogo/Bitgert.jpg';
 import JanusLogo from '@/assets/img/chainLogo/Janus.jpg';
 import MantaLogo from '@/assets/img/chainLogo/Manta.jpg';
+import BTCLogo from '@/assets/img/chainLogo/BTC.png';
+import ZetaLogo from '@/assets/img/chainLogo/Zeta.png';
 
 const Origin = {
   NERVE: isBeta
@@ -103,7 +105,11 @@ const Origin = {
   Manta: isBeta
     ? 'https://manta-testnet.calderaexplorer.xyz'
     : 'https://pacific-explorer.manta.network',
-  X1: isBeta ? 'https://www.oklink.com/x1-test' : ''
+  X1: isBeta ? 'https://www.oklink.com/x1-test' : '',
+  BTC: isBeta ? 'https://mempool.space/testnet' : 'https://mempool.space',
+  Zeta: isBeta
+    ? 'https://athens3.explorer.zetachain.com'
+    : 'https://explorer.mainnet.zetachain.com'
 };
 
 export const RPC_URL = {
@@ -183,10 +189,27 @@ export const RPC_URL = {
   Manta: isBeta
     ? 'https://manta-testnet.calderachain.xyz/http'
     : 'https://pacific-rpc.manta.network/http',
-  X1: isBeta ? 'https://x1testrpc.okx.com' : ''
+  X1: isBeta ? 'https://x1testrpc.okx.com' : '',
+  BTC: '',
+  Zeta: isBeta
+    ? 'https://zetachain-athens-evm.blockpi.network/v1/rpc/public'
+    : 'https://api.mainnet.zetachain.com/evm'
 };
 
 export const _networkInfo = {
+  BTC: {
+    name: 'BTC',
+    chainName: isBeta ? 'testnet' : 'livenet',
+    chainId: isBeta ? 201 : '',
+    assetKey: isBeta ? '5-171' : '',
+    origin: Origin.BTC,
+    mainAsset: 'BTC',
+    nativeId: '0x-10',
+    supported: true,
+    logo: BTCLogo,
+    decimals: 8,
+    rpcUrl: RPC_URL.BTC
+  },
   Ethereum: {
     name: isBeta ? 'Goerli' : 'Ethereum',
     chainName: isBeta ? 'Goerli' : 'Ethereum', // 用于metamask添加链时显示链名称 区分正式、测试网
@@ -616,6 +639,19 @@ export const _networkInfo = {
     logo: OECLogo,
     decimals: 18,
     rpcUrl: RPC_URL.X1
+  },
+  Zeta: {
+    name: 'Zeta',
+    chainName: isBeta ? 'Zeta_Beta' : 'Zeta',
+    chainId: 135,
+    assetKey: isBeta ? '5-172' : '',
+    origin: Origin.Zeta,
+    mainAsset: 'ZETA',
+    nativeId: isBeta ? '0x1b59' : '0x1b58',
+    supported: true,
+    logo: ZetaLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Zeta
   },
   NULS: {
     name: 'NULS',

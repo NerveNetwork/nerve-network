@@ -2,7 +2,9 @@
   <div class="custom-input">
     <div class="info flex-between">
       <span>{{ label }}</span>
-      <span v-if="nerveAddress && !isPush">{{ $t('public.public12') }}{{ balance }}</span>
+      <span v-if="nerveAddress && !isPush">
+        {{ $t('public.public12') }}{{ balance }}
+      </span>
     </div>
     <div class="inner flex-between">
       <el-input
@@ -16,14 +18,22 @@
           <span @click="max">MAX</span>
         </template>
       </el-input>
-      <div class="select-wrap flex-center" @click="showDialog = true">
+      <div class="select-wrap flex-center" @click="openAssetDialog">
         <template v-if="selectedAsset">
-          <symbol-icon :icon="selectedAsset.symbol" :asset-key="selectedAsset.assetKey"/>
-          <!--          <span class="coin-name">{{ icon }}</span>-->
-          <el-tooltip effect="dark" :content="icon" placement="top">
-            <span class="click">{{ icon }}</span>
-          </el-tooltip>
-          <el-icon><arrow-down /></el-icon>
+          <symbol-icon
+            :icon="selectedAsset.symbol"
+            :asset-key="selectedAsset.assetKey"
+          />
+          <template v-if="disableSelect">
+            <span>{{ icon }}</span>
+          </template>
+          <template v-else>
+            <!--          <span class="coin-name">{{ icon }}</span>-->
+            <el-tooltip effect="dark" :content="icon" placement="top">
+              <span class="click">{{ icon }}</span>
+            </el-tooltip>
+            <el-icon><arrow-down /></el-icon>
+          </template>
         </template>
         <template v-else>
           <span class="placeholder">{{ $t('transfer.transfer12') }}</span>
@@ -89,7 +99,8 @@ export default defineComponent({
     limitDecimals: {
       type: Number,
       default: 0
-    }
+    },
+    disableSelect: Boolean
   },
   components: {
     SymbolIcon,
@@ -135,6 +146,11 @@ export default defineComponent({
     });
 
     const showDialog = ref(false);
+    const openDialog = () => {
+      if (!props.disableSelect) {
+        showDialog.value = true;
+      }
+    };
 
     const chooseAsset = computed(() => props.selectedAsset);
 
@@ -179,6 +195,7 @@ export default defineComponent({
       list,
       showDialog,
       searchVal,
+      openDialog,
       filter,
       changeInput,
       changeSelect,

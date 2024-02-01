@@ -507,7 +507,10 @@ const cn = {
     transfer32: '已支付手续费',
     transfer33: '追加',
     transfer34: '不支持跨链到NULS',
-    transfer35: '请切换钱包当前网络'
+    transfer35: '请切换钱包当前网络',
+    transfer36: '连接UniSat Wallet',
+    transfer37: '切换到{network}',
+    transfer38: '最小交易数量为0.0001'
   },
   trading: {
     trading1: '订单历史',

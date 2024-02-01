@@ -160,7 +160,7 @@ export async function generateAddress(address: string) {
   }; */
 }
 
-export const specialChain = ['NULS', 'NERVE', 'TRON'];
+export const specialChain = ['NULS', 'NERVE', 'TRON', 'BTC'];
 
 export default function useEthereum() {
   const store = useStore();
@@ -184,8 +184,8 @@ export default function useEthereum() {
       address = await provider
         ?.request({ method: 'eth_requestAccounts' })
         .then((accounts: string[]) => accounts && accounts[0]);
-    } catch (error) {
-      if ((error as any).code === 4001) {
+    } catch (error: any) {
+      if (error.code === 4001) {
         throw error.message;
       }
     }

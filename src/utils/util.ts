@@ -5,7 +5,6 @@ import storage from '@/utils/storage';
 import { AssetItem, HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import nerve from 'nerve-sdk-js';
-import { getProvider } from '@/hooks/useEthereum';
 
 interface Obj {
   [key: string]: unknown;

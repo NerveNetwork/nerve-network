@@ -6,5 +6,6 @@ declare global {
     nabox: any;
     tronLink: any;
     tronWeb: any;
+    unisat: any;
   }
 }

@@ -114,7 +114,7 @@ export async function getAssetList(address = config.destroyAddress) {
     v.assetKey = v.chainId + '-' + v.assetId;
     v.usdPrice = v.price;
     v.balanceStr = v.balance;
-    v.list.map((k: any) => {
+    v.list?.map((k: any) => {
       k.contractAddress = k.contract;
       k.heterogeneousChainId = k.hId;
       if (crossChainInfo && crossChainInfo[k.hId]) {

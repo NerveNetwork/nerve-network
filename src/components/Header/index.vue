@@ -96,10 +96,11 @@ import useStoreState from '@/hooks/useStoreState';
 import useToast from '@/hooks/useToast';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getTronTx, getTx } from '@/service/api';
-import { getCurrentAccount, superLong } from '@/utils/util';
+import { getCurrentAccount, isBeta, superLong } from '@/utils/util';
 import { Account, TxInfo } from '@/store/types';
 import storage from '@/utils/storage';
 import { ETransfer } from '@/utils/api';
+import nerveswap from 'nerveswap-sdk';
 
 const store = useStore();
 const router = useRouter();
@@ -222,10 +223,10 @@ async function checkTxStatus() {
             });
           }
         });
-        const deleteItemIndex = txs.findIndex(v => v.retryCount === 20);
+        /* const deleteItemIndex = txs.findIndex(v => v.retryCount === 20);
         if (deleteItemIndex !== -1) {
           txs.splice(deleteItemIndex, 1);
-        }
+        } */
         accountTxs.value = txs;
         const accountList: Account[] = storage.get('accountList') || [];
         accountList.map(v => {
@@ -256,6 +257,8 @@ async function pollingTx(txs: TxInfo[]) {
       }
     } else if (v.L1Chain === 'TRON') {
       return handleTronTx(v);
+    } else if (v.L1Chain === 'BTC') {
+      return handleBTCTx(v);
     } else {
       return handleEVMTx(v);
     }
@@ -293,6 +296,17 @@ async function handleTronTx(tx: TxInfo) {
     result: await getTronTx(tx.hash)
   };
 }
+
+async function handleBTCTx(tx: TxInfo) {
+  const isConfirmed = await nerveswap.btc.checkTxConfirmed(tx.hash, !isBeta);
+  return {
+    hash: tx.hash,
+    result: {
+      status: isConfirmed ? 1 : 0
+    }
+  };
+}
+
 async function handleEVMTx(tx: TxInfo) {
   const transfer = new ETransfer(tx.L1Chain);
   return {

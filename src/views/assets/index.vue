@@ -3,7 +3,7 @@
     <template v-if="!showTransfer">
       <h3 class="assets-title">{{ $t('assets.assets11') }}</h3>
       <AssetsControl
-        v-if="address"
+        v-if="address || network === 'BTC'"
         v-model:searchVal="searchVal"
         v-model:hideSmall="hideSmall"
         @showDialog="showAssetManage = true"
@@ -19,7 +19,7 @@
           <el-table-column :label="$t('public.public1')">
             <template v-slot="scope">
               <div class="flex-center">
-<!--                <symbol-icon :icon="scope.row.symbol"></symbol-icon>-->
+                <!--                <symbol-icon :icon="scope.row.symbol"></symbol-icon>-->
                 <el-tooltip placement="top" v-if="scope.row.registerContract">
                   <template #content>
                     <div>
@@ -70,9 +70,7 @@
                 <el-button
                   type="text"
                   v-if="scope.row.canToL1"
-                  :disabled="
-                    disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
-                  "
+                  :disabled="disableTx || !canToL1OnCurrent(scope.row)"
                   @click="transfer(scope.row, TransferType.CrossIn)"
                 >
                   {{ $t('transfer.transfer1') }}
@@ -86,9 +84,7 @@
                 <el-button
                   type="text"
                   v-if="scope.row.canToL1"
-                  :disabled="
-                    disableTx || !canToL1OnCurrent(scope.row.canToL1OnCurrent)
-                  "
+                  :disabled="disableTx || !canToL1OnCurrent(scope.row, true)"
                   @click="transfer(scope.row, TransferType.Withdrawal)"
                 >
                   {{ $t('transfer.transfer3') }}
@@ -147,8 +143,7 @@
                   @click="transfer(item, TransferType.CrossIn)"
                   v-if="item.canToL1"
                   :class="{
-                    btn_disable:
-                      disableTx || !canToL1OnCurrent(item.canToL1OnCurrent)
+                    btn_disable: disableTx || !canToL1OnCurrent(item)
                   }"
                 >
                   {{ $t('transfer.transfer1') }}
@@ -161,8 +156,7 @@
                   @click="transfer(item, TransferType.Withdrawal)"
                   v-if="item.canToL1"
                   :class="{
-                    btn_disable:
-                      disableTx || !canToL1OnCurrent(item.canToL1OnCurrent)
+                    btn_disable: disableTx || !canToL1OnCurrent(item, true)
                   }"
                 >
                   {{ $t('transfer.transfer3') }}
@@ -178,6 +172,7 @@
       v-model:currentTab="currentTab"
       v-model:show="showTransfer"
       :disableTx="disableTx || !assetCanCross"
+      :network="network"
     />
     <assets-manage
       v-model:showAssetManage="showAssetManage"
@@ -195,14 +190,15 @@ import {
   getCurrentInstance,
   provide,
   ref,
-  reactive
+  reactive,
+  watch
 } from 'vue';
 import AssetsControl from './AssetsControl.vue';
 import SymbolInfo from '@/components/SymbolInfo.vue';
 import AssetsManage from './AssetsManage.vue';
 import Transfer from './transfer/index.vue';
 import CollapseTransition from '@/components/CollapseTransition.vue';
-import { superLong } from '@/utils/util';
+import { superLong, checkCanToL1OnCurrent } from '@/utils/util';
 import useStoreState from '@/hooks/useStoreState';
 import useAssetsList from './hooks/useAssetsList';
 import { specialChain } from '@/hooks/useEthereum';
@@ -238,11 +234,14 @@ export default defineComponent({
       allAssetsList,
       selectAssets,
       filteredAssets,
+      filterAssets,
       mainAssetKey,
       crossInOutSymbol,
       addAssets,
       assetClick
     } = useAssetsList();
+
+    watch(() => network.value, filterAssets);
 
     const showAssetManage = ref(false); // 资产管理弹窗
 
@@ -254,23 +253,20 @@ export default defineComponent({
 
     function transfer(asset: AssetItemType, type: TransferType) {
       if (type !== TransferType.General && disableTx.value) return;
-      if (
-        type !== TransferType.General &&
-        !canToL1OnCurrent(asset.canToL1OnCurrent)
-      ) {
+      if (type !== TransferType.General && !canToL1OnCurrent(asset)) {
         return;
       }
-      assetCanCross.value = !(
-        disableTx.value || !canToL1OnCurrent(asset.canToL1OnCurrent)
-      );
+      assetCanCross.value = !(disableTx.value || !canToL1OnCurrent(asset));
       currentTab.value = type;
       showTransfer.value = true;
       transferAsset.value = asset;
     }
 
-    function canToL1OnCurrent(status: boolean) {
-      if (!status) return false;
-      if (network.value === 'TRON') return true;
+    function canToL1OnCurrent(asset: AssetItemType, checkBTC = false) {
+      const assetCanToL1OnCurrent = checkCanToL1OnCurrent(asset);
+      if (!assetCanToL1OnCurrent) return false;
+      if (network.value === 'TRON' || (network.value === 'BTC' && !checkBTC))
+        return true;
       return specialChain.indexOf(network.value) < 0;
     }
 

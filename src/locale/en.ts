@@ -523,7 +523,10 @@ const en = {
     transfer32: 'Paid',
     transfer33: 'Append',
     transfer34: 'Does not support cross-chain to NULS',
-    transfer35: 'Please switch network in wallet'
+    transfer35: 'Please switch network in wallet',
+    transfer36: 'Connect UniSat Wallet',
+    transfer37: 'Switch to {network}',
+    transfer38: 'Minimum quantity is 0.0001'
   },
   trading: {
     trading1: 'Order History',

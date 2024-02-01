@@ -27,7 +27,8 @@ module.exports = {
     'prefer-const': 0,
     'no-case-declarations': 0,
     'prefer-rest-params': 0,
-    'vue/no-unused-vars': 0
+    'vue/no-unused-vars': 0,
+    'vue/multi-word-component-names': 0
   },
   globals: {
     defineProps: 'readonly',

@@ -142,7 +142,7 @@ function openUrl(item: TxInfo) {
 }
 
 const activeTx: any = ref({});
-const { assetsList, nerveAddress, currentAccount } = useStoreState();
+const { assetsList, nerveAddress } = useStoreState();
 let feeCoin: any = {};
 function showAdditionFee(hash: string, isExpand: boolean) {
   activeTx.value = {};

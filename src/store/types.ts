@@ -55,6 +55,7 @@ export interface TxInfo {
   L1Type?: string;
   expand?: boolean;
   retryCount?: number;
+  address?: string;
 }
 
 // 手动声明 state 类型

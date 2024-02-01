@@ -15,17 +15,20 @@
           ></el-tab-pane>
           <el-tab-pane
             :name="TransferType.Withdrawal"
-            :disabled="disableTx"
+            :disabled="disableTx || network === 'BTC'"
             :label="$t('transfer.transfer3')"
           ></el-tab-pane>
         </el-tabs>
       </div>
     </div>
     <div class="bottom">
-      <cross-in
-        v-show="activeName === TransferType.CrossIn"
-        :transferAsset="transferAsset"
-      ></cross-in>
+      <div v-show="activeName === TransferType.CrossIn">
+        <cross-in
+          v-if="network !== 'BTC'"
+          :transferAsset="transferAsset"
+        ></cross-in>
+        <BTCCrossIn v-else />
+      </div>
       <common-transfer
         v-show="activeName === TransferType.General"
         :transferAsset="transferAsset"
@@ -41,6 +44,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch, PropType } from 'vue';
 import CrossIn from './CrossIn.vue';
+import BTCCrossIn from './BTCCrossIn.vue';
 import CommonTransfer from './CommonTransfer.vue';
 import Withdrawal from './Withdrawal.vue';
 
@@ -50,6 +54,7 @@ export default defineComponent({
   name: 'transfer',
   components: {
     CrossIn,
+    BTCCrossIn,
     CommonTransfer,
     Withdrawal
   },
@@ -62,7 +67,8 @@ export default defineComponent({
     transferAsset: {
       type: Object as PropType<AssetItemType>
     },
-    disableTx: Boolean
+    disableTx: Boolean,
+    network: String
   },
   setup(props, { emit }) {
     const activeName = ref<TransferType>(props.currentTab);
