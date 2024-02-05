@@ -449,6 +449,16 @@
   }
 }
 
+.mint-popper {
+  border-radius: 8px !important;
+  background-color: #465065 !important;
+  border-color: #465065 !important;
+  padding: 7px 10px !important;
+  .el-popper__arrow:before {
+    background-color: #465065 !important;
+  }
+}
+
 
 
 

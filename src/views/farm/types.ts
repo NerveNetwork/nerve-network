@@ -80,7 +80,7 @@ export interface UniFarmItem {
 
 export interface FarmList {
   nerveList: NerveFarmItem[];
-  uniList: UniFarmItem[];
+  // uniList: UniFarmItem[];
 }
 
 export enum LpOperate {

@@ -30,6 +30,7 @@
                     </div>
                   </template>
                   <SymbolInfo
+                    :logo="scope.row.icon"
                     :name="scope.row.symbol"
                     :chain="scope.row.originNetwork"
                     :asset-key="scope.row.assetKey"
@@ -37,6 +38,7 @@
                 </el-tooltip>
                 <SymbolInfo
                   v-else
+                  :logo="scope.row.icon"
                   :name="scope.row.symbol"
                   :chain="scope.row.originNetwork"
                   :asset-key="scope.row.assetKey"

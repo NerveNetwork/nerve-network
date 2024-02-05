@@ -1,4 +1,4 @@
-import { reactive, toRefs } from 'vue';
+import { reactive, toRefs, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from '@/store';
 // import { Web3Provider } from "ethers";
@@ -172,12 +172,18 @@ export default function useEthereum() {
     chainId: ''
   });
 
+  onUnmounted(() => {
+    removeListener();
+  });
+
   async function initProvider() {
     const provider = getProvider();
     if (!provider) return;
     if (provider.on) {
-      listenAccountChange();
-      listenNetworkChange();
+      provider.on('accountsChanged', handleAccountChange);
+      provider.on('chainChanged', handleChainChange);
+      // listenAccountChange();
+      // listenNetworkChange();
     }
     let address = provider?.selectedAddress || provider?.address;
     try {
@@ -229,6 +235,40 @@ export default function useEthereum() {
     store.commit('changeAddress', currentAddress);
     store.commit('changeNetwork', network);
   }
+
+  const handleAccountChange = (accounts: string[]) => {
+    console.log(accounts, '=======accountsChanged');
+    if (
+      state.address &&
+      state.address.toLowerCase() !== accounts[0].toLowerCase()
+    ) {
+      reload();
+    }
+  };
+
+  const handleChainChange = (chainId: string) => {
+    const oldChainId = state.chainId;
+    console.log(chainId, '=======chainId', oldChainId);
+    if (chainId) {
+      const chainInfo = Object.values(_networkInfo).find(
+        v => v.nativeId === chainId
+      );
+      const network = chainInfo?.name || null;
+      store.commit('changeNetwork', network);
+      if (oldChainId && Number(oldChainId) !== Number(chainId)) {
+        reload();
+      }
+    }
+  };
+
+  const removeListener = () => {
+    const provider = getProvider();
+    if (!provider) return;
+    if (provider.on) {
+      provider.off('accountsChanged', handleAccountChange);
+      provider.off('chainChanged', handleChainChange);
+    }
+  };
 
   // 监听插件账户变动
   function listenAccountChange() {
@@ -307,8 +347,6 @@ export default function useEthereum() {
     await provider?.request({ method: 'eth_requestAccounts' });
     state.address = provider?.selectedAddress;
     storage.set('providerType', providerType);
-    // listenAccountChange();
-    // listenNetworkChange();
     reload();
   }
 

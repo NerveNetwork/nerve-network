@@ -399,7 +399,7 @@ export default defineComponent({
           assetId: assetId,
           amount: timesDecimals(amount.value, decimals),
           feeInfo: {
-            amount: timesDecimals(1, feeDecimals),
+            amount: timesDecimals(fee.value, feeDecimals),
             assetChainId: feeChainId,
             assetId: feeAssetId
           },

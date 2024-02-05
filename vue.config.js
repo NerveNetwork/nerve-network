@@ -5,6 +5,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 // const AutoImport = require('unplugin-auto-import/webpack');
 const Components = require('unplugin-vue-components/webpack');
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers');
+const TerserPlugin = require('terser-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 // const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
@@ -17,6 +18,15 @@ const port = process.env.BUILD_ENV === 'prod' ? 8031 : 8033;
 module.exports = {
   // transpileDependencies: ['@injectivelabs'],
   publicPath: '/',
+  chainWebpack: config => {
+    // console.log(config.optimization.minimizer('terser'), 22)
+    config.optimization.minimizer('terser').tap(args => {
+      const compress = args[0].terserOptions.compress;
+      compress.drop_console = true;
+      compress.pure_funcs = ['console.log'];
+      return args;
+    });
+  },
   configureWebpack: config => {
     // element-plus import es-module
     config.module.rules.push({
@@ -33,11 +43,11 @@ module.exports = {
           minRatio: 0.8
         })
       );
-      config.optimization.minimizer[0].options.compress = {
-        drop_console: true
-      };
-      // config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
     }
+    /* console.log(
+      config.optimization.minimizer[0].options.minimizer.options.compress,
+      333
+    ); */
     config.plugins.push(
       new webpack.DefinePlugin({
         'process.env': {
@@ -88,6 +98,21 @@ module.exports = {
         }*/
       }
     };
+    /* config.optimization.minimizer['TerserPluginIndex'] = new TerserPlugin({
+      terserOptions: {
+        warnings: false,
+        format: {
+          comments: false
+        },
+        compress: {
+          drop_debugger: true,
+          drop_console: true,
+          pure_funcs: ['console.log']
+        }
+      },
+      extractComments: false,
+      parallel: true
+    }); */
     config.devtool = !isProduction ? 'cheap-module-source-map' : false;
 
     // fix node env
@@ -97,9 +122,9 @@ module.exports = {
       asyncWebAssembly: true,
       topLevelAwait: true
     };
-    config.optimization.minimizer[0].options.compress = {
-      drop_console: true
-    };
+    // config.optimization.minimizer[0].options.compress = {
+    //   drop_console: true
+    // };
     // config.plugins.push(new BundleAnalyzerPlugin());
   },
   css: {

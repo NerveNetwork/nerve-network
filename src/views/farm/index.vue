@@ -1,35 +1,5 @@
 <template>
-  <div class="tab-bar" v-if="!props.isPool">
-    <span
-      @click="current = FarmType.UniFarm"
-      :class="{ active: current === FarmType.UniFarm }"
-    >
-      L1 {{ $t('header.header8') }}
-    </span>
-    <span
-      @click="current = FarmType.NerveFarm"
-      :class="{ active: current === FarmType.NerveFarm }"
-    >
-      NERVE {{ $t('header.header8') }}
-    </span>
-  </div>
   <div class="w1200 farm">
-    <div class="top clear" v-if="!props.isPool">
-      <div
-        class="fl tab-item"
-        :class="{ isActive: current === FarmType.UniFarm }"
-        @click="current = FarmType.UniFarm"
-      >
-        L1 {{ $t('header.header8') }}
-      </div>
-      <div
-        class="fr tab-item"
-        :class="{ isActive: current === FarmType.NerveFarm }"
-        @click="current = FarmType.NerveFarm"
-      >
-        NERVE {{ $t('header.header8') }}
-      </div>
-    </div>
     <div class="search">
       <div class="sort">
         <el-select
@@ -70,13 +40,6 @@
     </div>
     <div class="farm-wrap box_wrapper">
       <farm-item
-        v-if="current === FarmType.UniFarm"
-        :list="uniList"
-        :loading="uniLoading"
-        @handleLoading="handleLoading"
-      ></farm-item>
-      <farm-item
-        v-if="current === FarmType.NerveFarm"
         :list="nerveList"
         :loading="nerveLoading"
         @handleLoading="handleLoading"
@@ -89,12 +52,12 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, onUnmounted, watch, reactive } from 'vue';
+import { onMounted, ref, watch, reactive } from 'vue';
 import FarmItem from './FarmItem.vue';
 import useFarmData from './hooks/useData';
 import { useRoute, useRouter } from 'vue-router';
 
-import { FarmType, SearchState } from './types';
+import { SearchState } from './types';
 
 const props = defineProps({
   isPool: {
@@ -105,19 +68,13 @@ const props = defineProps({
 
 const route = useRoute();
 const router = useRouter();
-const uniLoading = ref(true);
 const nerveLoading = ref(true);
-const current = ref<FarmType>(FarmType.UniFarm);
-if (props.isPool) {
-  current.value = FarmType.NerveFarm;
-}
 const state = reactive<SearchState>({
   sortValue: '1', // apr -1 liquid -2
   farmStatus: 'pending', // pending | end
   mortgageValue: false
 });
-const { nerveList, getFarmData, getUserFarm, uniList, getUniData, filterList } =
-  useFarmData();
+const { nerveList, getFarmData, getUserFarm, filterList } = useFarmData();
 watch(
   () =>
     [state.sortValue, state.mortgageValue, state.farmStatus] as [
@@ -133,32 +90,14 @@ watch(
 onMounted(async () => {
   const hash = route.params?.hash as string;
   // console.log(hash, 123, route)
-  if (hash) {
-    current.value = FarmType.NerveFarm;
-  }
   // init();
   await getFarmData(hash);
   getUserFarm(hash);
   nerveLoading.value = false;
 });
 
-let timer: number;
-onMounted(async () => {
-  if (props.isPool) return;
-  await getUniData();
-  uniLoading.value = false;
-  timer = window.setInterval(async () => {
-    await getUniData();
-  }, 5000);
-});
-onUnmounted(() => clearInterval(timer));
-
 function handleLoading(status: boolean) {
-  if (current.value === FarmType.UniFarm) {
-    uniLoading.value = status;
-  } else {
-    nerveLoading.value = status;
-  }
+  nerveLoading.value = status;
 }
 function filterListByStatus(status: 'pending' | 'end') {
   state.farmStatus = status;

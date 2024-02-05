@@ -198,8 +198,6 @@ const rules = reactive({
       trigger: 'change'
     }
   ]
-  /*checkContact: [{ validator: validateCheck, trigger: 'blur' }],
-  check: [{ validator: validateCheck, trigger: 'blur' }]*/
 });
 
 const disabledConfirm = computed(() => {

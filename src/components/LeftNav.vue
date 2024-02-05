@@ -85,7 +85,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted } from 'vue';
+import {
+  defineComponent,
+  computed,
+  ref,
+  watch,
+  onMounted,
+  onUnmounted
+} from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import useLang from '@/hooks/useLang';
 import { listen } from '@/service/socket/websocket';
@@ -117,9 +124,13 @@ export default defineComponent({
       if (isMobile.value) {
         context.emit('update:collapseMenu', true);
       }
-      window.addEventListener('resize', function () {
-        isMobile.value = document.documentElement.clientWidth < 1200;
-      });
+      window.addEventListener('resize', handleResize);
+    });
+    const handleResize = () => {
+      isMobile.value = document.documentElement.clientWidth < 1200;
+    };
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize);
     });
     watch(
       () => route.path,

@@ -18,7 +18,7 @@
           <span @click="max">MAX</span>
         </template>
       </el-input>
-      <div class="select-wrap flex-center" @click="openAssetDialog">
+      <div class="select-wrap flex-center" @click="openDialog">
         <template v-if="selectedAsset">
           <symbol-icon
             :icon="selectedAsset.symbol"

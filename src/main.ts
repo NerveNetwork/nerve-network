@@ -18,9 +18,9 @@ if (config.isBeta) {
 // import VConsole from 'vconsole'
 // new VConsole()
 
-/*if (process.env.NODE_ENV !== 'development') {
+if (process.env.NODE_ENV !== 'development') {
   window.console.log = () => {};
-}*/
+}
 
 AddChain();
 getLogoConfig();

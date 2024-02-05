@@ -337,7 +337,7 @@ async function handleEVMTx(tx: TxInfo) {
     // width: 160px;
     width: 120px;
     cursor: pointer;
-    margin-right: 30px;
+    margin-right: 20px;
     img {
       width: 100%;
     }

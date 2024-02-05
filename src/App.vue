@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, computed, onMounted } from 'vue';
+import { watch, computed, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { ElConfigProvider } from 'element-plus';
 import Header from '@/components/Header/index.vue';
@@ -25,6 +25,7 @@ const store = useStore();
 const { localeLang } = useLang();
 
 let timer: number;
+let timer2: number;
 const nerveAddress = computed(() => store.getters.nerveAddress);
 // 统一获取资产列表
 watch(
@@ -50,9 +51,13 @@ onMounted(() => {
   // setInterval(() => {
   //   getHeight();
   // }, 2000);
-  setInterval(() => {
+  timer2 = window.setInterval(() => {
     getNvtPrice();
   }, 10000);
+});
+onUnmounted(() => {
+  if (timer) clearInterval(timer);
+  if (timer2) clearInterval(timer2);
 });
 // 获取nvt价格
 async function getNvtPrice() {
