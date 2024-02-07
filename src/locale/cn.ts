@@ -878,7 +878,7 @@ const cn = {
     mint38: '单次Mint/硬顶 ',
     mint39: 'Mint时间',
     mint40: '解锁时间',
-    mint41: 'MInt单价',
+    mint41: 'Mint单价',
     mint42: 'LP添加/锁定',
     mint43: 'Mint进度',
     mint44: '操作',
