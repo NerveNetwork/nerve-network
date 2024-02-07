@@ -181,6 +181,9 @@
           {{
             insufficientBalance ? $t('transfer.transfer15') : $t('mint.mint1')
           }}
+          <el-icon class="is-loading" style="margin-left: 5px" v-if="loading">
+            <Loading />
+          </el-icon>
         </el-button>
         <auth-button v-else></auth-button>
       </el-form-item>
@@ -259,7 +262,7 @@ const insufficientBalance = computed(() => {
 const disabled = computed(() => {
   if (!mintAsset.value) return true;
   if (insufficientBalance.value) return true;
-  return !model.check;
+  return !model.check || loading.value;
 });
 
 function feeAssetChange() {

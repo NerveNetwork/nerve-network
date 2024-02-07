@@ -92,7 +92,7 @@ onMounted(async () => {
   // console.log(hash, 123, route)
   // init();
   await getFarmData(hash);
-  // getUserFarm(hash);
+  getUserFarm(hash);
   nerveLoading.value = false;
 });
 

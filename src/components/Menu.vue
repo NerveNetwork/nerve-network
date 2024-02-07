@@ -34,6 +34,11 @@ const route = useRoute();
 
 const activeMenu = computed(() => {
   const path = route.path;
+  if (path === '/create-farm') {
+    return 'farm';
+  } else if (path === '/mint-deploy') {
+    return 'mint';
+  }
   return path.split('/')[1] || 'home';
 });
 

@@ -92,7 +92,7 @@ const routes: RouteRecordRaw[] = [
     component: MultiRoutingDetail
   },
   {
-    path: '/farm/create',
+    path: '/create-farm',
     name: 'createFarm',
     component: CreateFarm
   },
@@ -102,7 +102,7 @@ const routes: RouteRecordRaw[] = [
     component: Mint
   },
   {
-    path: '/mint/deploy',
+    path: '/mint-deploy',
     name: 'mintDeploy',
     component: MintDeploy
   }

@@ -20,7 +20,9 @@
       </el-select>
     </div>
     <div class="deploy">
-      <router-link to="/mint/deploy">{{ $t('mint.mint1') }}</router-link>
+      <router-link :to="{ name: 'mintDeploy' }">
+        {{ $t('mint.mint1') }}
+      </router-link>
     </div>
   </div>
 </template>

@@ -63,6 +63,9 @@
       <div class="confirm-btn">
         <el-button type="primary" :disabled="disabled" @click="handleMint">
           {{ btnText }}
+          <el-icon class="is-loading" style="margin-left: 5px" v-if="txLoading">
+            <Loading />
+          </el-icon>
         </el-button>
       </div>
     </div>
@@ -111,6 +114,7 @@ const visible = computed({
   }
 });
 const loading = ref(true);
+const txLoading = ref(false);
 const info = ref<IMintItem>({} as IMintItem);
 const check = ref(false);
 const mintCount = ref(1);
@@ -192,6 +196,8 @@ const btnText = computed(() => {
 const disabled = computed(() => {
   const balance = feeAsset.value.available;
   return (
+    !check.value ||
+    txLoading.value ||
     !resetMintCount.value ||
     !mintCount.value ||
     !Number(balance) ||
@@ -200,7 +206,7 @@ const disabled = computed(() => {
 });
 
 async function handleMint() {
-  loading.value = true;
+  txLoading.value = true;
   try {
     const { mintFeeAsset, mintFeeAssetDecimals } = info.value;
     const { provider, EVMAddress, pub } = getWalletInfo();
@@ -227,6 +233,7 @@ async function handleMint() {
     console.log(e, 'mint-error');
     toastError(e);
   }
+  txLoading.value = false;
 }
 
 const close = () => {

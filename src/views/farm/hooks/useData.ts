@@ -35,7 +35,9 @@ export default function useData() {
       if (heightTimer) {
         clearInterval(heightTimer);
       }
-      getHeight();
+      setTimeout(() => {
+        getHeight();
+      }, 5000);
     }
   }
   onUnmounted(() => {
@@ -75,7 +77,6 @@ export default function useData() {
         channel: channel + ':' + address + (farmHash ? ',' + farmHash : '')
       },
       success(data: UserStakeFarm[]) {
-        console.log(data, 321)
         const totalList = [...totalNerveList];
         if (totalList.length) {
           data.map(item => {
