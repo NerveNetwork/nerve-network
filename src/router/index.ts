@@ -19,6 +19,9 @@ const MultiRoutingDetail = () =>
 
 const CreateFarm = () => import('@/views/createFarm/index.vue');
 
+const Mint = () => import('@/views/mint/index.vue');
+const MintDeploy = () => import('@/views/mintDeploy/index.vue');
+
 const routes: RouteRecordRaw[] = [
   {
     path: '',
@@ -89,9 +92,19 @@ const routes: RouteRecordRaw[] = [
     component: MultiRoutingDetail
   },
   {
-    path: '/create',
+    path: '/farm/create',
     name: 'createFarm',
     component: CreateFarm
+  },
+  {
+    path: '/mint',
+    name: 'mint',
+    component: Mint
+  },
+  {
+    path: '/mint/deploy',
+    name: 'mintDeploy',
+    component: MintDeploy
   }
 ];
 

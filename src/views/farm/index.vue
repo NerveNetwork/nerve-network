@@ -104,7 +104,7 @@ function filterListByStatus(status: 'pending' | 'end') {
 }
 
 function createFarm() {
-  router.push('/create');
+  router.push({ name: 'createFarm' });
 }
 </script>
 

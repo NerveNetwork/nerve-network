@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { createRPCParams } from '@/utils/util';
+import config from '@/config';
 
 class Request {
   instance: AxiosInstance;
@@ -67,6 +68,20 @@ class Request {
       method: 'POST',
       data: rpcParams
     });
+  }
+  sPost<T = any>(path: string, params = {}) {
+    const url = config.swap_url + path;
+    return this.request<T>({
+      url,
+      method: 'POST',
+      data: params
+    });
+    /* return new Promise((resolve, reject) => {
+      axios.post(url, params).then(
+        res => resolve(res.data),
+        err => reject(err)
+      );
+    }); */
   }
 }
 

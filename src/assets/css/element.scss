@@ -93,6 +93,7 @@
     //box-shadow: 0 0 10px #dfe4ef;
     border: 1px solid #e4e9f4 !important;
     border-top: none !important;
+    --el-table-row-hover-bg-color: transparent!important;
     &::before {
       height: 0!important;
     }

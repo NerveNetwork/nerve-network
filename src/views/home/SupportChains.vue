@@ -7,9 +7,9 @@
         <div class="img-wrap">
           <img :src="item.src" alt="" />
         </div>
-<!--        <a :href="item.href" target="_blank">-->
-<!--          <img :src="item.src" alt="" />-->
-<!--        </a>-->
+        <!--        <a :href="item.href" target="_blank">-->
+        <!--          <img :src="item.src" alt="" />-->
+        <!--        </a>-->
       </el-col>
     </el-row>
     <!--    </div>-->
@@ -48,12 +48,17 @@ import ETC from '@/assets/img/supportChains/ETC.png';
 import BASE from '@/assets/img/supportChains/BASE.png';
 import Scroll from '@/assets/img/supportChains/Scroll.png';
 import Bitgert from '@/assets/img/supportChains/Bitgert.jpg';
+import BTC from '@/assets/img/supportChains/btc.png';
+import Manta from '@/assets/img/supportChains/manta.png';
+import Janus from '@/assets/img/supportChains/janus.png';
+import X1 from '@/assets/img/supportChains/x1.png';
+import Zeta from '@/assets/img/supportChains/zeta.png';
 
 const supportChains = [
+  // { src: BTC },
   { src: Ethereum },
   { src: BSC },
   { src: Polygon },
-  { src: Heco },
   { src: OKX },
   { src: Avalanche },
   { src: Harmany },
@@ -80,7 +85,12 @@ const supportChains = [
   { src: ETC },
   { src: BASE },
   { src: Scroll },
-  { src: Bitgert }
+  { src: Bitgert },
+  /* { src: Manta },
+  { src: Janus },
+  { src: X1 },
+  { src: Zeta },
+  { src: Heco } */
 ];
 </script>
 

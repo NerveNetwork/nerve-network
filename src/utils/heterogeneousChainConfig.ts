@@ -49,7 +49,7 @@ const Origin = {
     ? 'https://mumbai.polygonscan.com'
     : 'https://polygonscan.com',
   Heco: isBeta ? 'https://testnet.hecoinfo.com' : 'https://hecoinfo.com',
-  OKC: isBeta
+  OKTC: isBeta
     ? 'https://www.oklink.com/okexchain-test'
     : 'https://www.oklink.com/okexchain',
   Avalanche: isBeta ? 'https://testnet.snowtrace.io' : 'https://snowtrace.io',
@@ -125,7 +125,7 @@ export const RPC_URL = {
   Heco: isBeta
     ? 'https://http-testnet.hecochain.com'
     : 'https://http-mainnet.hecochain.com',
-  OKC: isBeta
+  OKTC: isBeta
     ? 'https://exchaintestrpc.okex.org'
     : 'https://exchainrpc.okex.org',
   Avalanche: isBeta
@@ -249,31 +249,18 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Polygon
   },
-  Heco: {
-    name: 'Heco',
-    chainName: isBeta ? 'Heco_Beta' : 'Heco',
-    chainId: 103,
-    assetKey: isBeta ? '5-9' : '9-55',
-    origin: Origin.Heco,
-    mainAsset: 'HT',
-    nativeId: isBeta ? '0x100' : '0x80',
-    supported: true,
-    logo: HecoLogo,
-    decimals: 18,
-    rpcUrl: RPC_URL.Heco
-  },
-  OKC: {
-    name: 'OKC',
-    chainName: isBeta ? 'OKC_Beta' : 'OKC',
+  OKTC: {
+    name: 'OKTC',
+    chainName: isBeta ? 'OKC_Beta' : 'OKTC',
     chainId: 104,
     assetKey: isBeta ? '5-12' : '9-87',
-    origin: Origin.OKC,
+    origin: Origin.OKTC,
     mainAsset: 'OKT',
     nativeId: isBeta ? '0x41' : '0x42',
     supported: true,
     logo: OECLogo,
     decimals: 18,
-    rpcUrl: RPC_URL.OKC
+    rpcUrl: RPC_URL.OKTC
   },
   Avalanche: {
     name: 'Avalanche',
@@ -652,6 +639,19 @@ export const _networkInfo = {
     logo: ZetaLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Zeta
+  },
+  Heco: {
+    name: 'Heco',
+    chainName: isBeta ? 'Heco_Beta' : 'Heco',
+    chainId: 103,
+    assetKey: isBeta ? '5-9' : '9-55',
+    origin: Origin.Heco,
+    mainAsset: 'HT',
+    nativeId: isBeta ? '0x100' : '0x80',
+    supported: true,
+    logo: HecoLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Heco
   },
   NULS: {
     name: 'NULS',

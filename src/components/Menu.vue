@@ -61,6 +61,10 @@ const menus = computed(() => {
       key: 'liquidity'
     },
     {
+      label: 'Mint',
+      key: 'mint'
+    },
+    {
       label: t('header.header12'),
       key: 'info'
     },

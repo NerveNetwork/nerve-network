@@ -266,7 +266,8 @@ export default defineComponent({
         ) as AssetItemType;
         const L1MainAssetUSD = (await getAssetPrice(
           mainAsset.chainId,
-          mainAsset.assetId
+          mainAsset.assetId,
+          true
         )) as string;
         if (withdrawalChain === 'TRON') {
           res = transfer.calWithdrawalFeeForTRON(
