@@ -9,6 +9,9 @@
     >
       <template v-for="item in props.columns" :key="item.prop">
         <el-table-column v-bind="item">
+          <template v-if="item.headerSlot" #header>
+            <slot :name="item.headerSlot"></slot>
+          </template>
           <template #default="scope">
             <slot :name="item.slotName" :row="scope.row">
               {{ scope.row[item.prop] }}
@@ -48,6 +51,7 @@ interface Column {
   width?: string;
   align?: string;
   slotName?: string;
+  headerSlot?: string;
 }
 
 const props = withDefaults(

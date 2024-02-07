@@ -898,7 +898,7 @@ const en = {
     mint39: 'Mint Start Time',
     mint40: 'Unlock Time',
     mint41: 'Mint Fee',
-    mint42: 'Liquidity/Lock Days',
+    mint42: 'Liquidity/Lock',
     mint43: 'Mint Progress',
     mint44: 'Operation',
     mint45: 'Waiting for Mint',

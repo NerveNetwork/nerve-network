@@ -34,6 +34,9 @@
           :asset-key="scope.row.mintAsset"
         ></SymbolInfo>
       </template>
+      <template #amountHeader>
+        <Tip label="SMA/HT" :tip="$t('mint.mint38')" white />
+      </template>
       <template #amount="scope">
         {{ $thousands(scope.row.mintEach) }}/{{ $thousands(scope.row.mintMax) }}
       </template>
@@ -73,6 +76,7 @@ import Table from '@/components/Table/index.vue';
 import SymbolInfo from '@/components/SymbolInfo.vue';
 import MintHandle from './MintHandle.vue';
 import ConfirmModal from './ConfirmModal.vue';
+import Tip from '../mintDeploy/Tip.vue';
 import { IMintItem } from '@/service/api/types/mint';
 
 const props = defineProps<{
@@ -92,7 +96,12 @@ const columns = computed(() => {
       slotName: 'name',
       width: 170
     },
-    { label: t('mint.mint38'), width: 120, slotName: 'amount' },
+    {
+      label: t('mint.mint38'),
+      width: 120,
+      slotName: 'amount',
+      headerSlot: 'amountHeader'
+    },
     {
       prop: 'startTime',
       label: t('mint.mint39'),

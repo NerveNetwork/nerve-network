@@ -10,7 +10,18 @@
       :content="tip"
       placement="top"
     >
-      <img class="tip-icon" src="../../assets//img/tip.svg" alt="" />
+      <img
+        v-if="!white"
+        class="tip-icon"
+        src="../../assets//img/tip.svg"
+        alt=""
+      />
+      <img
+        v-else
+        class="tip-icon"
+        src="../../assets//img/tip-white.svg"
+        alt=""
+      />
     </el-tooltip>
   </p>
 </template>
@@ -20,6 +31,7 @@ const props = defineProps<{
   label: string;
   tip: string;
   required?: boolean;
+  white?: boolean;
 }>();
 </script>
 
