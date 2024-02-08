@@ -1,6 +1,6 @@
 <template>
   <div class="search-wrap">
-    <div>
+    <div class="left">
       <el-input
         class="search-input"
         v-model="inputVal"
@@ -71,6 +71,27 @@ function emitSearch() {
       &:hover {
         opacity: 0.7;
       }
+    }
+  }
+  @media screen and(max-width: 560px) {
+    // height: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    .left {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    :deep(.search-input) {
+      width: 220px;
+      margin-bottom: 15px;
+    }
+    :deep(.el-select) {
+      width: 120px;
+    }
+    .deploy {
+      width: 100%;
+      text-align: right;
     }
   }
 }

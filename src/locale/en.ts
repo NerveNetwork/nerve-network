@@ -457,7 +457,7 @@ const en = {
     home2:
       'NerveNetwork aims to connect all isolated blockchains and establish a cross-chain asset exchange network, providing all necessary underlying support for the DeFi ecosystem. Let every digital asset holder experience a truly safe, free and transparent DeFi service.',
     home3: '2 seconds confirmation and 0 gas fee',
-    home4: 'Support 31 chains',
+    home4: 'Support 35 chains',
     home5: 'Launch Swap ',
     home6: 'Launch Bridge',
     home7: 'Total Volume',
@@ -468,7 +468,7 @@ const en = {
     home12: 'Staking',
     home13: 'Total Assets on Nerve',
     home14: 'Total Flow on Nerve / 24H',
-    home15: 'Support 31 Networks',
+    home15: 'Support 35 Networks',
     home16: 'Total Supply',
     home17: 'Max. Supply',
     home18: 'Circulating Market Cap'
@@ -592,9 +592,9 @@ const en = {
     liquidity9: 'Confirm',
     liquidity10:
       'You are the first liquidity provider. The ratio of tokens you add will set the price of this pool',
-    liquidity11: 'Pool share',
-    liquidity12: 'Create liquidity',
-    liquidity13: 'Create pair',
+    liquidity11: 'Pool Share',
+    liquidity12: 'Create Liquidity',
+    liquidity13: 'Create Pair',
     liquidity14: 'Pair created. Please add liquidity',
     liquidity15: 'You will receive',
     liquidity16: 'Exceed the liquidity provided'
@@ -715,10 +715,10 @@ const en = {
     staking56: 'Select'
   },
   nodeType: {
-    '1': 'Create node',
-    '-1': 'Cancel node',
-    '2': 'Add deposit',
-    '-2': 'Withdraw deposit',
+    '1': 'Create Node',
+    '-1': 'Cancel Node',
+    '2': 'Add Deposit',
+    '-2': 'Withdraw Deposit',
     '3': 'Join Staking',
     '-3': 'Quit Staking'
   },
@@ -742,7 +742,7 @@ const en = {
     '3': 'General nodes'
   },
   createNode: {
-    createNode1: 'Create node',
+    createNode1: 'Create Node',
     createNode2: 'Creating Address',
     createNode3: 'Reward Address',
     createNode4: 'Packing Address',
@@ -789,21 +789,21 @@ const en = {
   transferType: {
     undefined: '',
     '2': 'Transfer',
-    '4': 'Register node',
+    '4': 'Register Node',
     '5': 'Stake',
-    '6': 'Cancel consensus',
-    '9': 'Unregister node',
-    '28': 'Add deposit',
-    '29': 'Cancel deposit',
-    '32': 'Withdrawal from staking in batches',
-    '33': 'Merge transaction',
-    '43': 'Across transfer',
+    '6': 'Unstake',
+    '9': 'Unregister Node',
+    '28': 'Consensus Deposit',
+    '29': 'Consensus Withdraw',
+    '32': 'Consensus Batch Withdraw',
+    '33': 'Merge Deposits',
+    '43': 'Cross Out',
     '61': 'Create Swap Trading Pair',
-    '63': 'Swap Transaction',
-    '64': 'Add Swap liquidity',
+    '63': 'Swap',
+    '64': 'Add Swap Liquidity',
     '65': 'Withdraw Swap Liquidity',
-    '66': 'Staking mining',
-    '67': 'Withdraw from staking'
+    '66': 'Pool Stake',
+    '67': 'Pool Unstake'
   },
   info: {
     info1: 'Overview',

@@ -257,14 +257,19 @@ async function handleMint() {
       EVMAddress,
       pub
     });
-    handleResult(2, result);
-    emit('refresh');
-    emit('update:show', false);
+    setTimeout(() => {
+      handleResult(2, result);
+      if (result.hash) {
+        emit('refresh');
+        emit('update:show', false);
+      }
+      txLoading.value = false;
+    }, 2000);
   } catch (e) {
     console.log(e, 'mint-error');
     toastError(e);
+    txLoading.value = false;
   }
-  txLoading.value = false;
 }
 
 const close = () => {

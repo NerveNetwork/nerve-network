@@ -214,7 +214,7 @@ export default function useCrossIn(isTron = false) {
         provider,
         multySignContract: heterogeneousChainMultySignAddress,
         nerveAddress,
-        amount: ethers.utils.parseUnits(amount, decimal),
+        amount: ethers.utils.parseUnits(amount, decimal)._hex,
         from: address,
         tokenContract: contractAddress
       });

@@ -88,6 +88,7 @@ function onSearch(searchVal: string, status: '1' | '2' | '3') {
   process = status === '1' ? null : status !== '3';
   stopTimer();
   startTimer();
+  loading.value = true;
   getList();
 }
 
@@ -95,13 +96,16 @@ function onPageChange(index: number) {
   pageIndex = index;
   stopTimer();
   startTimer();
+  loading.value = true;
   getList();
 }
 function onRefresh() {
   loading.value = true;
-  stopTimer();
-  startTimer();
-  getList();
+  setTimeout(() => {
+    stopTimer();
+    startTimer();
+    getList();
+  }, 2000);
 }
 </script>
 

@@ -135,8 +135,8 @@ const columns = computed(() => {
 
 const pid = ref(0);
 
-const pageChange = () => {
-  emit('onChange');
+const pageChange = (index: number) => {
+  emit('onChange', index);
 };
 
 const mint = (id: number) => {

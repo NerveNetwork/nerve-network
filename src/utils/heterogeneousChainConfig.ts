@@ -591,19 +591,6 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Bitgert
   },
-  Janus: {
-    name: 'Janus',
-    chainName: isBeta ? 'Janus_Beta' : 'Janus',
-    chainId: 132,
-    assetKey: isBeta ? '5-165' : '',
-    origin: Origin.Janus,
-    mainAsset: 'JNS',
-    nativeId: isBeta ? '0x105ac' : '',
-    supported: true,
-    logo: JanusLogo,
-    decimals: 18,
-    rpcUrl: RPC_URL.Janus
-  },
   Manta: {
     name: 'Manta',
     chainName: isBeta ? 'Manta_Beta' : 'Manta',
@@ -617,19 +604,6 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Manta
   },
-  X1: {
-    name: 'X1',
-    chainName: isBeta ? 'X1_Beta' : 'X1',
-    chainId: 134,
-    assetKey: isBeta ? '5-170' : '',
-    origin: Origin.X1,
-    mainAsset: 'OKB',
-    nativeId: isBeta ? '0xc3' : '',
-    supported: true,
-    logo: OECLogo,
-    decimals: 18,
-    rpcUrl: RPC_URL.X1
-  },
   Zeta: {
     name: 'Zeta',
     chainName: isBeta ? 'Zeta_Beta' : 'Zeta',
@@ -642,6 +616,32 @@ export const _networkInfo = {
     logo: ZetaLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Zeta
+  },
+  Janus: {
+    name: 'Janus',
+    chainName: isBeta ? 'Janus_Beta' : 'Janus',
+    chainId: 132,
+    assetKey: isBeta ? '5-165' : '',
+    origin: Origin.Janus,
+    mainAsset: 'JNS',
+    nativeId: isBeta ? '0x105ac' : '',
+    supported: true,
+    logo: JanusLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Janus
+  },
+  X1: {
+    name: 'X1',
+    chainName: isBeta ? 'X1_Beta' : 'X1',
+    chainId: 134,
+    assetKey: isBeta ? '5-170' : '',
+    origin: Origin.X1,
+    mainAsset: 'OKB',
+    nativeId: isBeta ? '0xc3' : '',
+    supported: true,
+    logo: OECLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.X1
   },
   Shardeum: {
     name: 'Shardeum',
@@ -701,4 +701,6 @@ if (isBeta) {
   delete _networkInfo.Janus;
   // @ts-ignore
   delete _networkInfo.X1;
+  // @ts-ignore
+  delete _networkInfo.Shardeum;
 }
