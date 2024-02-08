@@ -1,13 +1,23 @@
 <template>
   <el-dialog
-    title="Mint"
     center
     width="470px"
     custom-class="mint-modal"
     v-model="visible"
     :show-close="false"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
     @closed="close"
   >
+    <template #title>
+      <img
+        class="click"
+        src="../../assets/img/back-icon.svg"
+        alt=""
+        @click="emit('update:show', false)"
+      />
+      <span>Mint</span>
+    </template>
     <div v-loading="loading">
       <div class="info-item">
         <div class="left">{{ $t('mint.mint37') }}</div>
@@ -45,29 +55,45 @@
         <div class="left">{{ $t('mint.mint40') }}</div>
         <div class="right">{{ info.assetUnlockTime }}</div>
       </div>
-      <div class="info-item">
-        <div class="left">{{ $t('mint.mint53') }}</div>
-        <div class="right">
-          <el-input
-            :model-value="mintCount"
-            @input="changeInput"
-            class="mint-count-input"
-          />
+      <template v-if="resetMintCount">
+        <div class="info-item">
+          <div class="left">{{ $t('mint.mint53') }}</div>
+          <div class="right" style="position: relative">
+            <el-input
+              :model-value="mintCount"
+              @input="changeInput"
+              class="mint-count-input"
+            />
+            <span v-if="!mintCount" class="el-form-item__error">
+              {{ $t('mint.mint64') }}
+            </span>
+          </div>
         </div>
-      </div>
-      <div class="info-item cost">
-        <div class="left">{{ $t('mint.mint59') }}</div>
-        <div class="right">{{ totalCost }} {{ info.mintFeeAssetSymbol }}</div>
-      </div>
-      <el-checkbox :label="$t('mint.mint54')" v-model="check"></el-checkbox>
-      <div class="confirm-btn">
-        <el-button type="primary" :disabled="disabled" @click="handleMint">
-          {{ btnText }}
-          <el-icon class="is-loading" style="margin-left: 5px" v-if="txLoading">
-            <Loading />
-          </el-icon>
-        </el-button>
-      </div>
+        <div class="info-item cost">
+          <div class="left">{{ $t('mint.mint59') }}</div>
+          <div class="right">{{ totalCost }} {{ info.mintFeeAssetSymbol }}</div>
+        </div>
+        <el-checkbox :label="$t('mint.mint54')" v-model="check"></el-checkbox>
+        <div class="confirm-btn">
+          <el-button type="primary" :disabled="disabled" @click="handleMint">
+            {{ btnText }}
+            <el-icon
+              class="is-loading"
+              style="margin-left: 5px"
+              v-if="txLoading"
+            >
+              <Loading />
+            </el-icon>
+          </el-button>
+        </div>
+      </template>
+      <template v-else>
+        <div class="confirm-btn">
+          <el-button type="primary" disabled>
+            {{ $t('mint.mint47') }}
+          </el-button>
+        </div>
+      </template>
     </div>
   </el-dialog>
 </template>
@@ -97,7 +123,7 @@ const props = defineProps<{
   targetAddress: string;
 }>();
 
-const emit = defineEmits(['update:show', 'confirm']);
+const emit = defineEmits(['update:show', 'refresh']);
 
 const { t } = useI18n();
 
@@ -123,6 +149,10 @@ watch(
   () => visible.value,
   val => {
     if (val) {
+      txLoading.value = false;
+      info.value = {} as IMintItem;
+      check.value = false;
+      mintCount.value = 1;
       getInfo();
     }
   }
@@ -228,6 +258,7 @@ async function handleMint() {
       pub
     });
     handleResult(2, result);
+    emit('refresh');
     emit('update:show', false);
   } catch (e) {
     console.log(e, 'mint-error');
@@ -240,9 +271,20 @@ const close = () => {
   //
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../../assets/css/style.scss';
 .mint-modal {
+  .el-dialog__header {
+    border: none !important;
+    font-size: 20px;
+    font-weight: 500;
+    position: relative;
+    img {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
   .info-item {
     display: flex;
     align-items: center;
@@ -259,7 +301,7 @@ const close = () => {
       font-size: 12px;
       color: $subLabelColor;
     }
-    :deep(.mint-count-input) {
+    .mint-count-input {
       .el-input__inner {
         width: 132px;
         height: 36px;
@@ -283,7 +325,7 @@ const close = () => {
     }
   }
   .el-checkbox {
-    :deep(.el-checkbox__inner) {
+    .el-checkbox__inner {
       width: 18px;
       height: 18px;
       border-radius: 4px;
@@ -294,7 +336,7 @@ const close = () => {
         width: 4px;
       }
     }
-    :deep(.el-checkbox__label) {
+    .el-checkbox__label {
       white-space: normal;
       font-size: 13px;
       line-height: 16px;

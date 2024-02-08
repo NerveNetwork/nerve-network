@@ -1,21 +1,22 @@
 <template>
   <div class="handle-wrap">
-    <div
+    <el-tooltip
       v-if="item.progress === '100'"
-      class="handle-mint handle-item disabled"
+      popper-class="mint-popper"
+      effect="dark"
+      :content="$t('mint.mint57')"
+      placement="top"
     >
-      {{ $t('mint.mint57') }}
-    </div>
+      <div class="handle-mint handle-item disabled">Mint</div>
+    </el-tooltip>
     <el-tooltip
       v-else-if="countLimit || timeLimit"
       popper-class="mint-popper"
       effect="dark"
-      :content="countLimit ? $t('mint.mint47') : $t('mint.mint45')"
+      :content="countLimit ? $t('mint.mint47') : timerLimitText"
       placement="top"
     >
-      <div class="handle-mint handle-item disabled">
-        {{ $t('mint.mint58') }}
-      </div>
+      <div class="handle-mint handle-item disabled">Mint</div>
     </el-tooltip>
     <div v-else class="handle-mint handle-item" @click="emits('mint', item.id)">
       Mint
@@ -30,15 +31,19 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { IMintItem } from '@/service/api/types/mint';
 const props = defineProps<{
   item: IMintItem;
 }>();
 const emits = defineEmits(['mint']);
 
+const { t } = useI18n();
+
 const countLimit = ref(false);
 const timeLimit = ref(false);
+const timerLimitText = ref('');
 
 let timer: number;
 onMounted(() => {
@@ -59,16 +64,34 @@ function checkLimit() {
   }
 }
 function intervalCheckStart() {
-  const { startTime, whitelistAddr, mintMinutesForWhitelist } = props.item;
+  const { startTime, whitelistAddr, mintMinutesForWhitelist, id } = props.item;
   const now = new Date().getTime();
   const _startTime = new Date(startTime).getTime();
-  const whitelistStartTime = _startTime - mintMinutesForWhitelist * 60 * 1000;
+  if (mintMinutesForWhitelist) {
+    // set whitelist priority
+    if (whitelistAddr) {
+      const started = now >= _startTime;
+      timeLimit.value = !started;
+      timerLimitText.value = started ? '' : t('mint.mint45');
+    } else {
+      const finalStartTime = _startTime + mintMinutesForWhitelist * 60 * 1000;
+      const started = now >= finalStartTime;
+      // console.log(started, 2345)
+      timeLimit.value = !started;
+      timerLimitText.value = started ? '' : t('mint.mint46');
+    }
+  } else {
+    const started = now >= _startTime;
+    timeLimit.value = !started;
+    timerLimitText.value = started ? '' : t('mint.mint45');
+  }
+  /* const whitelistStartTime = _startTime - mintMinutesForWhitelist * 60 * 1000;
 
   if (whitelistAddr) {
     timeLimit.value = now < whitelistStartTime;
   } else {
     timeLimit.value = now < _startTime;
-  }
+  } */
   if (timeLimit.value) {
     timer = window.setTimeout(() => {
       intervalCheckStart();
@@ -83,9 +106,6 @@ function stopTimer() {
     clearInterval(timer);
   }
 }
-// mint限制 1.未开始，2.超过mint次数
-
-watch(() => props.item.startTime);
 </script>
 
 <style lang="scss">

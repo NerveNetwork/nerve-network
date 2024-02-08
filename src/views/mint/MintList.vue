@@ -1,5 +1,5 @@
 <template>
-  <div class="mint-list">
+  <div class="mint-list" v-loading="loading">
     <Table
       title=""
       :data="list"
@@ -67,6 +67,7 @@
     v-model:show="showConfirmModal"
     :id="pid"
     :targetAddress="targetAddress"
+    @refresh="emit('refresh')"
   />
 </template>
 <script lang="ts" setup>
@@ -80,12 +81,13 @@ import Tip from '../mintDeploy/Tip.vue';
 import { IMintItem } from '@/service/api/types/mint';
 
 const props = defineProps<{
+  loading: boolean;
   list: IMintItem[];
   total: number;
   targetAddress: string;
 }>();
 
-const emit = defineEmits(['onChange']);
+const emit = defineEmits(['onChange', 'refresh']);
 
 const { t } = useI18n();
 const columns = computed(() => {

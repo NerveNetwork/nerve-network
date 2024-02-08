@@ -1,5 +1,5 @@
 <template>
-  <div class="mint-deploy-page w1200" v-loading="loading">
+  <div class="mint-deploy-page w1200">
     <div class="deploy-header">
       <img src="../../assets/img/back-icon.svg" @click="router.go(-1)" />
       <h3>{{ $t('mint.mint1') }}</h3>
@@ -98,6 +98,7 @@
           <Tip :label="$t('mint.mint19')" :tip="$t('mint.mint21')" />
         </template>
         <el-date-picker
+          popper-class="mint-time-picker"
           :placeholder="$t('mint.mint20')"
           v-model="model.start"
           type="datetime"
@@ -109,6 +110,7 @@
           <Tip :label="$t('mint.mint22')" :tip="$t('mint.mint24')" />
         </template>
         <el-date-picker
+          popper-class="mint-time-picker"
           :placeholder="$t('mint.mint3')"
           v-model="model.unlock"
           type="datetime"
@@ -122,44 +124,51 @@
           :width="35"
         ></el-switch>
       </div>
-      <el-form-item prop="ratio">
-        <template #label>
-          <Tip :label="$t('mint.mint25')" :tip="$t('mint.mint27')" />
-        </template>
-        <el-input
-          :model-value="model.ratio"
-          @input="changeLPRatio"
-          :placeholder="$t('mint.mint26')"
-          class="ratio-input"
-        >
-          <template #append>%</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="days">
-        <template #label>
-          <Tip :label="$t('mint.mint28')" :tip="$t('mint.mint30')" />
-        </template>
-        <el-input
-          :model-value="model.days"
-          @input="changeLockDays"
-          :placeholder="$t('mint.mint29')"
-        ></el-input>
-      </el-form-item>
-      <el-form-item prop="whitelist">
-        <template #label>
-          <Tip :label="$t('mint.mint31')" :tip="$t('mint.mint32')" />
-        </template>
-        <el-input
-          :model-value="model.whitelist"
-          @input="changeWhitelist"
-          :autosize="{ minRows: 2, maxRows: 20 }"
-          type="textarea"
-          :placeholder="$t('mint.mint32')"
-        ></el-input>
-      </el-form-item>
-      <el-form-item :label="$t('mint.mint33')" prop="minutes">
-        <el-input v-model="model.minutes" placeholder=""></el-input>
-      </el-form-item>
+      <div v-show="advanced">
+        <el-form-item prop="ratio">
+          <template #label>
+            <Tip :label="$t('mint.mint25')" :tip="$t('mint.mint27')" />
+          </template>
+          <el-input
+            :model-value="model.ratio"
+            @input="changeLPRatio"
+            :placeholder="$t('mint.mint26')"
+            class="ratio-input"
+          >
+            <template #append>%</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="days">
+          <template #label>
+            <Tip :label="$t('mint.mint28')" :tip="$t('mint.mint30')" />
+          </template>
+          <el-input
+            :model-value="model.days"
+            @input="changeLockDays"
+            :placeholder="$t('mint.mint29')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="whitelist">
+          <template #label>
+            <Tip :label="$t('mint.mint31')" :tip="$t('mint.mint32')" />
+          </template>
+          <el-input
+            :model-value="model.whitelist"
+            @input="changeWhitelist"
+            :autosize="{ minRows: 2, maxRows: 20 }"
+            type="textarea"
+            :placeholder="$t('mint.mint32')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('mint.mint33')" prop="minutes">
+          <el-input
+            :model-value="model.minutes"
+            @input="changeMinutes"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+      </div>
+
       <el-form-item :label="$t('mint.mint34')" v-if="mintAsset?.symbol">
         <div class="total-amount">
           {{ totalCost || '--' }} {{ mintAsset?.symbol }}
@@ -202,7 +211,6 @@ import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import useToast from '@/hooks/useToast';
 import useMintBaseInfo from './useMintBaseInfo';
 import {
-  Division,
   isValidNerveAddress,
   timesDecimals,
   Times,
@@ -315,7 +323,7 @@ const changeHardTop = (val: string) => {
   }
 };
 function disableTime(date: Date) {
-  return new Date().getTime() > new Date(date).getTime();
+  return date.getTime() < new Date().getTime();
 }
 function changeLPRatio(val: string) {
   const reg = getAmountReg(2);
@@ -343,9 +351,15 @@ function changeWhitelist(val: string) {
   model.whitelist = val;
 }
 
+function changeMinutes(val: string) {
+  const reg = /^[1-9]\d*$/;
+  if (reg.exec(val) || val === '') {
+    model.minutes = val;
+  }
+}
+
 function submitForm() {
   form.value?.validate(valid => {
-    console.log(valid, 'valid');
     if (valid) {
       const isValidWhitelist = validateWhitelist();
       if (isValidWhitelist) {
@@ -405,7 +419,8 @@ async function handleDeploy() {
       ratio,
       days,
       whitelist,
-      minutes
+      minutes,
+      check
     } = model;
     const mintAssetDecimal = mintAsset.value!.decimals;
     const mintFee = timesDecimals(fee, minFeeAsset.value!.decimals);
@@ -432,10 +447,16 @@ async function handleDeploy() {
       start: startTime,
       unlock: unLockTime,
       ratio: ratio || '0',
-      days: days || '0',
+      days: ratio ? days || '0' : '0',
       whitelist: formatWhitelist,
-      minutes: minutes || '0'
+      minutes: formatWhitelist ? minutes || '0' : '0'
     };
+    if (!check) {
+      deploy.ratio = '0';
+      deploy.days = '0';
+      deploy.whitelist = '';
+      deploy.minutes = '0';
+    }
     if (ratio) {
       const tokenBase = Power(mintAssetDecimal);
       tokenAmountForLp = Times(hardTopAmount, Times(ratio, 95))
@@ -461,6 +482,7 @@ async function handleDeploy() {
     if (result && result.hash) {
       model.feetick = '';
       form.value?.resetFields();
+      router.push('/mint');
     }
   } catch (e) {
     console.log(e, 'mint-deploy-error');
@@ -611,4 +633,12 @@ async function handleDeploy() {
     }
   }
 }
+
+/* .mint-time-picker {
+  .el-picker-panel__footer {
+    .el-button:first-of-type {
+      display: none;
+    }
+  }
+} */
 </style>

@@ -42,21 +42,22 @@ export default function useRules() {
     lim: [{ validator: validateSingleMintAmount, trigger: 'blur' }],
     count: [{ validator: validateMintLimits, trigger: 'blur' }],
     max: [{ validator: validateHardTop, trigger: 'blur' }],
-    days: [{ validator: validataLockDays, trigger: 'blur' }],
     start: [
       {
-        type: 'date',
+        required: true,
         message: t('mint.mint20'),
         trigger: 'change'
       }
     ],
     unlock: [
       {
-        type: 'date',
+        required: true,
         message: t('mint.mint23'),
         trigger: 'change'
       }
-    ]
+    ],
+    days: [{ validator: validataLockDays, trigger: 'blur' }],
+    minutes: [{ validator: validataMinutes, trigger: 'blur' }]
   });
 
   function validateFee(rule: any, value: any, callback: any) {
@@ -101,14 +102,35 @@ export default function useRules() {
     }
   }
   function validataLockDays(rule: any, value: string, callback: any) {
+    if (!model.check) {
+      callback();
+      return;
+    }
     if (value) {
       const val = Number(value);
-      if (val < 30 || val > 720) {
+      if (val < 30 || val > 3000) {
         callback(t('mint.mint300'));
         return;
       } else {
         callback();
       }
+    } else {
+      callback();
+    }
+  }
+  function validataMinutes(rule: any, value: string, callback: any) {
+    const { check, whitelist } = model;
+    if (!check) {
+      callback();
+      return;
+    }
+    const formatWhitelist = whitelist
+      .replace(/\s/g, '')
+      .split(',')
+      .filter(v => v)
+      .join(',');
+    if (!value && formatWhitelist) {
+      callback(t('mint.mint333'));
     } else {
       callback();
     }

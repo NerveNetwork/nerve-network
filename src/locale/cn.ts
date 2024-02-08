@@ -866,7 +866,7 @@ const cn = {
     mint28: 'LP Lock Days',
     mint29: 'Fill in LP lock days',
     mint30: 'LP lock time after adding LP',
-    mint300: 'LP lock time is between 30 - 720',
+    mint300: 'LP lock time is between 30 - 3000',
     mint31: 'Whitelist',
     mint32: '填入白名单地址，每个地址一行，最大支持200行白名单地址',
     mint33: '白名单Mint时间（Min）',
@@ -900,7 +900,8 @@ const cn = {
     mint60: '确认Mint',
     mint61: '白名单含有非法地址',
     mint62: '白名单含有重复地址',
-    mint63: '白名单地址最多设置200个'
+    mint63: '白名单地址最多设置200个',
+    mint64: '请填入Mint次数'
   }
 };
 

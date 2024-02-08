@@ -37,6 +37,7 @@ import JanusLogo from '@/assets/img/chainLogo/Janus.jpg';
 import MantaLogo from '@/assets/img/chainLogo/Manta.jpg';
 import BTCLogo from '@/assets/img/chainLogo/BTC.png';
 import ZetaLogo from '@/assets/img/chainLogo/Zeta.png';
+import ShardeumLogo from '@/assets/img/chainLogo/shardeum.jpg';
 
 const Origin = {
   NERVE: isBeta
@@ -109,7 +110,8 @@ const Origin = {
   BTC: isBeta ? 'https://mempool.space/testnet' : 'https://mempool.space',
   Zeta: isBeta
     ? 'https://athens3.explorer.zetachain.com'
-    : 'https://explorer.mainnet.zetachain.com'
+    : 'https://explorer.mainnet.zetachain.com',
+  Shardeum: isBeta ? 'https://explorer-sphinx.shardeum.org' : ''
 };
 
 export const RPC_URL = {
@@ -193,7 +195,8 @@ export const RPC_URL = {
   BTC: '',
   Zeta: isBeta
     ? 'https://zetachain-athens-evm.blockpi.network/v1/rpc/public'
-    : 'https://api.mainnet.zetachain.com/evm'
+    : 'https://api.mainnet.zetachain.com/evm',
+  Shardeum: isBeta ? 'https://sphinx.shardeum.org' : ''
 };
 
 export const _networkInfo = {
@@ -639,6 +642,19 @@ export const _networkInfo = {
     logo: ZetaLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Zeta
+  },
+  Shardeum: {
+    name: 'Shardeum',
+    chainName: isBeta ? 'Shardeum_Beta' : 'Shardeum',
+    chainId: 137,
+    assetKey: isBeta ? '5-174' : '',
+    origin: Origin.Shardeum,
+    mainAsset: 'SHM',
+    nativeId: isBeta ? '0x1f92' : '',
+    supported: true,
+    logo: ShardeumLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Shardeum
   },
   Heco: {
     name: 'Heco',

@@ -8,10 +8,12 @@
     </div>
     <Search @search="onSearch" />
     <MintList
+      :loading="loading"
       :list="list"
       :total="total"
       :targetAddress="targetAddress"
       @onChange="onPageChange"
+      @refresh="onRefresh"
     />
   </div>
 </template>
@@ -31,6 +33,7 @@ import { IMintItem } from '@/service/api/types/mint';
 const { nerveAddress } = useStoreState();
 const { targetAddress } = useMintBaseInfo();
 
+const loading = ref(true);
 const list = ref<IMintItem[]>([]);
 const total = ref(0);
 let assetKey = '',
@@ -76,6 +79,7 @@ async function getList() {
   });
   list.value = result.list;
   total.value = result.total;
+  loading.value = false;
 }
 
 function onSearch(searchVal: string, status: '1' | '2' | '3') {
@@ -89,6 +93,12 @@ function onSearch(searchVal: string, status: '1' | '2' | '3') {
 
 function onPageChange(index: number) {
   pageIndex = index;
+  stopTimer();
+  startTimer();
+  getList();
+}
+function onRefresh() {
+  loading.value = true;
   stopTimer();
   startTimer();
   getList();
