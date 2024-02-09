@@ -96,7 +96,7 @@ const routes: RouteRecordRaw[] = [
     name: 'createFarm',
     component: CreateFarm
   },
-  {
+  /* {
     path: '/mint',
     name: 'mint',
     component: Mint
@@ -105,7 +105,7 @@ const routes: RouteRecordRaw[] = [
     path: '/mint-deploy',
     name: 'mintDeploy',
     component: MintDeploy
-  }
+  } */
 ];
 
 const router = createRouter({
