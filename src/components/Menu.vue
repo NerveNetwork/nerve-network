@@ -65,10 +65,10 @@ const menus = computed(() => {
       label: t('header.header2'),
       key: 'liquidity'
     },
-    /* {
+    {
       label: 'Mint',
       key: 'mint'
-    }, */
+    },
     {
       label: t('header.header12'),
       key: 'info'
