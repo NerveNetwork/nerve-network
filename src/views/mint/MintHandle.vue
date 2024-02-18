@@ -69,37 +69,31 @@ function checkLimit() {
   }
 }
 function intervalCheckStart() {
-  const { startTime, whitelistAddr, mintMinutesForWhitelist, id } = props.item;
+  const { startTime, whitelistAddr, mintMinutesForWhitelist } = props.item;
   const now = new Date().getTime();
-  const _startTime = new Date(startTime).getTime();
-  if (mintMinutesForWhitelist) {
-    // set whitelist priority
-    if (whitelistAddr) {
-      const started = now >= _startTime;
-      timeLimit.value = !started;
-      timeLimitText.value = started ? '' : t('mint.mint45');
+  const _startTime = new Date(startTime).getTime(); // whitelist start time
+  const generalUserStartTime = _startTime + mintMinutesForWhitelist * 60 * 1000; // general user start time
+  if (now < _startTime) {
+    // mint not start
+    timeLimit.value = true;
+    timeLimitText.value = t('mint.mint45');
+  } else {
+    // mint start
+    if (mintMinutesForWhitelist) {
+      // set whitelist priority
+      if (whitelistAddr) {
+        timeLimit.value = false;
+      } else {
+        const started = now >= generalUserStartTime;
+        // console.log(started, 2345)
+        timeLimit.value = !started;
+        timeLimitText.value = started ? '' : t('mint.mint46');
+      }
     } else {
-      const finalStartTime = _startTime + mintMinutesForWhitelist * 60 * 1000;
-      const started = now >= finalStartTime;
-      // console.log(started, 2345)
-      timeLimit.value = !started;
-      timeLimitText.value = started ? '' : t('mint.mint46');
+      timeLimit.value = false;
     }
-  } else {
-    const started = now >= _startTime;
-    timeLimit.value = !started;
-    timeLimitText.value = started ? '' : t('mint.mint45');
   }
-  /* if (id === 9 || id === 10) {
-    console.log('id:' + id, timeLimit.value, timeLimitText.value, 333333)
-  } */
-  /* const whitelistStartTime = _startTime - mintMinutesForWhitelist * 60 * 1000;
 
-  if (whitelistAddr) {
-    timeLimit.value = now < whitelistStartTime;
-  } else {
-    timeLimit.value = now < _startTime;
-  } */
   if (timeLimit.value) {
     timer = window.setTimeout(() => {
       checkLimit();

@@ -231,8 +231,7 @@ const { targetAddress } = useMintBaseInfo();
 const form = ref<InstanceType<typeof ElForm>>();
 const loading = ref(false);
 
-const advanced = ref(true);
-const { model, rules } = useRules();
+const { advanced, model, rules } = useRules();
 
 const mintAsset = computed(() => {
   if (!model.tick) return null;
@@ -330,6 +329,8 @@ function changeLPRatio(val: string) {
   if (reg.exec(val) || val === '') {
     if (Number(val) - 100 <= 0) {
       model.ratio = val;
+    } else {
+      model.ratio = '100';
     }
   }
 }

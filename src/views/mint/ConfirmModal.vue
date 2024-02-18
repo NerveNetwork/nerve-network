@@ -42,7 +42,9 @@
       </div>
       <div class="info-item">
         <div class="left">{{ $t('mint.mint52') }}</div>
-        <div class="right">{{ info.mintCount }}/{{ info.mintCountLimit }}</div>
+        <div class="right">
+          {{ info.mintCountLimit - info.mintCount }}/{{ info.mintCountLimit }}
+        </div>
       </div>
       <div class="info-item">
         <div class="left">{{ $t('mint.mint42') }}</div>

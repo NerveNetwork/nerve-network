@@ -1,10 +1,11 @@
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isValidNerveAddress } from '@/utils/util';
 
 export default function useRules() {
   const { t } = useI18n();
 
+  const advanced = ref(true);
   const model = reactive({
     tick: '', // mint asset
     feetick: '', // mint fee asset
@@ -16,7 +17,7 @@ export default function useRules() {
     start: '', // mint time
     unlock: '', // mint asset unlock time
     ratio: '', // LP Addition Ratio
-    days: '180', // LP Lock Dayas,
+    days: '', // LP Lock Dayas,
     whitelist: '', //
     minutes: '60', // whitelist mint time
     check: false
@@ -56,6 +57,7 @@ export default function useRules() {
         trigger: 'change'
       }
     ],
+    ratio: [{ validator: validataLPRatio, trigger: 'blur' }],
     days: [{ validator: validataLockDays, trigger: 'blur' }],
     minutes: [{ validator: validataMinutes, trigger: 'blur' }]
   });
@@ -101,8 +103,23 @@ export default function useRules() {
       callback();
     }
   }
+  function validataLPRatio(rule: any, value: string, callback: any) {
+    if (!advanced.value) {
+      callback();
+      return;
+    }
+    if (model.days) {
+      if (value) {
+        callback();
+      } else {
+        callback(t('mint.mint26'));
+      }
+    } else {
+      callback();
+    }
+  }
   function validataLockDays(rule: any, value: string, callback: any) {
-    if (!model.check) {
+    if (!advanced.value) {
       callback();
       return;
     }
@@ -111,16 +128,21 @@ export default function useRules() {
       if (val < 30 || val > 3000) {
         callback(t('mint.mint300'));
         return;
-      } else {
+      }
+    }
+    if (model.ratio) {
+      if (value) {
         callback();
+      } else {
+        callback(t('mint.mint29'));
       }
     } else {
       callback();
     }
   }
   function validataMinutes(rule: any, value: string, callback: any) {
-    const { check, whitelist } = model;
-    if (!check) {
+    const { whitelist } = model;
+    if (!advanced.value) {
       callback();
       return;
     }
@@ -136,6 +158,7 @@ export default function useRules() {
     }
   }
   return {
+    advanced,
     model,
     rules
   };
