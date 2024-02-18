@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { IMintItem } from '@/service/api/types/mint';
 const props = defineProps<{
@@ -45,13 +45,15 @@ const timeLimit = ref(false);
 const timeLimitText = ref('');
 
 let timer: number;
-onMounted(() => {
-  checkLimit();
-});
-
-onUnmounted(() => {
-  stopTimer();
-});
+watch(
+  () => props.item.id,
+  val => {
+    stopTimer();
+    if (val) {
+      checkLimit();
+    }
+  }
+);
 
 const countLimit = computed(() => {
   const { mintCount, mintCountLimitPerUser } = props.item;
