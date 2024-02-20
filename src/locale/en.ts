@@ -880,7 +880,7 @@ const en = {
     mint23: 'Select Mint asset unlock time',
     mint24: 'The time after which user Mint can transfer or trade',
     mint25: 'LP Addition Ratio',
-    mint26: 'Fill in the LP addition ratio',
+    mint26: 'Fill in the LP addition ratio 0~100',
     mint27: 'Mint Fee percentage for adding LP',
     mint28: 'LP Lock Days',
     mint29: 'Fill in LP lock days',

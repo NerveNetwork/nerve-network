@@ -201,7 +201,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import Tip from './Tip.vue';
@@ -220,6 +220,7 @@ import {
 import useRules from './useRules';
 import { ElForm } from 'element-plus';
 import nerveswap from 'nerveswap-sdk';
+import config from '@/config';
 
 const router = useRouter();
 const { t } = useI18n();
@@ -227,6 +228,17 @@ const { nerveAddress, assetsList } = useStoreState();
 const { toastError } = useToast();
 const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 const { targetAddress } = useMintBaseInfo();
+
+const defaultWhitelist = 'NERVEepb61R6tii7FzrXFpagKi2muBxnEcqQpp';
+
+watch(
+  () => nerveAddress.value,
+  val => {
+    if (!config.isBeta && val !== defaultWhitelist) {
+      router.replace('/mint');
+    }
+  }
+);
 
 const form = ref<InstanceType<typeof ElForm>>();
 const loading = ref(false);
@@ -360,6 +372,9 @@ function changeMinutes(val: string) {
 }
 
 function submitForm() {
+  if (nerveAddress.value !== defaultWhitelist) {
+    return;
+  }
   form.value?.validate(valid => {
     if (valid) {
       const isValidWhitelist = validateWhitelist();

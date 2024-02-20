@@ -861,7 +861,7 @@ const cn = {
     mint23: '请设置Mint资产解锁时间',
     mint24: '用户Mint之后可以转账或交易的时间',
     mint25: 'LP Addition Ratio',
-    mint26: 'Fill in the LP addition ratio',
+    mint26: 'Fill in the LP addition ratio 0~100',
     mint27: '用于添加LP的Mint Fee百分比',
     mint28: 'LP Lock Days',
     mint29: 'Fill in LP lock days',
