@@ -201,7 +201,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import Tip from './Tip.vue';
@@ -231,14 +231,13 @@ const { targetAddress } = useMintBaseInfo();
 
 const defaultWhitelist = 'NERVEepb61R6tii7FzrXFpagKi2muBxnEcqQpp';
 
-watch(
-  () => nerveAddress.value,
-  val => {
-    if (!config.isBeta && val !== defaultWhitelist) {
+onMounted(() => {
+  setTimeout(() => {
+    if (!config.isBeta && nerveAddress.value !== defaultWhitelist) {
       router.replace('/mint');
     }
-  }
-);
+  }, 300);
+});
 
 const form = ref<InstanceType<typeof ElForm>>();
 const loading = ref(false);
