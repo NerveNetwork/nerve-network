@@ -63,6 +63,8 @@ export class NTransfer {
       // 调用metamask签名hash，然后拼接公钥完成交易签名
     }
     hash = '0x' + tAssemble.getHash().toString('hex');
+    console.log(hash, 3456)
+    return;
     const signature = await this.signHash(hash, signAddress);
     tAssemble.signatures = nerve.appSplicingPub(signature, pub);
     return tAssemble.txSerialize().toString('hex');
@@ -1178,10 +1180,10 @@ export class ETransfer {
     if (isMainAsset) {
       return this.formatEthers(withdrawalPrice, feeDecimals);
     } else {
-      const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 6);
+      const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);
       const mainAssetUSDBig = ethers.utils.parseUnits(
         mainAssetUSD.toString(),
-        6
+        18
       );
       let result: any = mainAssetUSDBig
         .mul(withdrawalPrice)

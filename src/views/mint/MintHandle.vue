@@ -1,41 +1,53 @@
 <template>
   <div class="handle-wrap">
-    <el-tooltip
-      v-if="item.progress === '100'"
-      popper-class="mint-popper"
-      effect="dark"
-      :content="$t('mint.mint57')"
-      placement="top"
-    >
-      <div class="handle-mint handle-item disabled">Mint</div>
-    </el-tooltip>
-    <el-tooltip
-      v-else-if="countLimit || timeLimit"
-      popper-class="mint-popper"
-      effect="dark"
-      :content="countLimit ? $t('mint.mint47') : timeLimitText"
-      placement="top"
-    >
-      <div class="handle-mint handle-item disabled">Mint</div>
-    </el-tooltip>
-    <div v-else class="handle-mint handle-item" @click="emits('mint', item.id)">
-      Mint
-    </div>
-    <router-link
-      class="handle-item"
-      :to="`/swap/${item.mintAsset}/${item.mintFeeAsset}`"
-    >
-      Swap
-    </router-link>
+    <template v-if="!nerveAddress">
+      <AuthButton />
+    </template>
+    <template v-else>
+      <el-tooltip
+        v-if="item.progress === '100'"
+        popper-class="mint-popper"
+        effect="dark"
+        :content="$t('mint.mint57')"
+        placement="top"
+      >
+        <div class="handle-mint handle-item disabled">Mint</div>
+      </el-tooltip>
+      <el-tooltip
+        v-else-if="countLimit || timeLimit"
+        popper-class="mint-popper"
+        effect="dark"
+        :content="countLimit ? $t('mint.mint47') : timeLimitText"
+        placement="top"
+      >
+        <div class="handle-mint handle-item disabled">Mint</div>
+      </el-tooltip>
+      <div
+        v-else
+        class="handle-mint handle-item"
+        @click="emits('mint', item.id)"
+      >
+        Mint
+      </div>
+      <router-link
+        class="handle-item"
+        :to="`/swap/${item.mintAsset}/${item.mintFeeAsset}`"
+      >
+        Swap
+      </router-link>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import AuthButton from '@/components/AuthButton.vue';
 import { IMintItem } from '@/service/api/types/mint';
+
 const props = defineProps<{
   item: IMintItem;
+  nerveAddress: string;
 }>();
 const emits = defineEmits(['mint']);
 

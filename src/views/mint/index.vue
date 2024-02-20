@@ -12,6 +12,7 @@
       :list="list"
       :total="total"
       :targetAddress="targetAddress"
+      :nerveAddress="nerveAddress"
       @onChange="onPageChange"
       @refresh="onRefresh"
     />

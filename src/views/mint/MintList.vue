@@ -59,7 +59,11 @@
         </div>
       </template>
       <template #opt="scope">
-        <MintHandle :item="scope.row" @mint="mint" />
+        <MintHandle
+          :item="scope.row"
+          @mint="mint"
+          :nerveAddress="nerveAddress"
+        />
       </template>
     </Table>
   </div>
@@ -85,6 +89,7 @@ const props = defineProps<{
   list: IMintItem[];
   total: number;
   targetAddress: string;
+  nerveAddress: string;
 }>();
 
 const emit = defineEmits(['onChange', 'refresh']);
