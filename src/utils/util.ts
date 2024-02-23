@@ -166,7 +166,7 @@ export function getCurrentAccount(address: string | null): any {
   const accountList = storage.get('accountList') || [];
   return accountList.find((item: any) => {
     const flatAddress = Object.values(item.address).flat();
-    return flatAddress.find(v => {
+    return flatAddress.find((v: any) => {
       return v.toLowerCase() === address.toLowerCase();
     });
   });
