@@ -49,9 +49,13 @@ async function derivedAddress() {
     const account = await generateAddress(address.value);
     const accountList: Account[] = storage.get('accountList') || [];
     const existIndex = accountList.findIndex(v => v.pub === account.pub);
-    // 原来存在就替换，找不到就push
+    // replace if present
     if (existIndex > -1) {
-      accountList[existIndex] = account;
+      accountList[existIndex] = {
+        ...accountList[existIndex],
+        address: account.address,
+        pub: account.pub
+      };
     } else {
       accountList.push(account);
     }

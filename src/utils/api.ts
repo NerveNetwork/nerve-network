@@ -35,7 +35,8 @@ export class NTransfer {
     this.chain = props.chain; //链网络
     this.type = props.type; //交易类型
     this.sdk = nerve;
-    this.provider = getProvider();
+    const { provider } = getProvider();
+    this.provider = provider;
   }
 
   validateAddress(address: string) {
@@ -795,20 +796,12 @@ export class ETransfer {
 
   getProvider(chain?: string) {
     if (!chain) {
-      const provider = getProvider();
+      const { provider } = getProvider();
       this.provider = new ethers.providers.Web3Provider(provider);
     } else {
       this.provider = new ethers.providers.JsonRpcProvider(
         _networkInfo[chain].rpcUrl
       );
-      /* if (chain === 'Ethereum') {
-        const network = config.isBeta ? 'ropsten' : 'homestead';
-        this.provider = ethers.getDefaultProvider(network);
-      } else {
-        this.provider = new ethers.providers.JsonRpcProvider(
-          _networkInfo[chain].rpcUrl
-        );
-      }*/
     }
   }
 

@@ -3,7 +3,7 @@
     <template v-if="!showTransfer">
       <h3 class="assets-title">{{ $t('assets.assets11') }}</h3>
       <AssetsControl
-        v-if="address || network === 'BTC'"
+        v-if="address"
         v-model:searchVal="searchVal"
         v-model:hideSmall="hideSmall"
         @showDialog="showAssetManage = true"
@@ -86,7 +86,7 @@
                 <el-button
                   type="text"
                   v-if="scope.row.canToL1"
-                  :disabled="disableTx || !canToL1OnCurrent(scope.row, true)"
+                  :disabled="network === 'BTC' || disableTx || !canToL1OnCurrent(scope.row)"
                   @click="transfer(scope.row, TransferType.Withdrawal)"
                 >
                   {{ $t('transfer.transfer3') }}
@@ -158,7 +158,7 @@
                   @click="transfer(item, TransferType.Withdrawal)"
                   v-if="item.canToL1"
                   :class="{
-                    btn_disable: disableTx || !canToL1OnCurrent(item, true)
+                    btn_disable: network === 'BTC' || disableTx || !canToL1OnCurrent(item)
                   }"
                 >
                   {{ $t('transfer.transfer3') }}
@@ -264,11 +264,9 @@ export default defineComponent({
       transferAsset.value = asset;
     }
 
-    function canToL1OnCurrent(asset: AssetItemType, checkBTC = false) {
+    function canToL1OnCurrent(asset: AssetItemType) {
       const assetCanToL1OnCurrent = checkCanToL1OnCurrent(asset);
       if (!assetCanToL1OnCurrent) return false;
-      if (network.value === 'TRON' || (network.value === 'BTC' && !checkBTC))
-        return true;
       return specialChain.indexOf(network.value) < 0;
     }
 

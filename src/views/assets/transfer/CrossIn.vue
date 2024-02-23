@@ -1,64 +1,48 @@
 <template>
   <div class="cross-in" v-loading="loading">
-    <template v-if="isTron && !TRONAddress">
+    <div class="title">
+      {{ 'From ' + father.network }}
+      <span class="click" @click="openUrl(L1Address, father.network)">
+        {{ superLong(L1Address, 6) }}
+        <i class="iconfont icon-tiaozhuanlianjie"></i>
+      </span>
+    </div>
+    <div class="transfer-content">
+      <custom-input
+        v-model:inputVal="amount"
+        :label="$t('public.public11')"
+        :icon="transferAsset.symbol"
+        :assetList="assetsList"
+        :balance="balance"
+        :show-amount="false"
+        :selectedAsset="transferAsset"
+        @selectAsset="selectAsset"
+        @max="max"
+      ></custom-input>
+    </div>
+    <div class="confirm-wrap">
       <el-button
         type="primary"
-        @click="connectTron"
-        class="connect-tron-btn"
-        style="width: 100%; margin: 25px 0"
+        v-if="!needAuth || authLoading"
+        @click="handleSendTx"
+        :disabled="disableTransfer"
       >
-        {{ $t('transfer.transfer27') }}
+        {{
+          amountErrorTip ? $t('transfer.transfer15') : $t('transfer.transfer9')
+        }}
+        <el-icon class="is-loading" v-if="amount && needAuth && authLoading">
+          <Loading />
+        </el-icon>
       </el-button>
-    </template>
-    <template v-else>
-      <div class="title">
-        {{ 'From ' + father.network }}
-        <span class="click" @click="openUrl(L1Address, father.network)">
-          {{ superLong(L1Address, 6) }}
-          <i class="iconfont icon-tiaozhuanlianjie"></i>
-        </span>
-      </div>
-      <div class="transfer-content">
-        <custom-input
-          v-model:inputVal="amount"
-          :label="$t('public.public11')"
-          :icon="transferAsset.symbol"
-          :assetList="assetsList"
-          :balance="balance"
-          :show-amount="false"
-          :selectedAsset="transferAsset"
-          @selectAsset="selectAsset"
-          @max="max"
-        ></custom-input>
-      </div>
-      <div class="confirm-wrap">
-        <el-button
-          type="primary"
-          v-if="!needAuth || authLoading"
-          @click="handleSendTx"
-          :disabled="disableTransfer"
-        >
-          {{
-            unknowChainError
-              ? $t('transfer.transfer35')
-              : amountErrorTip
-              ? $t('transfer.transfer15')
-              : $t('transfer.transfer9')
-          }}
-          <el-icon class="is-loading" v-if="amount && needAuth && authLoading">
-            <Loading />
-          </el-icon>
-        </el-button>
-        <el-button
-          type="primary"
-          v-else
-          @click="handleApprove"
-          :disabled="father.disableTx"
-        >
-          {{ $t('transfer.transfer13') }}
-        </el-button>
-      </div>
-    </template>
+      <el-button
+        type="primary"
+        v-else
+        @click="handleApprove"
+        :disabled="father.disableTx"
+      >
+        {{ $t('transfer.transfer13') }}
+      </el-button>
+    </div>
   </div>
 </template>
 
@@ -82,8 +66,6 @@ import { rootCmpKey, RootComponent, AssetItemType } from '../types';
 import { HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { setAccountTxs } from '@/hooks/useBroadcastNerveHex';
-import useStoreState from '@/hooks/useStoreState';
-import { getProvider } from '@/hooks/useEthereum';
 
 export default defineComponent({
   name: 'crossIn',
@@ -102,8 +84,6 @@ export default defineComponent({
     const loading = ref(false);
     const amount = ref('');
     const {
-      TRONAddress,
-      connect,
       balance,
       getBalance,
       fee,
@@ -116,28 +96,9 @@ export default defineComponent({
       sendTx
     } = useCrossIn(isTron.value);
 
-    const { chain } = useStoreState();
-
     const L1Address = computed(() => {
-      return isTron.value ? TRONAddress.value : father.address;
+      return father.address;
     });
-
-    async function connectTron() {
-      try {
-        await connect();
-      } catch (e) {
-        toastError(e);
-      }
-    }
-
-    watch(
-      () => TRONAddress.value,
-      val => {
-        if (val && transferAsset.value && isTron.value) {
-          checkAsset();
-        }
-      }
-    );
 
     const amountErrorTip = ref('');
     let checkAuthTimer: number;
@@ -163,20 +124,7 @@ export default defineComponent({
         }
       }
     );
-    const unknowChainError = computed(() => {
-      if (isTron.value) {
-        return false;
-      }
-      const provider = getProvider();
-      const chainInfo = _networkInfo[chain.value];
-      if (
-        !chainInfo ||
-        Number(chainInfo.nativeId) !== Number(provider.chainId)
-      ) {
-        return true;
-      }
-      return false;
-    });
+
     // const { father, loading, amount, balance, amountErrorTip } = useTransfer();
     const disableTransfer = computed(() => {
       return !!(
@@ -185,8 +133,7 @@ export default defineComponent({
         !balance.value ||
         amountErrorTip.value ||
         father.disableTx ||
-        authLoading.value ||
-        unknowChainError.value
+        authLoading.value
       );
     });
 
@@ -360,9 +307,6 @@ export default defineComponent({
 
     return {
       father,
-      isTron,
-      TRONAddress,
-      connectTron,
       L1Address,
       loading,
       amount,
@@ -371,7 +315,6 @@ export default defineComponent({
       needAuth,
       authLoading,
       amountErrorTip,
-      unknowChainError,
       disableTransfer,
       assetsList,
       transferAsset,

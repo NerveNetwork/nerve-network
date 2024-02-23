@@ -16,7 +16,7 @@ export default function useCrossIn(isTron = false) {
 
   if (isTron) {
     TronTransfer = new TronLinkApi();
-    window.addEventListener('message', function (e) {
+    /* window.addEventListener('message', function (e) {
       if (!e.data.message) return;
       // 账户改变
       if (e.data.message.action === 'accountsChanged') {
@@ -35,7 +35,7 @@ export default function useCrossIn(isTron = false) {
         // this.reload();
         window.location.reload();
       }
-    });
+    }); */
   }
   const TRONAddress = ref(TronTransfer?.selectedAddress);
 
@@ -65,12 +65,12 @@ export default function useCrossIn(isTron = false) {
     if (isTron) {
       if (isToken) {
         balance.value = await TronTransfer.getTrc20Balance(
-          TRONAddress.value,
+          address,
           contractAddress,
           decimal
         );
       } else {
-        balance.value = await TronTransfer.getTrxBalance(TRONAddress.value);
+        balance.value = await TronTransfer.getTrxBalance(address);
       }
     } else {
       if (isToken) {
@@ -109,17 +109,17 @@ export default function useCrossIn(isTron = false) {
       heterogeneousInfo;
     let _needAuth = true;
     if (isTron) {
-      _needAuth = await TronTransfer.getTrc20Allowance(
-        TRONAddress.value,
-        heterogeneousChainMultySignAddress,
-        contractAddress
-      );
+      _needAuth = await nerveswap.tron.checkAuth({
+        address,
+        tokenContract: contractAddress,
+        multySignContract: heterogeneousChainMultySignAddress
+      });
     } else {
       _needAuth = await nerveswap.evm.checkAuth({
         provider,
         tokenContract: contractAddress,
         multySignContract: heterogeneousChainMultySignAddress,
-        address: address,
+        address,
         amount: ethers.utils.parseUnits(amount!, decimals)
       });
       /* _needAuth = await EvmTransfer.getERC20Allowance(
@@ -166,11 +166,10 @@ export default function useCrossIn(isTron = false) {
       heterogeneousInfo;
     let res: any = {};
     if (isTron) {
-      res.hash = await TronTransfer.approveTrc20(
-        TRONAddress.value,
-        heterogeneousChainMultySignAddress,
-        contractAddress
-      );
+      res = await nerveswap.tron.approve({
+        tokenContract: contractAddress,
+        multySignContract: heterogeneousChainMultySignAddress
+      });
     } else {
       res = await nerveswap.evm.approve({
         provider,
@@ -201,14 +200,20 @@ export default function useCrossIn(isTron = false) {
     const { contractAddress, heterogeneousChainMultySignAddress } =
       heterogeneousInfo;
     if (isTron) {
-      const hash = await TronTransfer.crossOutToNerve(
+      /* const hash = await TronTransfer.crossOutToNerve(
         nerveAddress,
         amount,
         heterogeneousChainMultySignAddress,
         contractAddress,
         decimal
       );
-      return { hash };
+      return { hash }; */
+      return await nerveswap.tron.crossIn({
+        to: nerveAddress,
+        amount: ethers.utils.parseUnits(amount, decimal)._hex,
+        multySignContract: heterogeneousChainMultySignAddress,
+        tokenContract: contractAddress
+      });
     } else {
       return await nerveswap.evm.crossIn({
         provider,

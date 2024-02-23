@@ -14,9 +14,11 @@ import safepal from '@/assets/img/provider/safepal.svg';
 import coin98 from '@/assets/img/provider/coin98.svg';
 import bitkeep from '@/assets/img/provider/bitkeep.jpg';
 import onto from '@/assets/img/provider/ONTO.png';
+import tronLogo from '@/assets/img/provider/tronlink.svg';
+import unisatLogo from '@/assets/img/provider/unisat.svg';
 
 import storage from '@/utils/storage';
-import { getCurrentAccount } from '@/utils/util';
+import { getCurrentAccount, isBeta } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import nerveswap from 'nerveswap-sdk';
 
@@ -55,14 +57,16 @@ interface GenerateAddressConfig {
 // );
 
 const MetaMaskProvider = 'ethereum';
-const NaboxProvider = 'NaboxWallet';
+export const NaboxProvider = 'NaboxWallet';
 const TrustWalletProvider = 'trustwallet';
 const SafePalProvider = 'safepal';
 const OKExProvider = 'okexchain';
 const BSCProvider = 'BinanceChain';
+export const TRONProvider = 'tronWeb';
+export const UnisatProvider = 'unisat';
 // const ONTOProvider = 'onto';
 
-export const providerList = [
+const EVMProvider = [
   { name: 'MetaMask', src: MetaMask, provider: MetaMaskProvider },
   { name: 'Nabox', src: Nabox, provider: NaboxProvider },
   { name: 'Trust Wallet', src: TrustWallet, provider: TrustWalletProvider },
@@ -76,25 +80,55 @@ export const providerList = [
   { name: 'ONTO', src: onto, provider: MetaMaskProvider }
 ];
 
+export const providerList = {
+  BTC: [
+    { name: 'Nabox', src: Nabox, provider: NaboxProvider },
+    { name: 'Unisat Wallet', src: unisatLogo, provider: UnisatProvider }
+  ],
+  EVM: EVMProvider,
+  TRON: [
+    { name: 'Nabox', src: Nabox, provider: NaboxProvider },
+    { name: 'TronLink', src: tronLogo, provider: TRONProvider }
+  ],
+  NULS: EVMProvider
+};
+
+export const specialProvider = [TRONProvider, UnisatProvider];
+export const btcNetwork = isBeta ? 'testnet' : 'livenet';
+export const tronApiPrefix = isBeta ? 'shasta' : 'trongrid';
+
 export function getProvider(type?: string) {
   const providerType = storage.get('providerType');
   const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
     navigator.userAgent
   );
-  if (isMobile && providerType) {
+  if (
+    isMobile &&
+    providerType &&
+    providerType !== NaboxProvider &&
+    !specialProvider.includes(providerType)
+  ) {
     type = 'ethereum';
   }
-  if (type) return window[type];
-  return providerType ? window[providerType] : null;
+  if (type) {
+    return {
+      providerType: type,
+      provider: window[type]
+    };
+  }
+  return {
+    providerType: providerType,
+    provider: providerType ? window[providerType] : null
+  };
 }
 
 export function checkIsNULSLedger() {
-  const provider = getProvider();
+  const { provider } = getProvider();
   return provider?.isNabox && provider?.isNULSLedger;
 }
 
 export function getAddress() {
-  const provider = getProvider();
+  const { provider } = getProvider();
   return provider?.selectedAddress;
 }
 
@@ -105,62 +139,10 @@ export async function generateAddress(address: string) {
     address,
     message: 'Generate L2 address'
   });
-  // console.log(account, 333)
   return account;
-  /* let heterogeneousAddress = '',
-    pub = '';
-  if (!address.startsWith('0x')) {
-    if (!window.nabox) {
-      throw 'Unknown error';
-    }
-    pub = await window.nabox.getPub({
-      address: address
-    });
-    // pub = pub.startsWith('0x') ? pub : '0x' + pub;
-    const _pub = pub.startsWith('0x') ? pub : '0x' + pub;
-    heterogeneousAddress = ethers.utils.computeAddress(
-      ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(_pub), 33)
-    );
-  } else {
-    const provider = getProvider();
-    const EProvider = new ethers.providers.Web3Provider(provider);
-    const jsonRpcSigner = EProvider.getSigner();
-    let message = 'Generate L2 address';
-    const signature = await jsonRpcSigner.signMessage(message);
-    const msgHash = ethers.utils.hashMessage(message);
-    const msgHashBytes = ethers.utils.arrayify(msgHash);
-    const recoveredPubKey = ethers.utils.recoverPublicKey(
-      msgHashBytes,
-      signature
-    );
-    if (recoveredPubKey.startsWith('0x04')) {
-      const compressPub = ethers.utils.computePublicKey(recoveredPubKey, true);
-      heterogeneousAddress = address;
-      pub = compressPub.slice(2);
-    } else {
-      throw 'Sign error';
-    }
-  }
-  const { chainId, assetId = 1, prefix } = NerveConfig;
-  const nerveAddress = nerve.getAddressByPub(chainId, assetId, pub, prefix);
-  const NULSAddress = nerve.getAddressByPub(
-    NULSConfig.chainId,
-    NULSConfig.assetId,
-    pub,
-    NULSConfig.prefix
-  );
-  return {
-    address: {
-      EVM: heterogeneousAddress,
-      NERVE: nerveAddress,
-      NULS: NULSAddress,
-      TRON: generateTronAddress(pub)
-    },
-    pub
-  }; */
 }
 
-export const specialChain = ['NULS', 'NERVE', 'TRON', 'BTC'];
+export const specialChain = ['NULS', 'NERVE'];
 
 export default function useEthereum() {
   const store = useStore();
@@ -177,14 +159,105 @@ export default function useEthereum() {
   });
 
   async function initProvider() {
-    const provider = getProvider();
+    const { provider, providerType } = getProvider();
     if (!provider) return;
-    if (provider.on) {
-      provider.on('accountsChanged', handleAccountChange);
-      provider.on('chainChanged', handleChainChange);
-      // listenAccountChange();
-      // listenNetworkChange();
+    const network = storage.get('network');
+    let address;
+    if (
+      providerType === TRONProvider ||
+      (providerType === NaboxProvider && network === 'TRON')
+    ) {
+      // tron
+      address = window.tronWeb.defaultAddress?.base58 || '';
+      if (address) {
+        addTRONListener();
+        initTronChainInfo(address);
+      }
+    } else if (
+      providerType === UnisatProvider ||
+      (providerType === NaboxProvider && network === 'BTC')
+    ) {
+      // btc
+      const accounts = await window.unisat.requestAccounts();
+      // const accounts = await window.unisat.getAccounts();
+      address = accounts[0] || '';
+      if (address) {
+        addBTCListener();
+        initBTCChainInfo(address);
+      }
+    } else {
+      // evm
+      address = await getEVMAddress(provider);
+      if (address) {
+        // if (providerType === NaboxProvider) {
+        //   addTRONListener();
+        //   addBTCListener();
+        // }
+        if (provider.on) {
+          provider.on('accountsChanged', handleAccountChange);
+          provider.on('chainChanged', handleChainChange);
+        }
+        initEVMChainInfo(address);
+      }
     }
+    if (address) {
+      state.address = address;
+    }
+  }
+
+  function addTRONListener() {
+    window.addEventListener('message', handleTRONMessage);
+  }
+
+  function handleTRONMessage(e: any) {
+    if (!e.data.message) return;
+    // 账户改变
+    if (e.data.message.action === 'accountsChanged') {
+      // console.log('==accountsChanged==', e.data.message.data);
+      reload();
+    }
+    // 断开连接
+    if (e.data.message.action === 'disconnect') {
+      // console.log('==disconnect==', e.data.message.data);
+      reload();
+    }
+    // 网络切换
+    if (e.data.message.action === 'setNode') {
+      reload();
+    }
+  }
+
+  function addBTCListener() {
+    const unisat = window.unisat;
+    if (unisat) {
+      unisat.getAccounts().then((accounts: string[]) => {
+        handleAccountChange(accounts);
+      });
+      unisat.on('accountsChanged', handleAccountChange);
+      unisat.on('networkChanged', handleBTCNetworkChanged);
+    }
+  }
+
+  function initTronChainInfo(address: string) {
+    const apiUrl = window.tronWeb?.fullNode?.host;
+    const isWrongChain = apiUrl.indexOf(tronApiPrefix) < 0;
+    store.commit('changeIsWrongChain', isWrongChain);
+    store.commit('changeAddress', address);
+    store.commit('changeNetwork', 'TRON');
+  }
+
+  async function initBTCChainInfo(address: string) {
+    const network = await window.unisat.getNetwork();
+    const isWrongChain = network !== btcNetwork;
+    store.commit('changeIsWrongChain', isWrongChain);
+    store.commit('changeAddress', address);
+    store.commit('changeNetwork', 'BTC');
+    if (isWrongChain) {
+      switchBTCNetwork();
+    }
+  }
+
+  async function getEVMAddress(provider: any) {
     let address = provider?.selectedAddress || provider?.address;
     try {
       address = await provider
@@ -200,27 +273,33 @@ export default function useEthereum() {
         .enable()
         .then((accounts: string[]) => accounts && accounts[0]);
     }
-    if (address) {
-      state.address = address;
-      initChainInfo(address);
-    }
+    return address;
   }
 
-  function initChainInfo(address: string) {
+  async function initEVMChainInfo(address: string) {
+    let network = storage.get('network');
     const currentAccount = getCurrentAccount(address);
-    const provider = getProvider();
+    const { provider, providerType } = getProvider();
+
     let chainId = provider.chainId + '';
+    if (providerType === NaboxProvider) {
+      chainId = window.nabox.chainId;
+    }
     chainId = chainId.startsWith('0x')
       ? chainId
       : '0x' + Number(chainId).toString(16);
+
     state.chainId = chainId;
     const chainInfo = Object.values(_networkInfo).find(
       v => v.nativeId === chainId
     );
     let isWrongChain = !chainInfo;
     let currentAddress = address;
-    let network = storage.get('network', 'session');
-    if (network && network !== 'undefined' && network === chainInfo?.name) {
+    // if (!currentAccount || !chainId) {
+    //   return;
+    // }
+
+    if (network && network === chainInfo?.name) {
       if (specialChain.indexOf(network) > -1) {
         isWrongChain = false;
         // 新账户、且bridge之前在NULS链，会导致currentAccount为null
@@ -236,7 +315,7 @@ export default function useEthereum() {
     store.commit('changeNetwork', network);
   }
 
-  const handleAccountChange = (accounts: string[]) => {
+  function handleAccountChange(accounts: string[]) {
     console.log(accounts, '=======accountsChanged');
     if (
       state.address &&
@@ -244,9 +323,13 @@ export default function useEthereum() {
     ) {
       reload();
     }
-  };
+  }
 
-  const handleChainChange = (chainId: string) => {
+  function handleBTCNetworkChanged() {
+    reload();
+  }
+
+  function handleChainChange(chainId: string) {
     const oldChainId = state.chainId;
     console.log(chainId, '=======chainId', oldChainId);
     if (chainId) {
@@ -259,62 +342,35 @@ export default function useEthereum() {
         reload();
       }
     }
-  };
-
-  const removeListener = () => {
-    const provider = getProvider();
-    if (!provider) return;
-    if (provider.on) {
-      provider.off('accountsChanged', handleAccountChange);
-      provider.off('chainChanged', handleChainChange);
-    }
-  };
-
-  // 监听插件账户变动
-  function listenAccountChange() {
-    const provider = getProvider();
-    provider?.on('accountsChanged', (accounts: string) => {
-      console.log(accounts, '=======accountsChanged');
-      if (
-        state.address &&
-        state.address.toLowerCase() !== accounts[0].toLowerCase()
-      ) {
-        reload();
-      }
-      /*if (accounts.length) {
-        state.address = accounts[0];
-      } else {
-        state.address = '';
-      }*/
-    });
   }
 
-  // 监听插件网络变动
-  function listenNetworkChange() {
-    const provider = getProvider();
-    provider?.on('chainChanged', (chainId: string) => {
-      const oldChainId = state.chainId;
-      console.log(chainId, '=======chainId', oldChainId);
-      if (chainId) {
-        const chainInfo = Object.values(_networkInfo).find(
-          v => v.nativeId === chainId
-        );
-        const network = chainInfo?.name || null;
-        store.commit('changeNetwork', network);
-        if (oldChainId && Number(oldChainId) !== Number(chainId)) {
-          reload();
-        }
+  function removeListener() {
+    const { provider, providerType } = getProvider();
+    if (!provider) return;
+    if (providerType === TRONProvider) {
+      window.removeEventListener('message', handleTRONMessage);
+    } else if (providerType === UnisatProvider) {
+      const unisat = window.unisat;
+      if (unisat) {
+        unisat.removeListener('accountsChanged', handleAccountChange);
+        unisat.removeListener('networkChanged', handleBTCNetworkChanged);
       }
-    });
+    } else {
+      if (provider.on) {
+        provider.off('accountsChanged', handleAccountChange);
+        provider.off('chainChanged', handleChainChange);
+      }
+    }
   }
 
   // 连接provider
-  async function connect(providerType: string) {
-    let provider = getProvider(providerType);
+  async function connect(providerType: string, network: string) {
+    let { provider } = getProvider(providerType);
+
     const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
       navigator.userAgent
     );
-    if (isMobile) {
+    if (isMobile && !specialProvider.includes(providerType)) {
       // @ts-ignore
       provider = window.ethereum;
     }
@@ -344,15 +400,46 @@ export default function useEthereum() {
     if (!provider) {
       throw new Error(t('public.public25'));
     }
-    await provider?.request({ method: 'eth_requestAccounts' });
-    state.address = provider?.selectedAddress;
+    if (
+      providerType === TRONProvider ||
+      (providerType === NaboxProvider && network === 'TRON')
+    ) {
+      if (!window.tronWeb?.ready) {
+        throw new Error(t('public.public26'));
+      }
+      // await window.tronWeb.request({
+      //   method: 'tron_requestAccounts'
+      // });
+      const address = window.tronWeb.defaultAddress.base58;
+      // if (!address) {
+      //   throw new Error(t('public.public26'));
+      // }
+      state.address = address;
+    } else if (
+      providerType === UnisatProvider ||
+      (providerType === NaboxProvider && network === 'BTC')
+    ) {
+      const result = await window.unisat.requestAccounts();
+      state.address = result[0];
+    } else {
+      await provider?.request({ method: 'eth_requestAccounts' });
+      state.address = provider?.selectedAddress;
+    }
+    store.commit('changeNetwork', network);
     storage.set('providerType', providerType);
-    reload();
+    if (
+      !(
+        providerType === TRONProvider ||
+        (providerType === NaboxProvider && network === 'TRON')
+      )
+    ) {
+      // reload();
+    }
   }
 
   function disconnect() {
     storage.remove('providerType');
-    storage.remove('network', 'session');
+    storage.remove('network');
     state.address = '';
     reload();
   }
@@ -362,7 +449,7 @@ export default function useEthereum() {
   }
 
   async function addEthereumChain(params: AddChain) {
-    const provider = getProvider();
+    const { provider } = getProvider();
     try {
       await provider.request({
         method: 'wallet_switchEthereumChain',
@@ -379,11 +466,15 @@ export default function useEthereum() {
   }
 
   async function switchEthereumChain(params: SwitchChain) {
-    const provider = getProvider();
+    const { provider } = getProvider();
     await provider.request({
       method: 'wallet_switchEthereumChain',
       params: [params]
     });
+  }
+
+  async function switchBTCNetwork() {
+    await window.unisat.switchNetwork(btcNetwork);
   }
 
   return {
@@ -393,6 +484,7 @@ export default function useEthereum() {
     ...toRefs(state),
     addEthereumChain,
     switchEthereumChain,
+    switchBTCNetwork,
     generateAddress
   };
 }

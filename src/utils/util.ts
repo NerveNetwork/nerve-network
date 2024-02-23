@@ -165,9 +165,10 @@ export function getCurrentAccount(address: string | null): any {
   if (!address) return null;
   const accountList = storage.get('accountList') || [];
   return accountList.find((item: any) => {
-    return Object.keys(item.address).find(
-      v => item.address[v].toLowerCase() === address.toLowerCase()
-    );
+    const flatAddress = Object.values(item.address).flat();
+    return flatAddress.find(v => {
+      return v.toLowerCase() === address.toLowerCase();
+    });
   });
 }
 
@@ -283,10 +284,8 @@ export function checkCanToL1(asset: AssetItem): boolean {
   if (allowedSource.indexOf(asset.source) < 0) return false;
   return !!asset.heterogeneousList.find((v: HeterogeneousInfo) => {
     return Object.keys(_networkInfo).find(key => {
-      if (
-        _networkInfo[key].chainId === v.heterogeneousChainId &&
-        _networkInfo[key].supported
-      ) {
+      if (_networkInfo[key].chainId === v.heterogeneousChainId) {
+        // console.log(345)
         return true;
       }
     });
@@ -297,7 +296,7 @@ export function checkCanToL1(asset: AssetItem): boolean {
 export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
   const canToL1 = checkCanToL1(asset);
   if (!canToL1) return false;
-  const currentChain = storage.get('network', 'session');
+  const currentChain = storage.get('network');
 
   // 禁止nvt 跨链 enuls
   /*if ((asset.assetKey === '9-1' || asset.assetKey === '1-1') && currentChain === 'ENULS') {

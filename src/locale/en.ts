@@ -53,7 +53,7 @@ const en = {
     public23: 'The last 20 transactions will be displayed below',
     public24: 'Wrong network connected',
     public25: 'Provider not found',
-    public26: 'Please login to the extention wallet first.'
+    public26: 'Please login to the wallet first.'
   },
   error: {
     err_0001: 'Failed',

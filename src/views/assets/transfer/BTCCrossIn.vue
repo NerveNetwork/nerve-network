@@ -1,59 +1,38 @@
 <template>
   <div class="btc-cross-in" v-loading="loading">
-    <template v-if="!btcAddress">
-      <el-button
-        type="primary"
-        @click="connect"
-        style="width: 100%; margin: 25px 0"
-      >
-        {{ $t('transfer.transfer36') }}
+    <div class="title">
+      {{ 'From BTC' }}
+      <span class="click" @click="openAddress">
+        {{ superLong(address, 6) }}
+        <i class="iconfont icon-tiaozhuanlianjie"></i>
+      </span>
+    </div>
+    <div class="transfer-content">
+      <custom-input
+        v-model:inputVal="amount"
+        :label="$t('public.public11')"
+        :icon="transferAsset.symbol"
+        :assetList="[]"
+        :balance="btcBalance"
+        :show-amount="false"
+        :selectedAsset="transferAsset"
+        disableSelect
+        @max="max"
+      ></custom-input>
+    </div>
+    <div class="confirm-wrap">
+      <el-button type="primary" :disabled="disableTransfer" @click="sendTx">
+        {{ amountErrorTip ? amountErrorTip : $t('transfer.transfer9') }}
       </el-button>
-    </template>
-    <template v-else-if="isWrongNetwork">
-      <el-button
-        type="primary"
-        @click="switchNetwork"
-        style="width: 100%; margin: 25px 0"
-      >
-        {{ $t('transfer.transfer37', { network: defaultNetwork }) }}
-      </el-button>
-    </template>
-    <template v-else>
-      <div class="title">
-        {{ 'From BTC' }}
-        <span class="click" @click="openAddress">
-          {{ superLong(btcAddress, 6) }}
-          <i class="iconfont icon-tiaozhuanlianjie"></i>
-        </span>
-      </div>
-      <div class="transfer-content">
-        <custom-input
-          v-model:inputVal="amount"
-          :label="$t('public.public11')"
-          :icon="transferAsset.symbol"
-          :assetList="[]"
-          :balance="btcBalance"
-          :show-amount="false"
-          :selectedAsset="transferAsset"
-          disableSelect
-          @max="max"
-        ></custom-input>
-      </div>
-      <div class="confirm-wrap">
-        <el-button type="primary" :disabled="disableTransfer" @click="sendTx">
-          {{ amountErrorTip ? amountErrorTip : $t('transfer.transfer9') }}
-        </el-button>
-      </div>
-    </template>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, inject, watch, computed } from 'vue';
+import { ref, inject, watch, computed, onMounted } from 'vue';
 import useToast from '@/hooks/useToast';
 import { useI18n } from 'vue-i18n';
 import nerveswap from 'nerveswap-sdk';
-import useBTC from '@/hooks/useBTC';
 import { setAccountTxs } from '@/hooks/useBroadcastNerveHex';
 import {
   superLong,
@@ -70,21 +49,19 @@ import { HeterogeneousInfo } from '@/store/types';
 const father = inject(rootCmpKey, {} as RootComponent);
 const { t } = useI18n();
 const { toastSuccess, toastError } = useToast();
-const {
-  btcAddress,
-  btcBalance,
-  btcPub,
-  defaultNetwork,
-  isWrongNetwork,
-  connect,
-  switchNetwork
-} = useBTC();
 
+const btcBalance = ref('');
 const amount = ref('');
-const { transferAsset, nerveAddress } = father;
+const { transferAsset, nerveAddress, address, currentAccount } = father;
+
+onMounted(async () => {
+  const balance = await window.unisat.getBalance();
+  btcBalance.value = divisionDecimals(balance.confirmed, 8);
+  calFee();
+});
 
 const openAddress = () => {
-  openL1Explorer('BTC', 'address', btcAddress.value);
+  openL1Explorer('BTC', 'address', address);
 };
 
 const amountErrorTip = ref('');
@@ -111,12 +88,6 @@ watch(
 );
 
 const fee = ref('');
-watch([isWrongNetwork, btcAddress], ([isWrongNetwork, btcAddress]) => {
-  if (!isWrongNetwork && btcAddress) {
-    calFee();
-  }
-});
-
 async function calFee() {
   try {
     const heterogeneousChainId = _networkInfo.BTC.chainId;
@@ -124,7 +95,7 @@ async function calFee() {
       v => v.heterogeneousChainId === heterogeneousChainId
     ) as HeterogeneousInfo;
     const result = await nerveswap.btc.calTxFee({
-      from: btcAddress.value,
+      from: address,
       multySignAddress: heterogeneousInfo.heterogeneousChainMultySignAddress,
       nerveAddress,
       amount: '10000',
@@ -161,11 +132,11 @@ const sendTx = async () => {
       v => v.heterogeneousChainId === heterogeneousChainId
     ) as HeterogeneousInfo;
     const hash = await nerveswap.btc.crossIn({
-      from: btcAddress.value,
+      from: address,
       multySignAddress: heterogeneousInfo.heterogeneousChainMultySignAddress,
       nerveAddress,
       amount: timesDecimals(amount.value, 8),
-      pub: btcPub.value,
+      pub: currentAccount.pub,
       isMainnet: !isBeta
     });
     handleTx(hash);
@@ -179,13 +150,13 @@ const sendTx = async () => {
 function handleTx(hash: string) {
   amount.value = '';
   toastSuccess(t('transfer.transfer14'));
-  setAccountTxs(father.currentAccount.pub, {
+  setAccountTxs(currentAccount.pub, {
     hash,
     time: new Date().getTime(),
     status: 0,
     L1Chain: 'BTC',
     L1Type: 'crossIn',
-    address: btcAddress.value
+    address
   });
 }
 </script>

@@ -19,6 +19,7 @@ declare module "*.scss";
 declare module "lodash";
 declare module "nerve-sdk-js"
 declare module "nerveswap-sdk"
+declare module "@/sdk"
 
 declare module "element-ui/lib/locale/lang/*" {
   export const elementLocale: any;

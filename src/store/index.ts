@@ -7,7 +7,7 @@ export default createStore<State>({
   state: {
     addressInfo: {} as Account,
     address: '',
-    network: storage.get('network', 'session') || '',
+    network: storage.get('network') || '',
     isWrongChain: false,
     showConnect: false,
     lang: storage.get('lang'),
@@ -24,7 +24,6 @@ export default createStore<State>({
   },
   mutations: {
     setCurrentAddress(state, data) {
-      console.log(data, 7777);
       state.addressInfo = data;
     },
     changeAddress(state, data) {
@@ -33,9 +32,9 @@ export default createStore<State>({
     changeNetwork(state, data) {
       state.network = data;
       if (data) {
-        storage.set('network', data, 'session');
+        storage.set('network', data);
       } else {
-        storage.remove('network', 'session');
+        storage.remove('network');
       }
     },
     changeIsWrongChain(state, isWrongChain) {

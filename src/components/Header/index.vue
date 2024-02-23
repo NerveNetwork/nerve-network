@@ -111,8 +111,6 @@ const { address, initProvider, connect, disconnect } = useEthereum();
 const { nerveAddress, wrongChain, chain } = useStoreState();
 initProvider();
 
-const { lang, switchLang } = useLang();
-
 const showSwitchChain = ref(false);
 
 watch(
@@ -131,9 +129,9 @@ const showConnect = computed(() => store.state.showConnect);
 function showConnectDialog(state: boolean) {
   store.commit('changeConnectShow', state);
 }
-async function connectProvider(provider: string) {
+async function connectProvider(provider: string, chainName: string) {
   try {
-    await connect(provider);
+    await connect(provider, chainName);
   } catch (e) {
     // console.log(e, typeof e, e.message);
     toastError(e);
@@ -153,24 +151,6 @@ watch(
     activeIndex.value = val?.split('/')[1];
   }
 );
-
-/*const wrongChain = computed(() => {
-  const NULSOrNERVE = address.value && isNULSOrNERVE(address.value);
-  if (NULSOrNERVE) {
-    return false;
-  } else {
-    return notL1Chain.value;
-  }
-});*/
-
-// const authRef = ref<InstanceType<typeof AuthButton>>();
-// async function derivedAddress() {
-//   // @ts-ignore
-//   const result = await authRef.value.derivedAddress();
-//   if (result) {
-//     toAsset();
-//   }
-// }
 
 const chainLogo = computed(() => {
   return _networkInfo[chain.value]?.logo;
@@ -231,6 +211,7 @@ async function checkTxStatus() {
         const accountList: Account[] = storage.get('accountList') || [];
         accountList.map(v => {
           const sameAddress = Object.values(v.address)
+            .flat()
             .map((v: any) => v.toLowerCase())
             .includes(address.value?.toLowerCase());
           if (sameAddress) {

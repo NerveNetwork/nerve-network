@@ -201,32 +201,46 @@ export const RPC_URL = {
 
 export const _networkInfo = {
   BTC: {
+    type: 'BTC',
     name: 'BTC',
     chainName: isBeta ? 'testnet' : 'livenet',
     chainId: 201,
     assetKey: isBeta ? '5-171' : '9-787',
     origin: Origin.BTC,
     mainAsset: 'BTC',
-    nativeId: '0x-10',
-    supported: true,
+    nativeId: '0x-a',
     logo: BTCLogo,
     decimals: 8,
     rpcUrl: RPC_URL.BTC
   },
   Ethereum: {
-    name: isBeta ? 'Goerli' : 'Ethereum',
-    chainName: isBeta ? 'Goerli' : 'Ethereum', // 用于metamask添加链时显示链名称 区分正式、测试网
-    chainId: isBeta ? 118 : 101,
-    assetKey: isBeta ? '5-2' : '9-2',
+    type: 'EVM',
+    name: 'Ethereum',
+    chainName: 'Ethereum', // 用于metamask添加链时显示链名称 区分正式、测试网
+    chainId: 101,
+    assetKey: '9-2',
     origin: Origin.ETH,
     mainAsset: 'ETH',
-    nativeId: isBeta ? '0x5' : '0x1',
-    supported: true,
+    nativeId: '0x1',
+    logo: ETHLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Ethereum
+  },
+  Goerli: {
+    type: 'EVM',
+    name: 'Goerli',
+    chainName: 'Goerli',
+    chainId: 118,
+    assetKey: '5-2',
+    origin: Origin.ETH,
+    mainAsset: 'ETH',
+    nativeId: '0x5',
     logo: ETHLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Ethereum
   },
   BSC: {
+    type: 'EVM',
     name: 'BSC',
     chainName: isBeta ? 'BSC_Beta' : 'BSC',
     chainId: 102,
@@ -234,12 +248,12 @@ export const _networkInfo = {
     origin: Origin.BSC,
     mainAsset: 'BNB',
     nativeId: isBeta ? '0x61' : '0x38',
-    supported: true,
     logo: BSCLogo,
     decimals: 18,
     rpcUrl: RPC_URL.BSC
   },
   Polygon: {
+    type: 'EVM',
     name: 'Polygon',
     chainName: isBeta ? 'Polygon_Beta' : 'Polygon',
     chainId: 106,
@@ -247,12 +261,12 @@ export const _networkInfo = {
     origin: Origin.Polygon,
     mainAsset: 'MATIC',
     nativeId: isBeta ? '0x13881' : '0x89',
-    supported: true,
     logo: PolygonLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Polygon
   },
   OKTC: {
+    type: 'EVM',
     name: 'OKTC',
     chainName: isBeta ? 'OKC_Beta' : 'OKTC',
     chainId: 104,
@@ -260,12 +274,12 @@ export const _networkInfo = {
     origin: Origin.OKTC,
     mainAsset: 'OKT',
     nativeId: isBeta ? '0x41' : '0x42',
-    supported: true,
     logo: OECLogo,
     decimals: 18,
     rpcUrl: RPC_URL.OKTC
   },
   Avalanche: {
+    type: 'EVM',
     name: 'Avalanche',
     chainName: isBeta ? 'Avalanche_Beta' : 'Avalanche',
     chainId: 110,
@@ -273,12 +287,12 @@ export const _networkInfo = {
     origin: Origin.Avalanche,
     mainAsset: 'AVAX',
     nativeId: isBeta ? '0xa869' : '0xa86a',
-    supported: true,
     logo: AVAVLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Avalanche
   },
   Harmony: {
+    type: 'EVM',
     name: 'Harmony',
     chainName: isBeta ? 'Harmony_Beta' : 'Harmony',
     chainId: 105,
@@ -286,12 +300,12 @@ export const _networkInfo = {
     origin: Origin.Harmony,
     mainAsset: 'ONE',
     nativeId: isBeta ? '0x6357d2e0' : '0x63564c40',
-    supported: true,
     logo: HarmonyLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Harmony
   },
   KCC: {
+    type: 'EVM',
     name: 'KCC',
     chainName: isBeta ? 'KCC_Beta' : 'KCC',
     chainId: 107,
@@ -299,12 +313,12 @@ export const _networkInfo = {
     origin: Origin.KCC,
     mainAsset: 'KCS',
     nativeId: isBeta ? '0x142' : '0x141',
-    supported: true,
     logo: KCCLogo,
     decimals: 18,
     rpcUrl: RPC_URL.KCC
   },
   Cronos: {
+    type: 'EVM',
     name: 'Cronos',
     chainName: isBeta ? 'Cronos_Beta' : 'Cronos',
     chainId: 109,
@@ -312,12 +326,12 @@ export const _networkInfo = {
     origin: Origin.Cronos,
     mainAsset: 'CRO',
     nativeId: isBeta ? '0x152' : '0x19',
-    supported: true,
     logo: CROLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Cronos
   },
   Arbitrum: {
+    type: 'EVM',
     name: 'Arbitrum',
     chainName: isBeta ? 'Arbitrum_Beta' : 'Arbitrum',
     chainId: 111,
@@ -325,12 +339,12 @@ export const _networkInfo = {
     origin: Origin.Arbitrum,
     mainAsset: 'AETH',
     nativeId: isBeta ? '0x66eeb' : '0xa4b1',
-    supported: true,
     logo: ARBILogo,
     decimals: 18,
     rpcUrl: RPC_URL.Arbitrum
   },
   Fantom: {
+    type: 'EVM',
     name: 'Fantom',
     chainName: isBeta ? 'Fantom_Beta' : 'Fantom',
     chainId: 112,
@@ -338,24 +352,24 @@ export const _networkInfo = {
     origin: Origin.Fantom,
     mainAsset: 'FTM',
     nativeId: isBeta ? '0xfa2' : '0xfa',
-    supported: true,
     logo: FTMLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Fantom
   },
   TRON: {
+    type: 'TRON',
     name: 'TRON',
     chainName: 'TRON',
     chainId: 108,
     assetKey: isBeta ? '5-55' : '9-218',
     origin: Origin.TRON,
     mainAsset: 'TRX',
-    nativeId: '',
-    supported: true,
+    nativeId: isBeta ? '0x5f5e101' : '0x5f5e102',
     logo: TRONLogo,
     decimals: 6
   },
   Metis: {
+    type: 'EVM',
     name: 'Metis',
     chainName: isBeta ? 'Metis_Beta' : 'Metis',
     chainId: 113,
@@ -363,12 +377,12 @@ export const _networkInfo = {
     origin: Origin.Metis,
     mainAsset: 'METIS',
     nativeId: isBeta ? '0x24c' : '0x440',
-    supported: true,
     logo: MetisLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Metis
   },
   IoTex: {
+    type: 'EVM',
     name: 'IoTex',
     chainName: isBeta ? 'IoTex_Beta' : 'IoTex',
     chainId: 114,
@@ -376,12 +390,12 @@ export const _networkInfo = {
     origin: Origin.IoTex,
     mainAsset: 'IOTX',
     nativeId: isBeta ? '0x1252' : '0x1251',
-    supported: true,
     logo: LotexLogo,
     decimals: 18,
     rpcUrl: RPC_URL.IoTex
   },
   Optimism: {
+    type: 'EVM',
     name: 'Optimism',
     chainName: isBeta ? 'Optimism_Beta' : 'Optimism',
     chainId: 115,
@@ -389,12 +403,12 @@ export const _networkInfo = {
     origin: Origin.Optimism,
     mainAsset: 'OETH',
     nativeId: isBeta ? '0x45' : '0xa',
-    supported: true,
     logo: OptimismLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Optimism
   },
   Klaytn: {
+    type: 'EVM',
     name: 'Klaytn',
     chainName: isBeta ? 'Klaytn_Beta' : 'Klaytn',
     chainId: 116,
@@ -402,12 +416,12 @@ export const _networkInfo = {
     origin: Origin.Klaytn,
     mainAsset: 'KLAY',
     nativeId: isBeta ? '0x3e9' : '0x2019',
-    supported: true,
     logo: KlaytnLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Klaytn
   },
   smartBCH: {
+    type: 'EVM',
     name: 'smartBCH',
     chainName: isBeta ? 'smartBCH_Beta' : 'smartBCH',
     chainId: 117,
@@ -415,12 +429,12 @@ export const _networkInfo = {
     origin: Origin.smartBCH,
     mainAsset: 'BCH',
     nativeId: isBeta ? '0x2711' : '0x2710',
-    supported: true,
     logo: SmartBCHLogo,
     decimals: 18,
     rpcUrl: RPC_URL.smartBCH
   },
   ENULS: {
+    type: 'EVM',
     name: 'ENULS',
     chainName: isBeta ? 'ENULS_Beta' : 'ENULS',
     chainId: 119,
@@ -428,12 +442,12 @@ export const _networkInfo = {
     origin: Origin.ENULS,
     mainAsset: 'NULS',
     nativeId: isBeta ? '0x78' : '0x77',
-    supported: true,
     logo: ENULSLogo,
     decimals: 18,
     rpcUrl: RPC_URL.ENULS
   },
   KAVA: {
+    type: 'EVM',
     name: 'KAVA',
     chainName: isBeta ? 'KAVA_Beta' : 'KAVA',
     chainId: 120,
@@ -441,12 +455,12 @@ export const _networkInfo = {
     origin: Origin.KAVA,
     mainAsset: 'KAVA',
     nativeId: isBeta ? '0x8ad' : '0x8ae',
-    supported: true,
     logo: KavaLogo,
     decimals: 18,
     rpcUrl: RPC_URL.KAVA
   },
   ETHW: {
+    type: 'EVM',
     // 只有主网
     name: 'ETHW',
     chainName: isBeta ? '' : 'ETHW',
@@ -455,12 +469,12 @@ export const _networkInfo = {
     origin: Origin.ETHW,
     mainAsset: 'ETHW',
     nativeId: '0x2711',
-    supported: true,
     logo: ETHWLogo,
     decimals: 18,
     rpcUrl: RPC_URL.ETHW
   },
   REI: {
+    type: 'EVM',
     name: 'REI',
     chainName: isBeta ? 'REI_Beta' : 'REI',
     chainId: 122,
@@ -468,12 +482,12 @@ export const _networkInfo = {
     origin: Origin.REI,
     mainAsset: 'REI',
     nativeId: isBeta ? '0x3045' : '0xbabd',
-    supported: true,
     logo: REILogo,
     decimals: 18,
     rpcUrl: RPC_URL.REI
   },
   zkSync: {
+    type: 'EVM',
     name: 'zkSync',
     chainName: isBeta ? 'zkSync_Beta' : 'zkSync',
     chainId: 123,
@@ -481,12 +495,12 @@ export const _networkInfo = {
     origin: Origin.zkSync,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x118' : '0x144',
-    supported: true,
     logo: ZKLogo,
     decimals: 18,
     rpcUrl: RPC_URL.zkSync
   },
   EOSEVM: {
+    type: 'EVM',
     name: 'EOSEVM',
     chainName: isBeta ? 'EOSEVM_Beta' : 'EOSEVM',
     chainId: 124,
@@ -494,12 +508,12 @@ export const _networkInfo = {
     origin: Origin.EOSEVM,
     mainAsset: 'EOS',
     nativeId: isBeta ? '0x3cc5' : '0x4571',
-    supported: true,
     logo: EOSEVM,
     decimals: 18,
     rpcUrl: RPC_URL.eosEVM
   },
   'Polygon zkEVM': {
+    type: 'EVM',
     name: 'Polygon zkEVM',
     chainName: isBeta ? 'Polygon zkEVM_Beta' : 'Polygon zkEVM',
     chainId: 125,
@@ -507,12 +521,12 @@ export const _networkInfo = {
     origin: Origin.polygonZkEVM,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x5a2' : '0x44d',
-    supported: true,
     logo: PolygonZkEVM,
     decimals: 18,
     rpcUrl: RPC_URL.polygonZkEVM
   },
   Linea: {
+    type: 'EVM',
     name: 'Linea',
     chainName: isBeta ? 'Linea_Beta' : 'Linea',
     chainId: 126,
@@ -520,12 +534,12 @@ export const _networkInfo = {
     origin: Origin.Linea,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0xe704' : '0xe708',
-    supported: true,
     logo: Linea,
     decimals: 18,
     rpcUrl: RPC_URL.Linea
   },
   Celo: {
+    type: 'EVM',
     name: 'Celo',
     chainName: isBeta ? 'Celo_Beta' : 'Celo',
     chainId: 127,
@@ -533,12 +547,12 @@ export const _networkInfo = {
     origin: Origin.Celo,
     mainAsset: 'CELO',
     nativeId: isBeta ? '0xaef3' : '0xa4ec',
-    supported: true,
     logo: CELOLogo,
     decimals: 18,
     rpcUrl: RPC_URL.CELO
   },
   ETC: {
+    type: 'EVM',
     name: 'ETC',
     chainName: isBeta ? 'ETC_Beta' : 'Ethereum Classic Mainnet',
     chainId: 128,
@@ -547,12 +561,12 @@ export const _networkInfo = {
     // mainAsset: isBeta ? 'ETC' : 'METC',
     mainAsset: 'ETC',
     nativeId: isBeta ? '0x3f' : '0x3d',
-    supported: true,
     logo: ETCLogo,
     decimals: 18,
     rpcUrl: RPC_URL.ETC
   },
   Base: {
+    type: 'EVM',
     name: 'Base',
     chainName: isBeta ? 'Base_Beta' : 'Base',
     chainId: 129,
@@ -560,12 +574,12 @@ export const _networkInfo = {
     origin: Origin.Base,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x14a33' : '0x2105',
-    supported: true,
     logo: BASELogo,
     decimals: 18,
     rpcUrl: RPC_URL.BASE
   },
   Scroll: {
+    type: 'EVM',
     name: 'Scroll',
     chainName: isBeta ? 'Scroll_Beta' : 'Scroll',
     chainId: 130,
@@ -573,12 +587,12 @@ export const _networkInfo = {
     origin: Origin.Scroll,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x82751' : '0x82750',
-    supported: true,
     logo: ScrollLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Scroll
   },
   Bitgert: {
+    type: 'EVM',
     name: 'Bitgert',
     chainName: isBeta ? 'Bitgert_Beta' : 'Bitgert',
     chainId: 131,
@@ -586,12 +600,12 @@ export const _networkInfo = {
     origin: Origin.Bitgert,
     mainAsset: 'BRISE',
     nativeId: isBeta ? '0xfc9c' : '0x7f08',
-    supported: true,
     logo: BitgertLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Bitgert
   },
   Manta: {
+    type: 'EVM',
     name: 'Manta',
     chainName: isBeta ? 'Manta_Beta' : 'Manta',
     chainId: 133,
@@ -599,12 +613,12 @@ export const _networkInfo = {
     origin: Origin.Manta,
     mainAsset: 'ETH',
     nativeId: isBeta ? '0x34816d' : '0xa9',
-    supported: true,
     logo: MantaLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Manta
   },
   Zeta: {
+    type: 'EVM',
     name: 'Zeta',
     chainName: isBeta ? 'Zeta_Beta' : 'Zeta',
     chainId: 135,
@@ -612,12 +626,12 @@ export const _networkInfo = {
     origin: Origin.Zeta,
     mainAsset: 'ZETA',
     nativeId: isBeta ? '0x1b59' : '0x1b58',
-    supported: true,
     logo: ZetaLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Zeta
   },
   Janus: {
+    type: 'EVM',
     name: 'Janus',
     chainName: isBeta ? 'Janus_Beta' : 'Janus',
     chainId: 132,
@@ -625,12 +639,12 @@ export const _networkInfo = {
     origin: Origin.Janus,
     mainAsset: 'JNS',
     nativeId: isBeta ? '0x105ac' : '',
-    supported: true,
     logo: JanusLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Janus
   },
   X1: {
+    type: 'EVM',
     name: 'X1',
     chainName: isBeta ? 'X1_Beta' : 'X1',
     chainId: 134,
@@ -638,12 +652,12 @@ export const _networkInfo = {
     origin: Origin.X1,
     mainAsset: 'OKB',
     nativeId: isBeta ? '0xc3' : '',
-    supported: true,
     logo: OECLogo,
     decimals: 18,
     rpcUrl: RPC_URL.X1
   },
   Shardeum: {
+    type: 'EVM',
     name: 'Shardeum',
     chainName: isBeta ? 'Shardeum_Beta' : 'Shardeum',
     chainId: 137,
@@ -651,12 +665,12 @@ export const _networkInfo = {
     origin: Origin.Shardeum,
     mainAsset: 'SHM',
     nativeId: isBeta ? '0x1f92' : '',
-    supported: true,
     logo: ShardeumLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Shardeum
   },
   Heco: {
+    type: 'EVM',
     name: 'Heco',
     chainName: isBeta ? 'Heco_Beta' : 'Heco',
     chainId: 103,
@@ -664,12 +678,12 @@ export const _networkInfo = {
     origin: Origin.Heco,
     mainAsset: 'HT',
     nativeId: isBeta ? '0x100' : '0x80',
-    supported: true,
     logo: HecoLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Heco
   },
   NULS: {
+    type: 'NULS',
     name: 'NULS',
     chainName: 'NULS',
     chainId: isBeta ? 2 : 1,
@@ -677,10 +691,10 @@ export const _networkInfo = {
     origin: Origin.NULS,
     mainAsset: 'NULS',
     nativeId: '0x-1',
-    supported: true,
     logo: NULSLogo
   },
   NERVE: {
+    type: 'NULS',
     name: 'NERVE',
     chainName: 'NERVE',
     chainId: isBeta ? 5 : 9,
@@ -688,15 +702,18 @@ export const _networkInfo = {
     origin: Origin.NERVE,
     mainAsset: 'NVT',
     nativeId: '0x-2',
-    supported: true,
     logo: NERVELogo
   }
 };
 
 if (isBeta) {
   // @ts-ignore
+  delete _networkInfo.Ethereum;
+  // @ts-ignore
   delete _networkInfo.ETHW;
 } else {
+  // @ts-ignore
+  delete _networkInfo.Goerli;
   // @ts-ignore
   delete _networkInfo.Janus;
   // @ts-ignore

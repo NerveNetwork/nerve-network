@@ -6,7 +6,6 @@ import usePlugins from '@/plugins';
 import AddChain from '@/utils/AddChain';
 import { getLogoConfig } from '@/utils/logoConfig';
 import { getSystemConfig } from '@/utils/getSystemConfig';
-// @ts-ignore
 import { testnet, mainnet } from 'nerveswap-sdk';
 import config from './config';
 if (config.isBeta) {
@@ -22,7 +21,10 @@ if (process.env.NODE_ENV !== 'development') {
   window.console.log = () => {};
 }
 
-AddChain();
+setTimeout(() => {
+  // wait for btc init ecc
+  AddChain();
+}, 3000);
 getLogoConfig();
 getSystemConfig();
 

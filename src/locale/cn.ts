@@ -53,7 +53,7 @@ const cn = {
     public23: '最近20条交易将显示在下方',
     public24: '连接网络错误',
     public25: '请先安装该插件',
-    public26: '请先登录插件钱包'
+    public26: '请先登录钱包'
   },
   error: {
     err_0001: '失败',

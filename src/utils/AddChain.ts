@@ -1,15 +1,14 @@
+import nerveswap from 'nerveswap-sdk';
 import storage from '@/utils/storage';
-import { generateTronAddress } from '@/utils/tronLink';
 
 // 添加已有账户波场地址
-export default function AddChain() {
+export default async function AddChain() {
   const accountList = storage.get('accountList') || [];
   if (accountList.length) {
-    if (!accountList[0].address.TRON) {
+    if (!accountList[0].address.BTC) {
       accountList.map((account: any) => {
-        account.address.EVM = account.address.Ethereum;
-        account.address.TRON = generateTronAddress(account.pub);
-        delete account.address.Ethereum;
+        const { address } = nerveswap.getAccountByPub(account.pub);
+        account.address = address;
       });
       storage.set('accountList', accountList);
     }
