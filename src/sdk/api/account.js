@@ -20,7 +20,7 @@ export async function generateAddress({
   if (provider === 'unisat') {
     pub = await getBTCPub();
   } else if (provider === 'tronWeb') {
-    pub = await getTRONPub();
+    pub = await getTRONPub(message);
   } else if (address.startsWith('0x')) {
     pub = await getEVMPub(provider, message);
   } else {

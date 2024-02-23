@@ -133,7 +133,13 @@ export function getAddress() {
 }
 
 export async function generateAddress(address: string) {
-  const providerType = storage.get('providerType');
+  let providerType = storage.get('providerType');
+  const network = storage.get('network');
+  if (network === 'BTC') {
+    providerType = 'unisat';
+  } else if (network === 'TRON') {
+    providerType = 'tronWeb';
+  }
   const account = await nerveswap.getAccount({
     provider: providerType,
     address,
@@ -411,10 +417,8 @@ export default function useEthereum() {
       //   method: 'tron_requestAccounts'
       // });
       const address = window.tronWeb.defaultAddress.base58;
-      // if (!address) {
-      //   throw new Error(t('public.public26'));
-      // }
       state.address = address;
+      store.commit('changeAddress', address);
     } else if (
       providerType === UnisatProvider ||
       (providerType === NaboxProvider && network === 'BTC')
@@ -433,7 +437,7 @@ export default function useEthereum() {
         (providerType === NaboxProvider && network === 'TRON')
       )
     ) {
-      // reload();
+      reload();
     }
   }
 
