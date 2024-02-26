@@ -174,10 +174,15 @@ export default function useEthereum() {
       (providerType === NaboxProvider && network === 'TRON')
     ) {
       // tron
-      address = window.tronWeb.defaultAddress?.base58 || '';
-      if (address) {
-        addTRONListener();
-        initTronChainInfo(address);
+      if (window.tronLink?.ready) {
+        await window.tronLink.request({
+          method: 'tron_requestAccounts'
+        });
+        address = window.tronWeb.defaultAddress?.base58 || '';
+        if (address) {
+          addTRONListener();
+          initTronChainInfo(address);
+        }
       }
     } else if (
       providerType === UnisatProvider ||
@@ -410,12 +415,12 @@ export default function useEthereum() {
       providerType === TRONProvider ||
       (providerType === NaboxProvider && network === 'TRON')
     ) {
-      if (!window.tronWeb?.ready) {
+      if (!window.tronLink?.ready) {
         throw new Error(t('public.public26'));
       }
-      // await window.tronWeb.request({
-      //   method: 'tron_requestAccounts'
-      // });
+      await window.tronLink.request({
+        method: 'tron_requestAccounts'
+      });
       const address = window.tronWeb.defaultAddress.base58;
       state.address = address;
       store.commit('changeAddress', address);
