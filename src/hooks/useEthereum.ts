@@ -174,16 +174,16 @@ export default function useEthereum() {
       (providerType === NaboxProvider && network === 'TRON')
     ) {
       // tron
-      if (window.tronLink?.ready) {
-        await window.tronLink.request({
-          method: 'tron_requestAccounts'
-        });
-        address = window.tronWeb.defaultAddress?.base58 || '';
-        if (address) {
-          addTRONListener();
-          initTronChainInfo(address);
-        }
+      // if (window.tronLink?.ready) {
+      await window.tronLink.request({
+        method: 'tron_requestAccounts'
+      });
+      address = window.tronWeb.defaultAddress?.base58 || '';
+      if (address) {
+        addTRONListener();
+        initTronChainInfo(address);
       }
+      // }
     } else if (
       providerType === UnisatProvider ||
       (providerType === NaboxProvider && network === 'BTC')
@@ -415,9 +415,9 @@ export default function useEthereum() {
       providerType === TRONProvider ||
       (providerType === NaboxProvider && network === 'TRON')
     ) {
-      if (!window.tronLink?.ready) {
+      /* if (!window.tronLink?.ready) {
         throw new Error(t('public.public26'));
-      }
+      } */
       await window.tronLink.request({
         method: 'tron_requestAccounts'
       });
