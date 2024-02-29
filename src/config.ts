@@ -19,9 +19,9 @@ const timeout = 15000;
 const config = {
   beta: {
     isBeta: true,
-    API_URL: 'http://beta.public.nerve.network',
+    API_URL: 'https://beta.public.nerve.network',
     WS_URL: 'ws://beta.api.swap.nerve.network/ws',
-    swap_url: 'http://beta.api.swap.nerve.network',
+    swap_url: 'https://beta.api.swap.nerve.network',
     chainId: 5,
     assetId: 1,
     prefix: 'TNVT',

@@ -238,12 +238,6 @@ export async function getTronTx(hash: string) {
 
 // withdrawal gasLimit
 export async function withdrawalGasLimit() {
-  /*const rpcParams = createRPCParams('gasLimitOfHeterogeneousChains');
-  const res = await http.post({
-    url: 'http://beta.api.nerve.network/jsonrpc',
-    data: rpcParams
-  });
-  return res?.result || null;*/
   const res = await http.rPost('gasLimitOfHeterogeneousChains');
   return res?.result || null;
 }
