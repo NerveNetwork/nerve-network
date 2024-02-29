@@ -175,9 +175,12 @@ export default function useEthereum() {
     ) {
       // tron
       // if (window.tronLink?.ready) {
-      await window.tronLink.request({
+      const res = await window.tronLink.request({
         method: 'tron_requestAccounts'
       });
+      if (res.code !== 200) {
+        return;
+      }
       address = window.tronWeb.defaultAddress?.base58 || '';
       if (address) {
         addTRONListener();
@@ -418,12 +421,15 @@ export default function useEthereum() {
       /* if (!window.tronLink?.ready) {
         throw new Error(t('public.public26'));
       } */
-      await window.tronLink.request({
+      const res = await window.tronLink.request({
         method: 'tron_requestAccounts'
       });
-      const address = window.tronWeb.defaultAddress.base58;
-      state.address = address;
-      store.commit('changeAddress', address);
+      if (res.code !== 200) {
+        throw new Error('Connect failed');
+      }
+      // const address = window.tronLink.tronWeb?.defaultAddress?.base58;
+      // state.address = address;
+      // store.commit('changeAddress', address);
     } else if (
       providerType === UnisatProvider ||
       (providerType === NaboxProvider && network === 'BTC')
@@ -436,13 +442,14 @@ export default function useEthereum() {
     }
     store.commit('changeNetwork', network);
     storage.set('providerType', providerType);
+    reload();
     if (
       !(
         providerType === TRONProvider ||
         (providerType === NaboxProvider && network === 'TRON')
       )
     ) {
-      reload();
+      // reload();
     }
   }
 
