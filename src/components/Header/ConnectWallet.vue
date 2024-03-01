@@ -20,7 +20,7 @@
     </template>
     <template v-if="step === 1">
       <h3>Select a Network</h3>
-      <h4>Make sure the selected network matches the network in yourwallet</h4>
+      <h4>Make sure the selected network matches the network in your wallet</h4>
       <ul class="chain-list">
         <li
           v-for="item in _networkInfo"
