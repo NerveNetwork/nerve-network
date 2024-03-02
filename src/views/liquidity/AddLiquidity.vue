@@ -416,6 +416,7 @@ async function getLiquidAmount(amount: string, type: string) {
     const amountRes = await nerveswap.liquidity.calAddLiquidity({
       tokenAKey: fromAssetKey,
       tokenBKey: toAssetKey,
+      direction: type === 'from' ? 'to' : 'from',
       amount
     });
     return amountRes
