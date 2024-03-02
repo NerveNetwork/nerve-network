@@ -215,11 +215,14 @@ export default function useCrossIn(isTron = false) {
         tokenContract: contractAddress
       });
     } else {
+      const _amount = contractAddress
+        ? ethers.utils.parseUnits(amount, decimal)._hex
+        : ethers.utils.parseEther(amount)._hex;
       return await nerveswap.evm.crossIn({
         provider,
         multySignContract: heterogeneousChainMultySignAddress,
         nerveAddress,
-        amount: ethers.utils.parseUnits(amount, decimal)._hex,
+        amount: _amount,
         from: address,
         tokenContract: contractAddress
       });
