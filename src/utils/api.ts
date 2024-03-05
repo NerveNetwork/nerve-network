@@ -1,6 +1,6 @@
 import nerve from 'nerve-sdk-js';
 import { ethers, BigNumber } from 'ethers';
-import { Minus, Plus, timesDecimals } from './util';
+import { Minus, Plus, timesDecimals, isBeta } from './util';
 // const Signature = require("elliptic/lib/elliptic/ec/signature");
 // const txsignatures = require("nerve-sdk-js/lib/model/txsignatures");
 // @ts-ignore
@@ -1121,8 +1121,9 @@ export class ETransfer {
     // finalFee = baseL1Fee + extraWithdrawalFee
     const gasPrice = await this.getWithdrawGas();
     const gasLimit_big = BigNumber.from(gasLimit);
+    const ethereumChain = isBeta ? _networkInfo.Goerli : _networkInfo.Ethereum;
     const ethereumProvider = new ethers.providers.JsonRpcProvider(
-      _networkInfo.Ethereum.rpcUrl
+      ethereumChain.rpcUrl
     );
     const ethGasPrice = await ethereumProvider.getGasPrice();
     const extraL1FeeBig = sdkApi.getL1Fee(htgChainId, ethGasPrice);

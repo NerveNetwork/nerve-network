@@ -38,6 +38,9 @@ import MantaLogo from '@/assets/img/chainLogo/Manta.jpg';
 import BTCLogo from '@/assets/img/chainLogo/BTC.png';
 import ZetaLogo from '@/assets/img/chainLogo/Zeta.png';
 import ShardeumLogo from '@/assets/img/chainLogo/shardeum.jpg';
+import ModeLogo from '@/assets/img/chainLogo/MODE.jpg';
+import BlastLogo from '@/assets/img/chainLogo/Blast.jpg';
+import MerlinLogo from '@/assets/img/chainLogo/Merlin.jpg';
 
 const Origin = {
   NERVE: isBeta
@@ -111,7 +114,10 @@ const Origin = {
   Zeta: isBeta
     ? 'https://athens3.explorer.zetachain.com'
     : 'https://explorer.mainnet.zetachain.com',
-  Shardeum: isBeta ? 'https://explorer-sphinx.shardeum.org' : ''
+  Shardeum: isBeta ? 'https://explorer-sphinx.shardeum.org' : '',
+  Mode: isBeta ? 'https://sepolia.explorer.mode.network' : 'https://explorer.mode.network',
+  Blast: isBeta ? 'https://testnet.blastscan.io' : 'https://blastscan.io',
+  Merlin: isBeta ? 'https://testnet-scan.merlinchain.io' : 'https://scan.merlinchain.io'
 };
 
 export const RPC_URL = {
@@ -196,7 +202,10 @@ export const RPC_URL = {
   Zeta: isBeta
     ? 'https://zetachain-athens-evm.blockpi.network/v1/rpc/public'
     : 'https://api.mainnet.zetachain.com/evm',
-  Shardeum: isBeta ? 'https://sphinx.shardeum.org' : ''
+  Shardeum: isBeta ? 'https://sphinx.shardeum.org' : '',
+  Mode: isBeta ? 'https://sepolia.mode.network' : 'https://mainnet.mode.network',
+  Blast: isBeta ? 'https://sepolia.blast.io' : 'https://rpc.blast.io',
+  Merlin: isBeta ? 'https://testnet-rpc.merlinchain.io' : 'https://rpc.merlinchain.io'
 };
 
 export const _networkInfo = {
@@ -668,6 +677,45 @@ export const _networkInfo = {
     logo: ShardeumLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Shardeum
+  },
+  Mode: {
+    type: 'EVM',
+    name: 'Mode',
+    chainName: isBeta ? 'Mode_Beta' : 'Mode',
+    chainId: 138,
+    assetKey: isBeta ? '5-177' : '',
+    origin: Origin.Mode,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0x397' : '0x868b',
+    logo: ModeLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Mode
+  },
+  Blast: {
+    type: 'EVM',
+    name: 'Blast',
+    chainName: isBeta ? 'Blast_Beta' : 'Blast',
+    chainId: 139,
+    assetKey: isBeta ? '5-178' : '',
+    origin: Origin.Blast,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0xa0c71fd' : '0x13e31',
+    logo: BlastLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Blast
+  },
+  Merlin: {
+    type: 'EVM',
+    name: 'Merlin',
+    chainName: isBeta ? 'Merlin_Beta' : 'Merlin',
+    chainId: 140,
+    assetKey: isBeta ? '5-179' : '',
+    origin: Origin.Merlin,
+    mainAsset: 'BTC',
+    nativeId: isBeta ? '0xa7b14' : '0x1068',
+    logo: MerlinLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Merlin
   },
   Heco: {
     type: 'EVM',
