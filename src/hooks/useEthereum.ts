@@ -296,9 +296,9 @@ export default function useEthereum() {
     const { provider, providerType } = getProvider();
 
     let chainId = provider.chainId + '';
-    if (providerType === NaboxProvider) {
-      chainId = window.nabox.chainId;
-    }
+    // if (providerType === NaboxProvider) {
+    //   chainId = window.nabox.chainId;
+    // }
     chainId = chainId.startsWith('0x')
       ? chainId
       : '0x' + Number(chainId).toString(16);
