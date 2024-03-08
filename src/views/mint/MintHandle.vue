@@ -56,17 +56,6 @@ const { t } = useI18n();
 const timeLimit = ref(false);
 const timeLimitText = ref('');
 
-let timer: number;
-watch(
-  () => props.item.id,
-  val => {
-    stopTimer();
-    if (val) {
-      checkLimit();
-    }
-  }
-);
-
 const countLimit = computed(() => {
   const { mintCount, mintCountLimitPerUser } = props.item;
   if (mintCountLimitPerUser && mintCount === mintCountLimitPerUser) {
@@ -74,6 +63,18 @@ const countLimit = computed(() => {
   }
   return false;
 });
+
+let timer: number;
+watch(
+  () => props.item.id,
+  val => {
+    stopTimer();
+    if (val || val === 0) {
+      checkLimit();
+    }
+  },
+  { immediate: true }
+);
 
 function checkLimit() {
   if (!countLimit.value) {
