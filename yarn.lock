@@ -8086,10 +8086,10 @@ neo-async@^2.5.0, neo-async@^2.6.1, neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nerve-sdk-js@^1.0.35:
-  version "1.0.35"
-  resolved "https://registry.yarnpkg.com/nerve-sdk-js/-/nerve-sdk-js-1.0.35.tgz#d43cfd558d973219b6d27370dfeff76f46ac2239"
-  integrity sha512-CpVJsrXiIl5J6Z8gprCHGkMlmf8SPSz8vcX+A2p6AfsyUOJz+E1AZaUBGxk0GnSHkH8icNoayKHS2ocesujxNA==
+nerve-sdk-js@^1.0.36:
+  version "1.0.36"
+  resolved "https://registry.yarnpkg.com/nerve-sdk-js/-/nerve-sdk-js-1.0.36.tgz#a2dc4f80d95554ead233bfd57c161c3c1458b173"
+  integrity sha512-wDL3IyvIjumUiUIpaShUKROg9Z1Z2bDCDrWyDciwIYYc9V/qU2JC1KX7eBG+BCw9mXRSsnWdec+Fb1iylE4kqw==
   dependencies:
     "@babel/cli" "^7.0.0"
     "@babel/core" "^7.0.0"
@@ -8135,15 +8135,15 @@ nerve-sdk-js@^1.0.35:
   optionalDependencies:
     secp256k1 "3.7.1"
 
-nerveswap-sdk@^1.0.18:
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/nerveswap-sdk/-/nerveswap-sdk-1.0.18.tgz#c550879733003ab17afa38ff3c28653695a9b35a"
-  integrity sha512-biomjoPx3J8vvczjg5UVRb2bR73AnOf6MycD58axoaFdWpuUL49cC/N1Bw8cyXV3qAND55jUsczCYcl7BAwd0Q==
+nerveswap-sdk@^1.0.19:
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/nerveswap-sdk/-/nerveswap-sdk-1.0.19.tgz#aa697b91a32f9e46be8f0f0cf29459c41f09c983"
+  integrity sha512-wLxxdQ0ujSzUqdPvkZzn7e5ocjRsrKoxi2OU8XSLQXcKvz9PLuUKUDFQ7MSULa3YOUM7LvI0/hGSqYlJul8c8g==
   dependencies:
     axios "^1.6.2"
     bignumber.js "^9.1.2"
     ethers "^5.7.2"
-    nerve-sdk-js "^1.0.35"
+    nerve-sdk-js "^1.0.36"
     tronweb "^4.1.0"
 
 nice-try@^1.0.4:
