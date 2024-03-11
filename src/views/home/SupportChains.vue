@@ -54,6 +54,9 @@ import Zeta from '@/assets/img/supportChains/zeta.png';
 import Janus from '@/assets/img/supportChains/janus.png';
 import X1 from '@/assets/img/supportChains/x1.png';
 import Shardeum from '@/assets/img/supportChains/shardeum.png';
+import Mode from '@/assets/img/supportChains/Mode.png';
+import Blast from '@/assets/img/supportChains/Blast.png';
+import Merlin from '@/assets/img/supportChains/Merlin.png';
 
 const supportChains = [
   { src: BTC },
@@ -92,6 +95,9 @@ const supportChains = [
   /* { src: Janus },
   { src: X1 },*/
   { src: Shardeum },
+  { src: Mode },
+  { src: Blast },
+  { src: Merlin },
   { src: Heco }
 ];
 </script>
