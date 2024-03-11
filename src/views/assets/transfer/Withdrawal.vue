@@ -259,15 +259,14 @@ export default defineComponent({
         const feeAssetUSD = (await getAssetPrice(
           chainId,
           assetId,
-          true
+          true // only fee asset need be true
         )) as string;
         const mainAsset = supportedFeeAssets.value.find(
           v => v.symbol === heterogeneousInfo.chainName
         ) as AssetItemType;
         const L1MainAssetUSD = (await getAssetPrice(
           mainAsset.chainId,
-          mainAsset.assetId,
-          true
+          mainAsset.assetId
         )) as string;
         if (withdrawalChain === 'TRON') {
           res = transfer.calWithdrawalFeeForTRON(
