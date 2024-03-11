@@ -40,6 +40,14 @@
       <template #amount="scope">
         {{ $thousands(scope.row.mintEach) }}/{{ $thousands(scope.row.mintMax) }}
       </template>
+      <template #startTime="scope">
+        <p class="time-item">{{ scope.row.startTime.split(' ')[0] }}</p>
+        <p class="time-item">{{ scope.row.startTime.split(' ')[1] }}</p>
+      </template>
+      <template #assetUnlockTime="scope">
+        <p class="time-item">{{ scope.row.assetUnlockTime.split(' ')[0] }}</p>
+        <p class="time-item">{{ scope.row.assetUnlockTime.split(' ')[1] }}</p>
+      </template>
       <template #mintFee="scope">
         {{ $thousands(scope.row.mintFee) }} {{ scope.row.mintFeeAssetSymbol }}
       </template>
@@ -110,14 +118,14 @@ const columns = computed(() => {
       headerSlot: 'amountHeader'
     },
     {
-      prop: 'startTime',
       label: t('mint.mint39'),
-      width: 160
+      width: 160,
+      slotName: 'startTime'
     },
     {
-      prop: 'assetUnlockTime',
       label: t('mint.mint40'),
-      width: 160
+      width: 160,
+      slotName: 'assetUnlockTime'
     },
     { label: t('mint.mint41'), width: 130, slotName: 'mintFee' },
     {
@@ -171,6 +179,9 @@ const showConfirmModal = ref(false);
       border-radius: 2px;
       background: linear-gradient(to right, #37e4cc, #4d62e4);
     }
+  }
+  .time-item {
+    line-height: 1.1;
   }
 }
 :deep(.mint-popper) {
