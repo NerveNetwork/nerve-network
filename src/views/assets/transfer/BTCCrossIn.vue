@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { ref, inject, watch, computed, onMounted } from 'vue';
-import useToast from '@/hooks/useToast';
+import useToast, { parseErrorMsg } from '@/hooks/useToast';
 import { useI18n } from 'vue-i18n';
 import nerveswap from 'nerveswap-sdk';
 import { setAccountTxs } from '@/hooks/useBroadcastNerveHex';
@@ -48,7 +48,7 @@ import { HeterogeneousInfo } from '@/store/types';
 
 const father = inject(rootCmpKey, {} as RootComponent);
 const { t } = useI18n();
-const { toastSuccess, toastError } = useToast();
+const { toast, toastSuccess, toastError } = useToast();
 
 const btcBalance = ref('');
 const amount = ref('');
@@ -142,7 +142,9 @@ const sendTx = async () => {
     handleTx(hash);
   } catch (e) {
     console.log(e, '333');
-    toastError(e);
+    const { message } = parseErrorMsg(e);
+    const _message = message.includes('dust') ? 'Not enough utxo' : message;
+    toastError(_message);
   }
   loading.value = false;
 };

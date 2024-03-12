@@ -3,7 +3,7 @@ export { ToastOptions } from 'vue-toastification/src/types/index';
 
 const errors = ['INSUFFICIENT_FUNDS'];
 
-const parseErrorMsg = (error: any) => {
+export const parseErrorMsg = (error: any) => {
   if (!error.code) {
     return {
       errorFromEthers: false,
