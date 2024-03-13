@@ -57,7 +57,7 @@
       </template>
       <template #progress="scope">
         <div class="progress-item">
-          <p>{{ scope.row.progress }}%</p>
+          <p>{{ scope.row.id === 0 ? 100 : scope.row.progress }}%</p>
           <div class="progress-wrap">
             <div
               class="progress-bar"
