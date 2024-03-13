@@ -14,10 +14,16 @@
         <div class="handle-mint handle-item disabled">Mint</div>
       </el-tooltip>
       <el-tooltip
-        v-else-if="countLimit || timeLimit"
+        v-else-if="progressLimit || countLimit || timeLimit"
         popper-class="mint-popper"
         effect="dark"
-        :content="countLimit ? $t('mint.mint47') : timeLimitText"
+        :content="
+          progressLimit
+            ? 'Ended'
+            : countLimit
+            ? $t('mint.mint47')
+            : timeLimitText
+        "
         placement="top"
       >
         <div class="handle-mint handle-item disabled">Mint</div>
@@ -56,9 +62,16 @@ const { t } = useI18n();
 const timeLimit = ref(false);
 const timeLimitText = ref('');
 
+const progressLimit = computed(() => {
+  const { progress } = props.item;
+  return Number(progress) - 100 >= 0;
+});
+
 const countLimit = computed(() => {
-  const { mintCount, mintCountLimitPerUser } = props.item;
-  if (mintCountLimitPerUser && mintCount === mintCountLimitPerUser) {
+  const { mintCount, mintCountLimitPerUser, progress } = props.item;
+  if (Number(progress) - 100 >= 0) {
+    return true;
+  } else if (mintCountLimitPerUser && mintCount === mintCountLimitPerUser) {
     return true;
   }
   return false;
@@ -77,7 +90,7 @@ watch(
 );
 
 function checkLimit() {
-  if (!countLimit.value) {
+  if (!countLimit.value && !progressLimit.value) {
     intervalCheckStart();
   } else {
     stopTimer();
