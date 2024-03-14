@@ -27,4 +27,5 @@ export type IMintItem = {
   registerChain: string;
   whitelistAddr: boolean;
   mintMinutesForWhitelist: number;
+  remainingTotalMintCount: number;
 };

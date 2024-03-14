@@ -42,9 +42,7 @@
       </div>
       <div class="info-item">
         <div class="left">{{ $t('mint.mint52') }}</div>
-        <div class="right">
-          {{ info.mintCountLimit - info.mintCount }}/{{ info.mintCountLimit }}
-        </div>
+        <div class="right">{{ remainMintCount }}/{{ info.mintCountLimit }}</div>
       </div>
       <div class="info-item">
         <div class="left">{{ $t('mint.mint42') }}</div>
@@ -57,7 +55,7 @@
         <div class="left">{{ $t('mint.mint40') }}</div>
         <div class="right">{{ info.assetUnlockTime }}</div>
       </div>
-      <template v-if="resetMintCount">
+      <template v-if="remainMintCount">
         <div class="info-item">
           <div class="left">{{ $t('mint.mint53') }}</div>
           <div class="right" style="position: relative">
@@ -72,7 +70,13 @@
           </div>
         </div>
         <div class="info-item cost">
-          <div class="left">{{ $t('mint.mint59') }}</div>
+          <div class="left flex-between">
+            <span>{{ $t('mint.mint59') }}</span>
+            <span>
+              {{ $t('public.public16') }}
+              {{ feeAsset.available || 0 }} {{ info.mintFeeAssetSymbol }}
+            </span>
+          </div>
           <div class="right">{{ totalCost }} {{ info.mintFeeAssetSymbol }}</div>
         </div>
         <el-checkbox :label="$t('mint.mint54')" v-model="check"></el-checkbox>
@@ -178,7 +182,7 @@ async function getInfo() {
   result.progress = fixNumber(Division(result.progress, 100).toFixed(), 2);
   result.registerChain = Object.values(_networkInfo).find(
     k => k.chainId === result.mintAssetSourceChainId
-  )?.name;
+  )!.name;
   info.value = result;
   loading.value = false;
 }
@@ -188,18 +192,19 @@ const totalCost = computed(() => {
   return Times(mintCount.value, info.value.mintFee);
 });
 
-const resetMintCount = computed(() => {
-  const { mintCount, mintCountLimit } = info.value;
+const remainMintCount = computed(() => {
+  const { mintCount, mintCountLimit, remainingTotalMintCount } = info.value;
   if (!mintCountLimit) return 1;
-  return mintCountLimit - mintCount!;
+  const userLimit = mintCountLimit - mintCount!;
+  return Math.min.apply(null, [userLimit, remainingTotalMintCount]);
 });
 
 function changeInput(val: string) {
   const reg = /^[1-9]\d*$/;
   if (reg.exec(val) || val === '') {
     const v = Number(val);
-    if (v > resetMintCount.value) {
-      mintCount.value = resetMintCount.value;
+    if (v > remainMintCount.value) {
+      mintCount.value = remainMintCount.value;
     } else {
       // @ts-ignore
       mintCount.value = val;
@@ -230,7 +235,7 @@ const disabled = computed(() => {
   return (
     !check.value ||
     txLoading.value ||
-    !resetMintCount.value ||
+    !remainMintCount.value ||
     !mintCount.value ||
     !Number(balance) ||
     balance - totalCost.value < 0
@@ -319,6 +324,9 @@ const close = () => {
   }
   .cost {
     padding-top: 20px;
+    .left {
+      width: 100%;
+    }
     .right {
       width: 100%;
       height: 44px;
