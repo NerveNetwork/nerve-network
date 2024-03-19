@@ -110,6 +110,7 @@ export default function useCrossIn(isTron = false) {
     let _needAuth = true;
     if (isTron) {
       _needAuth = await nerveswap.tron.checkAuth({
+        provider,
         address,
         tokenContract: contractAddress,
         multySignContract: heterogeneousChainMultySignAddress
@@ -167,6 +168,7 @@ export default function useCrossIn(isTron = false) {
     let res: any = {};
     if (isTron) {
       res = await nerveswap.tron.approve({
+        provider,
         tokenContract: contractAddress,
         multySignContract: heterogeneousChainMultySignAddress
       });
@@ -209,6 +211,7 @@ export default function useCrossIn(isTron = false) {
       );
       return { hash }; */
       return await nerveswap.tron.crossIn({
+        provider,
         to: nerveAddress,
         amount: ethers.utils.parseUnits(amount, decimal)._hex,
         multySignContract: heterogeneousChainMultySignAddress,

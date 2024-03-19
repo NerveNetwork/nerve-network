@@ -1,4 +1,3 @@
-import { computed, watch } from 'vue';
 import useStoreState from '@/hooks/useStoreState';
 import nerve from 'nerve-sdk-js';
 import { NTransfer } from '@/utils/api';
@@ -8,6 +7,7 @@ import { Account, TxInfo } from '@/store/types';
 import { useI18n } from 'vue-i18n';
 import { checkIsNULSLedger } from './useEthereum';
 import useToast from './useToast';
+import { getProvider } from '@/utils/providerUtil';
 
 /*interface TxInfo {
   inputs: any;
@@ -142,8 +142,9 @@ export default function useBroadcastNerveHex() {
   }
 
   const getWalletInfo = () => {
+    const { provider } = getProvider();
     return {
-      provider: storage.get('providerType'),
+      provider: provider,
       EVMAddress: currentAccount.value?.address?.EVM,
       pub: currentAccount.value?.pub
     };

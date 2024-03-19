@@ -20,7 +20,6 @@
     "element-plus": "^2.0.1",
     "ethers": "^5.7.2",
     "nerve-sdk-js": "^1.0.36",
-    "nerveswap-sdk": "^1.0.19",
     "tronweb": "^4.1.0",
     "vconsole": "^3.14.6",
     "vue": "^3.2.9",

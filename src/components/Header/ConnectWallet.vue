@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { providerList } from '@/hooks/useEthereum';
+import { providerList } from '../../utils/providerUtil';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 
 const props = defineProps<{
@@ -142,6 +142,7 @@ const onClosed = () => {
       img {
         width: 60px;
         height: 60px;
+        border-radius: 50%;
         margin-bottom: 5px;
       }
     }

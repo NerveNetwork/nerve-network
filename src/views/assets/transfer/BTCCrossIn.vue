@@ -45,6 +45,7 @@ import {
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { rootCmpKey, RootComponent } from '../types';
 import { HeterogeneousInfo } from '@/store/types';
+import { getProvider } from '@/utils/providerUtil';
 
 const father = inject(rootCmpKey, {} as RootComponent);
 const { t } = useI18n();
@@ -53,9 +54,12 @@ const { toast, toastSuccess, toastError } = useToast();
 const btcBalance = ref('');
 const amount = ref('');
 const { transferAsset, nerveAddress, address, currentAccount } = father;
+let provider: any;
 
 onMounted(async () => {
-  const balance = await window.unisat.getBalance();
+  const p = getProvider();
+  provider = p.provider;
+  const balance = await provider.getBalance();
   btcBalance.value = divisionDecimals(balance.confirmed, 8);
   calFee();
 });
@@ -132,6 +136,7 @@ const sendTx = async () => {
       v => v.heterogeneousChainId === heterogeneousChainId
     ) as HeterogeneousInfo;
     const hash = await nerveswap.btc.crossIn({
+      provider,
       from: address,
       multySignAddress: heterogeneousInfo.heterogeneousChainMultySignAddress,
       nerveAddress,

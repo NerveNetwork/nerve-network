@@ -449,3 +449,7 @@ export function getOriginChain(
   }
   return chainName;
 }
+
+export const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
+  navigator.userAgent
+);

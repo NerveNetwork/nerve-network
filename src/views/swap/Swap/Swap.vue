@@ -773,8 +773,10 @@ export default defineComponent({
     function max(type: string) {
       if (type === 'from') {
         state.fromAmount = (state.fromAsset && state.fromAsset.available) || '';
+        getToByFrom(state.fromAmount);
       } else {
         state.toAmount = (state.toAsset && state.toAsset.available) || '';
+        getFromByTo(state.toAmount);
       }
     }
 

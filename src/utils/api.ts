@@ -14,7 +14,7 @@ import txs from 'nerve-sdk-js/lib/model/txs';
 // @ts-ignore
 import sdkApi from 'nerve-sdk-js/lib/api/sdk';
 import config from '@/config';
-import { getProvider } from '@/hooks/useEthereum';
+import { getProvider } from '../utils/providerUtil';
 import { broadcastHex, getAssetBalance } from '@/service/api';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 

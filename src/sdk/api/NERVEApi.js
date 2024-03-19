@@ -26,35 +26,41 @@ const nerveConfig = {
 
 export async function getNPub(address) {
   if (!window?.nabox?.selectedAddress) {
-    throw new Error('Pls connect the plugin first')
+    throw new Error('Pls connect the plugin first');
   }
   const pub = await window.nabox.getPub({
     address
-  })
-  return pub
+  });
+  return pub;
 }
 
 export function getNAddressByPub(pub, isNULS = false) {
-  const key = isNULS ? 'NULS' : 'NERVE'
-  const chainInfo = getChainInfo()
-  const { chainId, assetId, prefix } = chainInfo[key]
-  return nerve.getAddressByPub(chainId, assetId, pub, prefix)
+  const key = isNULS ? 'NULS' : 'NERVE';
+  const chainInfo = getChainInfo();
+  const { chainId, assetId, prefix } = chainInfo[key];
+  return nerve.getAddressByPub(chainId, assetId, pub, prefix);
 }
 
 function checkIsNULSLedger(provider) {
-  const _provider = window[provider];
+  const _provider = getWebProvider(provider);
   return _provider?.isNabox && _provider?.isNULSLedger;
 }
 
 export function checkProvider(provider) {
-  if (!window[provider]) {
-    throw new Error(`${provider} not found`);
+  const _provider = getWebProvider(provider);
+  if (!_provider) {
+    throw new Error(`Provider not found`);
   }
+}
+
+export function getWebProvider(provider) {
+  const _provider = typeof provider === 'string' ? window[provider] : provider;
+  return _provider;
 }
 
 /**
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.to
  * @param {number} param.assetChainId
@@ -91,7 +97,7 @@ export async function sendNERVETx({
 
 /**
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {number} param.assetChainId
  * @param {number} param.assetId
@@ -147,7 +153,7 @@ export async function sendWithdrawalTx({
 
 /**
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {number} param.assetChainId
  * @param {number} param.assetId
@@ -201,7 +207,7 @@ export async function sendJoinStakingTx({
 
 /**
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {number} param.assetChainId
  * @param {number} param.assetId
@@ -255,7 +261,7 @@ export async function sendWithdrawalStakingTx({
 
 /**
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {object[]} param.stakingList
  * @param {number} param.stakingList[].assetChainId
@@ -300,7 +306,7 @@ export async function sendBatchQuitStakingTx({
 
 /**
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {object[]} param.stakingList
  * @param {number} param.stakingList[].assetChainId
@@ -356,7 +362,7 @@ export async function sendBatchJoinStakingTx({
 /**
  * @description create node
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.amount
  * @param {string} param.packingAddress
@@ -404,7 +410,7 @@ export async function sendCreateNodeTx({
 /**
  * @description add node deposit
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.amount
  * @param {string} param.agentHash
@@ -449,7 +455,7 @@ export async function sendAddDepositTx({
 /**
  * @description reduce node deposit
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.amount
  * @param {object[]} param.reduceList
@@ -499,7 +505,7 @@ export async function sendQuitDepositTx({
 /**
  * @description stop node
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.amount
  * @param {object[]} param.reduceList reduce nonc list
@@ -549,7 +555,7 @@ export async function sendStopNodeTx({
 /**
  * @description addtion withdrawal fee
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.amount
  * @param {number} param.assetChainId
@@ -598,7 +604,7 @@ export async function sendAdditionFeeTx({
 /**
  * @description push create trading order
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.payAmount
  * @param {string} param.payAssetKey
@@ -664,7 +670,7 @@ export async function sendCreateTradingOrderTx({
 /**
  * @description push create trading order
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.orderHash
  * @param {string} [param.remark]
@@ -704,7 +710,7 @@ export async function sendRevokeTradingOrderTx({
 /**
  * @description create Farm
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.stakeAssetKey
  * @param {string} param.rewardAssetKey
@@ -757,7 +763,7 @@ export async function sendCreateFarmTx({
 /**
  * @description Farm stake
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.amount
  * @param {numbrt} param.assetChainId
@@ -795,7 +801,7 @@ export async function sendFramStakeTx({
 /**
  * @description Farm claim
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {numbrt} param.assetChainId
  * @param {numbrt} param.assetId
@@ -831,7 +837,7 @@ export async function sendFramClaimTx({
 /**
  * @description Farm withdrawal
  * @param {object} param
- * @param {string} param.provider
+ * @param {string | object} param.provider
  * @param {string} param.from
  * @param {string} param.amount
  * @param {numbrt} param.assetChainId
@@ -955,7 +961,7 @@ async function getCrossTxData(tx) {
 
   const crossFee = timesDecimals(0.01, 8); // cross fee 0.01 NVT + 0.01 NULS
 
-  const input = inputs[0]
+  const input = inputs[0];
   if (
     input.assetsChainId === NERVE.chainId &&
     input.assetsId === NERVE.assetId
@@ -975,10 +981,7 @@ async function getCrossTxData(tx) {
       nonce: nonce
     });
   }
-  if (
-    input.assetsChainId === NULS.chainId &&
-    input.assetsId === NULS.assetId
-  ) {
+  if (input.assetsChainId === NULS.chainId && input.assetsId === NULS.assetId) {
     input.amount = Plus(input.amount, crossFee).toFixed();
   } else {
     const nonce = await getNonce(tx.from, NULS.chainId, NULS.assetId);
@@ -1479,7 +1482,7 @@ export async function sendTx(
 }
 
 export async function sendTxWithUnSignedHex(provider, hex, pub, signAddress) {
-  const isNULSLedger = checkIsNULSLedger();
+  const isNULSLedger = checkIsNULSLedger(provider);
   let signedHex;
   if (isNULSLedger) {
     signedHex = await window.nabox.signNULSTransaction({ txHex: hex });
@@ -1531,7 +1534,8 @@ export async function getTxHex({
 
 async function signHash(provider, hash, signAddress) {
   hash = hash.startsWith('0x') ? hash : '0x' + hash;
-  let flat = await window[provider].request({
+  const _provider = getWebProvider(provider);
+  let flat = await _provider.request({
     method: 'eth_sign',
     params: [signAddress, hash]
   });

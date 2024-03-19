@@ -21,14 +21,12 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue';
 import { useStore } from '@/store';
-import useEthereum, {
+import useEthereum, { AddChain, specialChain } from '@/hooks/useEthereum';
+import {
   getProvider,
-  AddChain,
-  specialChain,
-  NaboxProvider,
-  UnisatProvider,
-  TRONProvider
-} from '@/hooks/useEthereum';
+  TRONWebProvider,
+  UnisatProvider
+} from '../utils/providerUtil';
 import useToast from '@/hooks/useToast';
 import useClickOutside from '@/hooks/useClickOutside';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
@@ -49,7 +47,7 @@ export default defineComponent({
     const store = useStore();
     const { toastError } = useToast();
 
-    const { providerType } = getProvider();
+    const { providerType, provider } = getProvider();
 
     const supportChainList: ChainItem[] = [];
     Object.values(_networkInfo).map((v: any) => {
@@ -75,8 +73,10 @@ export default defineComponent({
         emit('update:modelValue', val);
       }
     });
+
     const { addEthereumChain, switchEthereumChain, switchBTCNetwork } =
       useEthereum();
+
     async function switchChain(item: ChainItem) {
       if (item.name === props.currentChain && !store.state.isWrongChain) return;
       show.value = false;
@@ -87,7 +87,7 @@ export default defineComponent({
           store.commit('changeIsWrongChain', false);
           return;
         }
-        if (providerType === TRONProvider) {
+        if (providerType === TRONWebProvider) {
           if (item.name === 'TRON') {
             //
           } else {
@@ -102,21 +102,9 @@ export default defineComponent({
             toastError('Please switch wallet');
           }
         } else {
-          /* if (
-            specialChain.indexOf(item.name) > -1 ||
-            item.chainId === provider.chainId
-          ) {
-            store.commit('changeNetwork', item.name);
-            const currentAccount = getCurrentAccount(props.address || '');
-            const chain =
-              specialChain.indexOf(item.name) > -1 ? item.name : 'EVM';
-            const newAddress = currentAccount.address[chain];
-            store.commit('changeAddress', newAddress);
-            store.commit('changeIsWrongChain', false);
-          } */
           if (
             (item.name === 'BTC' || item.name === 'TRON') &&
-            providerType !== NaboxProvider
+            !provider.isNabox
           ) {
             toastError('Please switch wallet');
             return;

@@ -73,6 +73,12 @@ export default defineComponent({
   setup(props, { emit }) {
     const activeName = ref<TransferType>(props.currentTab);
     watch(
+      () => props.network,
+      () => {
+        emit('update:show', false);
+      }
+    );
+    watch(
       () => props.currentTab,
       val => {
         if (val) {

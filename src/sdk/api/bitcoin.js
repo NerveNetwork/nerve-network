@@ -6,8 +6,8 @@ import { isBeta } from '../utils/utils';
 
 nerve.bitcoin.initEccLibForWeb();
 
-export async function getBTCPub() {
-  return await window.unisat.getPublicKey();
+export async function getBTCPub(provider) {
+  return await provider.getPublicKey();
 }
 
 export function getBTCAddressByPub(pub) {
@@ -54,6 +54,7 @@ export async function calBTCTxFee({
 
 /**
  * @param {object} param
+ * @param {object} param.provider
  * @param {string} param.from
  * @param {string} param.multySignAddress
  * @param {string} param.nerveAddress
@@ -62,6 +63,7 @@ export async function calBTCTxFee({
  * @param {boolean} [param.isMainnet]
  */
 export async function BitCoinCrossToNERVE({
+  provider,
   from,
   multySignAddress,
   nerveAddress,
@@ -69,7 +71,7 @@ export async function BitCoinCrossToNERVE({
   pub,
   isMainnet = true
 }) {
-  if (!window.unisat) {
+  if (!provider) {
     throw new Error('Please install the wallet first');
   }
   amount = Number(amount);
@@ -126,12 +128,12 @@ export async function BitCoinCrossToNERVE({
   } else {
     throw new Error('Invalid Address');
   }
-  return await sendTransaction(psbtHex);
+  return await sendTransaction(provider, psbtHex);
 }
 
-async function sendTransaction(psbtHex) {
-  const signResult = await window.unisat.signPsbt(psbtHex);
-  return await window.unisat.pushPsbt(signResult);
+async function sendTransaction(provider, psbtHex) {
+  const signResult = await provider.signPsbt(psbtHex);
+  return await provider.pushPsbt(signResult);
 }
 
 export async function getBTCTxDetail(txid, isMainnet) {

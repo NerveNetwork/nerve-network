@@ -8,6 +8,7 @@ const { ElementPlusResolver } = require('unplugin-vue-components/resolvers');
 const TerserPlugin = require('terser-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 // const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const path = require('path')
 
 const proxyUrl =
   process.env.BUILD_ENV === 'prod'
@@ -19,6 +20,7 @@ module.exports = {
   // transpileDependencies: ['@injectivelabs'],
   publicPath: '/',
   chainWebpack: config => {
+    config.resolve.alias.set('nerveswap-sdk', path.join(__dirname, 'src/sdk'));
     // console.log(config.optimization.minimizer('terser'), 22)
     config.optimization.minimizer('terser').tap(args => {
       const compress = args[0].terserOptions.compress;
