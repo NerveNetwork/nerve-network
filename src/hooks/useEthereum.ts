@@ -1,7 +1,11 @@
 import { reactive, toRefs, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from '@/store';
-import { getProvider, getBTCProvider } from '@/utils/providerUtil';
+import {
+  getProvider,
+  getBTCProvider,
+  getEVMProvider
+} from '@/utils/providerUtil';
 // import { Web3Provider } from "ethers";
 
 import storage from '@/utils/storage';
@@ -342,12 +346,18 @@ export default function useEthereum() {
     storage.set('providerType', providerType);
     if (network !== 'TRON' && network !== 'BTC') {
       const chain = _networkInfo[network];
+      const { nativeId, rpcUrl, chainName, name, mainAsset, decimals, origin } =
+        chain;
       await addEthereumChain({
-        chainId: chain.nativeId,
-        rpcUrls: [chain.rpcUrl],
-        chainName: chain.chainName,
-        nativeCurrency: chain.mainAsset,
-        blockExplorerUrls: [chain.origin]
+        chainId: nativeId,
+        rpcUrls: [rpcUrl],
+        chainName: chainName,
+        nativeCurrency: {
+          name: name,
+          symbol: mainAsset,
+          decimals: decimals
+        },
+        blockExplorerUrls: [origin]
       });
     }
     reload();
@@ -365,7 +375,7 @@ export default function useEthereum() {
   }
 
   async function addEthereumChain(params: AddChain) {
-    const { provider } = getProvider();
+    const { provider } = getEVMProvider();
     try {
       await provider.request({
         method: 'wallet_switchEthereumChain',
@@ -382,7 +392,7 @@ export default function useEthereum() {
   }
 
   async function switchEthereumChain(params: SwitchChain) {
-    const { provider } = getProvider();
+    const { provider } = getEVMProvider();
     await provider.request({
       method: 'wallet_switchEthereumChain',
       params: [params]

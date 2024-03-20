@@ -24,12 +24,16 @@ import { useStore } from '@/store';
 import useEthereum, { AddChain, specialChain } from '@/hooks/useEthereum';
 import {
   getProvider,
+  getEVMProvider,
+  getBTCProvider,
+  getTRONProvider,
   TRONWebProvider,
   UnisatProvider
 } from '../utils/providerUtil';
 import useToast from '@/hooks/useToast';
 import useClickOutside from '@/hooks/useClickOutside';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import storage from '@/utils/storage';
 
 interface ChainItem extends AddChain {
   logo: string;
@@ -46,8 +50,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const { toastError } = useToast();
-
-    const { providerType, provider } = getProvider();
 
     const supportChainList: ChainItem[] = [];
     Object.values(_networkInfo).map((v: any) => {
@@ -78,6 +80,8 @@ export default defineComponent({
       useEthereum();
 
     async function switchChain(item: ChainItem) {
+      const { providerType, provider } = getProvider();
+      const { provider: EVMProvider } = getEVMProvider();
       if (item.name === props.currentChain && !store.state.isWrongChain) return;
       show.value = false;
       // const { provider, providerType } = getProvider();
@@ -102,23 +106,49 @@ export default defineComponent({
             toastError('Please switch wallet');
           }
         } else {
-          if (
-            (item.name === 'BTC' || item.name === 'TRON') &&
-            !provider.isNabox
-          ) {
-            toastError('Please switch wallet');
-            return;
-          }
-          if (item.name !== 'Ethereum' && item.name !== 'Goerli') {
-            const { logo, name, ...rest } = item;
-            await addEthereumChain(rest);
+          if (item.name === 'BTC' || item.name === 'TRON') {
+            if (!provider.isNabox) {
+              toastError('Please switch wallet');
+            } else {
+              if (item.name === 'BTC') {
+                const { provider } = getBTCProvider();
+                await provider.requestAccounts();
+                storage.set('network', 'BTC');
+                reload();
+              } else {
+                const { provider } = getTRONProvider();
+                await provider.request({
+                  method: 'tron_requestAccounts'
+                });
+                storage.set('network', 'TRON');
+                reload();
+              }
+            }
           } else {
-            await switchEthereumChain({ chainId: item.chainId });
+            const oldChainId = EVMProvider.chainId;
+            if (item.name !== 'Ethereum' && item.name !== 'Goerli') {
+              const { logo, name, ...rest } = item;
+              await addEthereumChain(rest);
+            } else {
+              await switchEthereumChain({ chainId: item.chainId });
+            }
+            const newChainId = EVMProvider.chainId;
+            const network = storage.get('network');
+            if (
+              (network === 'TRON' || network === 'BTC') &&
+              oldChainId !== newChainId
+            ) {
+              storage.set('network', item.name);
+              reload();
+            }
           }
         }
       } catch (e) {
         //
       }
+    }
+    function reload() {
+      window.location.reload();
     }
     const wrapper = ref<HTMLElement>();
     const { isClickOutside } = useClickOutside(wrapper);
