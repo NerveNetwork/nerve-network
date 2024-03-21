@@ -41,12 +41,12 @@
         {{ $thousands(scope.row.mintEach) }}/{{ $thousands(scope.row.mintMax) }}
       </template>
       <template #startTime="scope">
-        <p class="time-item">{{ scope.row.startTime.split(' ')[0] }}</p>
-        <p class="time-item">{{ scope.row.startTime.split(' ')[1] }}</p>
+        <p class="time-item">{{ scope.row.startTime?.split(' ')[0] }}</p>
+        <p class="time-item">{{ scope.row.startTime?.split(' ')[1] }}</p>
       </template>
       <template #assetUnlockTime="scope">
-        <p class="time-item">{{ scope.row.assetUnlockTime.split(' ')[0] }}</p>
-        <p class="time-item">{{ scope.row.assetUnlockTime.split(' ')[1] }}</p>
+        <p class="time-item">{{ scope.row.assetUnlockTime?.split(' ')[0] }}</p>
+        <p class="time-item">{{ scope.row.assetUnlockTime?.split(' ')[1] }}</p>
       </template>
       <template #mintFee="scope">
         {{ $thousands(scope.row.mintFee) }} {{ scope.row.mintFeeAssetSymbol }}
