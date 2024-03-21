@@ -19,11 +19,11 @@
         <el-option :label="$t('mint.mint50')" value="3"></el-option>
       </el-select>
     </div>
-    <!-- <div class="deploy">
+    <div class="deploy">
       <router-link :to="{ name: 'mintDeploy' }">
         {{ $t('mint.mint1') }}
       </router-link>
-    </div> -->
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
