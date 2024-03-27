@@ -7,7 +7,7 @@ import { Account, TxInfo } from '@/store/types';
 import { useI18n } from 'vue-i18n';
 import { checkIsNULSLedger } from './useEthereum';
 import useToast from './useToast';
-import { getProvider } from '@/utils/providerUtil';
+import { getEVMProvider } from '@/utils/providerUtil';
 
 /*interface TxInfo {
   inputs: any;
@@ -142,7 +142,7 @@ export default function useBroadcastNerveHex() {
   }
 
   const getWalletInfo = () => {
-    const { provider } = getProvider();
+    const { provider } = getEVMProvider();
     return {
       provider: provider,
       EVMAddress: currentAccount.value?.address?.EVM,
