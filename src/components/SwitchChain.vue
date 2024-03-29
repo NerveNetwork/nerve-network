@@ -126,7 +126,7 @@ export default defineComponent({
             }
           } else {
             const oldChainId = EVMProvider.chainId;
-            if (item.name !== 'Ethereum' && item.name !== 'Goerli') {
+            if (item.name !== 'Ethereum') {
               const { logo, name, ...rest } = item;
               await addEthereumChain(rest);
             } else {

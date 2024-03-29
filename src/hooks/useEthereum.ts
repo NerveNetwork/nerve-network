@@ -205,11 +205,24 @@ export default function useEthereum() {
     return address;
   }
 
+  async function getEVMChainId(provider: any) {
+    let chainId = provider?.chainId;
+    if (chainId) return chainId;
+    try {
+      chainId = await provider
+        ?.request({ method: 'eth_chainId' })
+        .then((chainId: string) => chainId);
+    } catch (error: any) {
+      //
+    }
+    return chainId;
+  }
+
   async function initEVMChainInfo(provider: any, address: string) {
     let network = storage.get('network');
     const currentAccount = getCurrentAccount(address);
 
-    let chainId = provider.chainId + '';
+    let chainId = await getEVMChainId(provider);
     chainId = chainId.startsWith('0x')
       ? chainId
       : '0x' + Number(chainId).toString(16);

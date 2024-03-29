@@ -41,7 +41,9 @@ import ShardeumLogo from '@/assets/img/chainLogo/shardeum.jpg';
 import ModeLogo from '@/assets/img/chainLogo/MODE.jpg';
 import BlastLogo from '@/assets/img/chainLogo/Blast.jpg';
 import MerlinLogo from '@/assets/img/chainLogo/Merlin.jpg';
+import PulseLogo from '@/assets/img/chainLogo/Pulse.jpg';
 
+// explorer
 const Origin = {
   NERVE: isBeta
     ? 'http://beta.scan.nerve.network'
@@ -117,12 +119,13 @@ const Origin = {
   Shardeum: isBeta ? 'https://explorer-sphinx.shardeum.org' : '',
   Mode: isBeta ? 'https://sepolia.explorer.mode.network' : 'https://explorer.mode.network',
   Blast: isBeta ? 'https://testnet.blastscan.io' : 'https://blastscan.io',
-  Merlin: isBeta ? 'https://testnet-scan.merlinchain.io' : 'https://scan.merlinchain.io'
+  Merlin: isBeta ? 'https://testnet-scan.merlinchain.io' : 'https://scan.merlinchain.io',
+  Pulse: isBeta ? 'https://scan.v4.testnet.pulsechain.com' : 'https://scan.pulsechain.com'
 };
 
 export const RPC_URL = {
   Ethereum: isBeta
-    ? 'https://ethereum-goerli.publicnode.com'
+    ? 'https://goerli.blockpi.network/v1/rpc/public	'
     : 'https://eth.drpc.org',
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
@@ -205,7 +208,8 @@ export const RPC_URL = {
   Shardeum: isBeta ? 'https://sphinx.shardeum.org' : '',
   Mode: isBeta ? 'https://sepolia.mode.network' : 'https://mainnet.mode.network',
   Blast: isBeta ? 'https://sepolia.blast.io' : 'https://rpc.blast.io',
-  Merlin: isBeta ? 'https://testnet-rpc.merlinchain.io' : 'https://rpc.merlinchain.io'
+  Merlin: isBeta ? 'https://testnet-rpc.merlinchain.io' : 'https://rpc.merlinchain.io',
+  Pulse: isBeta ? 'https://rpc.v4.testnet.pulsechain.com' : 'https://rpc.pulsechain.com'
 };
 
 export const _networkInfo = {
@@ -717,6 +721,19 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Merlin
   },
+  Pulse: {
+    type: 'EVM',
+    name: 'Pulse',
+    chainName: isBeta ? 'Pulse_Beta' : 'Pulse',
+    chainId: 141,
+    assetKey: isBeta ? '5-182' : '',
+    origin: Origin.Pulse,
+    mainAsset: 'PLS',
+    nativeId: isBeta ? '0x3af' : '0x171',
+    logo: PulseLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Pulse
+  },
   Heco: {
     type: 'EVM',
     name: 'Heco',
@@ -768,4 +785,10 @@ if (isBeta) {
   delete _networkInfo.X1;
   // @ts-ignore
   delete _networkInfo.Shardeum;
+  // @ts-ignore
+  delete _networkInfo.Pulse;
 }
+
+/* function parseChainID(chainId: string | number) {
+  return '0x' + Number(chainId).toString(16);
+} */
