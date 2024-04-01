@@ -95,7 +95,7 @@ import AuthButton from '../AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
 import useToast from '@/hooks/useToast';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-import { getTronTx, getTx } from '@/service/api';
+import { getTronTx, getTx, getFCHTx } from '@/service/api';
 import { getCurrentAccount, isBeta, superLong } from '@/utils/util';
 import { Account, TxInfo } from '@/store/types';
 import storage from '@/utils/storage';
@@ -240,6 +240,8 @@ async function pollingTx(txs: TxInfo[]) {
       return handleTronTx(v);
     } else if (v.L1Chain === 'BTC') {
       return handleBTCTx(v);
+    } else if (v.L1Chain === 'FCH') {
+      return handleFCHTx(v);
     } else {
       return handleEVMTx(v);
     }
@@ -284,6 +286,16 @@ async function handleBTCTx(tx: TxInfo) {
     hash: tx.hash,
     result: {
       status: isConfirmed ? 1 : 0
+    }
+  };
+}
+
+async function handleFCHTx(tx: TxInfo) {
+  const result = await getFCHTx(tx.hash);
+  return {
+    hash: tx.hash,
+    result: {
+      status: result?.blockHeight > 0 ? 1 : 0
     }
   };
 }

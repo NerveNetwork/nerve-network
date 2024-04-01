@@ -27,6 +27,7 @@ import {
   getEVMProvider,
   getBTCProvider,
   getTRONProvider,
+  getFCHProvider,
   TRONWebProvider,
   UnisatProvider
 } from '../utils/providerUtil';
@@ -106,23 +107,24 @@ export default defineComponent({
             toastError('Please switch wallet');
           }
         } else {
-          if (item.name === 'BTC' || item.name === 'TRON') {
+          if (item.name === 'BTC' || item.name === 'TRON' || item.name === 'FCH') {
             if (!provider.isNabox) {
               toastError('Please switch wallet');
             } else {
               if (item.name === 'BTC') {
                 const { provider } = getBTCProvider();
                 await provider.requestAccounts();
-                storage.set('network', 'BTC');
-                reload();
-              } else {
+              } else if (item.name === 'TRON') {
                 const { provider } = getTRONProvider();
                 await provider.request({
                   method: 'tron_requestAccounts'
                 });
-                storage.set('network', 'TRON');
-                reload();
+              } else if (item.name === 'FCH') {
+                const { provider } = getFCHProvider();
+                await provider.createSession();
               }
+              storage.set('network', item.name);
+              reload();
             }
           } else {
             const oldChainId = EVMProvider.chainId;

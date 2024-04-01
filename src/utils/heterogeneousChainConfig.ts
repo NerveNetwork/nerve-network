@@ -42,6 +42,7 @@ import ModeLogo from '@/assets/img/chainLogo/MODE.jpg';
 import BlastLogo from '@/assets/img/chainLogo/Blast.jpg';
 import MerlinLogo from '@/assets/img/chainLogo/Merlin.jpg';
 import PulseLogo from '@/assets/img/chainLogo/Pulse.jpg';
+import FCHLogo from '@/assets/img/chainLogo/FCH.jpg';
 
 // explorer
 const Origin = {
@@ -120,7 +121,8 @@ const Origin = {
   Mode: isBeta ? 'https://sepolia.explorer.mode.network' : 'https://explorer.mode.network',
   Blast: isBeta ? 'https://testnet.blastscan.io' : 'https://blastscan.io',
   Merlin: isBeta ? 'https://testnet-scan.merlinchain.io' : 'https://scan.merlinchain.io',
-  Pulse: isBeta ? 'https://scan.v4.testnet.pulsechain.com' : 'https://scan.pulsechain.com'
+  Pulse: isBeta ? 'https://scan.v4.testnet.pulsechain.com/#' : 'https://scan.mypinata.cloud/ipfs/bafybeidn64pd2u525lmoipjl4nh3ooa2imd7huionjsdepdsphl5slfowy/#',
+  FCH: 'https://freecash.info'
 };
 
 export const RPC_URL = {
@@ -734,6 +736,18 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Pulse
   },
+  FCH: {
+    type: 'FCH',
+    name: 'FCH',
+    chainName: 'FCH',
+    chainId: 202,
+    assetKey: isBeta ? '5-168' : '9-788',
+    origin: Origin.FCH,
+    mainAsset: 'FCH',
+    nativeId: '0x-e',
+    logo: FCHLogo,
+    decimals: 8
+  },
   Heco: {
     type: 'EVM',
     name: 'Heco',
@@ -787,6 +801,14 @@ if (isBeta) {
   delete _networkInfo.Shardeum;
   // @ts-ignore
   delete _networkInfo.Pulse;
+}
+
+const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
+  navigator.userAgent
+);
+if (!isMobile) {
+  // @ts-ignore
+  delete _networkInfo.FCH;
 }
 
 /* function parseChainID(chainId: string | number) {

@@ -236,6 +236,14 @@ export async function getTronTx(hash: string) {
   }; */
 }
 
+export async function getFCHTx(hash: string) {
+  const baseUrl = _networkInfo.FCH.origin;
+  const res = await http.get({
+    url: baseUrl + '/api/fc/tx/' + hash
+  });
+  return res.data || null;
+}
+
 // withdrawal gasLimit
 export async function withdrawalGasLimit() {
   const res = await http.rPost('gasLimitOfHeterogeneousChains');

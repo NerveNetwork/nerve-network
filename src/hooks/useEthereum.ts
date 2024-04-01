@@ -119,6 +119,12 @@ export default function useEthereum() {
         addBTCListener(provider);
         initBTCChainInfo(provider, address);
       }
+    } else if (network === 'FCH') {
+      address = await provider.getAddress();
+      if (address) {
+        addFCHListener(provider);
+        initFCHChainInfo(address);
+      }
     } else {
       // evm
       address = await getEVMAddress(provider);
@@ -167,6 +173,12 @@ export default function useEthereum() {
     }
   }
 
+  function addFCHListener(provider: any) {
+    if (provider) {
+      provider.on('accountsChanged', handleAccountChange);
+    }
+  }
+
   function initTronChainInfo(provider: any, address: string) {
     const apiUrl = provider.fullNode?.host;
     const isWrongChain = apiUrl.indexOf(tronApiPrefix) < 0;
@@ -184,6 +196,12 @@ export default function useEthereum() {
     if (isWrongChain) {
       switchBTCNetwork();
     }
+  }
+
+  function initFCHChainInfo(address: string) {
+    store.commit('changeIsWrongChain', false);
+    store.commit('changeAddress', address);
+    store.commit('changeNetwork', 'FCH');
   }
 
   async function getEVMAddress(provider: any) {
@@ -351,13 +369,16 @@ export default function useEthereum() {
     } else if (network === 'BTC') {
       const result = await provider.requestAccounts();
       state.address = result[0];
+    } else if (network === 'FCH') {
+      const result = await provider.createSession();
+      state.address = result.selectedAddress;
     } else {
       await provider?.request({ method: 'eth_requestAccounts' });
       state.address = provider?.selectedAddress;
     }
     store.commit('changeNetwork', network);
     storage.set('providerType', providerType);
-    if (network !== 'TRON' && network !== 'BTC') {
+    if (network !== 'TRON' && network !== 'BTC' && network !== 'FCH') {
       const chain = _networkInfo[network];
       const { nativeId, rpcUrl, chainName, name, mainAsset, decimals, origin } =
         chain;

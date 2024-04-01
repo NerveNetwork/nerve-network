@@ -1,7 +1,7 @@
 <template>
-  <div class="btc-cross-in" v-loading="loading">
+  <div class="fch-cross-in" v-loading="loading">
     <div class="title">
-      {{ 'From BTC' }}
+      {{ 'From FCH' }}
       <span class="click" @click="openAddress">
         {{ superLong(address, 6) }}
         <i class="iconfont icon-tiaozhuanlianjie"></i>
@@ -13,7 +13,7 @@
         :label="$t('public.public11')"
         :icon="transferAsset.symbol"
         :assetList="[]"
-        :balance="btcBalance"
+        :balance="balance"
         :show-amount="false"
         :selectedAsset="transferAsset"
         disableSelect
@@ -51,7 +51,7 @@ const father = inject(rootCmpKey, {} as RootComponent);
 const { t } = useI18n();
 const { toast, toastSuccess, toastError } = useToast();
 
-const btcBalance = ref('');
+const balance = ref('');
 const amount = ref('');
 const { transferAsset, nerveAddress, address, currentAccount } = father;
 let provider: any;
@@ -59,13 +59,13 @@ let provider: any;
 onMounted(async () => {
   const p = getProvider();
   provider = p.provider;
-  const balance = await provider.getBalance();
-  btcBalance.value = divisionDecimals(balance.confirmed, 8);
+  const _balance = await provider.getBalance();
+  balance.value = divisionDecimals(_balance, 8);
   calFee();
 });
 
 const openAddress = () => {
-  openL1Explorer('BTC', 'address', address);
+  openL1Explorer('FCH', 'address', address);
 };
 
 const amountErrorTip = ref('');
@@ -73,13 +73,8 @@ watch(
   () => amount.value,
   val => {
     if (val) {
-      if (
-        !btcBalance.value ||
-        Minus(btcBalance.value, amount.value).toNumber() < 0
-      ) {
+      if (!balance.value || Minus(balance.value, amount.value).toNumber() < 0) {
         amountErrorTip.value = t('transfer.transfer15');
-      } else if (Minus(amount.value, 0.0001).toNumber() < 0) {
-        amountErrorTip.value = t('transfer.transfer38');
       } else {
         amountErrorTip.value = '';
       }
@@ -90,34 +85,29 @@ watch(
 const fee = ref('');
 async function calFee() {
   try {
-    const heterogeneousChainId = _networkInfo.BTC.chainId;
-    const heterogeneousInfo = transferAsset.heterogeneousList?.find(
-      v => v.heterogeneousChainId === heterogeneousChainId
-    ) as HeterogeneousInfo;
-    const result = await nerveswap.btc.calTxFee({
+    const result = await nerveswap.fch.calTxFee({
       from: address,
-      multySignAddress: heterogeneousInfo.heterogeneousChainMultySignAddress,
       nerveAddress,
-      amount: '10000',
-      isMainnet: !isBeta
+      amount: balance.value || '0.001'
     });
+    console.log(result, 34);
     fee.value = divisionDecimals(result, 8);
   } catch (e) {
-    //
+    // console.log(e, '--e--')
   }
 }
 
 function max() {
   amount.value =
-    Minus(btcBalance.value, fee.value).toNumber() > 0
-      ? Minus(btcBalance.value, fee.value).toFixed()
+    Minus(balance.value, fee.value).toNumber() > 0
+      ? Minus(balance.value, fee.value).toFixed()
       : '0';
 }
 
 const disableTransfer = computed(() => {
   return !!(
     !amount.value ||
-    !btcBalance.value ||
+    !balance.value ||
     amountErrorTip.value ||
     father.disableTx
   );
@@ -127,25 +117,20 @@ const loading = ref(false);
 const sendTx = async () => {
   loading.value = true;
   try {
-    const heterogeneousChainId = _networkInfo.BTC.chainId;
+    const heterogeneousChainId = _networkInfo.FCH.chainId;
     const heterogeneousInfo = transferAsset.heterogeneousList?.find(
       v => v.heterogeneousChainId === heterogeneousChainId
     ) as HeterogeneousInfo;
-    const hash = await nerveswap.btc.crossIn({
-      provider,
-      from: address,
+    const hash = await nerveswap.fch.crossIn({
       multySignAddress: heterogeneousInfo.heterogeneousChainMultySignAddress,
       nerveAddress,
-      amount: timesDecimals(amount.value, 8),
-      pub: currentAccount.pub,
-      isMainnet: !isBeta
+      amount: amount.value
     });
     handleTx(hash);
   } catch (e) {
     console.log(e, '333');
     const { message } = parseErrorMsg(e);
-    const _message = message.includes('dust') ? 'Not enough utxo' : message;
-    toastError(_message);
+    toastError(message);
   }
   loading.value = false;
 };
@@ -157,7 +142,7 @@ function handleTx(hash: string) {
     hash,
     time: new Date().getTime(),
     status: 0,
-    L1Chain: 'BTC',
+    L1Chain: 'FCH',
     L1Type: 'crossIn',
     address
   });
@@ -166,7 +151,7 @@ function handleTx(hash: string) {
 
 <style lang="scss" scoped>
 @import '../../../assets/css/style.scss';
-.btc-cross-in {
+.fch-cross-in {
   .connect-plugin {
     background-color: #2688f7;
     padding: 8px;

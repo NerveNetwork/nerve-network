@@ -2,6 +2,7 @@ import { getNAddressByPub } from './NERVEApi';
 import { getEVMPub, getEVMAddressByPub } from './EVMApi';
 import { getTRONPub, getTRONAddressByPub } from './TRONApi';
 import { getBTCPub, getBTCAddressByPub } from './bitcoin';
+import { getFCHPub, getFCHAddressByPub } from './FCHApi';
 
 /**
  *
@@ -10,7 +11,7 @@ import { getBTCPub, getBTCAddressByPub } from './bitcoin';
  * @param {string} param.address
  * @param {string} [param.message]
  * @param {string} [param.network]
- * @returns {Promise<{address:{ NERVE: string, NULS: string, EVM: string, TRON: string }, pub: string}>}
+ * @returns {Promise<{address:{ NERVE: string, NULS: string, EVM: string, TRON: string, FCH: string }, pub: string}>}
  */
 export async function generateAddress({
   provider,
@@ -23,6 +24,8 @@ export async function generateAddress({
     pub = await getBTCPub(provider);
   } else if (network === 'TRON') {
     pub = await getTRONPub(provider, message);
+  } else if (network === 'FCH') {
+    pub = await getFCHPub(provider);
   } else {
     pub = await getEVMPub(provider, message);
   }
@@ -36,8 +39,9 @@ export function getAccountByPub(pub) {
   const EVM = getEVMAddressByPub(pub);
   const TRON = getTRONAddressByPub(pub);
   const BTC = getBTCAddressByPub(pub);
+  const FCH = getFCHAddressByPub(pub);
   return {
-    address: { NERVE, NULS, EVM, TRON, BTC },
+    address: { NERVE, NULS, EVM, TRON, BTC, FCH },
     pub
   };
 }

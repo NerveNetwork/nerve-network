@@ -23,6 +23,8 @@ import {
   TRONCrossToNERVE
 } from './api/TRONApi';
 
+import { calFCHTxFee, FCHCrossToNERVE } from './api/FCHApi';
+
 import {
   sendNERVETx,
   sendWithdrawalTx,
@@ -88,6 +90,10 @@ const nerve = {
     checkAuth: checkTRC20Allowance,
     approve: approveTRC20,
     crossIn: TRONCrossToNERVE
+  },
+  fch: {
+    calTxFee: calFCHTxFee,
+    crossIn: FCHCrossToNERVE
   },
   transfer: {
     transfer: sendNERVETx,

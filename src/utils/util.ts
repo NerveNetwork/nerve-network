@@ -330,13 +330,21 @@ export function openExplorer(type: string, query: string, isNuls = false) {
 // 打开L1浏览器
 export function openL1Explorer(chain: string, type: string, query: string) {
   let url = _networkInfo[chain].origin;
-  if (type === 'address') {
-    url += '/address/' + query;
-  } else if (type === 'hash') {
-    if (chain === 'TRON') {
-      url += '/transaction/' + query;
-    } else {
-      url += '/tx/' + query;
+  if (chain === 'FCH') {
+    if (type === 'address') {
+      url += '/address?address=' + query;
+    } else if (type === 'hash') {
+      url += '/transaction?hash=' + query;
+    }
+  } else {
+    if (type === 'address') {
+      url += '/address/' + query;
+    } else if (type === 'hash') {
+      if (chain === 'TRON') {
+        url += '/transaction/' + query;
+      } else {
+        url += '/tx/' + query;
+      }
     }
   }
   window.open(url);
