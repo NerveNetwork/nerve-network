@@ -86,7 +86,7 @@
                 <el-button
                   type="text"
                   v-if="scope.row.canToL1"
-                  :disabled="network === 'BTC' || disableTx || !canToL1OnCurrent(scope.row)"
+                  :disabled="network === 'BTC' || network === 'FCH' || disableTx || !canToL1OnCurrent(scope.row)"
                   @click="transfer(scope.row, TransferType.Withdrawal)"
                 >
                   {{ $t('transfer.transfer3') }}
@@ -158,7 +158,7 @@
                   @click="transfer(item, TransferType.Withdrawal)"
                   v-if="item.canToL1"
                   :class="{
-                    btn_disable: network === 'BTC' || disableTx || !canToL1OnCurrent(item)
+                    btn_disable: network === 'BTC' || network === 'FCH' || disableTx || !canToL1OnCurrent(item)
                   }"
                 >
                   {{ $t('transfer.transfer3') }}
