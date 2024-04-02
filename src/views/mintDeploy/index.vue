@@ -220,7 +220,6 @@ import {
 import useRules from './useRules';
 import { ElForm } from 'element-plus';
 import nerveswap from 'nerveswap-sdk';
-import config from '@/config';
 
 const router = useRouter();
 const { t } = useI18n();
@@ -228,16 +227,6 @@ const { nerveAddress, assetsList } = useStoreState();
 const { toastError } = useToast();
 const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 const { targetAddress } = useMintBaseInfo();
-
-const defaultWhitelist = 'NERVEepb61R6tii7FzrXFpagKi2muBxnEcqQpp';
-
-onMounted(() => {
-  setTimeout(() => {
-    if (!config.isBeta && nerveAddress.value !== defaultWhitelist) {
-      router.replace('/mint');
-    }
-  }, 300);
-});
 
 const form = ref<InstanceType<typeof ElForm>>();
 const loading = ref(false);
@@ -371,9 +360,6 @@ function changeMinutes(val: string) {
 }
 
 function submitForm() {
-  if (nerveAddress.value !== defaultWhitelist) {
-    return;
-  }
   form.value?.validate(valid => {
     if (valid) {
       const isValidWhitelist = validateWhitelist();

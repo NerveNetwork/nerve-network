@@ -168,7 +168,7 @@ export const RPC_URL = {
     : 'https://optimism-mainnet.public.blastapi.io',
   Klaytn: isBeta
     ? 'https://api.baobab.klaytn.net:8651'
-    : 'https://public-node-api.klaytnapi.com/v1/cypress',
+    : 'https://klaytn-pokt.nodies.app',
   smartBCH: isBeta ? 'https://moeing.tech:9545' : 'https://smartbch.greyh.at',
   ENULS: isBeta ? 'https://beta.evmapi.nuls.io' : 'https://evmapi.nuls.io',
   KAVA: isBeta ? 'https://evm.testnet.kava.io' : 'https://evm.kava.io',
