@@ -305,7 +305,7 @@ export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
 
   if (currentChain) {
     return !!asset.heterogeneousList?.find((v: HeterogeneousInfo) => {
-      return _networkInfo[currentChain].chainId === v.heterogeneousChainId;
+      return _networkInfo[currentChain]?.chainId === v.heterogeneousChainId;
     });
   }
   return false;

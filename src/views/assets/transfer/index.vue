@@ -15,7 +15,7 @@
           ></el-tab-pane>
           <el-tab-pane
             :name="TransferType.Withdrawal"
-            :disabled="disableTx || network === 'BTC'"
+            :disabled="disableTx || network === 'BTC' || network === 'FCH'"
             :label="$t('transfer.transfer3')"
           ></el-tab-pane>
         </el-tabs>
