@@ -52,11 +52,13 @@ import BTC from '@/assets/img/supportChains/btc.png';
 import Manta from '@/assets/img/supportChains/manta.png';
 import Zeta from '@/assets/img/supportChains/zeta.png';
 import Janus from '@/assets/img/supportChains/janus.png';
-import X1 from '@/assets/img/supportChains/x1.png';
+import X1 from '@/assets/img/supportChains/XLayer.png';
 import Shardeum from '@/assets/img/supportChains/shardeum.png';
 import Mode from '@/assets/img/supportChains/Mode.png';
 import Blast from '@/assets/img/supportChains/Blast.png';
 import Merlin from '@/assets/img/supportChains/Merlin.png';
+import Pulse from '@/assets/img/supportChains/Pulse.png';
+import FCH from '@/assets/img/supportChains/FCH.png';
 
 const supportChains = [
   { src: BTC },
@@ -92,12 +94,14 @@ const supportChains = [
   { src: Bitgert },
   { src: Manta },
   { src: Zeta },
-  /* { src: Janus },
-  { src: X1 },*/
+  /* { src: Janus },*/
+  { src: X1 },
   { src: Shardeum },
   { src: Mode },
   { src: Blast },
   { src: Merlin },
+  { src: Pulse },
+  { src: FCH },
   { src: Heco }
 ];
 </script>

@@ -112,7 +112,7 @@ const Origin = {
   Manta: isBeta
     ? 'https://manta-testnet.calderaexplorer.xyz'
     : 'https://pacific-explorer.manta.network',
-  X1: isBeta ? 'https://www.oklink.com/x1-test' : '',
+  X1: isBeta ? 'https://www.oklink.com/xlayer-test' : 'https://www.oklink.com/xlayer',
   BTC: isBeta ? 'https://mempool.space/testnet' : 'https://mempool.space',
   Zeta: isBeta
     ? 'https://athens3.explorer.zetachain.com'
@@ -202,7 +202,7 @@ export const RPC_URL = {
   Manta: isBeta
     ? 'https://manta-testnet.calderachain.xyz/http'
     : 'https://pacific-rpc.manta.network/http',
-  X1: isBeta ? 'https://x1testrpc.okx.com' : '',
+  X1: isBeta ? 'https://x1testrpc.okx.com' : 'https://endpoints.omniatech.io/v1/xlayer/mainnet/public',
   BTC: '',
   Zeta: isBeta
     ? 'https://zetachain-athens-evm.blockpi.network/v1/rpc/public'
@@ -658,15 +658,15 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Janus
   },
-  X1: {
+  'X Layer': {
     type: 'EVM',
-    name: 'X1',
-    chainName: isBeta ? 'X1_Beta' : 'X1',
+    name: 'X Layer',
+    chainName: isBeta ? 'X Layer_Beta' : 'X Layer',
     chainId: 134,
-    assetKey: isBeta ? '5-170' : '',
+    assetKey: isBeta ? '5-170' : '9-801',
     origin: Origin.X1,
     mainAsset: 'OKB',
-    nativeId: isBeta ? '0xc3' : '',
+    nativeId: isBeta ? '0xc3' : '0xc4',
     logo: OECLogo,
     decimals: 18,
     rpcUrl: RPC_URL.X1
@@ -728,7 +728,7 @@ export const _networkInfo = {
     name: 'Pulse',
     chainName: isBeta ? 'Pulse_Beta' : 'Pulse',
     chainId: 141,
-    assetKey: isBeta ? '5-182' : '',
+    assetKey: isBeta ? '5-182' : '9-802',
     origin: Origin.Pulse,
     mainAsset: 'PLS',
     nativeId: isBeta ? '0x3af' : '0x171',
@@ -796,11 +796,11 @@ if (isBeta) {
   // @ts-ignore
   delete _networkInfo.Janus;
   // @ts-ignore
-  delete _networkInfo.X1;
+  // delete _networkInfo.X1;
   // @ts-ignore
   delete _networkInfo.Shardeum;
   // @ts-ignore
-  delete _networkInfo.Pulse;
+  // delete _networkInfo.Pulse;
 }
 
 const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(

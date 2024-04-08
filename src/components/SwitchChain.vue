@@ -136,10 +136,8 @@ export default defineComponent({
             }
             const newChainId = EVMProvider.chainId;
             const network = storage.get('network');
-            if (
-              (network === 'TRON' || network === 'BTC') &&
-              oldChainId !== newChainId
-            ) {
+            // newChainId !== oldChainId 
+            if (network === 'TRON' || network === 'BTC' || network === 'FCH') {
               storage.set('network', item.name);
               reload();
             }
