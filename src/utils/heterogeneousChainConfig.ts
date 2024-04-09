@@ -808,7 +808,7 @@ const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
 );
 if (!isMobile) {
   // @ts-ignore
-  delete _networkInfo.FCH;
+  // delete _networkInfo.FCH;
 }
 
 /* function parseChainID(chainId: string | number) {
