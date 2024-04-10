@@ -193,3 +193,10 @@ export function getFCHProvider() {
     provider: window.NaboxWallet?.fch || null
   };
 }
+
+export function getNULSProvider() {
+  return {
+    providerType: 'NaboxWallet',
+    provider: window.NaboxWallet?.nuls || null
+  };
+}
