@@ -87,6 +87,7 @@ export default defineComponent({
     async function switchChain(item: ChainItem) {
       const { providerType, provider } = getProvider();
       const { provider: EVMProvider } = getEVMProvider();
+      const network = storage.get('network');
       if (item.name === props.currentChain && !store.state.isWrongChain) return;
       show.value = false;
       // const { provider, providerType } = getProvider();
@@ -98,10 +99,16 @@ export default defineComponent({
         // }
         if (item.name === 'NULS' || item.name === 'NERVE') {
           if (provider.isNabox) {
-            switchNULSChain(item.name);
+            await switchNULSChain(item.name);
+            store.commit('changeNetwork', item.name);
+            store.commit('changeIsWrongChain', false);
+            if (network !== 'NULS' && network !== 'NERVE') {
+              reload();
+            }
+          } else {
+            store.commit('changeNetwork', item.name);
+            store.commit('changeIsWrongChain', false);
           }
-          store.commit('changeNetwork', item.name);
-          store.commit('changeIsWrongChain', false);
         } else if (providerType === TRONWebProvider) {
           if (item.name === 'TRON') {
             //
@@ -149,7 +156,6 @@ export default defineComponent({
               await switchEthereumChain({ chainId: item.chainId });
             }
             const newChainId = EVMProvider.chainId;
-            const network = storage.get('network');
             // newChainId !== oldChainId;
             if (
               network === 'TRON' ||

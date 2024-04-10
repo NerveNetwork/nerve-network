@@ -13,6 +13,7 @@ import storage from '@/utils/storage';
 import { getCurrentAccount, isBeta, isMobile } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import nerveswap from 'nerveswap-sdk';
+import nerve from 'nerve-sdk-js';
 
 interface State {
   address: string | null;
@@ -187,7 +188,6 @@ export default function useEthereum() {
     if (provider?.isNabox) {
       const { provider: _provider } = getNULSProvider();
       _provider.on('accountsChanged', handleAccountChange);
-      _provider.on('chainChanged', handleChainChange);
     } else {
       addEVMListener(provider);
     }
@@ -238,7 +238,7 @@ export default function useEthereum() {
       }
       store.commit('changeIsWrongChain', false);
       store.commit('changeAddress', address);
-      store.commit('changeNetwork', 'network');
+      store.commit('changeNetwork', network);
     } else {
       await initEVMChainInfo(provider, address);
       store.commit('changeIsWrongChain', false);
@@ -329,6 +329,7 @@ export default function useEthereum() {
     store.commit('changeNetwork', network);
   }
 
+  // handle EVM and NULS address change
   function handleAccountChange(accounts: string[]) {
     console.log(accounts, '=======accountsChanged');
     if (!accounts.length) {
@@ -337,11 +338,39 @@ export default function useEthereum() {
       reload();
       return;
     }
-    if (
-      state.address &&
-      state.address.toLowerCase() !== accounts[0].toLowerCase()
-    ) {
-      reload();
+    const { provider } = getEVMProvider();
+    const network = storage.get('network');
+    if (provider.isNabox && (network === 'NULS' || network === 'NERVE')) {
+      let validAddress = false;
+      try {
+        const res = nerve.verifyAddress(accounts[0]);
+        const chainId = res?.chainId;
+        const chainInfo = Object.values(_networkInfo).find(
+          v => v.chainId === chainId
+        );
+        validAddress = !!chainInfo;
+        if (chainInfo && network !== chainInfo.name) {
+          store.commit('changeNetwork', chainInfo.name);
+        }
+      } catch (e) {
+        //
+      }
+      store.commit('changeIsWrongChain', !validAddress);
+      if (validAddress) {
+        if (
+          state.address &&
+          state.address.toLowerCase() !== accounts[0].toLowerCase()
+        ) {
+          // reload();
+        }
+      }
+    } else {
+      if (
+        state.address &&
+        state.address.toLowerCase() !== accounts[0].toLowerCase()
+      ) {
+        reload();
+      }
     }
   }
 
@@ -376,10 +405,16 @@ export default function useEthereum() {
         provider.removeListener('accountsChanged', handleAccountChange);
         provider.removeListener('networkChanged', handleBTCNetworkChanged);
       }
+    } else if (network === 'FCH') {
+      provider.off('accountsChanged', handleAccountChange);
     } else {
-      if (provider.on) {
-        provider.off('accountsChanged', handleAccountChange);
-        provider.off('chainChanged', handleChainChange);
+      let _provider = provider;
+      if ((network === 'NULS' || network === 'NERVE') && _provider.isNabox) {
+        _provider = _provider.nuls;
+        _provider.off('accountsChanged', handleAccountChange);
+      } else {
+        _provider.off('accountsChanged', handleAccountChange);
+        _provider.off('chainChanged', handleChainChange);
       }
     }
   }
@@ -469,7 +504,7 @@ export default function useEthereum() {
         blockExplorerUrls: [origin]
       });
     }
-    // reload();
+    reload();
   }
 
   function disconnect() {

@@ -110,6 +110,14 @@ export function getProvider(type?: string, network?: string) {
     return getFCHProvider();
   } else {
     return getEVMProvider(type);
+    /* const EVMProvider = getEVMProvider(type);
+    if (
+      (network === 'NULS' || network === 'NERVE') &&
+      EVMProvider.provider.isNabox
+    ) {
+      return getNULSProvider();
+    }
+    return EVMProvider; */
   }
 }
 
