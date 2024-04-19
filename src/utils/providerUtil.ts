@@ -110,12 +110,20 @@ export function getProvider(type?: string, network?: string) {
     return getFCHProvider();
   } else {
     return getEVMProvider(type);
+    /* const EVMProvider = getEVMProvider(type);
+    if (
+      (network === 'NULS' || network === 'NERVE') &&
+      EVMProvider.provider.isNabox
+    ) {
+      return getNULSProvider();
+    }
+    return EVMProvider; */
   }
 }
 
 export function getEVMProvider(type?: string) {
   let providerType = storage.get('providerType');
-  if (isMobile && providerType) {
+  if (isMobile && providerType && providerType !== NaboxProvider) {
     type = MetaMaskProvider;
   }
   if (type) {
@@ -136,7 +144,7 @@ export function getEVMProvider(type?: string) {
 
 export function getBTCProvider(type?: string) {
   let providerType = storage.get('providerType');
-  if (isMobile && providerType) {
+  if (isMobile && providerType && providerType !== NaboxProvider) {
     type = UnisatProvider;
   }
   if (type) {
@@ -164,7 +172,7 @@ export function getBTCProvider(type?: string) {
 
 export function getTRONProvider(type?: string) {
   let providerType = storage.get('providerType');
-  if (isMobile && providerType) {
+  if (isMobile && providerType && providerType !== NaboxProvider) {
     type = TRONWebProvider;
   }
   if (type) {
@@ -191,5 +199,12 @@ export function getFCHProvider() {
   return {
     providerType: 'NaboxWallet',
     provider: window.NaboxWallet?.fch || null
+  };
+}
+
+export function getNULSProvider() {
+  return {
+    providerType: 'NaboxWallet',
+    provider: window.NaboxWallet?.nuls || null
   };
 }

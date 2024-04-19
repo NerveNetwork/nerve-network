@@ -47,7 +47,10 @@
           {{ item.name }}
           <img class="fr" :src="item.src" alt="" />
         </div>
-        <p class="ledger-tip tc">
+        <p
+          class="ledger-tip"
+          :class="{ tc: providerList[chainType].length > 1 }"
+        >
           The only hardware wallet supported is Ledger NULS
         </p>
       </div>

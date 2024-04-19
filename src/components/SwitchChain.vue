@@ -77,22 +77,39 @@ export default defineComponent({
       }
     });
 
-    const { addEthereumChain, switchEthereumChain, switchBTCNetwork } =
-      useEthereum();
+    const {
+      addEthereumChain,
+      switchEthereumChain,
+      switchBTCNetwork,
+      switchNULSChain
+    } = useEthereum();
 
     async function switchChain(item: ChainItem) {
       const { providerType, provider } = getProvider();
       const { provider: EVMProvider } = getEVMProvider();
+      const network = storage.get('network');
       if (item.name === props.currentChain && !store.state.isWrongChain) return;
       show.value = false;
       // const { provider, providerType } = getProvider();
       try {
-        if (specialChain.indexOf(item.name) > -1) {
-          store.commit('changeNetwork', item.name);
-          store.commit('changeIsWrongChain', false);
-          return;
-        }
-        if (providerType === TRONWebProvider) {
+        // if (specialChain.indexOf(item.name) > -1) {
+        //   store.commit('changeNetwork', item.name);
+        //   store.commit('changeIsWrongChain', false);
+        //   return;
+        // }
+        if (item.name === 'NULS' || item.name === 'NERVE') {
+          if (provider.isNabox) {
+            await switchNULSChain(item.name);
+            store.commit('changeNetwork', item.name);
+            store.commit('changeIsWrongChain', false);
+            if (network !== 'NULS' && network !== 'NERVE') {
+              reload();
+            }
+          } else {
+            store.commit('changeNetwork', item.name);
+            store.commit('changeIsWrongChain', false);
+          }
+        } else if (providerType === TRONWebProvider) {
           if (item.name === 'TRON') {
             //
           } else {
@@ -107,7 +124,11 @@ export default defineComponent({
             toastError('Please switch wallet');
           }
         } else {
-          if (item.name === 'BTC' || item.name === 'TRON' || item.name === 'FCH') {
+          if (
+            item.name === 'BTC' ||
+            item.name === 'TRON' ||
+            item.name === 'FCH'
+          ) {
             if (!provider.isNabox) {
               toastError('Please switch wallet');
             } else {
@@ -135,10 +156,13 @@ export default defineComponent({
               await switchEthereumChain({ chainId: item.chainId });
             }
             const newChainId = EVMProvider.chainId;
-            const network = storage.get('network');
+            // newChainId !== oldChainId;
             if (
-              (network === 'TRON' || network === 'BTC') &&
-              oldChainId !== newChainId
+              network === 'TRON' ||
+              network === 'BTC' ||
+              network === 'FCH' ||
+              network === 'NULS' ||
+              network === 'NERVE'
             ) {
               storage.set('network', item.name);
               reload();
