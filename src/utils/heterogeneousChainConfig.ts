@@ -37,6 +37,7 @@ import JanusLogo from '@/assets/img/chainLogo/Janus.jpg';
 import MantaLogo from '@/assets/img/chainLogo/Manta.jpg';
 import BTCLogo from '@/assets/img/chainLogo/BTC.png';
 import ZetaLogo from '@/assets/img/chainLogo/Zeta.png';
+import XLayerLogo from '@/assets/img/chainLogo/XLayer.jpg';
 import ShardeumLogo from '@/assets/img/chainLogo/shardeum.jpg';
 import ModeLogo from '@/assets/img/chainLogo/MODE.jpg';
 import BlastLogo from '@/assets/img/chainLogo/Blast.jpg';
@@ -667,7 +668,7 @@ export const _networkInfo = {
     origin: Origin.X1,
     mainAsset: 'OKB',
     nativeId: isBeta ? '0xc3' : '0xc4',
-    logo: OECLogo,
+    logo: XLayerLogo,
     decimals: 18,
     rpcUrl: RPC_URL.X1
   },
