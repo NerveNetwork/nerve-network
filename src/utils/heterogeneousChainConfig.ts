@@ -44,6 +44,7 @@ import BlastLogo from '@/assets/img/chainLogo/Blast.jpg';
 import MerlinLogo from '@/assets/img/chainLogo/Merlin.jpg';
 import PulseLogo from '@/assets/img/chainLogo/Pulse.jpg';
 import FCHLogo from '@/assets/img/chainLogo/FCH.jpg';
+import MintLogo from '@/assets/img/chainLogo/Mint.jpg';
 
 // explorer
 const Origin = {
@@ -123,12 +124,13 @@ const Origin = {
   Blast: isBeta ? 'https://testnet.blastscan.io' : 'https://blastscan.io',
   Merlin: isBeta ? 'https://testnet-scan.merlinchain.io' : 'https://scan.merlinchain.io',
   Pulse: isBeta ? 'https://scan.v4.testnet.pulsechain.com/#' : 'https://scan.mypinata.cloud/ipfs/bafybeidn64pd2u525lmoipjl4nh3ooa2imd7huionjsdepdsphl5slfowy/#',
-  FCH: 'https://freecash.info'
+  FCH: 'https://freecash.info',
+  Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : ''
 };
 
 export const RPC_URL = {
   Ethereum: isBeta
-    ? 'https://goerli.blockpi.network/v1/rpc/public	'
+    ? 'https://eth-goerli.public.blastapi.io'
     : 'https://eth.drpc.org',
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
@@ -212,7 +214,8 @@ export const RPC_URL = {
   Mode: isBeta ? 'https://sepolia.mode.network' : 'https://mainnet.mode.network',
   Blast: isBeta ? 'https://sepolia.blast.io' : 'https://rpc.blast.io',
   Merlin: isBeta ? 'https://testnet-rpc.merlinchain.io' : 'https://rpc.merlinchain.io',
-  Pulse: isBeta ? 'https://rpc.v4.testnet.pulsechain.com' : 'https://rpc.pulsechain.com'
+  Pulse: isBeta ? 'https://rpc.v4.testnet.pulsechain.com' : 'https://rpc.pulsechain.com',
+  Mint: isBeta ? 'https://sepolia-testnet-rpc.mintchain.io' : ''
 };
 
 export const _networkInfo = {
@@ -749,6 +752,19 @@ export const _networkInfo = {
     logo: FCHLogo,
     decimals: 8
   },
+  'Mint Sepolia': {
+    type: 'EVM',
+    name: 'Mint Sepolia',
+    chainName: isBeta ? 'Mint Sepolia_Beta' : 'Mint Sepolia',
+    chainId: 142,
+    assetKey: isBeta ? '5-183' : '',
+    origin: Origin.Mint,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0x697' : '',
+    logo: MintLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Mint
+  },
   Heco: {
     type: 'EVM',
     name: 'Heco',
@@ -797,11 +813,9 @@ if (isBeta) {
   // @ts-ignore
   delete _networkInfo.Janus;
   // @ts-ignore
-  // delete _networkInfo.X1;
-  // @ts-ignore
   delete _networkInfo.Shardeum;
   // @ts-ignore
-  // delete _networkInfo.Pulse;
+  delete _networkInfo['Mint Sepolia'];
 }
 
 const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
