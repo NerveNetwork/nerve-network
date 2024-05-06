@@ -81,6 +81,13 @@
             :disabledDate="disableTime"
           ></el-date-picker>
         </el-form-item>
+        <el-form-item label="" prop="modifiable" v-if="advanced">
+          <el-switch
+            v-model="model.modifiable"
+            active-text="Can be modified"
+            :width="35"
+          ></el-switch>
+        </el-form-item>
         <el-form-item class="checkbox-item" prop="check">
           <el-checkbox :label="$t('farm.farm26')" v-model="model.checkContact">
             <i18n-t keypath="farm.farm26" tag="label">
@@ -151,6 +158,7 @@ const model = reactive({
   syrupPerDay: '', // 每天可获得token奖励
   syrupTotalAmount: '', // 奖励token总量
   startTime: '', // 开始时间
+  modifiable: false,
   checkContact: false,
   check: false
 });
@@ -285,7 +293,8 @@ async function createFarm() {
   loading.value = true;
   try {
     const { provider, EVMAddress, pub } = getWalletInfo();
-    const { lockedTime, syrupPerDay, syrupTotalAmount, startTime } = model;
+    const { lockedTime, syrupPerDay, syrupTotalAmount, startTime, modifiable } =
+      model;
     const tokenA = assetList.value.find(
       (v: AssetItem) => v.assetKey === model.tokenA
     ) as AssetItem;
@@ -304,6 +313,7 @@ async function createFarm() {
       ? Math.floor(Number(currentHeight) + diffSeconds / 2)
       : 1;
     const lockTo = advanced.value ? dayjs(lockedTime).unix() : 1;
+    const _modifiable = advanced.value ? modifiable : false;
     const result = await nerveswap.farm.createFarm({
       provider,
       from: nerveAddress.value,
@@ -313,6 +323,7 @@ async function createFarm() {
       rewardPerBlock: syrupPerBlock,
       startBlockHeight,
       lockedTime: lockTo,
+      modifiable: _modifiable,
       remark: '',
       EVMAddress,
       pub
@@ -431,12 +442,12 @@ const advanced = ref(false);
   .advanced {
     display: flex;
     justify-content: flex-end;
-    .el-switch__label span {
-      color: #475472;
-    }
-    .is-active span {
-      color: #2688f7;
-    }
+  }
+  .el-switch__label span {
+    color: #475472;
+  }
+  .is-active span {
+    color: #2688f7;
   }
   .my-farms {
     padding-top: 20px;
