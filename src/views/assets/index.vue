@@ -72,7 +72,7 @@
                 <el-button
                   type="text"
                   v-if="scope.row.canToL1"
-                  :disabled="disableTx || !canToL1OnCurrent(scope.row)"
+                  :disabled="network === 'BTC' || network === 'FCH' || disableTx || !canToL1OnCurrent(scope.row)"
                   @click="transfer(scope.row, TransferType.CrossIn)"
                 >
                   {{ $t('transfer.transfer1') }}
@@ -145,7 +145,7 @@
                   @click="transfer(item, TransferType.CrossIn)"
                   v-if="item.canToL1"
                   :class="{
-                    btn_disable: disableTx || !canToL1OnCurrent(item)
+                    btn_disable: network === 'BTC' || network === 'FCH' || disableTx || !canToL1OnCurrent(item)
                   }"
                 >
                   {{ $t('transfer.transfer1') }}
@@ -467,6 +467,7 @@ export default defineComponent({
 .btn_disable {
   background-color: #a0cfff !important;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 .assets-list {

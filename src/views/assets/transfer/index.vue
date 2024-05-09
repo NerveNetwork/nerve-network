@@ -6,7 +6,7 @@
         <el-tabs v-model="activeName">
           <el-tab-pane
             :name="TransferType.CrossIn"
-            :disabled="disableTx"
+            :disabled="disableTx || network === 'BTC' || network === 'FCH'"
             :label="$t('transfer.transfer1')"
           ></el-tab-pane>
           <el-tab-pane
