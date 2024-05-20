@@ -564,6 +564,7 @@ export async function sendStopNodeTx({
  * @param {string} [param.remark]
  * @param {string} param.EVMAddress
  * @param {string} param.pub
+ * @param {boolean} param.BTCSpeedUp
  * @returns {Promise<{hash: string} | {error: {code: number, message: string}}>}
  */
 export async function sendAdditionFeeTx({
@@ -575,7 +576,8 @@ export async function sendAdditionFeeTx({
   txHash,
   remark = '',
   EVMAddress,
-  pub
+  pub,
+  BTCSpeedUp
 }) {
   const type = 56;
   checkProvider(provider);
@@ -589,6 +591,9 @@ export async function sendAdditionFeeTx({
   const txData = {
     txHash
   };
+  if (BTCSpeedUp) {
+    txData.extend = '020000';
+  }
   return sendTx(
     provider,
     type,

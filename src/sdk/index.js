@@ -8,7 +8,10 @@ import {
   BitCoinCrossToNERVE,
   checkBTCTxConfirmed,
   calBTCTxFee,
-  getBTCAddressByPub
+  getBTCAddressByPub,
+  getBTCWithdrawalInfo,
+  getBTCWithdrawalFee,
+  getBTCSpeedUpAmount
 } from './api/bitcoin';
 
 import {
@@ -79,7 +82,10 @@ const nerve = {
     getAddress: getBTCAddressByPub,
     calTxFee: calBTCTxFee,
     crossIn: BitCoinCrossToNERVE,
-    checkTxConfirmed: checkBTCTxConfirmed
+    checkTxConfirmed: checkBTCTxConfirmed,
+    getBTCWithdrawalInfo,
+    getBTCWithdrawalFee,
+    getBTCSpeedUpAmount
   },
   evm: {
     checkAuth: checkERC20Allowance,

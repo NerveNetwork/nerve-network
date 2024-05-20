@@ -128,13 +128,14 @@ export default function useBroadcastNerveHex() {
     }
   }
 
-  function handleResult(type: number, res: any) {
+  function handleResult(type: number, res: any, hId?: number) {
     if (res && res.hash) {
       const txInfo: TxInfo = {
         type,
         hash: res.hash,
         time: new Date().getTime(),
-        status: 0
+        status: 0,
+        hId
       };
       setAccountTxs(currentAccount.value?.pub, txInfo);
     }

@@ -73,15 +73,21 @@ import {
   Minus,
   timesDecimals,
   Plus,
-  floatToCeil
+  floatToCeil,
+  isBeta
 } from '@/utils/util';
-import { ETransfer } from '@/utils/api';
+import { ETransfer, calWithdrawalFeeForBTC } from '@/utils/api';
 import TronLinkApi from '@/utils/tronLink';
 import { getAssetPrice } from '@/service/api';
 import config from '@/config';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 
-import { rootCmpKey, RootComponent, AssetItemType } from '../types';
+import {
+  rootCmpKey,
+  RootComponent,
+  AssetItemType,
+  IBTCWithdrawalInfo
+} from '../types';
 import { HeterogeneousInfo } from '@/store/types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import storage from '@/utils/storage';
@@ -164,11 +170,31 @@ export default defineComponent({
     const selectedFeeAsset = ref<AssetItemType>({} as AssetItemType); // 手续费资产信息--L1网络在nerve上的主资产
     const supportedFeeAssets = ref<AssetItemType[]>([]); // 可充当提现手续费的资产
 
+    const btcWithdrawalInfo = ref<IBTCWithdrawalInfo>({
+      feeRate: '',
+      utxos: []
+    });
+
     onMounted(() => {
       if (father.disableTx) return;
       getFeeAssetInfo();
       selectAsset(transferAsset.value);
+      if (father.network === 'BTC') {
+        const crossChainInfo = storage.get('crossChainInfo');
+        const multySignAddress = crossChainInfo['201'].multySignAddress;
+        getBTCWithdrawalInfo(multySignAddress);
+      }
     });
+
+    async function getBTCWithdrawalInfo(multySignAddress: string) {
+      if (!multySignAddress) return;
+      const info = await nerveswap.btc.getBTCWithdrawalInfo(
+        !isBeta,
+        multySignAddress
+      );
+      btcWithdrawalInfo.value = info;
+      getBTCCrossOutFee();
+    }
 
     function getFeeAssetInfo() {
       const { network } = father;
@@ -221,8 +247,21 @@ export default defineComponent({
       }
     }
 
+    watch(
+      () => amount.value,
+      val => {
+        if (Number(val) && father.network === 'BTC') {
+          getBTCCrossOutFee();
+        }
+      }
+    );
+
     async function getCrossOutFee() {
       const withdrawalChain = father.network;
+      if (withdrawalChain === 'BTC') {
+        getBTCCrossOutFee();
+        return;
+      }
       const {
         chainId,
         assetId,
@@ -291,6 +330,56 @@ export default defineComponent({
         }
       }
       fee.value = floatToCeil(res, 6);
+    }
+
+    async function getBTCCrossOutFee() {
+      const withdrawalChain = father.network;
+      const {
+        chainId,
+        assetId,
+        decimals,
+        originNetwork: feeChain
+      } = selectedFeeAsset.value;
+      const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
+      let res = '';
+      try {
+        const { feeRate, utxos } = btcWithdrawalInfo.value;
+        const btcFeeAmount = nerveswap.btc.getBTCWithdrawalFee(
+          utxos,
+          feeRate,
+          timesDecimals(amount.value || '0.0001', 8)
+        );
+        if (feeChain === withdrawalChain) {
+          res = calWithdrawalFeeForBTC(btcFeeAmount, '', '', decimals, true);
+        } else {
+          //
+          const feeAssetUSD = (await getAssetPrice(
+            chainId,
+            assetId,
+            true // only fee asset need be true
+          )) as string;
+          const mainAsset = supportedFeeAssets.value.find(
+            v => v.symbol === heterogeneousInfo.chainName
+          ) as AssetItemType;
+          const L1MainAssetUSD = (await getAssetPrice(
+            mainAsset.chainId,
+            mainAsset.assetId
+          )) as string;
+          res = calWithdrawalFeeForBTC(
+            btcFeeAmount,
+            L1MainAssetUSD,
+            feeAssetUSD,
+            decimals,
+            false,
+            feeIsNVT
+          );
+        }
+      } catch (e) {
+        res = '';
+        toastError(e);
+      }
+      fee.value = floatToCeil(res, 6);
+      validateAmount();
     }
 
     async function getGasLimit(chainId: number) {
@@ -408,7 +497,7 @@ export default defineComponent({
           EVMAddress,
           pub
         });
-        handleResult(43, result);
+        handleResult(43, result, heterogeneousInfo.heterogeneousChainId);
 
         /* await sendWithdrawalTx({
           provider: 'ethereum',

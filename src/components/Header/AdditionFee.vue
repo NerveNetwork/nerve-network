@@ -2,13 +2,15 @@
   <div class="addition-fee">
     <div class="row-item">
       <span class="label" style="margin-bottom: 3px">{{ $t('transfer.transfer32') }}</span>
-      <p>{{ props.txInfo.fee }}{{ props.txInfo.symbol }}</p>
+      <p>
+        {{ props.txInfo?.feeInfo?.value }}{{ props.txInfo?.feeInfo?.symbol }}
+      </p>
     </div>
     <div class="row-item">
       <span class="label">{{ $t('transfer.transfer33') }}</span>
       <p class="addition-input">
         <input type="text" v-model="amount" @input="changeInput" />
-        <span>{{ props.txInfo.symbol }}</span>
+        <span>{{ props.txInfo?.feeInfo?.symbol }}</span>
       </p>
     </div>
     <div class="row-item">
@@ -35,9 +37,17 @@
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useToast from '@/hooks/useToast';
+import { isBeta, divisionDecimals, Division, Minus, Times } from '@/utils/util';
+import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+// @ts-ignore
+import nerveUtil from 'nerve-sdk-js/lib/test/api/util';
+import { getAssetPrice } from '@/service/api';
+import nerveswap from 'nerveswap-sdk';
+import type { AssetItemType } from '@/views/assets/types';
 
 const props = defineProps<{
   txInfo: any;
+  assetsList: AssetItemType[];
 }>();
 
 const emit = defineEmits(['confirm', 'cancel']);
@@ -50,8 +60,88 @@ watch(
   () => props.txInfo.hash,
   val => {
     isLoading.value = !val;
+    checkBTCWithdrawalStatus();
   }
 );
+
+function getMainAssetInfo(symbol: string) {
+  let asset: AssetItemType = null as unknown as AssetItemType;
+  const htgMainAsset = Object.values(_networkInfo).filter(
+    v => v.name !== 'NULS'
+  );
+  props.assetsList.map(v => {
+    htgMainAsset.map(item => {
+      if (item.assetKey === v.assetKey && symbol === v.symbol) {
+        asset = v;
+      }
+    });
+  });
+  return asset;
+}
+
+let paidEnough = false; // paid enougn for nerve pack tx
+async function checkBTCWithdrawalStatus() {
+  const { feeInfo, hash, hId, outerTxHash } = props.txInfo;
+  if (hId === 201) {
+    const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(hId, hash);
+    const { minimumFee, utxoSize, feeRate } = requestFeeInfo;
+    const requestBTC = divisionDecimals(minimumFee, 8);
+    const btcInfo = getMainAssetInfo('BTC');
+    if (feeInfo.assetKey === btcInfo.assetKey) {
+      // use btc as fee
+      if (outerTxHash) {
+        paidEnough = true;
+        const speedUpFee = await nerveswap.btc.getBTCSpeedUpAmount(
+          !isBeta,
+          utxoSize,
+          feeRate
+        );
+        // console.log(speedUpFee, 'btc-enough');
+        amount.value = divisionDecimals(speedUpFee, 8);
+      } else {
+        paidEnough = false;
+        const diff = Minus(requestBTC, feeInfo.value).toFixed();
+        amount.value = diff;
+      }
+    } else {
+      const [feeChainId, feeAssetId] = feeInfo.assetKey.split('-');
+      const [btcChainId, btcAssetId] = btcInfo.assetKey.split('-');
+      const feeAssetUSD = (await getAssetPrice(
+        +feeChainId,
+        +feeAssetId,
+        true // only fee asset need be true
+      )) as string;
+      const L1MainAssetUSD = (await getAssetPrice(
+        +btcChainId,
+        +btcAssetId
+      )) as string;
+      if (outerTxHash) {
+        paidEnough = true;
+        const speedUpFee = await nerveswap.btc.getBTCSpeedUpAmount(
+          !isBeta,
+          utxoSize,
+          feeRate
+        );
+        // console.log(speedUpFee, 'not-btc-enough');
+        const _amount = Division(
+          Times(divisionDecimals(speedUpFee, 8), L1MainAssetUSD).toFixed(),
+          feeAssetUSD
+        ).toFixed();
+        amount.value =
+          (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
+      } else {
+        paidEnough = false;
+        const diff = Minus(
+          Times(requestBTC, L1MainAssetUSD),
+          Times(feeInfo.value, feeAssetUSD)
+        ).toFixed();
+        const _amount = Division(diff, feeAssetUSD).toFixed();
+        amount.value =
+          (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
+      }
+    }
+  }
+}
 
 const amount = ref('');
 function changeInput(e: Event) {
@@ -78,7 +168,11 @@ async function confirm() {
   if (!amount.value) {
     toastError(t('transfer.transfer34'));
   } else {
-    await emit('confirm', amount.value);
+    if (props.txInfo.hId === 201) {
+      await emit('confirm', amount.value, paidEnough);
+    } else {
+      await emit('confirm', amount.value);
+    }
     amount.value = '';
   }
 }

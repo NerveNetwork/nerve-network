@@ -1129,7 +1129,7 @@ export class ETransfer {
     const extraL1FeeBig = sdkApi.getL1Fee(htgChainId, ethGasPrice);
     const totalL1Fee = gasLimit_big.mul(gasPrice).add(extraL1FeeBig);
     if (isMainAsset) {
-      const finalFee = this.formatEthers(totalL1Fee, feeDecimals);
+      const finalFee = formatEthers(totalL1Fee, feeDecimals);
       return finalFee;
     } else {
       const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);
@@ -1150,7 +1150,7 @@ export class ETransfer {
           .parseUnits(ceil.toString(), feeDecimals)
           .toString();
       }
-      const finalFee = this.formatEthers(result, feeDecimals);
+      const finalFee = formatEthers(result, feeDecimals);
       return finalFee;
     }
   }
@@ -1172,7 +1172,7 @@ export class ETransfer {
     isNVT?: boolean
   ) {
     if (isMainAsset) {
-      return this.formatEthers(withdrawalPrice, feeDecimals);
+      return formatEthers(withdrawalPrice, feeDecimals);
     } else {
       const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);
       const mainAssetUSDBig = ethers.utils.parseUnits(
@@ -1192,11 +1192,41 @@ export class ETransfer {
           .parseUnits(ceil.toString(), feeDecimals)
           .toString();
       }
-      return this.formatEthers(result, feeDecimals);
+      return formatEthers(result, feeDecimals);
     }
   }
+}
 
-  formatEthers(amount: any, decimals: number) {
-    return ethers.utils.formatUnits(amount, decimals).toString();
+function formatEthers(amount: any, decimals: number) {
+  return ethers.utils.formatUnits(amount, decimals).toString();
+}
+
+export function calWithdrawalFeeForBTC(
+  btcFeeAmount: string,
+  mainAssetUSD = '',
+  feeUSD = '',
+  feeDecimals: number,
+  isMainAsset: boolean,
+  isNVT?: boolean
+) {
+  if (isMainAsset) {
+    return formatEthers(btcFeeAmount, 8);
+  } else {
+    const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);
+    const mainAssetUSDBig = ethers.utils.parseUnits(
+      mainAssetUSD.toString(),
+      18
+    );
+    let result: any = mainAssetUSDBig
+      .mul(btcFeeAmount)
+      .mul(ethers.utils.parseUnits('1', feeDecimals))
+      .div(ethers.utils.parseUnits('1', 8)) // 8 for btc decimal
+      .div(feeUSDBig);
+    if (isNVT) {
+      const numberStr = ethers.utils.formatUnits(result, feeDecimals);
+      const ceil = Math.ceil(+numberStr);
+      result = ethers.utils.parseUnits(ceil.toString(), feeDecimals).toString();
+    }
+    return formatEthers(result, feeDecimals);
   }
 }

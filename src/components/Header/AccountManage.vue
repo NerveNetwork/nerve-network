@@ -62,6 +62,7 @@
               <AdditionFee
                 v-if="item.expand"
                 :tx-info="activeTx"
+                :assetsList="assetsList"
                 @cancel="showAdditionFee('', true)"
                 @confirm="additionFee"
               />
@@ -91,7 +92,6 @@ import { getTx } from '@/service/api';
 import useStoreState from '@/hooks/useStoreState';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import _ from 'lodash';
-import config from '@/config';
 import { TxInfo } from '@/store/types';
 import nerveswap from 'nerveswap-sdk';
 
@@ -164,9 +164,15 @@ function showAdditionFee(hash: string, isExpand: boolean) {
             asset.assetId === txData.feeCoin.assetId
         )!;
         activeTx.value = {
-          fee: divisionDecimals(txData.fee, feeCoin.decimals),
-          symbol: feeCoin.symbol,
-          hash
+          hash,
+          hId: 201, //v.hId,
+          outerTxHash: txData.outerTxHash,
+          feeInfo: {
+            value: divisionDecimals(txData.fee, feeCoin.decimals),
+            symbol: feeCoin.symbol,
+            decimals: feeCoin.decimals,
+            assetKey: feeCoin.assetKey
+          }
         };
       }
     }
@@ -175,7 +181,7 @@ function showAdditionFee(hash: string, isExpand: boolean) {
 
 const showLoading = ref(false);
 const { getWalletInfo, handleResult } = useBroadcastNerveHex();
-async function additionFee(amount: string) {
+async function additionFee(amount: string, BTCSpeedUp?: boolean) {
   showLoading.value = true;
   try {
     const { provider, EVMAddress, pub } = getWalletInfo();
@@ -187,7 +193,8 @@ async function additionFee(amount: string) {
       assetId: feeCoin.assetId,
       txHash: activeTx.value.hash,
       EVMAddress,
-      pub
+      pub,
+      BTCSpeedUp
     });
     /* const transferInfo = {
       from: nerveAddress.value,

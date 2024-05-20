@@ -24,3 +24,21 @@ export interface RootComponent {
 }
 
 export const rootCmpKey: InjectionKey<RootComponent> = Symbol('rootCmp');
+
+type Iutxo = {
+  amount: number;
+  status: {
+    block_hash: string;
+    block_height: number;
+    block_time: number;
+    confirmed: boolean;
+  };
+  txid: string;
+  value: number;
+  vout: number;
+};
+
+export type IBTCWithdrawalInfo = {
+  feeRate: '';
+  utxos: Iutxo[];
+};
