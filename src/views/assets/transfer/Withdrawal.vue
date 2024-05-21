@@ -118,6 +118,8 @@ export default defineComponent({
             if (father.network === 'TRON') {
               const tron = new TronLinkApi();
               flag = tron.validAddress(val);
+            } else if (father.network === 'BTC') {
+              flag = nerveswap.btc.checkBTCAddress(!isBeta, val);
             } else {
               const transfer = new ETransfer();
               flag = transfer.validateAddress(val);

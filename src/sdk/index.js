@@ -11,7 +11,8 @@ import {
   getBTCAddressByPub,
   getBTCWithdrawalInfo,
   getBTCWithdrawalFee,
-  getBTCSpeedUpAmount
+  getBTCSpeedUpAmount,
+  checkBTCAddress
 } from './api/bitcoin';
 
 import {
@@ -85,7 +86,8 @@ const nerve = {
     checkTxConfirmed: checkBTCTxConfirmed,
     getBTCWithdrawalInfo,
     getBTCWithdrawalFee,
-    getBTCSpeedUpAmount
+    getBTCSpeedUpAmount,
+    checkBTCAddress
   },
   evm: {
     checkAuth: checkERC20Allowance,

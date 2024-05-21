@@ -154,6 +154,15 @@ export async function checkBTCTxConfirmed(txid, isMainnet) {
 
 export async function getBTCWithdrawalInfo(isMainnet, multySignAddress) {
   const utxos = await nerve.bitcoin.getUtxos(isMainnet, multySignAddress);
+  if (Array.isArray(utxos)) {
+    utxos.sort((a, b) => {
+      if (a.value !== b.value) {
+        return a.value < b.value ? -1 : 1;
+      } else {
+        return a.txid < b.txid ? -1 : 1;
+      }
+    });
+  }
   const feeRate = await nerve.bitcoin.getFeeRate(isMainnet);
   return { utxos, feeRate };
 }
@@ -166,6 +175,13 @@ export function getBTCWithdrawalFee(utxos, feeRate, amount) {
 export async function getBTCSpeedUpAmount(isMainnet, utxoSize, feeRateOnTx) {
   const feeRateOnNetwork = await nerve.bitcoin.getFeeRate(isMainnet);
   const txSize = nerve.bitcoin.calcTxSizeWithdrawal(utxoSize);
-  const needAddFee = txSize * (feeRateOnNetwork - feeRateOnTx);
-  return needAddFee;
+  if (feeRateOnNetwork - feeRateOnTx > 0) {
+    const needAddFee = txSize * (feeRateOnNetwork - feeRateOnTx);
+    return needAddFee;
+  }
+  return false;
+}
+
+export function checkBTCAddress(isMainnet, address) {
+  return nerve.bitcoin.isValidBTCAddress(isMainnet, address);
 }

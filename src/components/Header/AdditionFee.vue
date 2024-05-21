@@ -20,7 +20,7 @@
           {{ $t('public.public8') }}
         </el-button>
         <el-divider direction="vertical" />
-        <el-button type="text" @click="confirm" :disabled="!amount">
+        <el-button type="text" @click="confirm" :disabled="!amount || !canAdd">
           {{ $t('public.public9') }}
         </el-button>
       </p>
@@ -56,6 +56,7 @@ const { t } = useI18n();
 const { toastError } = useToast();
 
 const isLoading = ref(true);
+const canAdd = ref(true); // withdrawal can add addition fee
 watch(
   () => props.txInfo.hash,
   val => {
@@ -85,6 +86,11 @@ async function checkBTCWithdrawalStatus() {
   if (hId === 201) {
     const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(hId, hash);
     const { minimumFee, utxoSize, feeRate } = requestFeeInfo;
+    if (minimumFee && utxoSize && feeRate) {
+      canAdd.value = true;
+    } else {
+      canAdd.value = false;
+    }
     const requestBTC = divisionDecimals(minimumFee, 8);
     const btcInfo = getMainAssetInfo('BTC');
     if (feeInfo.assetKey === btcInfo.assetKey) {
@@ -96,12 +102,12 @@ async function checkBTCWithdrawalStatus() {
           utxoSize,
           feeRate
         );
-        // console.log(speedUpFee, 'btc-enough');
-        amount.value = divisionDecimals(speedUpFee, 8);
+        console.log(speedUpFee, 'btc-enough');
+        amount.value = speedUpFee ? divisionDecimals(speedUpFee, 8) : '';
       } else {
         paidEnough = false;
         const diff = Minus(requestBTC, feeInfo.value).toFixed();
-        amount.value = diff;
+        amount.value = diff > 0 ? diff : '';
       }
     } else {
       const [feeChainId, feeAssetId] = feeInfo.assetKey.split('-');
@@ -122,22 +128,30 @@ async function checkBTCWithdrawalStatus() {
           utxoSize,
           feeRate
         );
-        // console.log(speedUpFee, 'not-btc-enough');
-        const _amount = Division(
-          Times(divisionDecimals(speedUpFee, 8), L1MainAssetUSD).toFixed(),
-          feeAssetUSD
-        ).toFixed();
-        amount.value =
-          (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
+        if (speedUpFee) {
+          console.log(speedUpFee, 'not-btc-enough');
+          const _amount = Division(
+            Times(divisionDecimals(speedUpFee, 8), L1MainAssetUSD).toFixed(),
+            feeAssetUSD
+          ).toFixed();
+          amount.value =
+            (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
+        } else {
+          amount.value = '';
+        }
       } else {
         paidEnough = false;
         const diff = Minus(
           Times(requestBTC, L1MainAssetUSD),
           Times(feeInfo.value, feeAssetUSD)
         ).toFixed();
-        const _amount = Division(diff, feeAssetUSD).toFixed();
-        amount.value =
-          (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
+        if (diff > 0) {
+          const _amount = Division(diff, feeAssetUSD).toFixed();
+          amount.value =
+            (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
+        } else {
+          amount.value = '';
+        }
       }
     }
   }
