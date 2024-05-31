@@ -450,7 +450,8 @@ const en = {
     tx_0037: 'Transaction verify failed',
     tx_0038: 'Contract transaction verify failed',
     tx_0039: 'The transaction was confirmed',
-    tx_0043: 'Account is locked'
+    tx_0043: 'Account is locked',
+    sw_0005: 'Prices changed, please try again.'
   },
   home: {
     home1: 'Decentralized Digital Asset Service Network',
