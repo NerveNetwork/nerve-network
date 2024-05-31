@@ -131,7 +131,7 @@ const Origin = {
 export const RPC_URL = {
   Ethereum: isBeta
     ? 'https://eth-goerli.public.blastapi.io'
-    : 'https://eth.drpc.org',
+    : 'https://eth-pokt.nodies.app',
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
     : 'https://bsc-dataseed.binance.org/',
