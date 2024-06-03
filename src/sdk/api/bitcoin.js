@@ -169,7 +169,7 @@ export async function getBTCWithdrawalInfo(isMainnet, multySignAddress) {
 
 export function getBTCWithdrawalFee(utxos, feeRate, amount) {
   const fee = nerve.bitcoin.calcFeeWithdrawal(utxos, amount, feeRate);
-  return fee;
+  return Math.ceil(fee);
 }
 
 export async function getBTCSpeedUpAmount(isMainnet, utxoSize, feeRateOnTx) {
