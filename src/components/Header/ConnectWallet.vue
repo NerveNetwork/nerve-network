@@ -44,7 +44,7 @@
           :key="item.name"
           @click="onConnect(item.provider)"
         >
-          {{ item.name }}
+          <span class="wallet-name">{{ item.name }}</span>
           <img class="fr" :src="item.src" alt="" />
         </div>
         <p
@@ -156,13 +156,16 @@ const onClosed = () => {
       .connect-btn {
         width: 48%;
         height: 50px;
-        line-height: 50px;
+        // line-height: 50px;
         font-size: 14px;
         font-weight: 600;
         padding: 0 15px;
         margin-bottom: 15px;
         border-radius: 15px;
         border: 1px solid #edeef2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         //background: rgb(239, 244, 245);
         //background: $btnColor;
         cursor: pointer;
@@ -173,8 +176,12 @@ const onClosed = () => {
         &:nth-child(2n + 1) {
           margin-right: 4%;
         }
+        .wallet-name {
+          flex: 1;
+          margin-right: 8px;
+          word-break: break-word;
+        }
         img {
-          margin-top: 7px;
           width: 35px;
           height: 35px;
         }
@@ -229,7 +236,7 @@ const onClosed = () => {
           font-size: 13px;
           padding: 0 8px;
           height: 45px;
-          line-height: 45px;
+          // line-height: 45px;
           margin-bottom: 10px;
           border-radius: 10px;
           img {

@@ -201,9 +201,10 @@ export default function useEthereum() {
   }
 
   function initTronChainInfo(provider: any, address: string) {
-    const apiUrl = provider.fullNode?.host;
+    /* const apiUrl = provider.fullNode?.host;
     const isWrongChain = apiUrl.indexOf(tronApiPrefix) < 0;
-    store.commit('changeIsWrongChain', isWrongChain);
+    store.commit('changeIsWrongChain', isWrongChain); */
+    store.commit('changeIsWrongChain', false);
     store.commit('changeAddress', address);
     store.commit('changeNetwork', 'TRON');
   }

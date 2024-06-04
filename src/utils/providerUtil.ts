@@ -3,10 +3,11 @@ import { isMobile } from './util';
 
 import MetaMaskLogo from '@/assets/img/provider/metamask.svg';
 import NaboxLogo from '@/assets/img/provider/nabox.svg';
+import BinanceW3WLogo from '@/assets/img/provider/binance-w3w.png';
 import TrustWalletLogo from '@/assets/img/provider/trustwallet.svg';
 import TokenpocketLogo from '@/assets/img/provider/Tokenpocket.jpg';
 import MathwalletLogo from '@/assets/img/provider/mathwallet.svg';
-import binancechainLogo from '@/assets/img/provider/binancechain.svg';
+// import binancechainLogo from '@/assets/img/provider/binancechain.svg';
 import OKXLogo from '@/assets/img/provider/metax.jpg';
 import safepalLogo from '@/assets/img/provider/safepal.svg';
 import coin98Logo from '@/assets/img/provider/coin98.svg';
@@ -18,10 +19,11 @@ import tronLogo from '@/assets/img/provider/tronlink.svg';
 
 const MetaMaskProvider = 'ethereum';
 export const NaboxProvider = 'NaboxWallet';
+const BinanceW3WProvider = 'binancew3w';
 const TrustWalletProvider = 'trustwallet';
 const SafePalProvider = 'safepal';
 const OKXProvider = 'okxwallet';
-const BinanceProvider = 'BinanceChain';
+// const BinanceProvider = 'BinanceChain';
 export const BitgetProvider = 'bitkeep';
 export const TRONWebProvider = 'tronWeb';
 export const UnisatProvider = 'unisat';
@@ -32,6 +34,11 @@ const MetaMask = {
   provider: MetaMaskProvider
 };
 const Nabox = { name: 'Nabox', src: NaboxLogo, provider: NaboxProvider };
+const BinanceW3W = {
+  name: 'Binance Web3 Wallet',
+  src: BinanceW3WLogo,
+  provider: BinanceW3WProvider
+};
 const TrustWallet = {
   name: 'Trust Wallet',
   src: TrustWalletLogo,
@@ -47,11 +54,11 @@ const MathWallet = {
   src: MathwalletLogo,
   provider: MetaMaskProvider
 };
-const BinanceWallet = {
+/* const BinanceWallet = {
   name: 'Binance Wallet',
   src: binancechainLogo,
   provider: BinanceProvider
-};
+}; */
 const OKXWallet = { name: 'OKX Wallet', src: OKXLogo, provider: OKXProvider };
 const SafePal = {
   name: 'SafePal',
@@ -77,10 +84,11 @@ const TronLink = { name: 'TronLink', src: tronLogo, provider: TRONWebProvider };
 const EVMProvider = [
   MetaMask,
   Nabox,
+  BinanceW3W,
   TrustWallet,
   TokenPocket,
   MathWallet,
-  BinanceWallet,
+  // BinanceWallet,
   OKXWallet,
   SafePal,
   Coin98,
@@ -88,9 +96,9 @@ const EVMProvider = [
   ONTO
 ];
 
-const BTCProvider = [Nabox, OKXWallet, Unisat, Bitget];
+const BTCProvider = [Nabox, BinanceW3W, OKXWallet, Unisat, Bitget];
 
-const TRONProvider = [Nabox, OKXWallet, TronLink, Bitget];
+const TRONProvider = [Nabox, BinanceW3W, OKXWallet, TronLink, Bitget];
 
 export const providerList = {
   BTC: BTCProvider,
@@ -151,7 +159,11 @@ export function getBTCProvider(type?: string) {
     providerType = type;
   }
 
-  if (providerType === NaboxProvider || providerType === OKXProvider) {
+  if (
+    providerType === NaboxProvider ||
+    providerType === OKXProvider ||
+    providerType === BinanceW3WProvider
+  ) {
     return {
       providerType,
       // @ts-ignore
@@ -181,7 +193,8 @@ export function getTRONProvider(type?: string) {
   if (
     providerType === NaboxProvider ||
     providerType === OKXProvider ||
-    providerType === BitgetProvider
+    providerType === BitgetProvider ||
+    providerType === BinanceW3WProvider
   ) {
     return {
       providerType,
