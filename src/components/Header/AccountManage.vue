@@ -71,6 +71,19 @@
         </template>
         <p v-else class="no-data">{{ $t('public.public19') }}</p>
       </div>
+      <div class="add-tx-record">
+        <div class="tc link" v-if="!showAddTx">
+          <span @click="showAddTx = true">Add Withdrawal Tx</span>
+        </div>
+        <div class="flex-between" v-else>
+          <el-input
+            v-model="newTxHash"
+            type="text"
+            placeholder="Pls enter the withdrawal tx hash"
+          />
+          <div class="link" @click="confirmAddTx">Confirm</div>
+        </div>
+      </div>
     </div>
   </el-dialog>
 </template>
@@ -101,9 +114,14 @@ const props = defineProps<{
   txList: TxInfo[];
 }>();
 
-const emit = defineEmits(['update:show', 'disconnect', 'connect']);
+const emit = defineEmits([
+  'update:show',
+  'disconnect',
+  'connect',
+  'addNewHash'
+]);
 
-const { toastError } = useToast();
+const { toastError, toastSuccess } = useToast();
 const { copy } = useCopy();
 
 const visible = computed({
@@ -114,6 +132,16 @@ const visible = computed({
     emit('update:show', val);
   }
 });
+
+const showAddTx = ref(false);
+const newTxHash = ref('');
+watch(
+  () => props.show,
+  () => {
+    showAddTx.value = false;
+    newTxHash.value = '';
+  }
+);
 
 const newList = ref(props.txList);
 watch(
@@ -220,6 +248,32 @@ async function additionFee(amount: string, BTCSpeedUp?: boolean) {
   }
   showLoading.value = false;
 }
+
+async function confirmAddTx() {
+  if (!newTxHash.value) return;
+  const exist = newList.value.find(v => v.hash === newTxHash.value);
+  if (exist) {
+    toastError('Invalid Withdrawal Hash');
+    newTxHash.value = '';
+    return;
+  }
+  const tx = await getTx(newTxHash.value);
+  if (tx && tx.type === 43 && tx.txData?.address === props.address) {
+    emit('addNewHash', {
+      hash: tx.hash,
+      time: tx.createTime,
+      status: tx.status === 1 && tx.txData.state !== 'Unconfirmed' ? 1 : 0,
+      type: 43,
+      hId: tx.txData.heterogeneousChainId
+    });
+    toastSuccess('Success');
+    showAddTx.value = false;
+    newTxHash.value = '';
+  } else {
+    toastError('Invalid Withdrawal Hash');
+    newTxHash.value = '';
+  }
+}
 </script>
 
 <style lang="scss">
@@ -289,6 +343,19 @@ async function additionFee(amount: string, BTCSpeedUp?: boolean) {
       }
     }
   }
+
+  .add-tx-record {
+    padding-top: 5px;
+    .el-input {
+      flex: 1;
+      margin-right: 20px;
+    }
+    .el-input .el-input__inner {
+      height: 32px;
+      line-height: 32px;
+    }
+  }
+
   @media screen and (max-width: 500px) {
     .content .top span {
       font-size: 22px;

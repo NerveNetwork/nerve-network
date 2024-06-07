@@ -73,6 +73,7 @@
         v-model:show="manageAccount"
         :address="nerveAddress"
         @disconnect="disconnectProvider"
+        @addNewHash="addNewHash"
         :txList="accountTxs"
       />
     </div>
@@ -90,7 +91,6 @@ import AccountManage from './AccountManage.vue';
 import MobileMenu from '../MobileMenu.vue';
 import SwitchChain from '@/components/SwitchChain.vue';
 import useEthereum from '@/hooks/useEthereum';
-import useLang from '@/hooks/useLang';
 import AuthButton from '../AuthButton.vue';
 import useStoreState from '@/hooks/useStoreState';
 import useToast from '@/hooks/useToast';
@@ -306,6 +306,10 @@ async function handleEVMTx(tx: TxInfo) {
     hash: tx.hash,
     result: await transfer.provider.getTransactionReceipt(tx.hash)
   };
+}
+
+async function addNewHash(tx: TxInfo) {
+  accountTxs.value = [...accountTxs.value].concat(tx);
 }
 </script>
 

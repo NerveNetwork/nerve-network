@@ -86,7 +86,11 @@ export default function useRules() {
     if (!value) {
       callback(t('mint.mint11'));
     } else {
-      callback();
+      if (model.max && value > model.max) {
+        callback('Single Mint Amount must be less than Hard Top');
+      } else {
+        callback();
+      }
     }
   }
   function validateMintLimits(rule: any, value: any, callback: any) {
@@ -100,7 +104,12 @@ export default function useRules() {
     if (!value) {
       callback(t('mint.mint17'));
     } else {
-      callback();
+      // @ts-ignore
+      if (model.lim && value % model.lim !== 0) {
+        callback('Hard Top must be divisible by Single Mint Amount');
+      } else {
+        callback();
+      }
     }
   }
   function validataLPRatio(rule: any, value: string, callback: any) {

@@ -306,12 +306,16 @@ const changeSingleMintAmount = (val: string) => {
   const reg = getAmountReg(decimals);
   if (reg.exec(val) || val === '') {
     model.lim = val;
+    form.value?.validateField('max', () => {});
   }
 };
 function changeMintLimits(val: string) {
   const reg = /^[1-9]\d*$/;
   if (reg.exec(val) || val === '') {
     model.count = val;
+    if (Number(val) > 100) {
+      model.count = '100';
+    }
   }
 }
 const changeHardTop = (val: string) => {
@@ -319,6 +323,7 @@ const changeHardTop = (val: string) => {
   const reg = getAmountReg(decimals);
   if (reg.exec(val) || val === '') {
     model.max = val;
+    form.value?.validateField('lim', () => {});
   }
 };
 function disableTime(date: Date) {
