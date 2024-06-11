@@ -72,16 +72,16 @@
         <p v-else class="no-data">{{ $t('public.public19') }}</p>
       </div>
       <div class="add-tx-record">
-        <div class="tc link" v-if="!showAddTx">
-          <span @click="showAddTx = true">Add Withdrawal Tx</span>
+        <div class="tc" v-if="!showAddTx">
+          <span class="link" @click="showAddTx = true">Cross Out TXID</span>
         </div>
         <div class="flex-between" v-else>
           <el-input
             v-model="newTxHash"
             type="text"
-            placeholder="Pls enter the withdrawal tx hash"
+            placeholder="Pls enter the Cross Out TXID"
           />
-          <div class="link" @click="confirmAddTx">Confirm</div>
+          <div class="link" @click="confirmAddTx">Add</div>
         </div>
       </div>
     </div>
@@ -193,7 +193,7 @@ function showAdditionFee(hash: string, isExpand: boolean) {
         )!;
         activeTx.value = {
           hash,
-          hId: 201, //v.hId,
+          hId: v.hId,
           outerTxHash: txData.outerTxHash,
           feeInfo: {
             value: divisionDecimals(txData.fee, feeCoin.decimals),

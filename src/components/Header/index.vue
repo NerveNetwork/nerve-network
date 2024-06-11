@@ -309,7 +309,19 @@ async function handleEVMTx(tx: TxInfo) {
 }
 
 async function addNewHash(tx: TxInfo) {
-  accountTxs.value = [...accountTxs.value].concat(tx);
+  const txs = [...accountTxs.value].concat(tx);
+  accountTxs.value = txs;
+  const accountList: Account[] = storage.get('accountList') || [];
+  accountList.map(v => {
+    const sameAddress = Object.values(v.address)
+      .flat()
+      .map((v: any) => v.toLowerCase())
+      .includes(address.value?.toLowerCase());
+    if (sameAddress) {
+      v.txs = txs;
+    }
+  });
+  storage.set('accountList', accountList);
 }
 </script>
 

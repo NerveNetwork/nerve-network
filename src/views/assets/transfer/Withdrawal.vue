@@ -444,6 +444,10 @@ export default defineComponent({
 
     const { getWalletInfo, handleResult } = useBroadcastNerveHex();
     async function sendTx() {
+      if (!Number(fee.value)) {
+        toastError('The Cross Out Network is in queue, please wait');
+        return;
+      }
       loading.value = true;
       try {
         const { chainId, assetId, decimals } = transferAsset.value;
