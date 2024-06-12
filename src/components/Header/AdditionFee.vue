@@ -1,7 +1,9 @@
 <template>
   <div class="addition-fee">
     <div class="row-item">
-      <span class="label" style="margin-bottom: 3px">{{ $t('transfer.transfer32') }}</span>
+      <span class="label" style="margin-bottom: 3px">
+        {{ $t('transfer.transfer32') }}
+      </span>
       <p>
         {{ props.txInfo?.feeInfo?.value }}{{ props.txInfo?.feeInfo?.symbol }}
       </p>
@@ -9,7 +11,7 @@
     <div class="row-item">
       <span class="label">{{ $t('transfer.transfer33') }}</span>
       <p class="addition-input">
-        <input type="text" v-model="amount" @input="changeInput" />
+        <input type="text" v-model="addFeeAmount" @input="changeInput" />
         <span>{{ props.txInfo?.feeInfo?.symbol }}</span>
       </p>
     </div>
@@ -20,7 +22,11 @@
           {{ $t('public.public8') }}
         </el-button>
         <el-divider direction="vertical" />
-        <el-button type="text" @click="confirm" :disabled="!amount || !canAdd">
+        <el-button
+          type="text"
+          @click="confirm"
+          :disabled="!addFeeAmount || !canAdd"
+        >
           {{ $t('public.public9') }}
         </el-button>
       </p>
@@ -37,12 +43,8 @@
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useToast from '@/hooks/useToast';
-import { isBeta, divisionDecimals, Division, Minus, Times } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-// @ts-ignore
-import nerveUtil from 'nerve-sdk-js/lib/test/api/util';
-import { getAssetPrice } from '@/service/api';
-import nerveswap from 'nerveswap-sdk';
+import useCrossOutFee from '@/views/assets/hooks/useCrossOutFee';
 import type { AssetItemType } from '@/views/assets/types';
 
 const props = defineProps<{
@@ -55,13 +57,20 @@ const emit = defineEmits(['confirm', 'cancel']);
 const { t } = useI18n();
 const { toastError } = useToast();
 
+const {
+  addFeeAmount,
+  btcFeePaiedEnough,
+  canAdd,
+  getBTCAddFeeAmount,
+  getAddFeeAmount
+} = useCrossOutFee();
+
 const isLoading = ref(true);
-const canAdd = ref(true); // withdrawal can add addition fee
 watch(
   () => props.txInfo.hash,
   val => {
-    isLoading.value = !val;
-    checkBTCWithdrawalStatus();
+    // isLoading.value = !val;
+    checkBTCWithdrawalStatus().then(() => (isLoading.value = false));
   }
 );
 
@@ -80,11 +89,18 @@ function getMainAssetInfo(symbol: string) {
   return asset;
 }
 
-let paidEnough = false; // paid enougn for nerve pack tx
 async function checkBTCWithdrawalStatus() {
   const { feeInfo, hash, hId, outerTxHash } = props.txInfo;
+  console.log(props.txInfo, 111);
   if (hId === 201) {
-    const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(hId, hash);
+    await getBTCAddFeeAmount({
+      feeInfo,
+      hash,
+      hId,
+      outerTxHash
+    });
+    // btc cross out
+    /* const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(hId, hash);
     const { minimumFee, utxoSize, feeRate } = requestFeeInfo;
     if (minimumFee && utxoSize && feeRate) {
       canAdd.value = true;
@@ -103,11 +119,11 @@ async function checkBTCWithdrawalStatus() {
           feeRate
         );
         console.log(speedUpFee, 'btc-enough');
-        amount.value = speedUpFee ? divisionDecimals(speedUpFee, 8) : '';
+        addFeeAmount.value = speedUpFee ? divisionDecimals(speedUpFee, 8) : '';
       } else {
         paidEnough = false;
         const diff = Minus(requestBTC, feeInfo.value).toFixed();
-        amount.value = diff > 0 ? diff : '';
+        addFeeAmount.value = diff > 0 ? diff : '';
       }
     } else {
       const [feeChainId, feeAssetId] = feeInfo.assetKey.split('-');
@@ -134,10 +150,10 @@ async function checkBTCWithdrawalStatus() {
             Times(divisionDecimals(speedUpFee, 8), L1MainAssetUSD).toFixed(),
             feeAssetUSD
           ).toFixed();
-          amount.value =
+          addFeeAmount.value =
             (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
         } else {
-          amount.value = '';
+          addFeeAmount.value = '';
         }
       } else {
         paidEnough = false;
@@ -147,19 +163,33 @@ async function checkBTCWithdrawalStatus() {
         ).toFixed();
         if (diff > 0) {
           const _amount = Division(diff, feeAssetUSD).toFixed();
-          amount.value =
+          addFeeAmount.value =
             (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
         } else {
-          amount.value = '';
+          addFeeAmount.value = '';
         }
       }
-    }
+    } */
+  } else {
+    const targetChainInfo = Object.values(_networkInfo).find(
+      v => v.chainId === hId
+    );
+    await getAddFeeAmount(
+      {
+        hId,
+        feeDecimals: feeInfo.decimals,
+        feeAssetKey: feeInfo.assetKey,
+        useMainAsset: feeInfo.assetKey === targetChainInfo!.assetKey,
+        isNVT: feeInfo.symbol === 'NVT',
+        isTRX: feeInfo.symbol === 'TRX'
+      },
+      feeInfo.value
+    );
   }
 }
 
-const amount = ref('');
+// const addFeeAmount = ref('');
 function changeInput(e: Event) {
-  // this.amount = val;
   const decimals = props.txInfo.decimals || 8;
   const target = e.target as HTMLInputElement;
   const val = target.value;
@@ -172,22 +202,22 @@ function changeInput(e: Event) {
   );
 
   if (reg.exec(val) || val === '') {
-    amount.value = val;
+    addFeeAmount.value = val;
   } else {
-    amount.value = val.slice(0, -1);
+    addFeeAmount.value = val.slice(0, -1);
   }
   return false;
 }
 async function confirm() {
-  if (!amount.value) {
+  if (!addFeeAmount.value) {
     toastError(t('transfer.transfer34'));
   } else {
     if (props.txInfo.hId === 201) {
-      await emit('confirm', amount.value, paidEnough);
+      await emit('confirm', addFeeAmount.value, btcFeePaiedEnough.value);
     } else {
-      await emit('confirm', amount.value);
+      await emit('confirm', addFeeAmount.value);
     }
-    amount.value = '';
+    addFeeAmount.value = '';
   }
 }
 </script>

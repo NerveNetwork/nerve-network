@@ -68,18 +68,11 @@ import { useI18n } from 'vue-i18n';
 import useToast from '@/hooks/useToast';
 import CustomInput from '@/components/CustomInput.vue';
 import AssetsDialog from '@/components/AssetsDialog.vue';
-import {
-  superLong,
-  Minus,
-  timesDecimals,
-  Plus,
-  floatToCeil,
-  isBeta
-} from '@/utils/util';
-import { ETransfer, calWithdrawalFeeForBTC } from '@/utils/api';
+import { superLong, Minus, timesDecimals, Plus, isBeta } from '@/utils/util';
+import { ETransfer } from '@/utils/api';
 import TronLinkApi from '@/utils/tronLink';
-import { getAssetPrice } from '@/service/api';
 import config from '@/config';
+import useCrossOutFee from '../hooks/useCrossOutFee';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 
 import {
@@ -104,6 +97,8 @@ export default defineComponent({
     const father = inject(rootCmpKey, {} as RootComponent);
     const { t } = useI18n();
     const { toastError } = useToast();
+    const { fee, getBTCWithdrawalInfo, getBTCCrossOutFee, getCrossOutFee } =
+      useCrossOutFee();
 
     const loading = ref(false);
     const toAddress = ref(father.address);
@@ -152,7 +147,6 @@ export default defineComponent({
       return asset ? asset.available : '';
     });
 
-    const fee = ref('');
     const amountErrorTip = ref('');
     const disableTransfer = computed(() => {
       return !!(
@@ -177,26 +171,27 @@ export default defineComponent({
       utxos: []
     });
 
-    onMounted(() => {
+    onMounted(async () => {
       if (father.disableTx) return;
       getFeeAssetInfo();
       selectAsset(transferAsset.value);
       if (father.network === 'BTC') {
         const crossChainInfo = storage.get('crossChainInfo');
         const multySignAddress = crossChainInfo['201'].multySignAddress;
-        getBTCWithdrawalInfo(multySignAddress);
+        await getBTCWithdrawalInfo(multySignAddress);
+        getBTCCrossOutFeeHandle();
       }
     });
 
-    async function getBTCWithdrawalInfo(multySignAddress: string) {
-      if (!multySignAddress) return;
-      const info = await nerveswap.btc.getBTCWithdrawalInfo(
-        !isBeta,
-        multySignAddress
-      );
-      btcWithdrawalInfo.value = info;
-      getBTCCrossOutFee();
-    }
+    // async function getBTCWithdrawalInfo(multySignAddress: string) {
+    //   if (!multySignAddress) return;
+    //   const info = await nerveswap.btc.getBTCWithdrawalInfo(
+    //     !isBeta,
+    //     multySignAddress
+    //   );
+    //   btcWithdrawalInfo.value = info;
+    //   getBTCCrossOutFeeHandle();
+    // }
 
     function getFeeAssetInfo() {
       const { network } = father;
@@ -243,7 +238,7 @@ export default defineComponent({
 
       if (heterogeneousInfo) {
         transferAsset.value = asset;
-        getCrossOutFee();
+        getCrossOutFeeHandle();
       } else {
         transferAsset.value = {} as AssetItemType;
       }
@@ -253,15 +248,15 @@ export default defineComponent({
       () => amount.value,
       val => {
         if (Number(val) && father.network === 'BTC') {
-          getBTCCrossOutFee();
+          getBTCCrossOutFeeHandle();
         }
       }
     );
 
-    async function getCrossOutFee() {
+    async function getCrossOutFeeHandle() {
       const withdrawalChain = father.network;
       if (withdrawalChain === 'BTC') {
-        getBTCCrossOutFee();
+        getBTCCrossOutFeeHandle();
         return;
       }
       const {
@@ -271,9 +266,17 @@ export default defineComponent({
         originNetwork: feeChain
       } = selectedFeeAsset.value;
       const { isToken, heterogeneousChainId } = heterogeneousInfo;
-      console.log(heterogeneousInfo, '333');
       const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
-      const transfer = new ETransfer(withdrawalChain);
+      await getCrossOutFee({
+        hId: heterogeneousChainId,
+        useMainAsset: feeChain === withdrawalChain,
+        feeDecimals: decimals,
+        feeAssetKey: chainId + '-' + assetId,
+        isNVT: feeIsNVT,
+        isTRX: feeChain === 'TRON'
+      });
+
+      /* const transfer = new ETransfer(withdrawalChain);
       let res = '';
       const gasLimit = await getGasLimit(heterogeneousChainId);
       if (feeChain === withdrawalChain) {
@@ -331,10 +334,29 @@ export default defineComponent({
           );
         }
       }
-      fee.value = floatToCeil(res, 6);
+      fee.value = floatToCeil(res, 6); */
     }
 
-    async function getBTCCrossOutFee() {
+    async function getBTCCrossOutFeeHandle() {
+      const withdrawalChain = father.network;
+      const {
+        chainId,
+        assetId,
+        decimals,
+        originNetwork: feeChain
+      } = selectedFeeAsset.value;
+      const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
+      await getBTCCrossOutFee({
+        amount: amount.value,
+        useMainAsset: feeChain === withdrawalChain,
+        feeDecimals: decimals,
+        feeAssetKey: chainId + '-' + assetId,
+        isNVT: feeIsNVT
+      });
+      validateAmount();
+    }
+
+    /* async function getBTCCrossOutFee() {
       const withdrawalChain = father.network;
       const {
         chainId,
@@ -346,11 +368,12 @@ export default defineComponent({
       let res = '';
       try {
         const { feeRate, utxos } = btcWithdrawalInfo.value;
-        const btcFeeAmount = nerveswap.btc.getBTCWithdrawalFee(
+        let btcFeeAmount = nerveswap.btc.getBTCWithdrawalFee(
           utxos,
           feeRate,
           timesDecimals(amount.value || '0.0001', 8)
         );
+        btcFeeAmount = Times(btcFeeAmount, 1.3).toFixed(0);
         if (feeChain === withdrawalChain) {
           res = calWithdrawalFeeForBTC(btcFeeAmount, '', '', decimals, true);
         } else {
@@ -382,24 +405,14 @@ export default defineComponent({
       }
       fee.value = floatToCeil(res, 6);
       validateAmount();
-    }
+    } */
 
-    async function getGasLimit(chainId: number) {
-      let gasLimitConfig = storage.get('gasLimitConfig');
-      if (!gasLimitConfig) {
-        gasLimitConfig = await getWithdrawalGasLimit();
-      }
-      if (!gasLimitConfig) {
-        throw 'Fail to get GasLimit';
-      }
-      return gasLimitConfig[chainId].gasLimitOfWithdraw;
-    }
     async function changeFeeAsset(asset: AssetItemType) {
       showFeeDialog.value = false;
       selectedFeeAsset.value = asset;
       feeSymbol.value = asset.symbol;
       fee.value = '';
-      await getCrossOutFee();
+      await getCrossOutFeeHandle();
       validateAmount();
     }
 
@@ -412,6 +425,11 @@ export default defineComponent({
           Minus(balance.value, Plus(amount.value, fee.value)).toNumber() < 0)
       ) {
         amountErrorTip.value = t('transfer.transfer15');
+      } else if (
+        father.network === 'BTC' &&
+        Minus(amount.value, 0.00000546).toNumber() < 0
+      ) {
+        amountErrorTip.value = 'Minimum quantity is 0.00000546';
       } else if (Minus(available, fee.value).toNumber() < 0) {
         amountErrorTip.value = t('transfer.transfer18');
       } else {

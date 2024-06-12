@@ -425,14 +425,15 @@ export default function useEthereum() {
     let { provider } = getProvider(providerType, network);
 
     // wakeup in mobile app
-    const dappUrl = 'nerve.network';
+    const domain = 'nerve.network';
+    const dappUrl = encodeURIComponent('https://nerve.network');
     if (
       providerType === 'ethereum' &&
       // @ts-ignore
       !provider?.isMetaMask &&
       isMobile
     ) {
-      window.open(`https://metamask.app.link/dapp/${dappUrl}`);
+      window.open(`https://metamask.app.link/dapp/${domain}`);
       return;
     } else if (
       providerType === 'trustwallet' &&
@@ -441,8 +442,16 @@ export default function useEthereum() {
       isMobile
     ) {
       window.open(
-        `https://link.trustwallet.com/open_url?coin_id=60&url=https://${dappUrl}`
+        `https://link.trustwallet.com/open_url?coin_id=60&url=${dappUrl}`
       );
+      return;
+    } else if (
+      providerType === 'NaboxWallet' &&
+      // @ts-ignore
+      !provider?.isNabox &&
+      isMobile
+    ) {
+      window.open(`nabox://com.wallet.nabox?type=1&url=${dappUrl}`);
       return;
     } else if (providerType === 'safepal' && !provider?.isSafePal && isMobile) {
       // mobile safepal
