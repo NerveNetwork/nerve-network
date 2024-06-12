@@ -243,6 +243,7 @@ export default function useCrossOutFee() {
         } else {
           btcFeePaiedEnough.value = false;
           const diff = Minus(requestBTC, feeInfo.value).toFixed();
+          // @ts-ignore
           addFeeAmount.value = diff > 0 ? diff : '';
         }
       } else {
@@ -287,6 +288,7 @@ export default function useCrossOutFee() {
             Times(requestBTC, L1MainAssetUSD),
             Times(feeInfo.value, feeAssetUSD)
           ).toFixed();
+          // @ts-ignore
           if (diff > 0) {
             const _amount = Division(diff, feeAssetUSD).toFixed();
             addFeeAmount.value =
@@ -307,6 +309,7 @@ export default function useCrossOutFee() {
       if (diff > 0) {
         const { feeDecimals, isNVT, isTRX } = params;
         const amount = fixNumber(Times(diff, 1.1).toFixed(), feeDecimals);
+        // @ts-ignore
         addFeeAmount.value = isNVT || isTRX ? Math.ceil(amount) + '' : amount;
       } else {
         addFeeAmount.value = '';
