@@ -18,10 +18,14 @@
         <ul v-for="linkItem in linkConfig" :key="linkItem.label">
           <li>{{ linkItem.label }}</li>
           <li v-for="item in linkItem.items" :key="item.label">
-            <a v-if="!item.router" :href="item.href" target="_blank">
-              {{ item.label }}
-            </a>
-            <router-link v-else :to="item.href">{{ item.label }}</router-link>
+            <template v-if="item.href.startsWith('/')">
+              <router-link :to="item.href">{{ item.label }}</router-link>
+            </template>
+            <template v-else>
+              <a :href="item.href" target="_blank">
+                {{ item.label }}
+              </a>
+            </template>
           </li>
         </ul>
       </div>
@@ -39,7 +43,6 @@ import { useRouter } from 'vue-router';
 import useLang from '@/hooks/useLang';
 import useStoreState from '@/hooks/useStoreState';
 import config from '@/config';
-import { isBeta } from '@/utils/util';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -108,8 +111,11 @@ const linkConfig = computed(() => {
         },
         {
           label: t('footer.footer9'),
-          href: '/node',
-          router: true
+          href: '/node'
+        },
+        {
+          label: 'Contract Deploy',
+          href: '/contract-deploy'
         },
         {
           label: t('footer.footer10'),

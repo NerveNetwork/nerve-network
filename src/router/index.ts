@@ -21,6 +21,7 @@ const CreateFarm = () => import('@/views/createFarm/index.vue');
 
 const Mint = () => import('@/views/mint/index.vue');
 const MintDeploy = () => import('@/views/mintDeploy/index.vue');
+const ContractDeploy = () => import('@/views/contract-deploy/index.vue');
 
 const routes: RouteRecordRaw[] = [
   {
@@ -105,6 +106,11 @@ const routes: RouteRecordRaw[] = [
     path: '/mint-deploy',
     name: 'mintDeploy',
     component: MintDeploy
+  },
+  {
+    path: '/contract-deploy',
+    name: 'contractDeploy',
+    component: ContractDeploy
   }
 ];
 

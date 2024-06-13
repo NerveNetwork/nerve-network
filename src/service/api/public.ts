@@ -254,3 +254,34 @@ export async function crossChainInfo() {
   const res = await http.rPost('getCrossChainInfo');
   return res?.result || null;
 }
+
+export async function getDeployMinter(chainId: number) {
+  const res = await http.get({
+    url: `${config.sys_url}/api/minter/${chainId}`
+  });
+  return res;
+}
+
+export async function registerCrossChainAsset(
+  contractAddress: string,
+  owner: string,
+  txHash: string,
+  chainId: number,
+  assetId: string
+) {
+  const result = await http.post({
+    url: `${config.sys_url}/api/crosschain/asset`,
+    data: {
+      contractAddress,
+      owner,
+      txHash,
+      chainId,
+      assetId
+    }
+  });
+  if (result.code === 0) {
+    return true;
+  } else {
+    throw result.msg;
+  }
+}
