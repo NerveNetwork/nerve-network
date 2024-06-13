@@ -87,7 +87,7 @@ export default function useCrossOutFee() {
       v => v.chainId === hId
     );
     if (!targetChainInfo) return '';
-    const targetChainName = targetChainInfo.chainName;
+    const targetChainName = targetChainInfo.name;
     const transfer = new ETransfer(targetChainName);
     let res = '';
     const gasLimit = await getGasLimit(hId);
@@ -179,7 +179,7 @@ export default function useCrossOutFee() {
         res = calWithdrawalFeeForBTC(btcFeeAmount, '', '', feeDecimals, true);
       } else {
         const targetChainInfo = Object.values(_networkInfo).find(
-          v => v.chainName === 'BTC'
+          v => v.name === 'BTC'
         );
         const [feeChainId, feeAssetId] = feeAssetKey!.split('-');
         const [mainAssetChainId, mainAssetAssetId] =
@@ -224,9 +224,7 @@ export default function useCrossOutFee() {
         canAdd.value = false;
       }
       const requestBTC = divisionDecimals(minimumFee, 8);
-      const btcInfo = Object.values(_networkInfo).find(
-        v => v.chainName === 'BTC'
-      )!;
+      const btcInfo = Object.values(_networkInfo).find(v => v.name === 'BTC')!;
       if (feeInfo.assetKey === btcInfo.assetKey) {
         // use btc as fee
         if (outerTxHash) {
