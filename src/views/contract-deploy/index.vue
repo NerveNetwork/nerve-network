@@ -6,7 +6,7 @@
         <h3>Contract Deploy</h3>
       </div>
       <el-form label-position="top" :model="model" :rules="rules" ref="form">
-        <el-form-item label="L1 Chain" prop="L1Chain">
+        <el-form-item label="Deploy Chain" prop="L1Chain">
           <el-input disabled v-model="model.L1Chain"></el-input>
         </el-form-item>
 
@@ -44,6 +44,12 @@
           <auth-button v-else></auth-button>
         </el-form-item>
       </el-form>
+      <div v-if="tokenContract">
+        <p>Token Contract:</p>
+        <span class="token-link" @click="openUrl(tokenContract)">
+          {{ tokenContract }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -65,6 +71,7 @@ import {
   BlastByteCode,
   abi
 } from './deployConfig';
+import { openL1Explorer } from '@/utils/util';
 
 const { nerveAddress, assetsList: assetList, chain } = useStoreState();
 
@@ -84,6 +91,8 @@ const model = reactive({
 
 let L1ChainType = '';
 let L1ChainId = 0;
+
+const tokenContract = ref('');
 
 const rules = reactive({
   L1Chain: [
@@ -105,14 +114,16 @@ const rules = reactive({
       required: true,
       message: 'Please enter the token name',
       trigger: 'change'
-    }
+    },
+    { validator: validateName }
   ],
   tokenSymbol: [
     {
       required: true,
       message: 'Please enter the token symbol',
       trigger: 'change'
-    }
+    },
+    { validator: validateSymbol }
   ],
   tokenDecimals: [
     {
@@ -131,6 +142,24 @@ const rules = reactive({
 function validateL1Chain(rule: any, value: any, callback: any) {
   if (L1ChainType !== 'EVM') {
     callback('Please switch to a valid EVM Chain');
+  } else {
+    callback();
+  }
+}
+
+function validateName(rule: any, value: any, callback: any) {
+  const reg = /^[a-zA-Z0-9_]{1,20}$/;
+  if (!reg.test(value)) {
+    callback('Invalid Token Name');
+  } else {
+    callback();
+  }
+}
+
+function validateSymbol(rule: any, value: any, callback: any) {
+  const reg = /^[a-zA-Z0-9_]{1,20}$/;
+  if (!reg.test(value)) {
+    callback('Invalid Token Symbol');
   } else {
     callback();
   }
@@ -192,9 +221,7 @@ const tokenInfo = computed(() => {
 });
 
 function submitForm() {
-  console.log(model, 999);
   form.value?.validate(valid => {
-    console.log(valid, 33);
     if (valid) {
       handleDeploy();
     } else {
@@ -207,6 +234,7 @@ const { getWalletInfo, handleResult, handleHex } = useBroadcastNerveHex();
 
 async function handleDeploy() {
   loading.value = true;
+  tokenContract.value = '';
   try {
     const { token, tokenName, tokenSymbol, tokenDecimals, minter } = model;
     const { provider, EVMAddress } = getWalletInfo();
@@ -242,12 +270,17 @@ async function handleDeploy() {
       L1ChainId,
       token
     );
+    tokenContract.value = contractAddress;
     toastSuccess('Success');
   } catch (e) {
     console.log(e, 'contract-deploy-error');
     toastError(e);
   }
   loading.value = false;
+}
+
+function openUrl(address: string) {
+  openL1Explorer(chain.value, 'address', address);
 }
 </script>
 
@@ -314,6 +347,11 @@ async function handleDeploy() {
         color: $linkColor;
       }
     }
+  }
+  .token-link {
+    font-size: 14px;
+    cursor: pointer;
+    color: $linkColor;
   }
 }
 .asset-select.el-select__popper.el-popper[role='tooltip'] {
