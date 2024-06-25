@@ -59,7 +59,7 @@ export default function useData() {
       v.rewardBalance = fixNumber(v.rewardBalance, 8);
     });
     totalNerveList = [...data].sort((a, b) => a.orderNum - b.orderNum);
-    list.value = filter(totalNerveList, filterType, onlySeeMortgage);
+    list.value = await filter(totalNerveList, filterType, onlySeeMortgage);
   }
 
   const { currentAccount, height } = useStoreState();
@@ -93,13 +93,13 @@ export default function useData() {
             });
           });
         }
-        list.value = filter(
+        filter(
           totalList,
           filterType,
           onlySeeMortgage,
           false,
           farmStatusType
-        );
+        ).then(res => list.value = res);
       }
     });
   }
@@ -109,34 +109,35 @@ export default function useData() {
     onlySeeMortgage = mortgage;
     farmStatusType = farmStatus || 'pending';
     if (totalNerveList.length) {
-      list.value = filter(
+      filter(
         [...totalNerveList],
         type,
         mortgage,
         false,
         farmStatusType
-      );
+      ).then(res => list.value = res);
     }
   }
   function sleep(delay: number) {
-    const start = new Date().getTime();
+    return new Promise(resolve => setTimeout(resolve, delay))
+    /* const start = new Date().getTime();
     while (new Date().getTime() - start < delay) {
       continue;
-    }
+    } */
   }
 
-  function filter(
+  async function filter(
     list: any,
     type: string,
     mortgage: boolean,
     isUni?: boolean,
     farmStatus = 'pending'
-  ): any {
+  ): Promise<any> {
     let newList = [...list];
     if (!height.value) {
       // console.log(farmStatus, height.value, '333==333');
-      sleep(3000);
-      return filter(list, type, mortgage, isUni, farmStatus);
+      await sleep(3000);
+      return await filter(list, type, mortgage, isUni, farmStatus);
     } else {
       if (farmStatus === 'pending') {
         newList = [...newList].filter(
