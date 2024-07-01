@@ -170,7 +170,7 @@ watch(
   val => {
     if (val) {
       const chainInfo = Object.values(_networkInfo).find(
-        v => v.chainName === val
+        v => v.name === val
       );
       if (chainInfo) {
         L1ChainType = chainInfo.type;
@@ -188,7 +188,7 @@ watch(
 
 const tokenList = computed(() => {
   const chainInfo = Object.values(_networkInfo).find(
-    v => v.chainName === chain.value
+    v => v.name === chain.value
   );
   const hId = chainInfo?.chainId;
   return assetList.value.filter(v => {

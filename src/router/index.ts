@@ -55,12 +55,12 @@ const routes: RouteRecordRaw[] = [
     name: 'farm',
     component: Farm
   },
-  /*{
+  {
     path: '/pool/:hash?',
     name: 'pool',
     component: () => import('@/views/pool/index.vue'),
     // component: Pool
-  },*/
+  },
   {
     path: '/node',
     name: 'node',
