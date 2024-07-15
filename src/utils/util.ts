@@ -400,7 +400,7 @@ export function adaptiveFix(str: string, maxFix = 8) {
   return res;
 }
 
-export function priceFormat(str: string, formatFix = 4) {
+export function priceFormat(str: string, formatFix = 4, fix = 4) {
   str = new BigNumber(str).toFixed();
   if (!str.startsWith('0.')) {
     return fixNumber(str, 2);
@@ -418,7 +418,7 @@ export function priceFormat(str: string, formatFix = 4) {
     prefix = prefix.replace(/(0+)$/g, '');
     return `0.0{${zeroCount}}${prefix}`;
   } else {
-    return fixNumber(str, formatFix);
+    return fixNumber(str, fix);
   }
 }
 

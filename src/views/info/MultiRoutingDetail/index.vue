@@ -117,7 +117,7 @@ async function getTokenDetail() {
       lpTokenSymbol: res.lpTokenSymbol,
       assetKey: res.lpTokenChainId + '-' + res.lpTokenAssetId,
       address: res.pairAddress,
-      price: priceFormat(divisionAndFix(res.price, 18, 18)),
+      price: priceFormat(divisionAndFix(res.price, 18, 18), 4, 6),
       tx_24: divisionAndFix(res.amountUsdtValue24H, 18, 2),
       tx_7d: divisionAndFix(res.amountUsdtValue7D, 18, 2),
       liq: res.reserve,
