@@ -62,6 +62,7 @@ const {
   btcFeePaiedEnough,
   canAdd,
   getBTCAddFeeAmount,
+  getFCHAddFeeAmount,
   getAddFeeAmount
 } = useCrossOutFee();
 
@@ -170,6 +171,13 @@ async function checkBTCWithdrawalStatus() {
         }
       }
     } */
+  } else if (hId === 202) {
+    await getFCHAddFeeAmount({
+      feeInfo,
+      hash,
+      hId,
+      outerTxHash
+    });
   } else {
     const targetChainInfo = Object.values(_networkInfo).find(
       v => v.chainId === hId

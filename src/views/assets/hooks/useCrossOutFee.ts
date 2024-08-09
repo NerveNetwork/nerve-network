@@ -20,7 +20,7 @@ import {
 } from '@/utils/util';
 import nerveswap from 'nerveswap-sdk';
 
-import type { IBTCWithdrawalInfo } from '../types';
+import type { IBTCWithdrawalInfo, IFCHWithdrawalInfo } from '../types';
 
 async function getGasLimit(chainId: number) {
   let gasLimitConfig = storage.get('gasLimitConfig');
@@ -73,6 +73,12 @@ export default function useCrossOutFee() {
     feeRate: '',
     utxos: []
   };
+
+  let fchWithdrawalInfo: IFCHWithdrawalInfo = {
+    feeRate: '',
+    utxos: [],
+    splitGranularity: 0
+  }
 
   async function getCrossOutFee(params: IGetFeeParams = {} as IGetFeeParams) {
     const {
@@ -299,6 +305,55 @@ export default function useCrossOutFee() {
     }
   }
 
+  async function getFCHAddFeeAmount(params: IGetBTCAddFeeAmount) {
+    const { feeInfo, hash, hId, outerTxHash } = params;
+    if (hId === 202) {
+      const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(
+        hId,
+        hash
+      );
+      console.log(requestFeeInfo, '2342423')
+      const { minimumFee, utxoSize, feeRate } = requestFeeInfo;
+      if (minimumFee && utxoSize && feeRate) {
+        canAdd.value = true;
+      } else {
+        canAdd.value = false;
+      }
+      const requestFCH = divisionDecimals(minimumFee, 8);
+      const fchInfo = Object.values(_networkInfo).find(v => v.name === 'FCH')!;
+      if (feeInfo.assetKey === fchInfo.assetKey) {
+        const diff = Minus(requestFCH, feeInfo.value).toFixed();
+        // @ts-ignore
+        addFeeAmount.value = diff > 0 ? diff : '';
+      } else {
+        const [feeChainId, feeAssetId] = feeInfo.assetKey.split('-');
+        const [fchChainId, fchAssetId] = fchInfo.assetKey.split('-');
+        const feeAssetUSD = (await getAssetPrice(
+          +feeChainId,
+          +feeAssetId,
+          true // only fee asset need be true
+        )) as string;
+        const L1MainAssetUSD = (await getAssetPrice(
+          +fchChainId,
+          +fchAssetId
+        )) as string;
+        const diff = Minus(
+          Times(requestFCH, L1MainAssetUSD),
+          Times(feeInfo.value, feeAssetUSD)
+        ).toFixed();
+        // @ts-ignore
+        if (diff > 0) {
+          const _amount = Division(diff, feeAssetUSD).toFixed();
+          addFeeAmount.value =
+            (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
+        } else {
+          addFeeAmount.value = '';
+        }
+        // console.log(addFeeAmount.value, '=====')
+      }
+    }
+  }
+
   async function getAddFeeAmount(params: IGetFeeParams, paied: string) {
     try {
       const currentFee = await getCrossOutFee(params);
@@ -317,6 +372,66 @@ export default function useCrossOutFee() {
     }
   }
 
+  async function getFCHWithdrawalInfo(senderAddress: string, hid: number) {
+    if (!senderAddress) return;
+    const info = await nerveswap.fch.getFCHWithdrawInfo(senderAddress, hid);
+    // console.log(info, 234)
+    fchWithdrawalInfo = info;
+  }
+
+  async function getFCHCrossOutFee(params: IGetBTCFeeParams) {
+    const {
+      amount,
+      useMainAsset,
+      feeDecimals,
+      feeAssetKey = '',
+      isNVT = false
+    } = params;
+    let res = '';
+    try {
+      const { feeRate, utxos, splitGranularity } = fchWithdrawalInfo;
+      let fchFeeAmount = nerveswap.fch.getFCHWithdrawalFee(
+        utxos,
+        feeRate,
+        timesDecimals(amount || '0.0001', 8),
+        splitGranularity
+      );
+      fchFeeAmount = Times(fchFeeAmount, 1.3).toFixed(0);
+      if (useMainAsset) {
+        res = calWithdrawalFeeForBTC(fchFeeAmount, '', '', feeDecimals, true);
+      } else {
+        const targetChainInfo = Object.values(_networkInfo).find(
+          v => v.name === 'FCH'
+        );
+        const [feeChainId, feeAssetId] = feeAssetKey!.split('-');
+        const [mainAssetChainId, mainAssetAssetId] =
+          targetChainInfo!.assetKey.split('-');
+        const feeAssetUSD = (await getAssetPrice(
+          +feeChainId,
+          +feeAssetId,
+          true // only fee asset need be true
+        )) as string;
+        const L1MainAssetUSD = (await getAssetPrice(
+          +mainAssetChainId,
+          +mainAssetAssetId
+        )) as string;
+        res = calWithdrawalFeeForBTC(
+          fchFeeAmount,
+          L1MainAssetUSD,
+          feeAssetUSD,
+          feeDecimals,
+          false,
+          isNVT
+        );
+      }
+    } catch (e) {
+      res = '';
+      toastError(e);
+    }
+    fee.value = floatToCeil(res, 6);
+    return res;
+  }
+
   return {
     fee,
     getCrossOutFee,
@@ -326,6 +441,9 @@ export default function useCrossOutFee() {
     btcFeePaiedEnough,
     canAdd,
     getBTCAddFeeAmount,
-    getAddFeeAmount
+    getFCHAddFeeAmount,
+    getAddFeeAmount,
+    getFCHWithdrawalInfo,
+    getFCHCrossOutFee
   };
 }

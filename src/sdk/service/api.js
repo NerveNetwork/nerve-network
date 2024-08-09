@@ -105,3 +105,8 @@ export async function getCrossChainInfo() {
   }
   return res.result;
 }
+
+export async function getSplitGranularity(hid) {
+  const res = await post('getSplitGranularity', [hid], true);
+  return res.result?.value || 0;
+}

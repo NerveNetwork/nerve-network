@@ -97,8 +97,14 @@ export default defineComponent({
     const father = inject(rootCmpKey, {} as RootComponent);
     const { t } = useI18n();
     const { toastError } = useToast();
-    const { fee, getBTCWithdrawalInfo, getBTCCrossOutFee, getCrossOutFee } =
-      useCrossOutFee();
+    const {
+      fee,
+      getBTCWithdrawalInfo,
+      getBTCCrossOutFee,
+      getCrossOutFee,
+      getFCHWithdrawalInfo,
+      getFCHCrossOutFee
+    } = useCrossOutFee();
 
     const loading = ref(false);
     const toAddress = ref(father.address);
@@ -115,6 +121,8 @@ export default defineComponent({
               flag = tron.validAddress(val);
             } else if (father.network === 'BTC') {
               flag = nerveswap.btc.checkBTCAddress(!isBeta, val);
+            } else if (father.network === 'FCH') {
+              flag = nerveswap.fch.validateFCHAddres(val)
             } else {
               const transfer = new ETransfer();
               flag = transfer.validateAddress(val);
@@ -180,6 +188,8 @@ export default defineComponent({
         const multySignAddress = crossChainInfo['201'].multySignAddress;
         await getBTCWithdrawalInfo(multySignAddress);
         getBTCCrossOutFeeHandle();
+      } else if (father.network === 'FCH') {
+        await getFCHWithdrawalInfo(father.address, 202)
       }
     });
 
@@ -247,8 +257,12 @@ export default defineComponent({
     watch(
       () => amount.value,
       val => {
-        if (Number(val) && father.network === 'BTC') {
-          getBTCCrossOutFeeHandle();
+        if (Number(val)) {
+          if (father.network === 'BTC') {
+            getBTCCrossOutFeeHandle();
+          } else if (father.network === 'FCH') {
+            getFCHCrossOutFeeHandle();
+          }
         }
       }
     );
@@ -257,6 +271,9 @@ export default defineComponent({
       const withdrawalChain = father.network;
       if (withdrawalChain === 'BTC') {
         getBTCCrossOutFeeHandle();
+        return;
+      } else if (withdrawalChain === 'FCH') {
+        getFCHCrossOutFeeHandle();
         return;
       }
       const {
@@ -356,7 +373,7 @@ export default defineComponent({
       validateAmount();
     }
 
-    /* async function getBTCCrossOutFee() {
+    async function getFCHCrossOutFeeHandle() {
       const withdrawalChain = father.network;
       const {
         chainId,
@@ -365,47 +382,15 @@ export default defineComponent({
         originNetwork: feeChain
       } = selectedFeeAsset.value;
       const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
-      let res = '';
-      try {
-        const { feeRate, utxos } = btcWithdrawalInfo.value;
-        let btcFeeAmount = nerveswap.btc.getBTCWithdrawalFee(
-          utxos,
-          feeRate,
-          timesDecimals(amount.value || '0.0001', 8)
-        );
-        btcFeeAmount = Times(btcFeeAmount, 1.3).toFixed(0);
-        if (feeChain === withdrawalChain) {
-          res = calWithdrawalFeeForBTC(btcFeeAmount, '', '', decimals, true);
-        } else {
-          //
-          const feeAssetUSD = (await getAssetPrice(
-            chainId,
-            assetId,
-            true // only fee asset need be true
-          )) as string;
-          const mainAsset = supportedFeeAssets.value.find(
-            v => v.symbol === heterogeneousInfo.chainName
-          ) as AssetItemType;
-          const L1MainAssetUSD = (await getAssetPrice(
-            mainAsset.chainId,
-            mainAsset.assetId
-          )) as string;
-          res = calWithdrawalFeeForBTC(
-            btcFeeAmount,
-            L1MainAssetUSD,
-            feeAssetUSD,
-            decimals,
-            false,
-            feeIsNVT
-          );
-        }
-      } catch (e) {
-        res = '';
-        toastError(e);
-      }
-      fee.value = floatToCeil(res, 6);
+      await getFCHCrossOutFee({
+        amount: amount.value,
+        useMainAsset: feeChain === withdrawalChain,
+        feeDecimals: decimals,
+        feeAssetKey: chainId + '-' + assetId,
+        isNVT: feeIsNVT
+      });
       validateAmount();
-    } */
+    }
 
     async function changeFeeAsset(asset: AssetItemType) {
       showFeeDialog.value = false;
@@ -426,7 +411,7 @@ export default defineComponent({
       ) {
         amountErrorTip.value = t('transfer.transfer15');
       } else if (
-        father.network === 'BTC' &&
+        (father.network === 'BTC' || father.network === 'FCH') &&
         Minus(amount.value, 0.00000546).toNumber() < 0
       ) {
         amountErrorTip.value = 'Minimum quantity is 0.00000546';

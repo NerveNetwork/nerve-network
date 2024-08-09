@@ -27,7 +27,13 @@ import {
   TRONCrossToNERVE
 } from './api/TRONApi';
 
-import { calFCHTxFee, FCHCrossToNERVE } from './api/FCHApi';
+import {
+  calFCHTxFee,
+  FCHCrossToNERVE,
+  validateFCHAddres,
+  getFCHWithdrawInfo,
+  getFCHWithdrawalFee
+} from './api/FCHApi';
 
 import {
   sendNERVETx,
@@ -101,7 +107,10 @@ const nerve = {
   },
   fch: {
     calTxFee: calFCHTxFee,
-    crossIn: FCHCrossToNERVE
+    crossIn: FCHCrossToNERVE,
+    validateFCHAddres,
+    getFCHWithdrawInfo,
+    getFCHWithdrawalFee
   },
   transfer: {
     transfer: sendNERVETx,
