@@ -36,6 +36,16 @@ import {
 } from './api/FCHApi';
 
 import {
+  BCH_PREFIX,
+  calBCHTxFee,
+  BCHCrossToNERVE,
+  validateBCHAddres,
+  getBCHTransactionDetail,
+  getBCHWithdrawInfo,
+  getBCHWithdrawalFee
+} from './api/BCHApi';
+
+import {
   sendNERVETx,
   sendWithdrawalTx,
   sendJoinStakingTx,
@@ -85,16 +95,6 @@ export { getChainInfo } from './utils/utils';
 const nerve = {
   getAccount: generateAddress,
   getAccountByPub,
-  btc: {
-    getAddress: getBTCAddressByPub,
-    calTxFee: calBTCTxFee,
-    crossIn: BitCoinCrossToNERVE,
-    checkTxConfirmed: checkBTCTxConfirmed,
-    getBTCWithdrawalInfo,
-    getBTCWithdrawalFee,
-    getBTCSpeedUpAmount,
-    checkBTCAddress
-  },
   evm: {
     checkAuth: checkERC20Allowance,
     approve: approveERC20,
@@ -105,12 +105,34 @@ const nerve = {
     approve: approveTRC20,
     crossIn: TRONCrossToNERVE
   },
+  btc: {
+    getAddress: getBTCAddressByPub,
+    calTxFee: calBTCTxFee,
+    crossIn: BitCoinCrossToNERVE,
+    checkTxConfirmed: checkBTCTxConfirmed,
+    getBTCWithdrawalInfo,
+    getWithdrawInfo: getBTCWithdrawalInfo,
+    getWithdrawalFee: getBTCWithdrawalFee,
+    getBTCWithdrawalFee,
+    getBTCSpeedUpAmount,
+    checkBTCAddress,
+    validateAddress: checkBTCAddress
+  },
   fch: {
     calTxFee: calFCHTxFee,
     crossIn: FCHCrossToNERVE,
-    validateFCHAddres,
-    getFCHWithdrawInfo,
-    getFCHWithdrawalFee
+    validateAddress: validateFCHAddres,
+    getWithdrawInfo: getFCHWithdrawInfo,
+    getWithdrawalFee: getFCHWithdrawalFee
+  },
+  bch: {
+    addressPrefix: BCH_PREFIX,
+    calTxFee: calBCHTxFee,
+    crossIn: BCHCrossToNERVE,
+    validateAddress: validateBCHAddres,
+    getTx: getBCHTransactionDetail,
+    getWithdrawInfo: getBCHWithdrawInfo,
+    getWithdrawalFee: getBCHWithdrawalFee
   },
   transfer: {
     transfer: sendNERVETx,

@@ -3,6 +3,7 @@ const {
   BitcoinRechargeData
 } = require('nerve-sdk-js/lib/model/BitcoinRechargeData');
 import { isBeta } from '../utils/utils';
+import { getUtxoCheckedInfo } from '../service/api';
 
 nerve.bitcoin.initEccLibForWeb();
 
@@ -153,7 +154,7 @@ export async function checkBTCTxConfirmed(txid, isMainnet) {
 }
 
 export async function getBTCWithdrawalInfo(isMainnet, multySignAddress) {
-  const utxos = await nerve.bitcoin.getUtxos(isMainnet, multySignAddress);
+  let utxos = await nerve.bitcoin.getUtxos(isMainnet, multySignAddress);
   if (Array.isArray(utxos)) {
     utxos.sort((a, b) => {
       if (a.value !== b.value) {
@@ -163,8 +164,9 @@ export async function getBTCWithdrawalInfo(isMainnet, multySignAddress) {
       }
     });
   }
+  const filteredUtxo = await getUtxoCheckedInfo(201, utxos)
   const feeRate = await nerve.bitcoin.getFeeRate(isMainnet);
-  return { utxos, feeRate };
+  return { utxos: filteredUtxo, feeRate };
 }
 
 export function getBTCWithdrawalFee(utxos, feeRate, amount) {

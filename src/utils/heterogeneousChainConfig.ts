@@ -44,6 +44,7 @@ import BlastLogo from '@/assets/img/chainLogo/Blast.jpg';
 import MerlinLogo from '@/assets/img/chainLogo/Merlin.jpg';
 import PulseLogo from '@/assets/img/chainLogo/Pulse.jpg';
 import FCHLogo from '@/assets/img/chainLogo/FCH.jpg';
+import BCHLogo from '@/assets/img/chainLogo/BCH.png';
 import MintLogo from '@/assets/img/chainLogo/Mint.jpg';
 
 // explorer
@@ -125,6 +126,7 @@ const Origin = {
   Merlin: isBeta ? 'https://testnet-scan.merlinchain.io' : 'https://scan.merlinchain.io',
   Pulse: isBeta ? 'https://scan.v4.testnet.pulsechain.com/#' : 'https://scan.mypinata.cloud/ipfs/bafybeidn64pd2u525lmoipjl4nh3ooa2imd7huionjsdepdsphl5slfowy/#',
   FCH: 'https://freecash.info',
+  BCH: 'https://explorer.btc.com/bch',
   Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : ''
 };
 
@@ -750,6 +752,18 @@ export const _networkInfo = {
     mainAsset: 'FCH',
     nativeId: '0x-e',
     logo: FCHLogo,
+    decimals: 8
+  },
+  BCH: {
+    type: 'BCH',
+    name: 'BCH',
+    chainName: 'BCH',
+    chainId: 203,
+    assetKey: isBeta ? '5-184' : '9-849',
+    origin: Origin.BCH,
+    mainAsset: 'BCH',
+    nativeId: '0x-e',
+    logo: BCHLogo,
     decimals: 8
   },
   'Mint Sepolia': {

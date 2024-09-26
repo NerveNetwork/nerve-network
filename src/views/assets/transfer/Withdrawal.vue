@@ -73,6 +73,7 @@ import { ETransfer } from '@/utils/api';
 import TronLinkApi from '@/utils/tronLink';
 import config from '@/config';
 import useCrossOutFee from '../hooks/useCrossOutFee';
+import useBTCsCrossOut from '../hooks/useBTCsCrossOut'
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 
 import {
@@ -98,17 +99,19 @@ export default defineComponent({
     const { t } = useI18n();
     const { toastError } = useToast();
     const {
-      fee,
-      getBTCWithdrawalInfo,
-      getBTCCrossOutFee,
+      // getBTCWithdrawalInfo,
+      // getBTCCrossOutFee,
       getCrossOutFee,
-      getFCHWithdrawalInfo,
-      getFCHCrossOutFee
+      // getFCHWithdrawalInfo,
+      // getFCHCrossOutFee
     } = useCrossOutFee();
+
+    const { isBTCs, btcHid, validBTCsAddress, getBTCsWithdrawalInfo, getBTCsCrossOutFee } = useBTCsCrossOut(father.network)
 
     const loading = ref(false);
     const toAddress = ref(father.address);
     const addressError = ref('');
+    const fee = ref('')
     const confirmTip = ref(false);
     watch(
       () => toAddress.value,
@@ -119,11 +122,15 @@ export default defineComponent({
             if (father.network === 'TRON') {
               const tron = new TronLinkApi();
               flag = tron.validAddress(val);
-            } else if (father.network === 'BTC') {
+            } else if (isBTCs) {
+              flag = validBTCsAddress(val)
+            } /* else if (father.network === 'BTC') {
               flag = nerveswap.btc.checkBTCAddress(!isBeta, val);
             } else if (father.network === 'FCH') {
-              flag = nerveswap.fch.validateFCHAddres(val)
-            } else {
+              flag = nerveswap.fch.validateAddress(val)
+            } else if (father.network === 'BCH') {
+              flag = nerveswap.bch.validateAddress(val)
+            }  */else {
               const transfer = new ETransfer();
               flag = transfer.validateAddress(val);
             }
@@ -174,34 +181,30 @@ export default defineComponent({
     const selectedFeeAsset = ref<AssetItemType>({} as AssetItemType); // 手续费资产信息--L1网络在nerve上的主资产
     const supportedFeeAssets = ref<AssetItemType[]>([]); // 可充当提现手续费的资产
 
-    const btcWithdrawalInfo = ref<IBTCWithdrawalInfo>({
-      feeRate: '',
-      utxos: []
-    });
-
     onMounted(async () => {
       if (father.disableTx) return;
       getFeeAssetInfo();
       selectAsset(transferAsset.value);
-      if (father.network === 'BTC') {
-        const crossChainInfo = storage.get('crossChainInfo');
+      const crossChainInfo = storage.get('crossChainInfo');
+      if (isBTCs) {
+        const multySignAddress = crossChainInfo[btcHid].multySignAddress;
+        await getBTCsWithdrawalInfo(multySignAddress)
+        if (father.network === 'BTC') {
+          getBTCCrossOutFeeHandle()
+        }
+      }
+      /* if (father.network === 'BTC') {
         const multySignAddress = crossChainInfo['201'].multySignAddress;
         await getBTCWithdrawalInfo(multySignAddress);
         getBTCCrossOutFeeHandle();
       } else if (father.network === 'FCH') {
-        await getFCHWithdrawalInfo(father.address, 202)
-      }
+        const multySignAddress = crossChainInfo['202'].multySignAddress;
+        await getFCHWithdrawalInfo(multySignAddress, 202)
+      } else if (father.network === 'BCH') {
+        const multySignAddress = crossChainInfo['203'].multySignAddress;
+        await getFCHWithdrawalInfo(multySignAddress, 203)
+      } */ 
     });
-
-    // async function getBTCWithdrawalInfo(multySignAddress: string) {
-    //   if (!multySignAddress) return;
-    //   const info = await nerveswap.btc.getBTCWithdrawalInfo(
-    //     !isBeta,
-    //     multySignAddress
-    //   );
-    //   btcWithdrawalInfo.value = info;
-    //   getBTCCrossOutFeeHandle();
-    // }
 
     function getFeeAssetInfo() {
       const { network } = father;
@@ -257,101 +260,50 @@ export default defineComponent({
     watch(
       () => amount.value,
       val => {
-        if (Number(val)) {
-          if (father.network === 'BTC') {
-            getBTCCrossOutFeeHandle();
-          } else if (father.network === 'FCH') {
-            getFCHCrossOutFeeHandle();
-          }
+        if (Number(val) && isBTCs) {
+          getBTCCrossOutFeeHandle()
+          // if (father.network === 'BTC') {
+          //   getBTCCrossOutFeeHandle();
+          // } else if (father.network === 'FCH') {
+          //   getFCHCrossOutFeeHandle();
+          // } else if (father.network === 'BCH') {
+          //   getFCHCrossOutFeeHandle()
+          // }
         }
       }
     );
 
     async function getCrossOutFeeHandle() {
       const withdrawalChain = father.network;
-      if (withdrawalChain === 'BTC') {
+      if (isBTCs) {
+        getBTCCrossOutFeeHandle()
+      } else {
+        const {
+          chainId,
+          assetId,
+          decimals,
+          originNetwork: feeChain
+        } = selectedFeeAsset.value;
+        const { isToken, heterogeneousChainId } = heterogeneousInfo;
+        const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
+        fee.value = await getCrossOutFee({
+          hId: heterogeneousChainId,
+          useMainAsset: feeChain === withdrawalChain,
+          feeDecimals: decimals,
+          feeAssetKey: chainId + '-' + assetId,
+          isNVT: feeIsNVT,
+          isTRX: feeChain === 'TRON'
+        });
+      }
+      /* if (withdrawalChain === 'BTC') {
         getBTCCrossOutFeeHandle();
         return;
       } else if (withdrawalChain === 'FCH') {
         getFCHCrossOutFeeHandle();
         return;
-      }
-      const {
-        chainId,
-        assetId,
-        decimals,
-        originNetwork: feeChain
-      } = selectedFeeAsset.value;
-      const { isToken, heterogeneousChainId } = heterogeneousInfo;
-      const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
-      await getCrossOutFee({
-        hId: heterogeneousChainId,
-        useMainAsset: feeChain === withdrawalChain,
-        feeDecimals: decimals,
-        feeAssetKey: chainId + '-' + assetId,
-        isNVT: feeIsNVT,
-        isTRX: feeChain === 'TRON'
-      });
-
-      /* const transfer = new ETransfer(withdrawalChain);
-      let res = '';
-      const gasLimit = await getGasLimit(heterogeneousChainId);
-      if (feeChain === withdrawalChain) {
-        // 手续费资产为L1网络主资产
-        if (withdrawalChain === 'TRON') {
-          res = transfer.calWithdrawalFeeForTRON(
-            gasLimit,
-            '',
-            '',
-            decimals,
-            true
-          );
-        } else {
-          res = await transfer.calWithdrawalFee(
-            '',
-            '',
-            gasLimit,
-            decimals,
-            true,
-            heterogeneousChainId
-          );
-        }
-      } else {
-        const feeAssetUSD = (await getAssetPrice(
-          chainId,
-          assetId,
-          true // only fee asset need be true
-        )) as string;
-        const mainAsset = supportedFeeAssets.value.find(
-          v => v.symbol === heterogeneousInfo.chainName
-        ) as AssetItemType;
-        const L1MainAssetUSD = (await getAssetPrice(
-          mainAsset.chainId,
-          mainAsset.assetId
-        )) as string;
-        if (withdrawalChain === 'TRON') {
-          res = transfer.calWithdrawalFeeForTRON(
-            gasLimit,
-            L1MainAssetUSD,
-            feeAssetUSD,
-            decimals,
-            false,
-            feeIsNVT
-          );
-        } else {
-          res = await transfer.calWithdrawalFee(
-            L1MainAssetUSD,
-            feeAssetUSD,
-            gasLimit,
-            decimals,
-            false,
-            heterogeneousChainId,
-            feeIsNVT,
-            feeChain === 'TRON'
-          );
-        }
-      }
-      fee.value = floatToCeil(res, 6); */
+      } else if (withdrawalChain === 'BCH') {
+        getFCHCrossOutFeeHandle()
+      } */
     }
 
     async function getBTCCrossOutFeeHandle() {
@@ -363,17 +315,18 @@ export default defineComponent({
         originNetwork: feeChain
       } = selectedFeeAsset.value;
       const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
-      await getBTCCrossOutFee({
+      fee.value = await getBTCsCrossOutFee({
         amount: amount.value,
         useMainAsset: feeChain === withdrawalChain,
         feeDecimals: decimals,
         feeAssetKey: chainId + '-' + assetId,
-        isNVT: feeIsNVT
+        isNVT: feeIsNVT,
+        withdrawalChain
       });
       validateAmount();
     }
 
-    async function getFCHCrossOutFeeHandle() {
+    /* async function getFCHCrossOutFeeHandle() {
       const withdrawalChain = father.network;
       const {
         chainId,
@@ -387,10 +340,11 @@ export default defineComponent({
         useMainAsset: feeChain === withdrawalChain,
         feeDecimals: decimals,
         feeAssetKey: chainId + '-' + assetId,
-        isNVT: feeIsNVT
+        isNVT: feeIsNVT,
+        withdrawalChain: father.network
       });
       validateAmount();
-    }
+    } */
 
     async function changeFeeAsset(asset: AssetItemType) {
       showFeeDialog.value = false;
@@ -410,9 +364,7 @@ export default defineComponent({
           Minus(balance.value, Plus(amount.value, fee.value)).toNumber() < 0)
       ) {
         amountErrorTip.value = t('transfer.transfer15');
-      } else if (
-        (father.network === 'BTC' || father.network === 'FCH') &&
-        Minus(amount.value, 0.00000546).toNumber() < 0
+      } else if ( isBTCs && Minus(amount.value, 0.00000546).toNumber() < 0
       ) {
         amountErrorTip.value = 'Minimum quantity is 0.00000546';
       } else if (Minus(available, fee.value).toNumber() < 0) {
@@ -490,6 +442,10 @@ export default defineComponent({
           pub: '0369b20002bc58c74cb6fd5ef564f603834393f53bed20c3314b4b7aba8286a7e0'
         }); */
         const { provider, EVMAddress, pub } = getWalletInfo();
+        let targetAddress = toAddress.value
+        if (father.network === 'BCH' && !targetAddress.startsWith(nerveswap.bch.addressPrefix)) {
+          targetAddress = nerveswap.bch.addressPrefix + toAddress.value
+        }
         const result = await nerveswap.transfer.withdrawal({
           provider,
           from: nerveAddress,
@@ -501,7 +457,7 @@ export default defineComponent({
             assetChainId: feeChainId,
             assetId: feeAssetId
           },
-          heterogeneousAddress: toAddress.value,
+          heterogeneousAddress: targetAddress,
           heterogeneousChainId: heterogeneousInfo.heterogeneousChainId,
           EVMAddress,
           pub

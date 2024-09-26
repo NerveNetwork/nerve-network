@@ -24,7 +24,7 @@
     <div class="bottom">
       <div v-show="activeName === TransferType.CrossIn">
         <BTCCrossIn v-if="network === 'BTC'" />
-        <FCHCrossIn v-else-if="network === 'FCH'" />
+        <FCHCrossIn :network="network" v-else-if="network === 'FCH' || network === 'BCH'" />
         <cross-in v-else :transferAsset="transferAsset"></cross-in>
       </div>
       <common-transfer

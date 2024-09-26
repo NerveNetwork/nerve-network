@@ -28,6 +28,7 @@ import {
   getBTCProvider,
   getTRONProvider,
   getFCHProvider,
+  getBCHProvider,
   TRONWebProvider,
   UnisatProvider
 } from '../utils/providerUtil';
@@ -127,7 +128,8 @@ export default defineComponent({
           if (
             item.name === 'BTC' ||
             item.name === 'TRON' ||
-            item.name === 'FCH'
+            item.name === 'FCH' ||
+            item.name === 'BCH'
           ) {
             if (!provider.isNabox) {
               toastError('Please switch wallet');
@@ -142,6 +144,9 @@ export default defineComponent({
                 });
               } else if (item.name === 'FCH') {
                 const { provider } = getFCHProvider();
+                await provider.createSession();
+              } else if (item.name === 'BCH') {
+                const { provider } = getBCHProvider();
                 await provider.createSession();
               }
               storage.set('network', item.name);

@@ -121,11 +121,11 @@ export default function useEthereum() {
         addBTCListener(provider);
         initBTCChainInfo(provider, address);
       }
-    } else if (network === 'FCH') {
+    } else if (network === 'FCH' || network === 'BCH') {
       address = await provider.getAddress();
       if (address) {
         addFCHListener(provider);
-        initFCHChainInfo(address);
+        initFCHChainInfo(address, network);
       }
     } else if (network === 'NULS' || network === 'NERVE') {
       address = await getNULSAddress(provider);
@@ -220,10 +220,10 @@ export default function useEthereum() {
     }
   }
 
-  function initFCHChainInfo(address: string) {
+  function initFCHChainInfo(address: string, network: string) {
     store.commit('changeIsWrongChain', false);
     store.commit('changeAddress', address);
-    store.commit('changeNetwork', 'FCH');
+    store.commit('changeNetwork', network);
   }
 
   async function initNULSChaininfo(
@@ -406,7 +406,7 @@ export default function useEthereum() {
         provider.removeListener('accountsChanged', handleAccountChange);
         provider.removeListener('networkChanged', handleBTCNetworkChanged);
       }
-    } else if (network === 'FCH') {
+    } else if (network === 'FCH' || network === 'BCH') {
       provider.off('accountsChanged', handleAccountChange);
     } else {
       let _provider = provider;
@@ -423,6 +423,7 @@ export default function useEthereum() {
   // 连接provider
   async function connect(providerType: string, network: string) {
     let { provider } = getProvider(providerType, network);
+    console.log(provider, 234234)
 
     // wakeup in mobile app
     const domain = 'nerve.network';
@@ -479,6 +480,9 @@ export default function useEthereum() {
     } else if (network === 'FCH') {
       const result = await provider.createSession();
       state.address = result.selectedAddress;
+    } else if (network === 'BCH') {
+      const result = await provider.createSession();
+      state.address = result.selectedAddress;
     } else if (network === 'NULS' || network === 'NERVE') {
       if (provider.isNabox) {
         const { provider: _provider } = getNULSProvider();
@@ -494,11 +498,12 @@ export default function useEthereum() {
     }
     store.commit('changeNetwork', network);
     storage.set('providerType', providerType);
+    const notEVMChains = ['TRON', 'BTC', 'FCH', 'BCH']
     if (network === 'NULS' || network === 'NERVE') {
       if (provider.isNabox) {
         await switchNULSChain(network);
       }
-    } else if (network !== 'TRON' && network !== 'BTC' && network !== 'FCH') {
+    } else if (!notEVMChains.includes(network)) {
       const chain = _networkInfo[network];
       const { nativeId, rpcUrl, chainName, name, mainAsset, decimals, origin } =
         chain;

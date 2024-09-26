@@ -1,7 +1,7 @@
 <template>
   <div class="fch-cross-in" v-loading="loading">
     <div class="title">
-      {{ 'From FCH' }}
+      {{ 'From ' + props.network }}
       <span class="click" @click="openAddress">
         {{ superLong(address, 6) }}
         <i class="iconfont icon-tiaozhuanlianjie"></i>
@@ -47,6 +47,10 @@ import { rootCmpKey, RootComponent } from '../types';
 import { HeterogeneousInfo } from '@/store/types';
 import { getProvider } from '@/utils/providerUtil';
 
+const props = defineProps<{
+  network: 'FCH'| 'BCH';
+}>();
+
 const father = inject(rootCmpKey, {} as RootComponent);
 const { t } = useI18n();
 const { toast, toastSuccess, toastError } = useToast();
@@ -60,12 +64,12 @@ onMounted(async () => {
   const p = getProvider();
   provider = p.provider;
   const _balance = await provider.getBalance();
-  balance.value = divisionDecimals(_balance, 8);
+  balance.value = props.network === 'BCH' ? _balance : divisionDecimals(_balance, 8);
   calFee();
 });
 
 const openAddress = () => {
-  openL1Explorer('FCH', 'address', address);
+  openL1Explorer(props.network, 'address', address);
 };
 
 const amountErrorTip = ref('');
@@ -85,7 +89,8 @@ watch(
 const fee = ref('');
 async function calFee() {
   try {
-    const result = await nerveswap.fch.calTxFee({
+    const provider = props.network === 'FCH' ? nerveswap.fch : nerveswap.bch
+    const result = await provider.calTxFee({
       from: address,
       nerveAddress,
       amount: balance.value || '0.001'
@@ -98,6 +103,7 @@ async function calFee() {
 }
 
 function max() {
+  console.log(fee.value, 212)
   amount.value =
     Minus(balance.value, fee.value).toNumber() > 0
       ? Minus(balance.value, fee.value).toFixed()
@@ -117,15 +123,17 @@ const loading = ref(false);
 const sendTx = async () => {
   loading.value = true;
   try {
-    const heterogeneousChainId = _networkInfo.FCH.chainId;
+    const heterogeneousChainId = _networkInfo[props.network].chainId;
     const heterogeneousInfo = transferAsset.heterogeneousList?.find(
       v => v.heterogeneousChainId === heterogeneousChainId
     ) as HeterogeneousInfo;
-    const hash = await nerveswap.fch.crossIn({
+    const provider = props.network === 'FCH' ? nerveswap.fch : nerveswap.bch
+    const hash = await provider.crossIn({
       multySignAddress: heterogeneousInfo.heterogeneousChainMultySignAddress,
       nerveAddress,
       amount: amount.value
     });
+    console.log(hash, '===hash===')
     handleTx(hash);
   } catch (e) {
     console.log(e, '333');
@@ -142,7 +150,7 @@ function handleTx(hash: string) {
     hash,
     time: new Date().getTime(),
     status: 0,
-    L1Chain: 'FCH',
+    L1Chain: props.network,
     L1Type: 'crossIn',
     address
   });

@@ -45,6 +45,7 @@ import { useI18n } from 'vue-i18n';
 import useToast from '@/hooks/useToast';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import useCrossOutFee from '@/views/assets/hooks/useCrossOutFee';
+import useBTCsCrossOut from '@/views/assets/hooks/useBTCsCrossOut';
 import type { AssetItemType } from '@/views/assets/types';
 
 const props = defineProps<{
@@ -56,15 +57,11 @@ const emit = defineEmits(['confirm', 'cancel']);
 
 const { t } = useI18n();
 const { toastError } = useToast();
+const addFeeAmount = ref('')
 
-const {
-  addFeeAmount,
-  btcFeePaiedEnough,
-  canAdd,
-  getBTCAddFeeAmount,
-  getFCHAddFeeAmount,
-  getAddFeeAmount
-} = useCrossOutFee();
+const { getAddFeeAmount } = useCrossOutFee();
+
+const { btcFeePaiedEnough, canAdd, getBTCsAddFeeAmount } = useBTCsCrossOut()
 
 const isLoading = ref(true);
 watch(
@@ -93,96 +90,19 @@ function getMainAssetInfo(symbol: string) {
 async function checkBTCWithdrawalStatus() {
   const { feeInfo, hash, hId, outerTxHash } = props.txInfo;
   console.log(props.txInfo, 111);
-  if (hId === 201) {
-    await getBTCAddFeeAmount({
+  const isBTCs = [201, 202, 203].includes(hId)
+  if (isBTCs) {
+    addFeeAmount.value = await getBTCsAddFeeAmount({
       feeInfo,
       hash,
       hId,
       outerTxHash
-    });
-    // btc cross out
-    /* const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(hId, hash);
-    const { minimumFee, utxoSize, feeRate } = requestFeeInfo;
-    if (minimumFee && utxoSize && feeRate) {
-      canAdd.value = true;
-    } else {
-      canAdd.value = false;
-    }
-    const requestBTC = divisionDecimals(minimumFee, 8);
-    const btcInfo = getMainAssetInfo('BTC');
-    if (feeInfo.assetKey === btcInfo.assetKey) {
-      // use btc as fee
-      if (outerTxHash) {
-        paidEnough = true;
-        const speedUpFee = await nerveswap.btc.getBTCSpeedUpAmount(
-          !isBeta,
-          utxoSize,
-          feeRate
-        );
-        console.log(speedUpFee, 'btc-enough');
-        addFeeAmount.value = speedUpFee ? divisionDecimals(speedUpFee, 8) : '';
-      } else {
-        paidEnough = false;
-        const diff = Minus(requestBTC, feeInfo.value).toFixed();
-        addFeeAmount.value = diff > 0 ? diff : '';
-      }
-    } else {
-      const [feeChainId, feeAssetId] = feeInfo.assetKey.split('-');
-      const [btcChainId, btcAssetId] = btcInfo.assetKey.split('-');
-      const feeAssetUSD = (await getAssetPrice(
-        +feeChainId,
-        +feeAssetId,
-        true // only fee asset need be true
-      )) as string;
-      const L1MainAssetUSD = (await getAssetPrice(
-        +btcChainId,
-        +btcAssetId
-      )) as string;
-      if (outerTxHash) {
-        paidEnough = true;
-        const speedUpFee = await nerveswap.btc.getBTCSpeedUpAmount(
-          !isBeta,
-          utxoSize,
-          feeRate
-        );
-        if (speedUpFee) {
-          console.log(speedUpFee, 'not-btc-enough');
-          const _amount = Division(
-            Times(divisionDecimals(speedUpFee, 8), L1MainAssetUSD).toFixed(),
-            feeAssetUSD
-          ).toFixed();
-          addFeeAmount.value =
-            (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
-        } else {
-          addFeeAmount.value = '';
-        }
-      } else {
-        paidEnough = false;
-        const diff = Minus(
-          Times(requestBTC, L1MainAssetUSD),
-          Times(feeInfo.value, feeAssetUSD)
-        ).toFixed();
-        if (diff > 0) {
-          const _amount = Division(diff, feeAssetUSD).toFixed();
-          addFeeAmount.value =
-            (feeInfo.symbol === 'NVT' ? Math.ceil(+_amount) : _amount) + '';
-        } else {
-          addFeeAmount.value = '';
-        }
-      }
-    } */
-  } else if (hId === 202) {
-    await getFCHAddFeeAmount({
-      feeInfo,
-      hash,
-      hId,
-      outerTxHash
-    });
+    })
   } else {
     const targetChainInfo = Object.values(_networkInfo).find(
       v => v.chainId === hId
     );
-    await getAddFeeAmount(
+    addFeeAmount.value = await getAddFeeAmount(
       {
         hId,
         feeDecimals: feeInfo.decimals,

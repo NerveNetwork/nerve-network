@@ -242,6 +242,8 @@ async function pollingTx(txs: TxInfo[]) {
       return handleBTCTx(v);
     } else if (v.L1Chain === 'FCH') {
       return handleFCHTx(v);
+    } else if (v.L1Chain === 'BCH') {
+      return handleBCHTx(v)
     } else {
       return handleEVMTx(v);
     }
@@ -296,6 +298,16 @@ async function handleFCHTx(tx: TxInfo) {
     hash: tx.hash,
     result: {
       status: result?.blockHeight > 0 ? 1 : 0
+    }
+  };
+}
+
+async function handleBCHTx(tx: TxInfo) {
+  const result = await nerveswap.bch.getTx(tx.hash);
+  return {
+    hash: tx.hash,
+    result: {
+      status: result?.state === 'success' ? 1 : 0
     }
   };
 }

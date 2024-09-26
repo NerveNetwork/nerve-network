@@ -41,6 +41,7 @@ type Iutxo = {
 export type IBTCWithdrawalInfo = {
   feeRate: '';
   utxos: Iutxo[];
+  splitGranularity?: number;
 };
 
 export type IFCHWithdrawalInfo = {

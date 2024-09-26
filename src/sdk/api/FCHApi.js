@@ -2,7 +2,7 @@ import nerve from 'nerve-sdk-js';
 import fch from 'fch-sdk';
 import { BitcoinRechargeData } from 'nerve-sdk-js/lib/model/BitcoinRechargeData';
 import { timesDecimals } from '../utils/utils';
-import { getSplitGranularity } from '../service/api';
+import { getSplitGranularity, getUtxoCheckedInfo } from '../service/api';
 // const { BitcoinRechargeData } = require('nerve-sdk-js/model/BitcoinRechargeData');
 
 export async function getFCHPub() {
@@ -15,6 +15,7 @@ export function getFCHAddressByPub(pub) {
 
 async function getFeeAndUTXO(fromAddress, amount, msg) {
   const utxos = await fch.getAccountUTXOs(fromAddress);
+  console.log(utxos, '11111111111', amount)
   const { utxo, fee } = fch.calcFeeAndUTXO(utxos, amount, msg);
   return { utxo, fee };
 }
@@ -68,8 +69,9 @@ export function validateFCHAddres(address) {
 export async function getFCHWithdrawInfo(senderAddress, hid) {
   const utxos = await fch.getAccountUTXOs(senderAddress)
   const feeRate = nerve.fch.getFeeRate()
+  const filteredUtxo = await getUtxoCheckedInfo(hid, utxos)
   const splitGranularity = await getSplitGranularity(hid) // 202 -- fch hid
-  return { utxos, feeRate, splitGranularity }
+  return { utxos: filteredUtxo, feeRate, splitGranularity }
 }
 
 export function getFCHWithdrawalFee(utxos, feeRate, amount, splitGranularity) {

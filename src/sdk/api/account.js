@@ -3,6 +3,7 @@ import { getEVMPub, getEVMAddressByPub } from './EVMApi';
 import { getTRONPub, getTRONAddressByPub } from './TRONApi';
 import { getBTCPub, getBTCAddressByPub } from './bitcoin';
 import { getFCHPub, getFCHAddressByPub } from './FCHApi';
+import { getBCHPub, getBCHAddressByPub } from './BCHApi';
 
 /**
  *
@@ -26,6 +27,8 @@ export async function generateAddress({
     pub = await getTRONPub(provider, message);
   } else if (network === 'FCH') {
     pub = await getFCHPub(provider);
+  } else if (network === 'BCH') {
+    pub = await getBCHPub(provider);
   } else {
     pub = await getEVMPub(provider, message);
   }
@@ -40,8 +43,9 @@ export function getAccountByPub(pub) {
   const TRON = getTRONAddressByPub(pub);
   const BTC = getBTCAddressByPub(pub);
   const FCH = getFCHAddressByPub(pub);
+  const BCH = getBCHAddressByPub(pub);
   return {
-    address: { NERVE, NULS, EVM, TRON, BTC, FCH },
+    address: { NERVE, NULS, EVM, TRON, BTC, FCH, BCH },
     pub
   };
 }

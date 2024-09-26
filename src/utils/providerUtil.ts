@@ -105,6 +105,7 @@ export const providerList = {
   EVM: EVMProvider,
   TRON: TRONProvider,
   FCH: [Nabox],
+  BCH: [Nabox],
   NULS: EVMProvider
 };
 
@@ -116,6 +117,8 @@ export function getProvider(type?: string, network?: string) {
     return getTRONProvider(type);
   } else if (network === 'FCH') {
     return getFCHProvider();
+  } else if (network === 'BCH') {
+    return getBCHProvider();
   } else {
     return getEVMProvider(type);
     /* const EVMProvider = getEVMProvider(type);
@@ -212,6 +215,13 @@ export function getFCHProvider() {
   return {
     providerType: 'NaboxWallet',
     provider: window.NaboxWallet?.fch || null
+  };
+}
+
+export function getBCHProvider() {
+  return {
+    providerType: 'NaboxWallet',
+    provider: window.NaboxWallet?.bch || null
   };
 }
 
