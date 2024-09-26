@@ -59,6 +59,7 @@ import Blast from '@/assets/img/supportChains/Blast.png';
 import Merlin from '@/assets/img/supportChains/Merlin.png';
 import Pulse from '@/assets/img/supportChains/Pulse.png';
 import FCH from '@/assets/img/supportChains/FCH.png';
+import BCH from '@/assets/img/supportChains/BCH.png';
 
 const supportChains = [
   { src: BTC },
@@ -102,6 +103,7 @@ const supportChains = [
   { src: Merlin },
   { src: Pulse },
   { src: FCH },
+  { src: BCH },
   { src: Heco }
 ];
 </script>

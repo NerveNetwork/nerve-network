@@ -50,7 +50,7 @@ export function sPost(path, params = {}) {
 }
 
 export function callOKLinkApi(method, api, params) {
-  const url = 'http://api.v2.nabox.io/nabox-api/ok/link/api/call'
+  const url = 'https://api.v2.nabox.io/nabox-api/ok/link/api/call'
   return new Promise((resolve, reject) => {
     // const params = {
     //   "method": "get",
