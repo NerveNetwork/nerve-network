@@ -280,7 +280,7 @@ export const _networkInfo = {
     chainId: 106,
     assetKey: isBeta ? '5-34' : '9-160',
     origin: Origin.Polygon,
-    mainAsset: 'MATIC',
+    mainAsset: 'POL',
     nativeId: isBeta ? '0x13881' : '0x89',
     logo: PolygonLogo,
     decimals: 18,

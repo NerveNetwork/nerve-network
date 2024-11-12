@@ -122,7 +122,7 @@ export function getHetergenousChainConfig() {
       chainName: isBeta ? 'Polygon_Beta' : 'Polygon',
       chainId: 106,
       assetKey: isBeta ? '5-34' : '9-160',
-      mainAsset: 'MATIC',
+      mainAsset: 'POL',
       nativeId: isBeta ? '0x13881' : '0x89',
       decimals: 18,
       rpcUrl: RPC_URL.Polygon

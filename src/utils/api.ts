@@ -1121,12 +1121,16 @@ export class ETransfer {
     // finalFee = baseL1Fee + extraWithdrawalFee
     const gasPrice = await this.getWithdrawGas();
     const gasLimit_big = BigNumber.from(gasLimit);
-    const ethereumChain = isBeta ? _networkInfo.Goerli : _networkInfo.Ethereum;
-    const ethereumProvider = new ethers.providers.JsonRpcProvider(
-      ethereumChain.rpcUrl
-    );
-    const ethGasPrice = await ethereumProvider.getGasPrice();
-    const extraL1FeeBig = sdkApi.getL1Fee(htgChainId, ethGasPrice);
+    const GWEI_5 = ethers.utils.parseUnits('5', 9);
+    let extraL1FeeBig = GWEI_5
+    if (!isBeta) {
+      const ethereumChain = isBeta ? _networkInfo.Goerli : _networkInfo.Ethereum;
+      const ethereumProvider = new ethers.providers.JsonRpcProvider(
+        ethereumChain.rpcUrl
+      );
+      const ethGasPrice = await ethereumProvider.getGasPrice();
+      extraL1FeeBig = sdkApi.getL1Fee(htgChainId, ethGasPrice);
+    }
     const totalL1Fee = gasLimit_big.mul(gasPrice).add(extraL1FeeBig);
     if (isMainAsset) {
       const finalFee = formatEthers(totalL1Fee, feeDecimals);

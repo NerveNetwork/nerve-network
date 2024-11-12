@@ -340,7 +340,7 @@ export function openL1Explorer(chain: string, type: string, query: string) {
     if (type === 'address') {
       url += '/address/' + query;
     } else if (type === 'hash') {
-      if (chain === 'TRON') {
+      if (chain === 'TRON' || chain === 'BCH') {
         url += '/transaction/' + query;
       } else {
         url += '/tx/' + query;
