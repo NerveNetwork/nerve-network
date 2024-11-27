@@ -126,7 +126,7 @@ const Origin = {
   Merlin: isBeta ? 'https://testnet-scan.merlinchain.io' : 'https://scan.merlinchain.io',
   Pulse: isBeta ? 'https://scan.v4.testnet.pulsechain.com/#' : 'https://scan.mypinata.cloud/ipfs/bafybeidn64pd2u525lmoipjl4nh3ooa2imd7huionjsdepdsphl5slfowy/#',
   FCH: 'https://freecash.info',
-  BCH: 'https://explorer.btc.com/bch',
+  BCH: 'https://www.oklink.com/bch',
   Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : ''
 };
 
