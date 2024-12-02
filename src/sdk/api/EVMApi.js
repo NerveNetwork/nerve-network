@@ -122,7 +122,7 @@ export async function approveERC20({
   };
   const KlaytnNativeId = getKlaytnNativeId();
   if (_provider.provider?.chainId === KlaytnNativeId) {
-    // Klaytn set default gas
+    // KAIA set default gas
     txData.gasPrice = '0x3a35294400';
   }
   await validateTx(_provider, txData);
@@ -193,7 +193,7 @@ export async function EVMCrossToNERVE({
   }
   const KlaytnNativeId = getKlaytnNativeId();
   if (_provider.provider?.chainId === KlaytnNativeId) {
-    // Klaytn set default gas
+    // KAIA set default gas
     txData.gasPrice = '0x3a35294400';
   }
   await validateTx(_provider, txData);

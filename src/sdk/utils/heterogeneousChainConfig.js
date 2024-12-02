@@ -42,7 +42,7 @@ export function getHetergenousChainConfig() {
     Optimism: isBeta
       ? 'https://kovan.optimism.io'
       : 'https://optimism-mainnet.public.blastapi.io',
-    Klaytn: isBeta
+    KAIA: isBeta
       ? 'https://api.baobab.klaytn.net:8651'
       : 'https://public-node-api.klaytnapi.com/v1/cypress',
     smartBCH: isBeta ? 'https://moeing.tech:9545' : 'https://smartbch.greyh.at',
@@ -246,15 +246,15 @@ export function getHetergenousChainConfig() {
       decimals: 18,
       rpcUrl: RPC_URL.Optimism
     },
-    Klaytn: {
-      name: 'Klaytn',
-      chainName: isBeta ? 'Klaytn_Beta' : 'Klaytn',
+    KAIA: {
+      name: 'KAIA',
+      chainName: isBeta ? 'KAIA_Beta' : 'KAIA',
       chainId: 116,
       assetKey: isBeta ? '5-118' : '9-448',
       mainAsset: 'KLAY',
       nativeId: isBeta ? '0x3e9' : '0x2019',
       decimals: 18,
-      rpcUrl: RPC_URL.Klaytn
+      rpcUrl: RPC_URL.KAIA
     },
     smartBCH: {
       name: 'smartBCH',

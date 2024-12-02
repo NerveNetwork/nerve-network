@@ -888,9 +888,9 @@ export class ETransfer {
     if (transactionParameters.from) {
       delete transactionParameters.from;
     }
-    if (this.provider._web3Provider?.chainId === _networkInfo.Klaytn.nativeId) {
+    if (this.provider._web3Provider?.chainId === _networkInfo.KAIA.nativeId) {
       // @ts-ignore
-      // Klaytn 网络设置gas为250，不然交易无法发送
+      // KAIA 网络设置gas为250，不然交易无法发送
       transactionParameters.gasPrice = '0x3a35294400';
     }
     return await this.sendTransaction(transactionParameters);
@@ -1053,9 +1053,9 @@ export class ETransfer {
       console.error('approve failed: ' + failed);
       return { success: false, message: 'approve failed: ' + failed };
     }
-    if (this.provider._web3Provider?.chainId === _networkInfo.Klaytn.nativeId) {
+    if (this.provider._web3Provider?.chainId === _networkInfo.KAIA.nativeId) {
       // @ts-ignore
-      // Klaytn 网络设置gas为250，不然交易无法发送
+      // KAIA 网络设置gas为250，不然交易无法发送
       transactionParameters.gasPrice = '0x3a35294400';
     }
     // @ts-ignore
