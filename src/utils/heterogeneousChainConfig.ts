@@ -18,7 +18,7 @@ import TRONLogo from '@/assets/img/chainLogo/tron.png';
 import MetisLogo from '@/assets/img/chainLogo/Metis.png';
 import LotexLogo from '@/assets/img/chainLogo/LOTEX.png';
 import OptimismLogo from '@/assets/img/chainLogo/optimism.png';
-import KlaytnLogo from '@/assets/img/chainLogo/Klaytn.png';
+import KAIALogo from '@/assets/img/chainLogo/KAIA.png';
 import SmartBCHLogo from '@/assets/img/chainLogo/smartBCH.png';
 import ENULSLogo from '@/assets/img/chainLogo/ENULS.png';
 import KavaLogo from '@/assets/img/chainLogo/KAVA.png';
@@ -80,7 +80,7 @@ const Origin = {
   Optimism: isBeta
     ? 'https://kovan-optimistic.etherscan.io'
     : 'https://optimistic.etherscan.io',
-  Klaytn: isBeta
+  KAIA: isBeta
     ? 'https://baobab.scope.klaytn.com'
     : 'https://scope.klaytn.com',
   smartBCH: isBeta ? 'https://smartscan.cash' : 'https://smartscan.cash',
@@ -171,7 +171,7 @@ export const RPC_URL = {
   Optimism: isBeta
     ? 'https://kovan.optimism.io'
     : 'https://optimism-mainnet.public.blastapi.io',
-  Klaytn: isBeta
+  KAIA: isBeta
     ? 'https://api.baobab.klaytn.net:8651'
     : 'https://klaytn-pokt.nodies.app',
   smartBCH: isBeta ? 'https://moeing.tech:9545' : 'https://smartbch.greyh.at',
@@ -428,18 +428,18 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Optimism
   },
-  Klaytn: {
+  KAIA: {
     type: 'EVM',
-    name: 'Klaytn',
-    chainName: isBeta ? 'Klaytn_Beta' : 'Klaytn',
+    name: 'KAIA',
+    chainName: isBeta ? 'KAIA_Beta' : 'KAIA',
     chainId: 116,
     assetKey: isBeta ? '5-118' : '9-448',
-    origin: Origin.Klaytn,
-    mainAsset: 'KLAY',
+    origin: Origin.KAIA,
+    mainAsset: 'KAIA',
     nativeId: isBeta ? '0x3e9' : '0x2019',
-    logo: KlaytnLogo,
+    logo: KAIALogo,
     decimals: 18,
-    rpcUrl: RPC_URL.Klaytn
+    rpcUrl: RPC_URL.KAIA
   },
   smartBCH: {
     type: 'EVM',

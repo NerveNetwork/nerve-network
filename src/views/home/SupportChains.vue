@@ -32,7 +32,7 @@ import TRON from '@/assets/img/supportChains/TRON.png';
 import METIS from '@/assets/img/supportChains/METIS.png';
 import IOTX from '@/assets/img/supportChains/IOTX.png';
 import Optimism from '@/assets/img/supportChains/Optimism.png';
-import Klaytn from '@/assets/img/supportChains/Klaytn.png';
+import KAIA from '@/assets/img/supportChains/KAIA.png';
 import smartBCH from '@/assets/img/supportChains/smartBCH.png';
 import NULS from '@/assets/img/supportChains/NULS.png';
 import KAVA from '@/assets/img/supportChains/KAVA.png';
@@ -77,7 +77,7 @@ const supportChains = [
   { src: METIS },
   { src: IOTX },
   { src: Optimism },
-  { src: Klaytn },
+  { src: KAIA },
   { src: smartBCH },
   { src: NULS },
   { src: KAVA },
