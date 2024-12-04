@@ -5,14 +5,17 @@ import { HeterogeneousInfo } from '@/store/types';
 import { useI18n } from 'vue-i18n';
 import { ethers } from 'ethers';
 import nerveswap from 'nerveswap-sdk';
-import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
+// import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
+import { getEVMProvider, getTRONProvider } from '@/utils/providerUtil';
 
 export default function useCrossIn(isTron = false) {
   const { t } = useI18n();
   let TronTransfer: any;
   const EvmTransfer = new ETransfer();
-  const { getWalletInfo } = useBroadcastNerveHex();
-  const { provider } = getWalletInfo();
+  // const { getWalletInfo } = useBroadcastNerveHex();
+  // const { provider } = getWalletInfo();
+  const providerInfo = isTron ? getTRONProvider() : getEVMProvider()
+  const provider = providerInfo?.provider
 
   if (isTron) {
     TronTransfer = new TronLinkApi();
