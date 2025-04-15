@@ -4,16 +4,16 @@ export function getHetergenousChainConfig() {
   const RPC_URL = {
     Ethereum: isBeta
       ? 'https://ethereum-goerli.publicnode.com'
-      : 'https://eth.drpc.org',
+      : 'https://ethereum.publicnode.com',
     BSC: isBeta
       ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
       : 'https://bsc-dataseed.binance.org/',
     Polygon: isBeta
       ? 'https://polygon-testnet.public.blastapi.io'
       : 'https://polygon-rpc.com',
-    Heco: isBeta
-      ? 'https://http-testnet.hecochain.com'
-      : 'https://http-mainnet.hecochain.com',
+    // Heco: isBeta
+    //   ? 'https://http-testnet.hecochain.com'
+    //   : 'https://http-mainnet.hecochain.com',
     OKTC: isBeta
       ? 'https://exchaintestrpc.okex.org'
       : 'https://exchainrpc.okex.org',
@@ -127,16 +127,16 @@ export function getHetergenousChainConfig() {
       decimals: 18,
       rpcUrl: RPC_URL.Polygon
     },
-    Heco: {
-      name: 'Heco',
-      chainName: isBeta ? 'Heco_Beta' : 'Heco',
-      chainId: 103,
-      assetKey: isBeta ? '5-9' : '9-55',
-      mainAsset: 'HT',
-      nativeId: isBeta ? '0x100' : '0x80',
-      decimals: 18,
-      rpcUrl: RPC_URL.Heco
-    },
+    // Heco: {
+    //   name: 'Heco',
+    //   chainName: isBeta ? 'Heco_Beta' : 'Heco',
+    //   chainId: 103,
+    //   assetKey: isBeta ? '5-9' : '9-55',
+    //   mainAsset: 'HT',
+    //   nativeId: isBeta ? '0x100' : '0x80',
+    //   decimals: 18,
+    //   rpcUrl: RPC_URL.Heco
+    // },
     OKTC: {
       name: 'OKTC',
       chainName: isBeta ? 'OKC_Beta' : 'OKTC',

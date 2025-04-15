@@ -58,7 +58,7 @@ const Origin = {
   Polygon: isBeta
     ? 'https://mumbai.polygonscan.com'
     : 'https://polygonscan.com',
-  Heco: isBeta ? 'https://testnet.hecoinfo.com' : 'https://hecoinfo.com',
+  // Heco: isBeta ? 'https://testnet.hecoinfo.com' : 'https://hecoinfo.com',
   OKTC: isBeta
     ? 'https://www.oklink.com/okexchain-test'
     : 'https://www.oklink.com/okexchain',
@@ -133,16 +133,16 @@ const Origin = {
 export const RPC_URL = {
   Ethereum: isBeta
     ? 'https://eth-goerli.public.blastapi.io'
-    : 'https://eth-pokt.nodies.app',
+    : 'https://ethereum.publicnode.com',
   BSC: isBeta
     ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
     : 'https://bsc-dataseed.binance.org/',
   Polygon: isBeta
     ? 'https://polygon-testnet.public.blastapi.io'
     : 'https://polygon-rpc.com',
-  Heco: isBeta
-    ? 'https://http-testnet.hecochain.com'
-    : 'https://http-mainnet.hecochain.com',
+  // Heco: isBeta
+  //   ? 'https://http-testnet.hecochain.com'
+  //   : 'https://http-mainnet.hecochain.com',
   OKTC: isBeta
     ? 'https://exchaintestrpc.okex.org'
     : 'https://exchainrpc.okex.org',
@@ -779,19 +779,19 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Mint
   },
-  Heco: {
-    type: 'EVM',
-    name: 'Heco',
-    chainName: isBeta ? 'Heco_Beta' : 'Heco',
-    chainId: 103,
-    assetKey: isBeta ? '5-9' : '9-55',
-    origin: Origin.Heco,
-    mainAsset: 'HT',
-    nativeId: isBeta ? '0x100' : '0x80',
-    logo: HecoLogo,
-    decimals: 18,
-    rpcUrl: RPC_URL.Heco
-  },
+  // Heco: {
+  //   type: 'EVM',
+  //   name: 'Heco',
+  //   chainName: isBeta ? 'Heco_Beta' : 'Heco',
+  //   chainId: 103,
+  //   assetKey: isBeta ? '5-9' : '9-55',
+  //   origin: Origin.Heco,
+  //   mainAsset: 'HT',
+  //   nativeId: isBeta ? '0x100' : '0x80',
+  //   logo: HecoLogo,
+  //   decimals: 18,
+  //   rpcUrl: RPC_URL.Heco
+  // },
   NULS: {
     type: 'NULS',
     name: 'NULS',
