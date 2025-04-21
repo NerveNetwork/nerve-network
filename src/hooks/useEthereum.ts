@@ -526,12 +526,12 @@ export default function useEthereum() {
         chain;
       await addEthereumChain({
         chainId: nativeId,
-        rpcUrls: [rpcUrl],
+        rpcUrls: [rpcUrl!],
         chainName: chainName,
         nativeCurrency: {
           name: name,
           symbol: mainAsset,
-          decimals: decimals
+          decimals: decimals!
         },
         blockExplorerUrls: [origin]
       });
