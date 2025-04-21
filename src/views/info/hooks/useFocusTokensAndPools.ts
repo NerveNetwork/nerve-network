@@ -4,11 +4,13 @@ import { getFocusPairsInfo, getFocusAssetsInfo } from '@/service/api';
 import {
   Division,
   divisionAndFix,
+  divisionDecimals,
   fixNumber,
   getOriginChain,
   priceFormat
 } from '@/utils/util';
 import { TokenItem, PoolItem } from '../types';
+import { NSymbol } from '@/constants/constants';
 
 export function useFocusPools() {
   const store = useStore();
@@ -34,6 +36,12 @@ export function useFocusPools() {
     if (res) {
       const list: PoolItem[] = [];
       res.map(v => {
+        if (v.token0Symbol === 'NULS') {
+          v.token0Symbol = NSymbol;
+        }
+        if (v.token1Symbol === 'NULS') {
+          v.token1Symbol = NSymbol;
+        }
         list.push({
           name: v.tokenLPSymbol,
           address: v.address,
@@ -81,6 +89,10 @@ export function useFocusTokens() {
     if (res) {
       const list: TokenItem[] = [];
       res.map(v => {
+        if (v.symbol === 'NULS') {
+          v.symbol = NSymbol;
+          v.price = divisionDecimals(v.price, 4);
+        }
         list.push({
           originChain: getOriginChain(v.sourceChainid, v.assetChainId),
           name: v.symbol,

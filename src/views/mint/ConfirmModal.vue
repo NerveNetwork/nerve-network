@@ -122,6 +122,7 @@ import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getMinterInfo } from '@/service/api/mint';
 import { IMintItem } from '@/service/api/types/mint';
 import { AssetItem } from '../swap/types';
+import { NKey, NDecimals, NSymbol } from '@/constants/constants';
 
 const props = defineProps<{
   show: boolean;
@@ -167,6 +168,14 @@ watch(
 async function getInfo() {
   loading.value = true;
   const result = await getMinterInfo(props.id, nerveAddress.value);
+  if (result.mintAsset === NKey) {
+    result.mintAssetDecimals = NDecimals;
+    result.mintAssetSymbol = NSymbol;
+  }
+  if (result.mintFeeAsset === NKey) {
+    result.mintFeeAssetDecimals = NDecimals;
+    result.mintFeeAssetSymbol = NSymbol;
+  }
   result.startTime = dayjs(+result.startTime * 1000).format(
     'YYYY-MM-DD HH:mm:ss'
   );

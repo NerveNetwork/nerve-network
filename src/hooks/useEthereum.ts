@@ -127,6 +127,13 @@ export default function useEthereum() {
         addFCHListener(provider);
         initFCHChainInfo(address, network);
       }
+    } else if (network === 'TBC') {
+      const result = await provider.getAddress();
+      address = result.tbcAddress || '';
+      if (address) {
+        addBCHListener(provider);
+        initFCHChainInfo(address, network);
+      }
     } else if (network === 'NULS' || network === 'NERVE') {
       address = await getNULSAddress(provider);
       if (address) {
@@ -181,6 +188,11 @@ export default function useEthereum() {
   function addFCHListener(provider: any) {
     if (provider) {
       provider.on('accountsChanged', handleAccountChange);
+    }
+  }
+  function addBCHListener(provider: any) {
+    if (provider) {
+      provider.on('accountChanged', handleAccountChange);
     }
   }
 
@@ -408,6 +420,8 @@ export default function useEthereum() {
       }
     } else if (network === 'FCH' || network === 'BCH') {
       provider.off('accountsChanged', handleAccountChange);
+    } else if (network === 'TBC') {
+      provider.off('accountChanged', handleAccountChange);
     } else {
       let _provider = provider;
       if ((network === 'NULS' || network === 'NERVE') && _provider.isNabox) {
@@ -483,6 +497,9 @@ export default function useEthereum() {
     } else if (network === 'BCH') {
       const result = await provider.createSession();
       state.address = result.selectedAddress;
+    } else if (network === 'TBC') {
+      const address = await provider.getAddress();
+      state.address = address?.tbcAddress || '';
     } else if (network === 'NULS' || network === 'NERVE') {
       if (provider.isNabox) {
         const { provider: _provider } = getNULSProvider();
@@ -498,7 +515,7 @@ export default function useEthereum() {
     }
     store.commit('changeNetwork', network);
     storage.set('providerType', providerType);
-    const notEVMChains = ['TRON', 'BTC', 'FCH', 'BCH']
+    const notEVMChains = ['TRON', 'BTC', 'FCH', 'BCH', 'TBC'];
     if (network === 'NULS' || network === 'NERVE') {
       if (provider.isNabox) {
         await switchNULSChain(network);

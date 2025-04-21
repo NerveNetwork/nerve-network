@@ -50,7 +50,7 @@ const router = useRouter();
 const { lang } = useLang();
 console.log(lang, 77);
 
-const copyRight = 'Copyright 2019-2024 @ All rights Reserved. NerveNetwork';
+const copyRight = 'Copyright 2019-2025 @ All rights Reserved. NerveNetwork';
 
 const linkConfig = computed(() => {
   return [

@@ -5,7 +5,7 @@ import storage from '@/utils/storage';
 export default async function AddChain() {
   const accountList = storage.get('accountList') || [];
   if (accountList.length) {
-    if (!accountList[0].address.FCH) {
+    if (!accountList[0].address.TBC) {
       accountList.map((account: any) => {
         const { address } = nerveswap.getAccountByPub(account.pub);
         account.address = address;

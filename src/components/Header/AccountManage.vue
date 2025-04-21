@@ -44,11 +44,11 @@
                   style="color: #94a6ce"
                 ></span>
                 <span
-                  v-else-if="item.type === 43"
+                  v-else-if="item.type === 43 && item.hId !== 204"
                   class="link flex-center"
                   @click="showAdditionFee(item.hash, item.expand)"
                 >
-                  {{ $t('transfer.transfer31') }}
+                  {{ $t('transfer.transfer31')}}
                   <el-icon color="#2688F7" class="is-loading">
                     <loading />
                   </el-icon>

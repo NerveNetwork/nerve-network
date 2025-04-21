@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { getTokenList, getPairList } from '@/service/api';
 import { TokenItem, PoolItem } from '../types';
 import { divisionAndFix, Division, fixNumber, priceFormat, getOriginChain } from '@/utils/util';
+import { NSymbol, NDecimals, NKey } from '@/constants/constants';
 
 export default function useTokensAndPools() {
   const tokens = ref<TokenItem[]>([]);
@@ -15,6 +16,10 @@ export default function useTokensAndPools() {
     if (res) {
       const list: TokenItem[] = [];
       res.list.map(v => {
+        if (v.symbol === 'NULS') {
+          v.symbol = NSymbol;
+          v.decimals = NDecimals;
+        }
         list.push({
           originChain: getOriginChain(v.sourceChainid, v.assetChainId),
           name: v.symbol,
@@ -35,6 +40,14 @@ export default function useTokensAndPools() {
     if (res) {
       const list: PoolItem[] = [];
       res.list.map(v => {
+        if (v.token0 === NKey) {
+          v.token0Decimals = NDecimals;
+          v.token0Symbol = NSymbol;
+        }
+        if (v.token1 === NKey) {
+          v.token1Decimals = NDecimals;
+          v.token1Symbol = NSymbol;
+        }
         // console.log(v.tokenLPSymbol, 888);
         list.push({
           name: v.tokenLPSymbol,

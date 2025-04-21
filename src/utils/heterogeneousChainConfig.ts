@@ -1,7 +1,7 @@
 import config from '@/config';
 const isBeta = config.isBeta;
 
-import NULSLogo from '@/assets/img/chainLogo/NULS.png';
+import NULSLogo from '@/assets/img/chainLogo/NAI.png';
 import NERVELogo from '@/assets/img/chainLogo/NERVE.png';
 import ETHLogo from '@/assets/img/chainLogo/ETH.png';
 import BSCLogo from '@/assets/img/chainLogo/BSC.jpg';
@@ -46,6 +46,7 @@ import PulseLogo from '@/assets/img/chainLogo/Pulse.jpg';
 import FCHLogo from '@/assets/img/chainLogo/FCH.jpg';
 import BCHLogo from '@/assets/img/chainLogo/BCH.png';
 import MintLogo from '@/assets/img/chainLogo/Mint.jpg';
+import TBCLogo from '@/assets/img/chainLogo/TBC.png';
 
 // explorer
 const Origin = {
@@ -80,9 +81,7 @@ const Origin = {
   Optimism: isBeta
     ? 'https://kovan-optimistic.etherscan.io'
     : 'https://optimistic.etherscan.io',
-  KAIA: isBeta
-    ? 'https://baobab.scope.klaytn.com'
-    : 'https://scope.klaytn.com',
+  KAIA: isBeta ? 'https://baobab.scope.klaytn.com' : 'https://scope.klaytn.com',
   smartBCH: isBeta ? 'https://smartscan.cash' : 'https://smartscan.cash',
   ENULS: isBeta ? 'https://beta.evmscan.nuls.io' : 'https://evmscan.nuls.io',
   KAVA: isBeta
@@ -115,19 +114,28 @@ const Origin = {
   Manta: isBeta
     ? 'https://manta-testnet.calderaexplorer.xyz'
     : 'https://pacific-explorer.manta.network',
-  X1: isBeta ? 'https://www.oklink.com/xlayer-test' : 'https://www.oklink.com/xlayer',
+  X1: isBeta
+    ? 'https://www.oklink.com/xlayer-test'
+    : 'https://www.oklink.com/xlayer',
   BTC: isBeta ? 'https://mempool.space/testnet' : 'https://mempool.space',
   Zeta: isBeta
     ? 'https://athens3.explorer.zetachain.com'
     : 'https://explorer.mainnet.zetachain.com',
   Shardeum: isBeta ? 'https://explorer-sphinx.shardeum.org' : '',
-  Mode: isBeta ? 'https://sepolia.explorer.mode.network' : 'https://explorer.mode.network',
+  Mode: isBeta
+    ? 'https://sepolia.explorer.mode.network'
+    : 'https://explorer.mode.network',
   Blast: isBeta ? 'https://testnet.blastscan.io' : 'https://blastscan.io',
-  Merlin: isBeta ? 'https://testnet-scan.merlinchain.io' : 'https://scan.merlinchain.io',
-  Pulse: isBeta ? 'https://scan.v4.testnet.pulsechain.com/#' : 'https://scan.mypinata.cloud/ipfs/bafybeidn64pd2u525lmoipjl4nh3ooa2imd7huionjsdepdsphl5slfowy/#',
+  Merlin: isBeta
+    ? 'https://testnet-scan.merlinchain.io'
+    : 'https://scan.merlinchain.io',
+  Pulse: isBeta
+    ? 'https://scan.v4.testnet.pulsechain.com/#'
+    : 'https://scan.mypinata.cloud/ipfs/bafybeidn64pd2u525lmoipjl4nh3ooa2imd7huionjsdepdsphl5slfowy/#',
   FCH: 'https://freecash.info',
   BCH: 'https://www.oklink.com/bch',
-  Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : ''
+  Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : '',
+  TBC: isBeta ? 'http://explorer.turingbitchain.io' : ''
 };
 
 export const RPC_URL = {
@@ -207,20 +215,45 @@ export const RPC_URL = {
   Manta: isBeta
     ? 'https://manta-testnet.calderachain.xyz/http'
     : 'https://pacific-rpc.manta.network/http',
-  X1: isBeta ? 'https://x1testrpc.okx.com' : 'https://endpoints.omniatech.io/v1/xlayer/mainnet/public',
+  X1: isBeta
+    ? 'https://x1testrpc.okx.com'
+    : 'https://endpoints.omniatech.io/v1/xlayer/mainnet/public',
   BTC: '',
   Zeta: isBeta
     ? 'https://zetachain-athens-evm.blockpi.network/v1/rpc/public'
     : 'https://api.mainnet.zetachain.com/evm',
   Shardeum: isBeta ? 'https://sphinx.shardeum.org' : '',
-  Mode: isBeta ? 'https://sepolia.mode.network' : 'https://mainnet.mode.network',
+  Mode: isBeta
+    ? 'https://sepolia.mode.network'
+    : 'https://mainnet.mode.network',
   Blast: isBeta ? 'https://sepolia.blast.io' : 'https://rpc.blast.io',
-  Merlin: isBeta ? 'https://testnet-rpc.merlinchain.io' : 'https://rpc.merlinchain.io',
-  Pulse: isBeta ? 'https://rpc.v4.testnet.pulsechain.com' : 'https://rpc.pulsechain.com',
-  Mint: isBeta ? 'https://sepolia-testnet-rpc.mintchain.io' : ''
+  Merlin: isBeta
+    ? 'https://testnet-rpc.merlinchain.io'
+    : 'https://rpc.merlinchain.io',
+  Pulse: isBeta
+    ? 'https://rpc.v4.testnet.pulsechain.com'
+    : 'https://rpc.pulsechain.com',
+  Mint: isBeta ? 'https://sepolia-testnet-rpc.mintchain.io' : '',
+  TBC: isBeta ? 'https://turingwallet.xyz/v1/tbc' : ''
 };
 
-export const _networkInfo = {
+interface IChain {
+  [key: string]: {
+    type: string;
+    name: string;
+    chainName: string;
+    label?: string;
+    chainId: number;
+    assetKey: string;
+    origin: string;
+    mainAsset: string;
+    nativeId: string;
+    logo: string;
+    decimals?: number;
+    rpcUrl?: string;
+  };
+}
+export const _networkInfo: IChain = {
   BTC: {
     type: 'BTC',
     name: 'BTC',
@@ -779,6 +812,19 @@ export const _networkInfo = {
     decimals: 18,
     rpcUrl: RPC_URL.Mint
   },
+  TBC: {
+    type: 'TBC',
+    name: 'TBC',
+    chainName: 'TBC',
+    chainId: 204,
+    assetKey: isBeta ? '5-186' : '9-837',
+    origin: Origin.TBC,
+    mainAsset: 'TBC',
+    nativeId: '0x-e',
+    logo: TBCLogo,
+    decimals: 6,
+    rpcUrl: RPC_URL.TBC
+  },
   // Heco: {
   //   type: 'EVM',
   //   name: 'Heco',
@@ -815,6 +861,16 @@ export const _networkInfo = {
     logo: NERVELogo
   }
 };
+
+Object.values(_networkInfo).map(chain => {
+  if (chain.name === 'BSC') {
+    chain.label = 'BNB Chain';
+  } else if (chain.name === 'NULS') {
+    chain.label = 'NULS AI';
+  } else {
+    chain.label = chain.name;
+  }
+});
 
 if (isBeta) {
   // @ts-ignore

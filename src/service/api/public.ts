@@ -4,7 +4,8 @@ import {
   checkCanToL1,
   genId,
   isBeta,
-  checkCanToL1OnCurrent
+  checkCanToL1OnCurrent,
+  divisionDecimals
 } from '@/utils/util';
 import { listen } from '@/service/socket/promiseSocket';
 import config from '@/config';
@@ -13,6 +14,7 @@ import http from '@/service';
 import { HeterogeneousInfo } from '@/store/types';
 import { getCrossChainInfo } from '@/utils/getSystemConfig';
 import storage from '@/utils/storage';
+import { calDecimalsAndSymbol, NSymbol, NKey, NDecimals } from '@/constants/constants';
 
 const url = config.WS_URL;
 
@@ -64,8 +66,13 @@ export async function getAssetPrice(
   isForCalFee?: boolean
 ) {
   const params = isForCalFee ? [chainId, assetId, 'FEE'] : [chainId, assetId];
+  const key = chainId + '-' + assetId;
   const res = await http.rPost('getBestSymbolPrice', params);
-  return res?.result || '0';
+  let result = res?.result || '0';
+  if (key === NKey) {
+    result = divisionDecimals(result, NDecimals);
+  }
+  return result;
 }
 
 /**
@@ -155,16 +162,27 @@ export async function getAssetList(address = config.destroyAddress) {
     });
   }
   res.map((item: any) => {
+    const { decimals, symbol } = calDecimalsAndSymbol(item);
+    item.decimals = decimals;
+    item.symbol = symbol;
     const decimal = item.decimals;
     item.number = divisionAndFix(item.total, decimal, decimal);
     item.locking = divisionAndFix(item.lock, decimal);
     // item.available = divisionAndFix(item.balanceStr, decimal, decimal);
-    item.valuation = Times(item.number || 0, item.usdPrice).toFixed(2);
+    if (symbol == NSymbol) {
+      item.valuation = Times(
+        item.number || 0,
+        divisionDecimals(item.usdPrice, decimals)
+      ).toFixed(2);
+      item.icon = '';
+    } else {
+      item.valuation = Times(item.number || 0, item.usdPrice).toFixed(2);
+    }
     item.available = divisionAndFix(item.balanceStr, decimal, decimal);
     item.listAvailable = divisionAndFix(item.balanceStr, decimal, 6);
     item.originNetwork = Object.values(_networkInfo).find(
       v => v.chainId === item.registerChainId
-    )?.name;
+    )?.label;
     item.canToL1 = checkCanToL1(item);
     item.canToL1OnCurrent = checkCanToL1OnCurrent(item);
     item.registerContract = getContractAddress(

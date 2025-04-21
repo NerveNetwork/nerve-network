@@ -46,6 +46,13 @@ import {
 } from './api/BCHApi';
 
 import {
+  handleGetTBCBalance,
+  getTBCTransactionFee,
+  TBCCrossToNERVE,
+  getTBCTransactionByHash
+} from './api/TBCApi';
+
+import {
   sendNERVETx,
   sendWithdrawalTx,
   sendJoinStakingTx,
@@ -133,6 +140,12 @@ const nerve = {
     getTx: getBCHTransactionDetail,
     getWithdrawInfo: getBCHWithdrawInfo,
     getWithdrawalFee: getBCHWithdrawalFee
+  },
+  tbc: {
+    getBalance: handleGetTBCBalance,
+    calTxFee: getTBCTransactionFee,
+    crossIn: TBCCrossToNERVE,
+    getTx: getTBCTransactionByHash
   },
   transfer: {
     transfer: sendNERVETx,

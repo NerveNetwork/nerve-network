@@ -16,6 +16,7 @@ import {
   DefaultAsset,
   AssetItem
 } from '../types';
+import { NDecimals, NSymbol } from '@/constants/constants';
 
 export default function useSelectAsset() {
   const { nerveAddress } = useStoreState();
@@ -97,6 +98,14 @@ export default function useSelectAsset() {
         const toAmount = v.receivedTokenAmount.amount;
         const fromChain = getOriginChain(fromToken.heterogeneousChainId);
         const toChain = getOriginChain(toToken.heterogeneousChainId);
+        if (fromToken.symbol === 'NULS') {
+          fromToken.symbol = NSymbol;
+          fromToken.decimals = NDecimals;
+        }
+        if (toToken.symbol === 'NULS') {
+          toToken.symbol = NSymbol;
+          toToken.decimals = NDecimals;
+        }
         list.push({
           time: dayjs(v.txTime * 1000).format('MM-DD HH:mm'),
           fromAmount: divisionDecimals(fromAmount, fromToken.decimals),

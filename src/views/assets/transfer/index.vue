@@ -25,6 +25,7 @@
       <div v-show="activeName === TransferType.CrossIn">
         <BTCCrossIn v-if="network === 'BTC'" />
         <FCHCrossIn :network="network" v-else-if="network === 'FCH' || network === 'BCH'" />
+        <TBCCrossIn v-else-if="network === 'TBC'" />
         <cross-in v-else :transferAsset="transferAsset"></cross-in>
       </div>
       <common-transfer
@@ -44,6 +45,7 @@ import { defineComponent, ref, watch, PropType } from 'vue';
 import CrossIn from './CrossIn.vue';
 import BTCCrossIn from './BTCCrossIn.vue';
 import FCHCrossIn from './FCHCrossIn.vue';
+import TBCCrossIn from './TBCCrossIn.vue';
 import CommonTransfer from './CommonTransfer.vue';
 import Withdrawal from './Withdrawal.vue';
 
@@ -55,6 +57,7 @@ export default defineComponent({
     CrossIn,
     BTCCrossIn,
     FCHCrossIn,
+    TBCCrossIn,
     CommonTransfer,
     Withdrawal
   },

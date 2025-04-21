@@ -1,6 +1,6 @@
 <template>
   <img class="symbol-icon" v-lazy="iconSrc" :key="iconSrc" />
-<!--  <el-image class="symbol-icon" :key="iconSrc" :src="iconSrc" lazy>
+  <!--  <el-image class="symbol-icon" :key="iconSrc" :src="iconSrc" lazy>
     <template #error>
       <img class="symbol-icon" :src="defaultIcon" />
     </template>
@@ -12,6 +12,7 @@ import { defineComponent, computed } from 'vue';
 import { getIconSrc } from '@/utils/util';
 import defaultIcon from '@/assets/img/defaultIcon.svg';
 import storage from '@/utils/storage';
+import { NKey, NSymbol } from '@/constants/constants';
 
 export default defineComponent({
   props: {
@@ -20,10 +21,21 @@ export default defineComponent({
   },
   name: 'SymbolIcon',
   setup(props) {
+    const tokenSymbol = computed(() => {
+      if (
+        props.icon === 'NULS' ||
+        props.icon === 'NULS AI' ||
+        props.assetKey === NKey
+      ) {
+        return NSymbol;
+      }
+      return props.icon;
+    });
+
     const iconSrc = computed(() => {
       const logoConfig = storage.get('logoConfig');
       if (!props.assetKey || !logoConfig[props.assetKey]) {
-        return getIconSrc(props.icon || '');
+        return getIconSrc(tokenSymbol.value || '');
       } else {
         return logoConfig[props.assetKey];
       }

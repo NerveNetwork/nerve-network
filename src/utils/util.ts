@@ -450,10 +450,10 @@ export function getOriginChain(
   const chainsInfo = Object.values(_networkInfo);
   let chainName = '';
   if (heterogeneousChainId !== 0) {
-    chainName = chainsInfo.find(v => v.chainId === heterogeneousChainId)!.name;
+    chainName = chainsInfo.find(v => v.chainId === heterogeneousChainId)!.label || '';
   } else {
-    if (!assetChainId) return 'NULS';
-    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS';
+    if (!assetChainId) return 'NULS AI';
+    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS AI';
   }
   return chainName;
 }

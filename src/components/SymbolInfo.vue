@@ -1,15 +1,20 @@
 <template>
   <div class="symbol-chain-info flex-center">
-    <SymbolIcon :icon="props.logo || props.name" :asset-key="props.assetKey"></SymbolIcon>
+    <SymbolIcon
+      :icon="props.logo || props.name"
+      :asset-key="props.assetKey"
+    ></SymbolIcon>
     <div class="chain-info">
       <span class="name">{{ props.name }}</span>
-      <span class="chain">{{ props.chain }}&nbsp;&nbsp;|&nbsp;&nbsp;ID: {{ props.assetKey }}</span>
+      <span class="chain">
+        {{ chainName }}&nbsp;&nbsp;|&nbsp;&nbsp;ID: {{ props.assetKey }}
+      </span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 
 const props = defineProps<{
@@ -20,6 +25,13 @@ const props = defineProps<{
 }>();
 
 const name = ref('hi');
+
+const chainName = computed(() => {
+  if (props.chain === 'NULS' || props.chain === 'NAI') {
+    return 'NULS AI';
+  }
+  return props.chain;
+});
 </script>
 
 <style lang="scss">

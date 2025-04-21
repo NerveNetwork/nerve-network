@@ -243,7 +243,9 @@ async function pollingTx(txs: TxInfo[]) {
     } else if (v.L1Chain === 'FCH') {
       return handleFCHTx(v);
     } else if (v.L1Chain === 'BCH') {
-      return handleBCHTx(v)
+      return handleBCHTx(v);
+    } else if (v.L1Chain === 'TBC') {
+      return handleTBCTx(v);
     } else {
       return handleEVMTx(v);
     }
@@ -308,6 +310,16 @@ async function handleBCHTx(tx: TxInfo) {
     hash: tx.hash,
     result: {
       status: result?.state === 'success' ? 1 : 0
+    }
+  };
+}
+async function handleTBCTx(tx: TxInfo) {
+  const result = await nerveswap.tbc.getTx(tx.hash);
+  // console.log(result, '0-0-0-0-');
+  return {
+    hash: tx.hash,
+    result: {
+      status: result.blockhash ? 1 : 0
     }
   };
 }

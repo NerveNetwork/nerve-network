@@ -73,7 +73,7 @@ import { ETransfer } from '@/utils/api';
 import TronLinkApi from '@/utils/tronLink';
 import config from '@/config';
 import useCrossOutFee from '../hooks/useCrossOutFee';
-import useBTCsCrossOut from '../hooks/useBTCsCrossOut'
+import useBTCsCrossOut from '../hooks/useBTCsCrossOut';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 
 import {
@@ -87,6 +87,7 @@ import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import storage from '@/utils/storage';
 import { getWithdrawalGasLimit } from '@/utils/getSystemConfig';
 import nerveswap from 'nerveswap-sdk';
+import { NSymbol } from '@/constants/constants';
 
 export default defineComponent({
   name: 'withdrawal',
@@ -101,17 +102,24 @@ export default defineComponent({
     const {
       // getBTCWithdrawalInfo,
       // getBTCCrossOutFee,
-      getCrossOutFee,
+      getCrossOutFee
       // getFCHWithdrawalInfo,
       // getFCHCrossOutFee
     } = useCrossOutFee();
 
-    const { isBTCs, btcHid, validBTCsAddress, getBTCsWithdrawalInfo, getBTCsCrossOutFee } = useBTCsCrossOut(father.network)
+    const {
+      isBTCs,
+      isTBC,
+      btcHid,
+      validBTCsAddress,
+      getBTCsWithdrawalInfo,
+      getBTCsCrossOutFee
+    } = useBTCsCrossOut(father.network);
 
     const loading = ref(false);
     const toAddress = ref(father.address);
     const addressError = ref('');
-    const fee = ref('')
+    const fee = ref('');
     const confirmTip = ref(false);
     watch(
       () => toAddress.value,
@@ -123,14 +131,8 @@ export default defineComponent({
               const tron = new TronLinkApi();
               flag = tron.validAddress(val);
             } else if (isBTCs) {
-              flag = validBTCsAddress(val)
-            } /* else if (father.network === 'BTC') {
-              flag = nerveswap.btc.checkBTCAddress(!isBeta, val);
-            } else if (father.network === 'FCH') {
-              flag = nerveswap.fch.validateAddress(val)
-            } else if (father.network === 'BCH') {
-              flag = nerveswap.bch.validateAddress(val)
-            }  */else {
+              flag = validBTCsAddress(val);
+            } else {
               const transfer = new ETransfer();
               flag = transfer.validateAddress(val);
             }
@@ -188,29 +190,22 @@ export default defineComponent({
       const crossChainInfo = storage.get('crossChainInfo');
       if (isBTCs) {
         const multySignAddress = crossChainInfo[btcHid].multySignAddress;
-        await getBTCsWithdrawalInfo(multySignAddress)
-        if (father.network === 'BTC') {
-          getBTCCrossOutFeeHandle()
+        if (isTBC) {
+          getBTCCrossOutFeeHandle();
+        } else {
+          await getBTCsWithdrawalInfo(multySignAddress);
+          if (father.network === 'BTC') {
+            getBTCCrossOutFeeHandle();
+          }
         }
       }
-      /* if (father.network === 'BTC') {
-        const multySignAddress = crossChainInfo['201'].multySignAddress;
-        await getBTCWithdrawalInfo(multySignAddress);
-        getBTCCrossOutFeeHandle();
-      } else if (father.network === 'FCH') {
-        const multySignAddress = crossChainInfo['202'].multySignAddress;
-        await getFCHWithdrawalInfo(multySignAddress, 202)
-      } else if (father.network === 'BCH') {
-        const multySignAddress = crossChainInfo['203'].multySignAddress;
-        await getFCHWithdrawalInfo(multySignAddress, 203)
-      } */ 
     });
 
     function getFeeAssetInfo() {
       const { network } = father;
       const feeAssets: AssetItemType[] = [];
       const htgMainAsset = Object.values(_networkInfo).filter(
-        v => v.name !== 'NULS'
+        v => v.name !== NSymbol
       );
       father.allAssetsList.map(v => {
         htgMainAsset.map(item => {
@@ -260,15 +255,8 @@ export default defineComponent({
     watch(
       () => amount.value,
       val => {
-        if (Number(val) && isBTCs) {
-          getBTCCrossOutFeeHandle()
-          // if (father.network === 'BTC') {
-          //   getBTCCrossOutFeeHandle();
-          // } else if (father.network === 'FCH') {
-          //   getFCHCrossOutFeeHandle();
-          // } else if (father.network === 'BCH') {
-          //   getFCHCrossOutFeeHandle()
-          // }
+        if (Number(val) && isBTCs && !isTBC) {
+          getBTCCrossOutFeeHandle();
         }
       }
     );
@@ -276,7 +264,7 @@ export default defineComponent({
     async function getCrossOutFeeHandle() {
       const withdrawalChain = father.network;
       if (isBTCs) {
-        getBTCCrossOutFeeHandle()
+        getBTCCrossOutFeeHandle();
       } else {
         const {
           chainId,
@@ -285,7 +273,8 @@ export default defineComponent({
           originNetwork: feeChain
         } = selectedFeeAsset.value;
         const { isToken, heterogeneousChainId } = heterogeneousInfo;
-        const feeIsNVT = chainId === config.chainId && assetId === config.assetId;
+        const feeIsNVT =
+          chainId === config.chainId && assetId === config.assetId;
         fee.value = await getCrossOutFee({
           hId: heterogeneousChainId,
           useMainAsset: feeChain === withdrawalChain,
@@ -295,15 +284,6 @@ export default defineComponent({
           isTRX: feeChain === 'TRON'
         });
       }
-      /* if (withdrawalChain === 'BTC') {
-        getBTCCrossOutFeeHandle();
-        return;
-      } else if (withdrawalChain === 'FCH') {
-        getFCHCrossOutFeeHandle();
-        return;
-      } else if (withdrawalChain === 'BCH') {
-        getFCHCrossOutFeeHandle()
-      } */
     }
 
     async function getBTCCrossOutFeeHandle() {
@@ -364,8 +344,7 @@ export default defineComponent({
           Minus(balance.value, Plus(amount.value, fee.value)).toNumber() < 0)
       ) {
         amountErrorTip.value = t('transfer.transfer15');
-      } else if ( isBTCs && Minus(amount.value, 0.00000546).toNumber() < 0
-      ) {
+      } else if (isBTCs && Minus(amount.value, 0.00000546).toNumber() < 0) {
         amountErrorTip.value = 'Minimum quantity is 0.00000546';
       } else if (Minus(available, fee.value).toNumber() < 0) {
         amountErrorTip.value = t('transfer.transfer18');
@@ -442,9 +421,12 @@ export default defineComponent({
           pub: '0369b20002bc58c74cb6fd5ef564f603834393f53bed20c3314b4b7aba8286a7e0'
         }); */
         const { provider, EVMAddress, pub } = getWalletInfo();
-        let targetAddress = toAddress.value
-        if (father.network === 'BCH' && !targetAddress.startsWith(nerveswap.bch.addressPrefix)) {
-          targetAddress = nerveswap.bch.addressPrefix + toAddress.value
+        let targetAddress = toAddress.value;
+        if (
+          father.network === 'BCH' &&
+          !targetAddress.startsWith(nerveswap.bch.addressPrefix)
+        ) {
+          targetAddress = nerveswap.bch.addressPrefix + toAddress.value;
         }
         const result = await nerveswap.transfer.withdrawal({
           provider,

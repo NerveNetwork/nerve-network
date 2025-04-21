@@ -101,6 +101,7 @@ import ChartTab from './ChartTab.vue';
 import TxList from './TxList.vue';
 import { getPoolInfo } from '@/service/api';
 import { Division, divisionAndFix, fixNumber } from '@/utils/util';
+import { NSymbol, NDecimals } from '@/constants/constants';
 import { PoolDetail } from '../types';
 
 const { t } = useI18n();
@@ -115,6 +116,14 @@ const poolInfo = ref<PoolDetail>({} as PoolDetail);
 async function getPoolDetail() {
   const res = await getPoolInfo(assetKey);
   if (res) {
+    if (res.token0Symbol === 'NULS') {
+      res.token0Symbol = NSymbol;
+      res.token0Decimals = NDecimals;
+    }
+    if (res.token1Symbol === 'NULS') {
+      res.token1Symbol = NSymbol;
+      res.token1Decimals = NDecimals;
+    }
     poolInfo.value = {
       name: res.token0Symbol + '/' + res.token1Symbol,
       address: res.address,

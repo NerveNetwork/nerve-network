@@ -10,7 +10,7 @@
           @click.stop="switchChain(item)"
         >
           <img :src="item.logo" alt="" />
-          <span>{{ item.name }}</span>
+          <span>{{ item.label }}</span>
         </li>
         <div class="pop-arrow"></div>
       </ul>
@@ -29,6 +29,7 @@ import {
   getTRONProvider,
   getFCHProvider,
   getBCHProvider,
+  getTBCProvider,
   TRONWebProvider,
   UnisatProvider
 } from '../utils/providerUtil';
@@ -60,6 +61,8 @@ export default defineComponent({
         rpcUrls: v.rpcUrl ? [v.rpcUrl] : [],
         name: v.name,
         chainName: v.chainName,
+        // @ts-ignore
+        label: v.label,
         nativeCurrency: {
           name: v.name,
           symbol: v.mainAsset,
@@ -129,7 +132,8 @@ export default defineComponent({
             item.name === 'BTC' ||
             item.name === 'TRON' ||
             item.name === 'FCH' ||
-            item.name === 'BCH'
+            item.name === 'BCH' ||
+            item.name === 'TBC'
           ) {
             if (!provider.isNabox) {
               toastError('Please switch wallet');
@@ -148,6 +152,9 @@ export default defineComponent({
               } else if (item.name === 'BCH') {
                 const { provider } = getBCHProvider();
                 await provider.createSession();
+              } else if (item.name === 'TBC') {
+                const { provider } = getTBCProvider();
+                await provider.connect();
               }
               storage.set('network', item.name);
               reload();

@@ -1208,13 +1208,14 @@ function formatEthers(amount: any, decimals: number) {
 export function calWithdrawalFeeForBTC(
   btcFeeAmount: string,
   mainAssetUSD = '',
+  mainAssetDecimals: number,
   feeUSD = '',
   feeDecimals: number,
   isMainAsset: boolean,
   isNVT?: boolean
 ) {
   if (isMainAsset) {
-    return formatEthers(btcFeeAmount, 8);
+    return formatEthers(btcFeeAmount, mainAssetDecimals);
   } else {
     const feeUSDBig = ethers.utils.parseUnits(feeUSD.toString(), 18);
     const mainAssetUSDBig = ethers.utils.parseUnits(
@@ -1224,7 +1225,7 @@ export function calWithdrawalFeeForBTC(
     let result: any = mainAssetUSDBig
       .mul(btcFeeAmount)
       .mul(ethers.utils.parseUnits('1', feeDecimals))
-      .div(ethers.utils.parseUnits('1', 8)) // 8 for btc decimal
+      .div(ethers.utils.parseUnits('1', mainAssetDecimals)) // 8 for btc decimal
       .div(feeUSDBig);
     if (isNVT) {
       const numberStr = ethers.utils.formatUnits(result, feeDecimals);

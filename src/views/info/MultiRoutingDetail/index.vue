@@ -141,9 +141,10 @@ function getChainNameById(sourceChainId: number, assetChainId: number) {
   const chains = Object.values(_networkInfo);
   let chainName = '';
   if (sourceChainId !== 0) {
-    chainName = chains.find(v => v.chainId === sourceChainId)!.name;
+    chainName = chains.find(v => v.chainId === sourceChainId)!.label || '';
   } else {
-    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS';
+    console.log(1234);
+    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS AI';
   }
   return chainName;
 }

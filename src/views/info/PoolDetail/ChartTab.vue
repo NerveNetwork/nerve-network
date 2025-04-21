@@ -32,7 +32,8 @@ import {
   getMultiPairChartData
 } from '@/service/api';
 import { ChartTabItem, ChartItem } from '../types';
-import { adaptiveFix, divisionAndFix } from '@/utils/util';
+import { adaptiveFix, divisionAndFix, divisionDecimals } from '@/utils/util';
+import { NKey } from '@/constants/constants';
 
 const props = defineProps<{
   assetKey?: string;
@@ -92,6 +93,8 @@ async function getChartData(key: string, tokenKey?: string) {
       };
       liq.push(liqItem);
       if (!props.isPool && !props.isMultiRouting) {
+        v.price =
+          props.assetKey === NKey ? divisionDecimals(v.price, 5) : v.price;
         const priceItem = {
           label: v.period,
           value: divisionAndFix(v.price, 18, 18)

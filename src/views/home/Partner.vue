@@ -24,7 +24,7 @@ import Heco from '@/assets/img/partner/Heco.png';
 import OKEXChain from '@/assets/img/partner/OEC.png';
 import Kcc from '@/assets/img/partner/Kcc.png';
 import Harmony from '@/assets/img/partner/Harmony.png';
-import NULS from '@/assets/img/partner/nuls.jpg';
+import NULS from '@/assets/img/partner/NULS.png';
 import Nabox from '@/assets/img/partner/nabox.jpg';
 import SlowMist from '@/assets/img/partner/slowMist.jpg';
 import ChainGuard from '@/assets/img/partner/chainsGuard.jpg';

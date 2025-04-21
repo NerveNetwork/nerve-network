@@ -52,8 +52,9 @@ import PoolsTable from '../Overview/PoolsTable.vue';
 import TxList from '../PoolDetail/TxList.vue';
 import { getTokenInfo } from '@/service/api';
 import { TokenDetail } from '@/views/info/types';
-import { divisionAndFix, priceFormat } from '@/utils/util';
+import { divisionAndFix, divisionDecimals, priceFormat, timesDecimals } from '@/utils/util';
 import useTokensAndPools from '@/views/info/hooks/useTokensAndPools';
+import { NDecimals, NSymbol } from '@/constants/constants';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -69,7 +70,13 @@ const tokenInfo = ref<TokenDetail>({} as TokenDetail);
 async function getTokenDetail() {
   // getTxs({tokenKey:assetKey})
   const res = await getTokenInfo(assetKey);
+  console.log(res, 23423);
   if (res) {
+    if (res.symbol === 'NULS') {
+      res.symbol = NSymbol;
+      res.decimals = NDecimals;
+      res.price = divisionDecimals(res.price, NDecimals);
+    }
     tokenInfo.value = {
       name: res.symbol,
       assetKey: res.assetChainId + '-' + res.assetId,

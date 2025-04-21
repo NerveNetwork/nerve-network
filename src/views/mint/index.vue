@@ -30,6 +30,7 @@ import { divisionDecimals, fixNumber, Division } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getMintList } from '@/service/api/mint';
 import { IMintItem } from '@/service/api/types/mint';
+import { NKey, NDecimals, NSymbol } from '@/constants/constants';
 
 const { nerveAddress } = useStoreState();
 const { targetAddress } = useMintBaseInfo();
@@ -66,6 +67,14 @@ async function getList() {
     process
   });
   result.list.map(v => {
+    if (v.mintAsset === NKey) {
+      v.mintAssetDecimals = NDecimals;
+      v.mintAssetSymbol = NSymbol;
+    }
+    if (v.mintFeeAsset === NKey) {
+      v.mintFeeAssetDecimals = NDecimals;
+      v.mintFeeAssetSymbol = NSymbol;
+    }
     v.startTime = dayjs(+v.startTime * 1000).format('YYYY-MM-DD HH:mm:ss');
     v.assetUnlockTime = dayjs(+v.assetUnlockTime * 1000).format(
       'YYYY-MM-DD HH:mm:ss'

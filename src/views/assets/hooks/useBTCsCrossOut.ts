@@ -27,7 +27,7 @@ interface IGetBTCFeeParams {
   feeDecimals: number;
   feeAssetKey?: string;
   isNVT?: boolean;
-  withdrawalChain?: string
+  withdrawalChain?: string;
 }
 
 interface IGetBTCAddFeeAmount {
@@ -42,18 +42,20 @@ interface IGetBTCAddFeeAmount {
   };
 }
 
-const prociderConfig = {
+const providerConfig = {
   201: nerveswap.btc,
   202: nerveswap.fch,
-  203: nerveswap.bch
+  203: nerveswap.bch,
+  204: nerveswap.tbc
 };
 
-
+const TBCWithdrawFee = '0.01';
 
 export default function useBTCsCrossOut(chainName?: string) {
   const hid = checkIsBTCs(chainName || 'BTC');
   const { toastError } = useToast();
-  let isBTCs = !!chainName && !!hid
+  let isBTCs = !!chainName && !!hid;
+  let isTBC = chainName === 'TBC';
   const btcFeePaiedEnough = ref(false); // btc cross oust had paid enougn for nerve pack tx
   const canAdd = ref(true); // btc cross out can add addition fee
   let btcWithdrawalInfo: IBTCWithdrawalInfo = {
@@ -66,14 +68,15 @@ export default function useBTCsCrossOut(chainName?: string) {
     const config = {
       BTC: 201,
       FCH: 202,
-      BCH: 203
+      BCH: 203,
+      TBC: 204
     };
     return config[chainName] || null;
   }
 
   async function getBTCsWithdrawalInfo(multySignAddress: string) {
     if (!multySignAddress) return;
-    const provider = prociderConfig[hid];
+    const provider = providerConfig[hid];
     let info;
     if (hid === 201) {
       info = await provider.getWithdrawInfo(!isBeta, multySignAddress);
@@ -84,29 +87,32 @@ export default function useBTCsCrossOut(chainName?: string) {
   }
 
   function validBTCsAddress(address: string) {
-    const provider = prociderConfig[hid];
+    const provider = providerConfig[hid];
     let valid = true;
     if (hid === 201) {
       valid = provider.validateAddress(!isBeta, address);
     } else {
       valid = provider.validateAddress(address);
     }
-    return valid
+    return valid;
   }
 
   async function getBTCsCrossOutFee(params: IGetBTCFeeParams) {
-    let res = ''
+    let res = '';
     try {
       if (hid === 201) {
         res = await getBTCCrossOutFee(params);
+      } else if (hid === 204) {
+        res = await getTBCCrossOutFee(params);
       } else {
         res = await getFCHCrossOutFee(params);
       }
-    } catch(e) {
+    } catch (e) {
       res = '';
+      console.log(12314, e);
       toastError(e);
     }
-    return res
+    return res;
   }
 
   async function getBTCCrossOutFee(params: IGetBTCFeeParams) {
@@ -126,7 +132,7 @@ export default function useBTCsCrossOut(chainName?: string) {
     );
     btcFeeAmount = Times(btcFeeAmount, 1.3).toFixed(0);
     if (useMainAsset) {
-      res = calWithdrawalFeeForBTC(btcFeeAmount, '', '', feeDecimals, true);
+      res = calWithdrawalFeeForBTC(btcFeeAmount, '', 8, '', feeDecimals, true);
     } else {
       const targetChainInfo = Object.values(_networkInfo).find(
         v => v.name === 'BTC'
@@ -146,6 +152,51 @@ export default function useBTCsCrossOut(chainName?: string) {
       res = calWithdrawalFeeForBTC(
         btcFeeAmount,
         L1MainAssetUSD,
+        8,
+        feeAssetUSD,
+        feeDecimals,
+        false,
+        isNVT
+      );
+    }
+    res = floatToCeil(res, 6);
+    return res;
+  }
+
+  async function getTBCCrossOutFee(params: IGetBTCFeeParams) {
+    const {
+      amount,
+      useMainAsset,
+      feeDecimals,
+      feeAssetKey = '',
+      isNVT = false
+    } = params;
+    let res = '';
+    let tbcFeeAmount = timesDecimals(TBCWithdrawFee, 6);
+    // tbcFeeAmount = Times(tbcFeeAmount, 1.3).toFixed(0);
+    if (useMainAsset) {
+      res = calWithdrawalFeeForBTC(tbcFeeAmount, '', 6, '', feeDecimals, true);
+    } else {
+      const targetChainInfo = Object.values(_networkInfo).find(
+        v => v.name === 'TBC'
+      );
+      const [feeChainId, feeAssetId] = feeAssetKey!.split('-');
+      const [mainAssetChainId, mainAssetAssetId] =
+        targetChainInfo!.assetKey.split('-');
+      const feeAssetUSD = (await getAssetPrice(
+        +feeChainId,
+        +feeAssetId,
+        true // only fee asset need be true
+      )) as string;
+      const L1MainAssetUSD = '1.065';
+      // const L1MainAssetUSD = (await getAssetPrice(
+      //   +mainAssetChainId,
+      //   +mainAssetAssetId
+      // )) as string;
+      res = calWithdrawalFeeForBTC(
+        tbcFeeAmount,
+        L1MainAssetUSD,
+        6,
         feeAssetUSD,
         feeDecimals,
         false,
@@ -168,16 +219,23 @@ export default function useBTCsCrossOut(chainName?: string) {
     let res = '';
     try {
       const { feeRate, utxos, splitGranularity } = btcWithdrawalInfo;
-      const provider = prociderConfig[hid]
+      const provider = providerConfig[hid];
       let fchFeeAmount = provider.getWithdrawalFee(
         utxos,
         feeRate,
         timesDecimals(amount || '0.0001', 8),
         splitGranularity
-      )
+      );
       fchFeeAmount = Times(fchFeeAmount, 1.3).toFixed(0);
       if (useMainAsset) {
-        res = calWithdrawalFeeForBTC(fchFeeAmount, '', '', feeDecimals, true);
+        res = calWithdrawalFeeForBTC(
+          fchFeeAmount,
+          '',
+          8,
+          '',
+          feeDecimals,
+          true
+        );
       } else {
         const targetChainInfo = Object.values(_networkInfo).find(
           v => v.name === withdrawalChain
@@ -197,6 +255,7 @@ export default function useBTCsCrossOut(chainName?: string) {
         res = calWithdrawalFeeForBTC(
           fchFeeAmount,
           L1MainAssetUSD,
+          8,
           feeAssetUSD,
           feeDecimals,
           false,
@@ -204,11 +263,11 @@ export default function useBTCsCrossOut(chainName?: string) {
         );
       }
     } catch (e) {
-      console.log(e, 234234)
+      console.log(e, 234234);
       res = '';
       toastError(e);
     }
-    console.log(res, 234)
+    console.log(res, 234);
     res = floatToCeil(res, 6);
     return res;
   }
@@ -224,12 +283,9 @@ export default function useBTCsCrossOut(chainName?: string) {
   async function getBTCAddFeeAmount(params: IGetBTCAddFeeAmount) {
     const { feeInfo, hash, hId, outerTxHash } = params;
 
-    if (hId !== 201) return ''
+    if (hId !== 201) return '';
 
-    const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(
-      hId,
-      hash
-    );
+    const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(hId, hash);
     const { minimumFee, utxoSize, feeRate } = requestFeeInfo;
     if (minimumFee && utxoSize && feeRate) {
       canAdd.value = true;
@@ -288,9 +344,8 @@ export default function useBTCsCrossOut(chainName?: string) {
             feeInfo.decimals
           );
           addFeeAmount =
-            (feeInfo.symbol === 'NVT'
-              ? Math.ceil(+finalAmount)
-              : finalAmount) + '';
+            (feeInfo.symbol === 'NVT' ? Math.ceil(+finalAmount) : finalAmount) +
+            '';
         } else {
           addFeeAmount = '';
         }
@@ -310,19 +365,15 @@ export default function useBTCsCrossOut(chainName?: string) {
         }
       }
     }
-    return addFeeAmount
-    
+    return addFeeAmount;
   }
 
   async function getFCHAddFeeAmount(params: IGetBTCAddFeeAmount) {
     const { feeInfo, hash, hId, outerTxHash } = params;
-  
-    if (hId !== 202 && hId !== 203) return ''
 
-    const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(
-      hId,
-      hash
-    );
+    if (hId !== 202 && hId !== 203) return '';
+
+    const requestFeeInfo = await nerveUtil.getMinimumFeeOfWithdrawal(hId, hash);
     const { minimumFee, utxoSize, feeRate } = requestFeeInfo;
     if (minimumFee && utxoSize && feeRate) {
       canAdd.value = true;
@@ -330,9 +381,11 @@ export default function useBTCsCrossOut(chainName?: string) {
       canAdd.value = false;
     }
     const requestFCH = divisionDecimals(minimumFee, 8);
-    const chainName = hId === 202 ? 'FCH' : 'BCH'
-    const fchInfo = Object.values(_networkInfo).find(v => v.name === chainName)!;
-    let addFeeAmount = ''
+    const chainName = hId === 202 ? 'FCH' : 'BCH';
+    const fchInfo = Object.values(_networkInfo).find(
+      v => v.name === chainName
+    )!;
+    let addFeeAmount = '';
     if (feeInfo.assetKey === fchInfo.assetKey) {
       const diff = Minus(requestFCH, feeInfo.value).toFixed();
       // @ts-ignore
@@ -362,12 +415,12 @@ export default function useBTCsCrossOut(chainName?: string) {
         addFeeAmount = '';
       }
     }
-    return addFeeAmount
-    
+    return addFeeAmount;
   }
 
   return {
     isBTCs,
+    isTBC,
     btcHid: hid,
     checkIsBTCs,
     getBTCsWithdrawalInfo,

@@ -106,6 +106,7 @@ export const providerList = {
   TRON: TRONProvider,
   FCH: [Nabox],
   BCH: [Nabox],
+  TBC: [Nabox],
   NULS: EVMProvider
 };
 
@@ -119,6 +120,8 @@ export function getProvider(type?: string, network?: string) {
     return getFCHProvider();
   } else if (network === 'BCH') {
     return getBCHProvider();
+  } else if (network === 'TBC') {
+    return getTBCProvider();
   } else {
     return getEVMProvider(type);
     /* const EVMProvider = getEVMProvider(type);
@@ -222,6 +225,13 @@ export function getBCHProvider() {
   return {
     providerType: 'NaboxWallet',
     provider: window.NaboxWallet?.bch || null
+  };
+}
+
+export function getTBCProvider() {
+  return {
+    providerType: 'NaboxWallet',
+    provider: window.NaboxWallet?.tbc || null
   };
 }
 
