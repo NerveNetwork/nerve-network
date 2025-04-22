@@ -135,7 +135,7 @@ const Origin = {
   FCH: 'https://freecash.info',
   BCH: 'https://www.oklink.com/bch',
   Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : '',
-  TBC: isBeta ? 'http://explorer.turingbitchain.io' : ''
+  TBC: 'http://explorer.turingbitchain.io'
 };
 
 export const RPC_URL = {
@@ -234,7 +234,7 @@ export const RPC_URL = {
     ? 'https://rpc.v4.testnet.pulsechain.com'
     : 'https://rpc.pulsechain.com',
   Mint: isBeta ? 'https://sepolia-testnet-rpc.mintchain.io' : '',
-  TBC: isBeta ? 'https://turingwallet.xyz/v1/tbc' : ''
+  TBC: 'https://turingwallet.xyz/v1/tbc'
 };
 
 interface IChain {
