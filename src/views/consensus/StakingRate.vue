@@ -148,6 +148,7 @@ import {
 import { fixNumber, Plus, Times } from '@/utils/util';
 import config from '@/config';
 import { StakingRateListItem } from './types';
+import { replaceNULS } from '@/constants/constants';
 
 const loading = ref(true);
 onMounted(() => {
@@ -177,6 +178,7 @@ async function getStakingRate() {
     const res: StakingRateListItem[] = [];
     result.map((v: StakingRateListItem) => {
       const obj = {} as StakingRateListItem;
+      v.symbol = replaceNULS(v.symbol);
       obj.symbol = v.symbol;
       v.detailList
         .filter(v => v.timeType !== 7)

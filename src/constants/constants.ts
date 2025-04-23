@@ -19,8 +19,18 @@ export function calDecimalsAndSymbol(item: IToken) {
   const isNULS = symbol == 'NULS' || _assetKey === NKey;
   const originDecimal = decimals || decimal;
   const newDecimals = isNULS ? NDecimals : originDecimal;
+  const _symbol = replaceNULS(isNULS ? NSymbol : symbol);
   return {
     decimals: newDecimals,
-    symbol: isNULS ? NSymbol : symbol
+    symbol: _symbol
   };
+}
+
+export function replaceNULS(str: string): string {
+  return str.replace(
+    /(^|\b)NULS(\b|$)|(^NULS_)|(_NULS(\b|$))|(_NULS_)/g,
+    function (match) {
+      return match.replace('NULS', 'NAI');
+    }
+  );
 }

@@ -6,6 +6,7 @@ import { getBlockInfo, getNerveFarm } from '@/service/api';
 import useStoreState from '@/hooks/useStoreState';
 import { useStore } from 'vuex';
 import { NerveFarmItem, UserStakeFarm } from '../types';
+import { NDecimals, NKey, NSymbol, replaceNULS } from '@/constants/constants';
 
 const url = config.WS_URL;
 
@@ -57,6 +58,20 @@ export default function useData() {
       v.isLocked = Minus(Times(v.lockedTime, 1000), times).toNumber() < 0;
       v.syrupTokenBalance = fixNumber(v.syrupTokenBalance, 8);
       v.rewardBalance = fixNumber(v.rewardBalance, 8);
+      v.name = replaceNULS(v.name);
+      const stakeKey = v.stakeTokenChainId + '-' + v.stakeTokenAssetId;
+      const syrupKey = v.syrupTokenChainId + '-' + v.syrupTokenAssetId;
+      if (stakeKey === NKey) {
+        v.stakeTokenSymbol = NSymbol;
+        v.stakeTokenDecimals = NDecimals;
+      }
+      if (syrupKey === NKey) {
+        v.syrupTokenSymbol = NSymbol;
+        v.syrupTokenDecimals = NDecimals;
+      }
+      v.stakeTokenSymbol = replaceNULS(v.stakeTokenSymbol);
+      v.syrupTokenSymbol = replaceNULS(v.syrupTokenSymbol);
+      // if ()
     });
     totalNerveList = [...data].sort((a, b) => a.orderNum - b.orderNum);
     list.value = await filter(totalNerveList, filterType, onlySeeMortgage);

@@ -33,7 +33,7 @@ import {
   Times,
   getOriginChain
 } from '@/utils/util';
-import { NDecimals, NSymbol } from '@/constants/constants';
+import { NDecimals, NSymbol, replaceNULS } from '@/constants/constants';
 import { TxItem, TxType } from '../types';
 
 const props = defineProps<{
@@ -110,6 +110,8 @@ async function getTxData() {
         token1 = NSymbol;
         decimals1 = NDecimals;
       }
+      token0 = replaceNULS(token0);
+      token1 = replaceNULS(token1);
       amount0 = divisionAndFix(amount0, decimals0, 4);
       amount1 = divisionAndFix(amount1, decimals1, 4);
       list.push({

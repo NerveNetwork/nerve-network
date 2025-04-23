@@ -8,7 +8,7 @@ import {
   getHotAssets as getHotAssetsApi
 } from '@/service/api';
 import { isBeta } from '@/utils/util';
-import { NSymbol } from '@/constants/constants';
+import { NSymbol, replaceNULS } from '@/constants/constants';
 
 const LpSource = [10, 11, 12];
 
@@ -58,11 +58,9 @@ export default function useAsset(isLiquidity = false) {
     const res = await getHotAssetsApi();
     if (res && res.length) {
       const list: HotAsset[] = [];
-      console.log(res, 888);
+      // console.log(res, 888);
       res.map(v => {
-        if (v.symbol === 'NULS') {
-          v.symbol = NSymbol;
-        }
+        v.symbol = replaceNULS(v.symbol);
         list.push({
           chainId: v.chainId,
           assetId: v.assetId,

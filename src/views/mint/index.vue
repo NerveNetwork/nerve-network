@@ -30,7 +30,7 @@ import { divisionDecimals, fixNumber, Division } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getMintList } from '@/service/api/mint';
 import { IMintItem } from '@/service/api/types/mint';
-import { NKey, NDecimals, NSymbol } from '@/constants/constants';
+import { NKey, NDecimals, NSymbol, replaceNULS } from '@/constants/constants';
 
 const { nerveAddress } = useStoreState();
 const { targetAddress } = useMintBaseInfo();
@@ -75,6 +75,8 @@ async function getList() {
       v.mintFeeAssetDecimals = NDecimals;
       v.mintFeeAssetSymbol = NSymbol;
     }
+    v.mintAssetSymbol = replaceNULS(v.mintAssetSymbol);
+    v.mintFeeAssetSymbol = replaceNULS(v.mintFeeAssetSymbol);
     v.startTime = dayjs(+v.startTime * 1000).format('YYYY-MM-DD HH:mm:ss');
     v.assetUnlockTime = dayjs(+v.assetUnlockTime * 1000).format(
       'YYYY-MM-DD HH:mm:ss'
@@ -85,7 +87,7 @@ async function getList() {
     v.progress = fixNumber(Division(v.progress, 100).toFixed(), 2);
     v.registerChain = Object.values(_networkInfo).find(
       k => k.chainId === v.mintAssetSourceChainId
-    )?.name;
+    )?.label;
   });
   list.value = result.list;
   total.value = result.total;

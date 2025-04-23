@@ -10,7 +10,7 @@ import {
   priceFormat
 } from '@/utils/util';
 import { TokenItem, PoolItem } from '../types';
-import { NSymbol } from '@/constants/constants';
+import { NKey, NSymbol, replaceNULS } from '@/constants/constants';
 
 export function useFocusPools() {
   const store = useStore();
@@ -36,12 +36,8 @@ export function useFocusPools() {
     if (res) {
       const list: PoolItem[] = [];
       res.map(v => {
-        if (v.token0Symbol === 'NULS') {
-          v.token0Symbol = NSymbol;
-        }
-        if (v.token1Symbol === 'NULS') {
-          v.token1Symbol = NSymbol;
-        }
+        v.token0Symbol = replaceNULS(v.token0Symbol);
+        v.token1Symbol = replaceNULS(v.token1Symbol);
         list.push({
           name: v.tokenLPSymbol,
           address: v.address,
@@ -89,10 +85,12 @@ export function useFocusTokens() {
     if (res) {
       const list: TokenItem[] = [];
       res.map(v => {
-        if (v.symbol === 'NULS') {
+        const key = v.assetChainId + '-' + v.assetId;
+        if (key === NKey) {
           v.symbol = NSymbol;
           v.price = divisionDecimals(v.price, 4);
         }
+        v.symbol = replaceNULS(v.symbol);
         list.push({
           originChain: getOriginChain(v.sourceChainid, v.assetChainId),
           name: v.symbol,

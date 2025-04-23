@@ -28,6 +28,7 @@ import StakingRecord from './StakingRecord.vue';
 import { getCanStackingAssetList } from '@/service/api';
 import useStoreState from '@/hooks/useStoreState';
 import { CanStakingListItem } from '@/views/consensus/types';
+import { replaceNULS } from '@/constants/constants';
 
 const { nerveAddress } = useStoreState();
 
@@ -40,6 +41,7 @@ async function getCanStakingList() {
   if (result && result.length) {
     result.map((v: any) => {
       v.assetKey = v.assetChainId + '-' + v.assetId;
+      v.symbol = replaceNULS(v.symbol);
     });
     canStakingList.value = result as CanStakingListItem[];
   }

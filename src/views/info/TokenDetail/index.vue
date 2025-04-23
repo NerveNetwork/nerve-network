@@ -54,7 +54,7 @@ import { getTokenInfo } from '@/service/api';
 import { TokenDetail } from '@/views/info/types';
 import { divisionAndFix, divisionDecimals, priceFormat, timesDecimals } from '@/utils/util';
 import useTokensAndPools from '@/views/info/hooks/useTokensAndPools';
-import { NDecimals, NSymbol } from '@/constants/constants';
+import { NDecimals, NKey, NSymbol, replaceNULS } from '@/constants/constants';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -70,13 +70,15 @@ const tokenInfo = ref<TokenDetail>({} as TokenDetail);
 async function getTokenDetail() {
   // getTxs({tokenKey:assetKey})
   const res = await getTokenInfo(assetKey);
-  console.log(res, 23423);
   if (res) {
-    if (res.symbol === 'NULS') {
+    const key = res.assetChainId + '-' + res.assetId;
+    if (key === NKey) {
       res.symbol = NSymbol;
       res.decimals = NDecimals;
       res.price = divisionDecimals(res.price, NDecimals);
     }
+    res.symbol = replaceNULS(res.symbol);
+
     tokenInfo.value = {
       name: res.symbol,
       assetKey: res.assetChainId + '-' + res.assetId,

@@ -34,6 +34,7 @@ import {
   BatchHandle
 } from './types';
 import nerveswap from 'nerveswap-sdk';
+import { replaceNULS } from '@/constants/constants';
 
 const props = defineProps<{
   address?: string;
@@ -75,6 +76,7 @@ async function getStakingList(isLoading = true) {
     if (result) {
       const nowDate = Math.round(Number(new Date()) / 1000);
       for (let item of result.list as StakingListItem[]) {
+        item.symbol = replaceNULS(item.symbol);
         // item.amounts = divisionDecimals(item.amount, item.decimal);
         item.amount = divisionDecimals(item.amountStr, item.decimal);
         item.interest = Number(Times(item.interest, 100)).toFixed(2);
