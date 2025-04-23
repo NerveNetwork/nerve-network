@@ -45,7 +45,7 @@ import { defineComponent, ref, computed, watch, inject } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useToast from '@/hooks/useToast';
 import CustomInput from '@/components/CustomInput.vue';
-import { Minus, timesDecimals, Plus } from '@/utils/util';
+import { Minus, timesDecimals, Plus, isBeta } from '@/utils/util';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import nerve from 'nerve-sdk-js';
 import config from '@/config';
@@ -180,7 +180,16 @@ export default defineComponent({
             res = nerve.verifyAddress(val);
             console.log(res, 13465);
             if (res.right) {
-              type.value = res.chainId === config.chainId ? 2 : 10;
+              const nulsChainId = isBeta ? 2 : 1;
+              const isToNULS = res.chainId === nulsChainId;
+              if (res.chainId === config.chainId) {
+                type.value === 2;
+              } else if (isToNULS) {
+                type.value = 10;
+              } else {
+                type.value = 2;
+                res.right = false;
+              }
             } else {
               type.value = 2;
             }

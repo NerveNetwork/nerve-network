@@ -81,6 +81,7 @@ import useStoreState from '@/hooks/useStoreState';
 import useAsset from '@/views/swap/hooks/useAsset';
 
 import { LiquidityItem } from './types';
+import { NDecimals, NSymbol } from '@/constants/constants';
 
 const { nerveAddress } = useStoreState();
 const { assetsList, defaultAsset, hasQuery: addLiquidity } = useAsset(true);
@@ -116,6 +117,14 @@ async function getUserLiquidity() {
       pager.total = res.total || 0;
       res.list.map((v: LiquidityItem) => {
         const info = v.lpTokenAmount;
+        if (v.token0.symbol === 'NULS') {
+          v.token0.symbol = NSymbol;
+          v.token0.decimals = NDecimals;
+        }
+        if (v.token1.symbol === 'NULS') {
+          v.token1.symbol = NSymbol;
+          v.token1.decimals = NDecimals;
+        }
         v.amountSlice = divisionAndFix(info.amount, info.token.decimals, 2);
         v.amount = divisionAndFix(
           info.amount,
