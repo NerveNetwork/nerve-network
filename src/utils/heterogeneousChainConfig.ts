@@ -817,7 +817,7 @@ export const _networkInfo: IChain = {
     name: 'TBC',
     chainName: 'TBC',
     chainId: 204,
-    assetKey: isBeta ? '5-186' : '9-837',
+    assetKey: isBeta ? '5-186' : '9-889',
     origin: Origin.TBC,
     mainAsset: 'TBC',
     nativeId: '0x-e',
