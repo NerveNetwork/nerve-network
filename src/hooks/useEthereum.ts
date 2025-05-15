@@ -199,6 +199,7 @@ export default function useEthereum() {
   function addNULSListener(provider: any) {
     if (provider?.isNabox) {
       const { provider: _provider } = getNULSProvider();
+      console.log(1234)
       _provider.on('accountsChanged', handleAccountChange);
     } else {
       addEVMListener(provider);
@@ -374,7 +375,7 @@ export default function useEthereum() {
           state.address &&
           state.address.toLowerCase() !== accounts[0].toLowerCase()
         ) {
-          // reload();
+          reload();
         }
       }
     } else {
