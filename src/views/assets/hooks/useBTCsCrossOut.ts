@@ -188,11 +188,11 @@ export default function useBTCsCrossOut(chainName?: string) {
         +feeAssetId,
         true // only fee asset need be true
       )) as string;
-      const L1MainAssetUSD = '1.065';
-      // const L1MainAssetUSD = (await getAssetPrice(
-      //   +mainAssetChainId,
-      //   +mainAssetAssetId
-      // )) as string;
+      // const L1MainAssetUSD = '1.065';
+      const L1MainAssetUSD = (await getAssetPrice(
+        +mainAssetChainId,
+        +mainAssetAssetId
+      )) as string;
       res = calWithdrawalFeeForBTC(
         tbcFeeAmount,
         L1MainAssetUSD,
