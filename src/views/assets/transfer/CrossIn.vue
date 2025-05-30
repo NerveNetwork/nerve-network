@@ -81,6 +81,9 @@ export default defineComponent({
     const isTron = computed(() => {
       return father.network === 'TRON';
     });
+    const isENULS = computed(() => {
+      return father.network === 'ENULS';
+    });
     const loading = ref(false);
     const amount = ref('');
     const {
@@ -94,7 +97,7 @@ export default defineComponent({
       getERC20Allowance,
       approveERC20,
       sendTx
-    } = useCrossIn(isTron.value);
+    } = useCrossIn(isTron.value, isENULS.value);
 
     const L1Address = computed(() => {
       return father.address;

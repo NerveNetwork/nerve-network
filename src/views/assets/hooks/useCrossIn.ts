@@ -7,15 +7,17 @@ import { ethers } from 'ethers';
 import nerveswap from 'nerveswap-sdk';
 // import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import { getEVMProvider, getTRONProvider } from '@/utils/providerUtil';
+import { timesDecimals, fixNumber, divisionDecimals } from '@/utils/util';
+import { NDecimals } from '@/constants/constants';
 
-export default function useCrossIn(isTron = false) {
+export default function useCrossIn(isTron = false, isENULS = false) {
   const { t } = useI18n();
   let TronTransfer: any;
   const EvmTransfer = new ETransfer();
   // const { getWalletInfo } = useBroadcastNerveHex();
   // const { provider } = getWalletInfo();
-  const providerInfo = isTron ? getTRONProvider() : getEVMProvider()
-  const provider = providerInfo?.provider
+  const providerInfo = isTron ? getTRONProvider() : getEVMProvider();
+  const provider = providerInfo?.provider;
 
   if (isTron) {
     TronTransfer = new TronLinkApi();
@@ -84,13 +86,25 @@ export default function useCrossIn(isTron = false) {
         );
       } else {
         balance.value = await EvmTransfer.getEthBalance(address);
+        if (isENULS) {
+          balance.value = fixNumber(timesDecimals(balance.value, NDecimals), 4);
+        }
       }
     }
   }
 
   const fee = ref('');
   async function getFee(isToken: boolean) {
-    fee.value = isTron ? '0' : await EvmTransfer.getGasPrice(isToken);
+    if (isTron) {
+      fee.value = '0';
+    } else {
+      let _fee = await EvmTransfer.getGasPrice(isToken);
+      if (isENULS) {
+        _fee = fixNumber(timesDecimals(_fee, NDecimals), 4);
+      }
+      fee.value = _fee;
+    }
+    // fee.value = isTron ? '0' : await EvmTransfer.getGasPrice(isToken);
   }
 
   const needAuth = ref(false);
@@ -221,9 +235,21 @@ export default function useCrossIn(isTron = false) {
         tokenContract: contractAddress
       });
     } else {
-      const _amount = contractAddress
-        ? ethers.utils.parseUnits(amount, decimal)._hex
-        : ethers.utils.parseEther(amount)._hex;
+      let _amount;
+      if (contractAddress) {
+        _amount = ethers.utils.parseUnits(amount, decimal)._hex;
+      } else {
+        if (isENULS) {
+          _amount = ethers.utils.parseEther(
+            divisionDecimals(amount, NDecimals)
+          )._hex;
+        } else {
+          _amount = ethers.utils.parseEther(amount)._hex;
+        }
+      }
+      // const _amount = contractAddress
+      //   ? ethers.utils.parseUnits(amount, decimal)._hex
+      //   : ethers.utils.parseEther(amount)._hex;
       return await nerveswap.evm.crossIn({
         provider,
         multySignContract: heterogeneousChainMultySignAddress,

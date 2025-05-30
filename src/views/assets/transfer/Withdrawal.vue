@@ -218,7 +218,8 @@ export default defineComponent({
       selectedFeeAsset.value = father.allAssetsList.find(asset => {
         return asset.assetKey === defaultFeeAsset.assetKey;
       }) as AssetItemType;
-      feeSymbol.value = _networkInfo[network].mainAsset;
+      feeSymbol.value =
+        network === 'ENULS' ? NSymbol : _networkInfo[network].mainAsset;
       supportedFeeAssets.value = feeAssets;
     }
 

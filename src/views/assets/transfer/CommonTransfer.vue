@@ -21,7 +21,7 @@
         @max="max"
       ></custom-input>
       <div class="fee-wrap" v-if="showFeeTip">
-        {{ $t('public.public15') }}0.01 NVT + 0.01 NULS
+        {{ $t('public.public15') }}0.01 NVT + 100 NAI
       </div>
     </div>
     <div class="confirm-wrap">
