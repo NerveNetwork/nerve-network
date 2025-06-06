@@ -17,7 +17,7 @@ export function calDecimalsAndSymbol(item: IToken) {
   const { chainId, assetId, symbol, decimals, decimal, assetKey } = item;
   const _assetKey = assetKey || chainId + '-' + assetId;
   const isNULS = symbol == 'NULS' || _assetKey === NKey;
-  const originDecimal = decimals || decimal;
+  const originDecimal = decimals || decimal || 0;
   const newDecimals = isNULS ? NDecimals : originDecimal;
   const _symbol = replaceNULS(isNULS ? NSymbol : symbol);
   return {
