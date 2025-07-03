@@ -52,6 +52,8 @@ import config from '@/config';
 import { rootCmpKey, RootComponent, AssetItemType } from '../types';
 import nerveswap from 'nerveswap-sdk';
 
+const nvtFee = 0.01;
+const nulsFee = 100;
 export default defineComponent({
   name: 'commonTransfer',
   inject: ['father'],
@@ -118,26 +120,26 @@ export default defineComponent({
       if (type.value === 10) {
         if (isTransferNVT.value) {
           // 转账资产是nvt
-          const amountWithFee = Plus(amount.value, 0.01).toFixed();
+          const amountWithFee = Plus(amount.value, nvtFee).toFixed();
           if (
             Minus(balance.value, amountWithFee).toNumber() < 0 ||
-            Minus(nvtBalance.value, 0.01).toNumber() < 0
+            Minus(nvtBalance.value, nvtFee).toNumber() < 0
           ) {
             tip = t('transfer.transfer25');
           }
         } else if (isTransferNULS.value) {
           // 转账资产是nuls
-          const amountWithFee = Plus(amount.value, 0.01).toFixed();
+          const amountWithFee = Plus(amount.value, nulsFee).toFixed();
           if (
             Minus(balance.value, amountWithFee).toNumber() < 0 ||
-            Minus(nulsBalance.value, 0.01).toNumber() < 0
+            Minus(nulsBalance.value, nulsFee).toNumber() < 0
           ) {
             tip = t('transfer.transfer25');
           }
         } else {
           if (
-            Minus(nulsBalance.value, 0.01).toNumber() < 0 ||
-            Minus(nvtBalance.value, 0.01).toNumber() < 0
+            Minus(nulsBalance.value, nvtFee).toNumber() < 0 ||
+            Minus(nvtBalance.value, nulsFee).toNumber() < 0
           ) {
             tip = t('transfer.transfer25');
           }
@@ -223,7 +225,8 @@ export default defineComponent({
 
     function max() {
       if (type.value === 10 && (isTransferNVT.value || isTransferNULS.value)) {
-        amount.value = Minus(balance.value, 0.01).toFixed();
+        const fee = isTransferNULS.value ? nulsFee : nvtFee;
+        amount.value = Minus(balance.value, fee).toFixed();
       } else {
         amount.value = balance.value;
       }
