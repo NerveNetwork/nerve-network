@@ -39,38 +39,6 @@ const partners = [
     href: 'https://catchervc.chaincatcher.com/'
   },
   {
-    src: Binance,
-    href: 'https://www.binance.org/'
-  },
-  {
-    src: Polygon,
-    href: 'https://polygon.technology/'
-  },
-  {
-    src: Cronos,
-    href: 'https://cronos.crypto.org/'
-  },
-  {
-    src: Arbitrum,
-    href: 'https://arbitrum.io/'
-  },
-  {
-    src: Heco,
-    href: 'https://www.hecochain.com/'
-  },
-  {
-    src: OKEXChain,
-    href: 'https://okex.com/okchain'
-  },
-  {
-    src: Kcc,
-    href: 'https://www.kcc.io/'
-  },
-  {
-    src: Harmony,
-    href: 'https://www.harmony.one/'
-  },
-  {
     src: NULS,
     href: 'https://www.nuls.io/'
   },

@@ -121,10 +121,10 @@ const linkConfig = computed(() => {
           label: t('footer.footer10'),
           href: 'https://github.com/NerveNetwork/nerve'
         },
-        {
-          label: 'NerveDEX',
-          href: 'https://dex.nerve.network/'
-        }
+        // {
+        //   label: 'NerveDEX',
+        //   href: 'https://dex.nerve.network/'
+        // }
       ]
     }
   ];

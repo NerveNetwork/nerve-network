@@ -29,7 +29,7 @@
         >
           <div class="flex-center">
             <img :src="item.logo" alt="" />
-            <span>{{ item.name }}</span>
+            <span>{{ item.label }}</span>
           </div>
         </li>
         <div class="pop-arrow"></div>
