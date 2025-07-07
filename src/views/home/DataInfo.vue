@@ -1,36 +1,38 @@
 <template>
-  <div class="overview-data-info">
-    <div class="total-data">
-      <div class="info-item">
-        <p>{{ $t('home.home13') }}</p>
-        <p>${{ $format(chainData.total) }}</p>
+  <div class="data-info" ref="dataInfoRef">
+    <div class="overview-data-info">
+      <div class="total-data">
+        <div class="info-item">
+          <p>{{ $t('home.home13') }}</p>
+          <p>${{ $format(chainData.total) }}</p>
+        </div>
+        <div class="info-item">
+          <p>{{ $t('home.home14') }}</p>
+          <p>${{ $format(chainData.tx_24h) }}</p>
+        </div>
       </div>
-      <div class="info-item">
-        <p>{{ $t('home.home14') }}</p>
-        <p>${{ $format(chainData.tx_24h) }}</p>
-      </div>
-    </div>
-    <div class="trading-data">
-      <div class="info-item">
-        <p>{{ $t('home.home7') }}</p>
-        <p>
-          ${{ $format(summaryData.txAmount) }}
-          <!--        $<CountUp :end-val="summaryData.txAmount" />-->
-        </p>
-      </div>
-      <div class="info-item">
-        <p>TVL</p>
-        <p>
-          ${{ $format(summaryData.tvl) }}
-          <!--        $<CountUp :end-val="summaryData.tvl" />-->
-        </p>
-      </div>
-      <div class="info-item">
-        <p>{{ $t('home.home8') }}</p>
-        <p>
-          {{ summaryData.apr }}%
-          <!--        <CountUp :end-val="summaryData.apr" :options="{ separator: '' }" />%-->
-        </p>
+      <div class="trading-data">
+        <div class="info-item">
+          <p>{{ $t('home.home7') }}</p>
+          <p>
+            ${{ $format(summaryData.txAmount) }}
+            <!--        $<CountUp :end-val="summaryData.txAmount" />-->
+          </p>
+        </div>
+        <div class="info-item">
+          <p>TVL</p>
+          <p>
+            ${{ $format(summaryData.tvl) }}
+            <!--        $<CountUp :end-val="summaryData.tvl" />-->
+          </p>
+        </div>
+        <div class="info-item">
+          <p>{{ $t('home.home8') }}</p>
+          <p>
+            {{ summaryData.apr }}%
+            <!--        <CountUp :end-val="summaryData.apr" :options="{ separator: '' }" />%-->
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -40,6 +42,7 @@
 import { ref, onMounted } from 'vue';
 import { getSummaryData, getSymbolReport } from '@/service/api';
 import { divisionAndFix, Plus } from '@/utils/util';
+import { useObserveAnimate } from '@/hooks/useObserveAnimate';
 // import CountUp from '@/components/CountUp.vue';
 
 const summaryData = ref({
@@ -51,6 +54,8 @@ const chainData = ref({
   total: '0',
   tx_24h: '0'
 });
+const dataInfoRef = useObserveAnimate();
+
 onMounted(() => {
   getSummaryData().then(res => {
     summaryData.value = {

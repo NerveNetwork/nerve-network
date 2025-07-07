@@ -1,5 +1,5 @@
 <template>
-  <div class="partner">
+  <div class="partner" ref="partnerRef">
     <h3>{{ $t('home.home9') }}</h3>
     <!--    <div class="partner-list">-->
     <el-row :gutter="20" class="partner-list">
@@ -28,6 +28,7 @@ import NULS from '@/assets/img/partner/NULS.png';
 import Nabox from '@/assets/img/partner/nabox.jpg';
 import SlowMist from '@/assets/img/partner/slowMist.jpg';
 import ChainGuard from '@/assets/img/partner/chainsGuard.jpg';
+import { useObserveAnimate } from '@/hooks/useObserveAnimate';
 
 const partners = [
   {
@@ -98,6 +99,8 @@ const partners = [
     href: ''
   }
 ];*/
+
+const partnerRef = useObserveAnimate();
 </script>
 
 <style lang="scss">

@@ -1,5 +1,5 @@
 <template>
-  <div class="link-wrapper">
+  <div class="link-wrapper" ref="linkRef">
     <LinkCard
       :title="$t('header.header1')"
       :desc="$t('home.home3')"
@@ -22,6 +22,9 @@ import LinkCard from './LinkCard.vue';
 import swap from '@/assets/img/swap.svg';
 import bridge from '@/assets/img/bridge.svg';
 import config from '@/config';
+import { useObserveAnimate } from '@/hooks/useObserveAnimate';
+
+const linkRef = useObserveAnimate();
 </script>
 
 <style lang="scss">

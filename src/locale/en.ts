@@ -458,7 +458,7 @@ const en = {
     home2:
       'NerveNetwork aims to connect all isolated blockchains and establish a cross-chain asset exchange network, providing all necessary underlying support for the DeFi ecosystem. Let every digital asset holder experience a truly safe, free and transparent DeFi service.',
     home3: '2 seconds confirmation and 0 gas fee',
-    home4: 'Support 43 chains',
+    home4: 'Support 41 chains',
     home5: 'Launch Swap ',
     home6: 'Launch Bridge',
     home7: 'Total Volume',
@@ -469,7 +469,7 @@ const en = {
     home12: 'Staking',
     home13: 'Total Assets on Nerve',
     home14: 'Total Flow on Nerve / 24H',
-    home15: 'Support 43 Networks',
+    home15: 'Support 41 Networks',
     home16: 'Total Supply',
     home17: 'Max. Supply',
     home18: 'Circulating Market Cap'

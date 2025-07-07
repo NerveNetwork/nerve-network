@@ -1,25 +1,27 @@
 <template>
-  <div class="nerve-desc">
-    <div class="pc">
-      <div class="left">
-        <h3>{{ $t('home.home1') }}</h3>
-        <p class="desc">{{ $t('home.home2') }}</p>
-        <Overview />
+  <div class="description">
+    <div class="nerve-desc">
+      <div class="pc">
+        <div class="left">
+          <h3>{{ $t('home.home1') }}</h3>
+          <p class="desc">{{ $t('home.home2') }}</p>
+          <Overview />
+        </div>
+        <div
+          class="right"
+          :style="{
+            width: bgWrapper.width + 'px',
+            height: bgWrapper.height + 'px'
+          }"
+        ></div>
       </div>
-      <div
-        class="right"
-        :style="{
-          width: bgWrapper.width + 'px',
-          height: bgWrapper.height + 'px'
-        }"
-      ></div>
-    </div>
-    <div class="mobile">
-      <div class="right"></div>
-      <div class="left">
-        <h3>{{ $t('home.home1') }}</h3>
-        <p class="desc">{{ $t('home.home2') }}</p>
-        <Overview />
+      <div class="mobile">
+        <div class="right"></div>
+        <div class="left">
+          <h3>{{ $t('home.home1') }}</h3>
+          <p class="desc">{{ $t('home.home2') }}</p>
+          <Overview />
+        </div>
       </div>
     </div>
   </div>
@@ -28,6 +30,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import Overview from './Overview.vue';
+import { useObserveAnimate } from '@/hooks/useObserveAnimate';
 
 const bgWrapper = ref({
   width: '',
@@ -38,8 +41,10 @@ const defaultWidth = 1920;
 const initialWidth = 850;
 // const initialHeight = 550;
 
-// const
+const descRef = useObserveAnimate();
+
 function calcContent() {
+  console.log(123);
   const width = document.body.clientWidth;
   // const height = document.body.clientHeight;
   bgWrapper.value.width = (width / defaultWidth) * initialWidth;
