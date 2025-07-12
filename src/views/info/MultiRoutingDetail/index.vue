@@ -91,7 +91,7 @@ import TxList from '../PoolDetail/TxList.vue';
 import { getMultiPair } from '@/service/api';
 import { MultiChainInfo, MultiRoutingItem } from '@/views/info/types';
 import { divisionAndFix, fixNumber, priceFormat } from '@/utils/util';
-import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import { _networkInfo, getChainNameById } from '@/utils/heterogeneousChainConfig';
 import config from '@/config';
 
 const { t } = useI18n();
@@ -135,18 +135,6 @@ async function getTokenDetail() {
     });
     console.log(multiChains.value, 77);
   }
-}
-
-function getChainNameById(sourceChainId: number, assetChainId: number) {
-  const chains = Object.values(_networkInfo);
-  let chainName = '';
-  if (sourceChainId !== 0) {
-    chainName = chains.find(v => v.chainId === sourceChainId)!.label || '';
-  } else {
-    console.log(1234);
-    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS AI';
-  }
-  return chainName;
 }
 
 const breadItems = computed(() => {

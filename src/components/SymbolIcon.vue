@@ -28,6 +28,8 @@ export default defineComponent({
         props.assetKey === NKey
       ) {
         return NSymbol;
+      } else if (props.icon === 'BNB Chain') {
+        return 'BSC';
       }
       return props.icon;
     });

@@ -37,7 +37,7 @@ import Table from '@/components/Table/index.vue';
 import { MultiRoutingItem } from '@/views/info/types';
 import { getMultiPairs } from '@/service/api';
 import { divisionAndFix } from '@/utils/util';
-import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import { _networkInfo, getChainNameById } from '@/utils/heterogeneousChainConfig';
 import config from '@/config';
 
 const { t } = useI18n();
@@ -102,17 +102,6 @@ async function getList(pageIndex = 1) {
     pairs.value = list;
     total.value = res.total;
   }
-}
-
-function getChainNameById(sourceChainId: number, assetChainId: number) {
-  const chains = Object.values(_networkInfo);
-  let chainName = '';
-  if (sourceChainId !== 0) {
-    chainName = chains.find(v => v.chainId === sourceChainId)!.label || '';
-  } else {
-    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS AI';
-  }
-  return chainName;
 }
 
 function rowClick(item: MultiRoutingItem) {

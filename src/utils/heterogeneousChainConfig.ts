@@ -899,3 +899,15 @@ if (!isMobile) {
 /* function parseChainID(chainId: string | number) {
   return '0x' + Number(chainId).toString(16);
 } */
+
+export function getChainNameById(sourceChainId: number, assetChainId: number) {
+  const chains = Object.values(_networkInfo);
+  let chainName = '';
+  if (sourceChainId !== 0) {
+    chainName = chains.find(v => v.chainId === sourceChainId)!.name || '';
+    chainName = chainName === 'NULS' ? 'NULS AI' : chainName;
+  } else {
+    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS AI';
+  }
+  return chainName;
+}
