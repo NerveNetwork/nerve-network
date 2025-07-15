@@ -101,7 +101,7 @@ onMounted(() => {
 <style lang="scss">
 .overview-data {
   // display: flex;
-  padding-top: 15px;
+  padding-top: 20px;
   // align-items: center;
   .flex-center:nth-child(2) {
     padding-top: 30px;

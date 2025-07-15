@@ -63,10 +63,7 @@ const linkConfig = computed(() => {
         },
         {
           label: t('footer.footer3'),
-          href:
-            lang.value === 'CN'
-              ? 'https://docs.nerve.network/'
-              : 'https://docs.nerve.network/zh/'
+          href: 'https://docs.nerve.network/'
         },
         {
           label: t('footer.footer4'),
@@ -74,10 +71,7 @@ const linkConfig = computed(() => {
         },
         {
           label: t('footer.footer5'),
-          href:
-            lang.value === 'EN'
-              ? 'https://nerve-west.oss-us-west-1.aliyuncs.com/wp/Nerve_Whitepaper_ZH.pdf'
-              : 'https://nerve-west.oss-us-west-1.aliyuncs.com/wp/Nerve_Whitepaper_EN.pdf'
+          href: 'https://ipfs.io/ipfs/bafybeicl27pbb2culvq7ectrarq4aurw7k5hpuldxsyzy57ypdgx73nt6y'
         }
       ]
     },

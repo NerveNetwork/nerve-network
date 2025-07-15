@@ -454,9 +454,9 @@ const en = {
     sw_0005: 'Prices changed, please try again.'
   },
   home: {
-    home1: 'Decentralized Digital Asset Service Network',
+    home1: 'DeFi for Everyone. Instantly. Across All Chains.',
     home2:
-      'NerveNetwork aims to connect all isolated blockchains and establish a cross-chain asset exchange network, providing all necessary underlying support for the DeFi ecosystem. Let every digital asset holder experience a truly safe, free and transparent DeFi service.',
+      'NerveNetwork is an infrastructure layer designed to enable seamless cross-chain flows of digital assets.It aims to connect isolated blockchain ecosystems, establish a cross-chain asset exchange and settlement network, and provide the essential foundation for the DeFi ecosystem — allowing every digital asset holder to access truly secure, open, and transparent DeFi services.',
     home3: '2 seconds confirmation and 0 gas fee',
     home4: 'Support 41 chains',
     home5: 'Launch Swap ',

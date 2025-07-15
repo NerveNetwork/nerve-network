@@ -63,12 +63,12 @@ onUnmounted(() => {
 <style lang="scss">
 .nerve-desc {
   //position: relative;
-  margin-top: -80px;
+  margin-top: -40px;
   .pc {
     height: 500px;
   }
   .left {
-    width: 45%;
+    width: 47%;
     height: 100%;
     // padding-bottom: 50px;
     display: flex;

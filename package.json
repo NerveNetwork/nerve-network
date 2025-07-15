@@ -22,6 +22,7 @@
     "ethers": "^5.7.2",
     "fch-sdk": "^1.0.4",
     "nerve-sdk-js": "^1.0.45",
+    "nerveswap-sdk": "^1.0.20",
     "tbc-contract": "^1.1.26",
     "tbc-lib-js": "^1.0.25",
     "tronweb": "^4.1.0",
