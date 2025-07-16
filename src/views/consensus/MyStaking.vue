@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 import PieChart from './PieChart.vue';
 import JoinStake from './JoinStake.vue';
 import useStoreState from '@/hooks/useStoreState';
@@ -56,15 +56,28 @@ const props = defineProps<{
 const emit = defineEmits(['refresh']);
 
 const { nerveAddress, nvtPrice } = useStoreState();
-onMounted(() => {
-  getStakingInfo();
-  getRewardInfo();
-  // getCanStakingList();
-});
 
 // 我的质押信息
 const pieData = ref<PieData[]>([]);
 const myTotalStake = ref('0');
+
+watch(
+  nerveAddress,
+  val => {
+    if (val) {
+      getStakingInfo();
+      getRewardInfo();
+    }
+  },
+  { immediate: true }
+);
+
+// onMounted(() => {
+//   getStakingInfo();
+//   getRewardInfo();
+//   // getCanStakingList();
+// });
+
 async function getStakingInfo() {
   if (!nerveAddress.value) return;
   pieData.value = [];

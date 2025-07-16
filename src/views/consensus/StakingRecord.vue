@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, watch } from 'vue';
 import dayjs from 'dayjs';
 import StakingList from './StakingList.vue';
 import Pagination from '@/components/Pagination.vue';
@@ -46,6 +46,11 @@ const { toastError } = useToast();
 const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 
 const loading = ref(true);
+const pager = reactive<Pager>({
+  index: 1,
+  size: 5,
+  total: 0
+});
 
 const activeTab = ref('first');
 
@@ -58,11 +63,22 @@ function handleClick() {
 // 质押中
 const staking = ref(true);
 
+const { nerveAddress } = useStoreState();
+
 onMounted(() => {
-  getStakingList();
+  // getStakingList();
 });
 
-const { nerveAddress } = useStoreState();
+watch(
+  nerveAddress,
+  val => {
+    if (val) {
+      getStakingList();
+    }
+  },
+  { immediate: true }
+);
+
 const stakingList = ref([]);
 
 async function getStakingList(isLoading = true) {
@@ -101,12 +117,6 @@ async function getStakingList(isLoading = true) {
   }
   loading.value = false;
 }
-
-const pager = reactive<Pager>({
-  index: 1,
-  size: 5,
-  total: 0
-});
 
 async function changeList() {
   if (activeTab.value === 'first') {
