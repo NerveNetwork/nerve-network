@@ -138,8 +138,8 @@ export default defineComponent({
           }
         } else {
           if (
-            Minus(nulsBalance.value, nvtFee).toNumber() < 0 ||
-            Minus(nvtBalance.value, nulsFee).toNumber() < 0
+            Minus(nulsBalance.value, nulsFee).toNumber() < 0 ||
+            Minus(nvtBalance.value, nvtFee).toNumber() < 0
           ) {
             tip = t('transfer.transfer25');
           }
