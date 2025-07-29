@@ -66,6 +66,7 @@ export interface State {
   network: string;
   isWrongChain: boolean;
   showConnect: boolean;
+  connectChainIds: number[];
   lang: string | null;
   assetList: AssetItem[] | [];
   nvtPrice: string;

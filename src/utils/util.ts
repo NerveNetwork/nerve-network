@@ -294,8 +294,6 @@ export function checkCanToL1(asset: AssetItem): boolean {
 
 // 检查资产是否能在当前L1-L2间跨链
 export function checkCanToL1OnCurrent(asset: AssetItem): boolean {
-  const canToL1 = checkCanToL1(asset);
-  if (!canToL1) return false;
   const currentChain = storage.get('network');
 
   // 禁止nvt 跨链 enuls

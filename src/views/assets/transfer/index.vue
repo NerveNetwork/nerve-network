@@ -6,25 +6,40 @@
         <el-tabs v-model="activeName">
           <el-tab-pane
             :name="TransferType.CrossIn"
-            :disabled="disableTx"
-            :label="$t('transfer.transfer1')"
-          ></el-tab-pane>
+            v-if="transferAsset?.canToL1"
+          >
+            <template #label>
+              <span v-if="disableTx" @click.stop="showSwitch">
+                {{ $t('transfer.transfer1') }}
+              </span>
+              <span v-else>{{ $t('transfer.transfer1') }}</span>
+            </template>
+          </el-tab-pane>
           <el-tab-pane
             :name="TransferType.General"
             :label="$t('transfer.transfer2')"
           ></el-tab-pane>
           <el-tab-pane
             :name="TransferType.Withdrawal"
-            :disabled="disableTx"
-            :label="$t('transfer.transfer3')"
-          ></el-tab-pane>
+            v-if="transferAsset?.canToL1"
+          >
+            <template #label>
+              <span v-if="disableTx" @click.stop="showSwitch">
+                {{ $t('transfer.transfer3') }}
+              </span>
+              <span v-else>{{ $t('transfer.transfer3') }}</span>
+            </template>
+          </el-tab-pane>
         </el-tabs>
       </div>
     </div>
     <div class="bottom">
       <div v-show="activeName === TransferType.CrossIn">
         <BTCCrossIn v-if="network === 'BTC'" />
-        <FCHCrossIn :network="network" v-else-if="network === 'FCH' || network === 'BCH'" />
+        <FCHCrossIn
+          :network="network"
+          v-else-if="network === 'FCH' || network === 'BCH'"
+        />
         <TBCCrossIn v-else-if="network === 'TBC'" />
         <cross-in v-else :transferAsset="transferAsset"></cross-in>
       </div>
@@ -92,10 +107,15 @@ export default defineComponent({
     function back() {
       emit('update:show', false);
     }
+
+    function showSwitch() {
+      emit('showSwitch');
+    }
     return {
       activeName,
       back,
-      TransferType
+      TransferType,
+      showSwitch
     };
   }
 });

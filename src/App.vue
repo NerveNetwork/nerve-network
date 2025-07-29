@@ -5,6 +5,7 @@
       <router-view></router-view>
     </div>
     <Footer />
+    <ConnectWallet />
   </ElConfigProvider>
 </template>
 
@@ -14,6 +15,7 @@ import { useStore } from 'vuex';
 import { ElConfigProvider } from 'element-plus';
 import Header from '@/components/Header/index.vue';
 import Footer from '@/components/Footer.vue';
+import ConnectWallet from '@/components/ConnectWallet.vue';
 import useLang from '@/hooks/useLang';
 import nerve from 'nerve-sdk-js';
 import config from '@/config';

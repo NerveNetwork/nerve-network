@@ -64,11 +64,11 @@
           @click.stop="toggleShowMenu"
         />
       </div>
-      <ConnectWallet
+      <!-- <ConnectWallet
         v-model:show="showConnect"
         @changeShow="showConnectDialog"
         @connect="connectProvider"
-      />
+      /> -->
       <AccountManage
         v-model:show="manageAccount"
         :address="nerveAddress"

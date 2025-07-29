@@ -72,7 +72,6 @@
                 <el-button
                   type="text"
                   v-if="scope.row.canToL1"
-                  :disabled="disableTx || !canToL1OnCurrent(scope.row)"
                   @click="transfer(scope.row, TransferType.CrossIn)"
                 >
                   {{ $t('transfer.transfer1') }}
@@ -86,7 +85,6 @@
                 <el-button
                   type="text"
                   v-if="scope.row.canToL1"
-                  :disabled="disableTx || !canToL1OnCurrent(scope.row)"
                   @click="transfer(scope.row, TransferType.Withdrawal)"
                 >
                   {{ $t('transfer.transfer3') }}
@@ -144,9 +142,6 @@
                   class="btn"
                   @click="transfer(item, TransferType.CrossIn)"
                   v-if="item.canToL1"
-                  :class="{
-                    btn_disable: disableTx || !canToL1OnCurrent(item)
-                  }"
                 >
                   {{ $t('transfer.transfer1') }}
                 </div>
@@ -157,9 +152,6 @@
                   class="btn"
                   @click="transfer(item, TransferType.Withdrawal)"
                   v-if="item.canToL1"
-                  :class="{
-                    btn_disable: disableTx || !canToL1OnCurrent(item)
-                  }"
                 >
                   {{ $t('transfer.transfer3') }}
                 </div>
@@ -173,8 +165,10 @@
       v-else
       v-model:currentTab="currentTab"
       v-model:show="showTransfer"
-      :disableTx="disableTx || !assetCanCross"
+      :disableTx="!assetCanCross"
+      :transferAsset="transferAsset"
       :network="network"
+      @showSwitch="showSwitch = true"
     />
     <assets-manage
       v-model:showAssetManage="showAssetManage"
@@ -183,6 +177,21 @@
       :selectAssets="selectAssets"
       @addAssets="addAssets"
     ></assets-manage>
+    <el-dialog
+      custom-class="reconnect-dialog"
+      title="Tips"
+      :show-close="true"
+      top="10vh"
+      v-model="showSwitch"
+    >
+      <p>
+        The current network of the extension does not support this operation. Do
+        you want to switch networks?
+      </p>
+      <el-button class="" type="primary" @click="showReConnect">
+        {{ $t('public.public9') }}
+      </el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -201,6 +210,7 @@ import AssetsManage from './AssetsManage.vue';
 import Transfer from './transfer/index.vue';
 import CollapseTransition from '@/components/CollapseTransition.vue';
 import { superLong, checkCanToL1OnCurrent } from '@/utils/util';
+import { useStore } from '@/store';
 import useStoreState from '@/hooks/useStoreState';
 import useAssetsList from './hooks/useAssetsList';
 import { specialChain } from '@/hooks/useEthereum';
@@ -217,6 +227,7 @@ export default defineComponent({
     AssetsControl
   },
   setup() {
+    const store = useStore();
     const internalInstance = getCurrentInstance();
     // provide<InstanceType<typeof internalInstance?.proxy>>("father", internalInstance?.proxy);
     provide('father', internalInstance?.proxy);
@@ -246,6 +257,7 @@ export default defineComponent({
     watch(() => network.value, filterAssets);
 
     const showAssetManage = ref(false); // 资产管理弹窗
+    const showSwitch = ref(false);
 
     // 显示交易tab
     const currentTab = ref<TransferType>(TransferType.General);
@@ -254,20 +266,31 @@ export default defineComponent({
     const assetCanCross = ref(true);
 
     function transfer(asset: AssetItemType, type: TransferType) {
-      if (type !== TransferType.General && disableTx.value) return;
-      if (type !== TransferType.General && !canToL1OnCurrent(asset)) {
-        return;
-      }
       assetCanCross.value = !(disableTx.value || !canToL1OnCurrent(asset));
       currentTab.value = type;
-      showTransfer.value = true;
       transferAsset.value = asset;
+      if (type !== TransferType.General) {
+        if (disableTx.value || !canToL1OnCurrent(asset)) {
+          showSwitch.value = true;
+          return;
+        }
+      }
+      showTransfer.value = true;
     }
 
     function canToL1OnCurrent(asset: AssetItemType) {
       const assetCanToL1OnCurrent = checkCanToL1OnCurrent(asset);
       if (!assetCanToL1OnCurrent) return false;
       return specialChain.indexOf(network.value) < 0;
+    }
+
+    function showReConnect() {
+      showSwitch.value = false;
+      const chainIds = transferAsset.value.heterogeneousList!.map(
+        v => v.heterogeneousChainId
+      );
+      store.commit('changeConnectChainIds', chainIds);
+      store.commit('changeConnectShow', true);
     }
 
     const rootCmp = reactive({
@@ -307,7 +330,9 @@ export default defineComponent({
       assetClick,
       TransferType,
       assetCanCross,
-      canToL1OnCurrent
+      canToL1OnCurrent,
+      showSwitch,
+      showReConnect
     };
   }
 });
@@ -568,6 +593,12 @@ export default defineComponent({
   }
   .transfer-page .bottom {
     //padding: 10px;
+  }
+}
+.reconnect-dialog {
+  .el-button {
+    margin-top: 20px;
+    width: 100%;
   }
 }
 </style>

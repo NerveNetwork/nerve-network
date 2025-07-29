@@ -12,7 +12,7 @@
       <img
         v-if="step === 2"
         class="click"
-        src="../../assets/img/back-icon.svg"
+        src="../assets/img/back-icon.svg"
         alt=""
         @click="step = 1"
       />
@@ -23,7 +23,7 @@
       <h4>Make sure the selected network matches the network in your wallet</h4>
       <ul class="chain-list">
         <li
-          v-for="item in _networkInfo"
+          v-for="item in networks"
           :key="item.chainId"
           @click="onChainChoose(item.type, item.name)"
         >
@@ -60,23 +60,35 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { providerList } from '../../utils/providerUtil';
+import { useStore } from '@/store';
+import { providerList } from '@/utils/providerUtil';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import useToast from '@/hooks/useToast';
+import useEthereum from '@/hooks/useEthereum';
 
-const props = defineProps<{
-  show: boolean;
-}>();
+const store = useStore();
+const { toastError } = useToast();
 
-const emit = defineEmits(['update:show', 'changeShow', 'connect']);
+const { connect } = useEthereum();
+
+const showConnect = computed(() => store.state.showConnect);
+const connectChainIds = computed(() => store.state.connectChainIds);
 
 const visible = computed({
   get() {
-    return props.show;
+    return showConnect.value;
   },
   set(val) {
-    emit('update:show', val);
+    store.commit('changeConnectShow', val);
   }
 });
+
+const networks = computed(() => {
+  const allChains = Object.values(_networkInfo);
+  if (!connectChainIds.value.length) return allChains;
+  return allChains.filter(v => connectChainIds.value.includes(v.chainId));
+});
+
 const step = ref(1);
 const chainType = ref('');
 const chainName = ref('');
@@ -88,19 +100,30 @@ const onChainChoose = (type: string, name: string) => {
 };
 
 const onConnect = (name: string) => {
-  emit('connect', name, chainName.value);
+  connectProvider(name, chainName.value);
 };
 
+async function connectProvider(provider: string, chainName: string) {
+  try {
+    await connect(provider, chainName);
+  } catch (e) {
+    // console.log(e, typeof e, e.message);
+    toastError(e);
+  }
+  store.commit('changeConnectShow', false);
+}
+
 const onClosed = () => {
-  emit('changeShow', false);
+  store.commit('changeConnectShow', false);
   step.value = 1;
   chainType.value = '';
   chainName.value = '';
+  store.commit('changeConnectChainIds', []);
 };
 </script>
 
 <style lang="scss">
-@import '../../assets/css/style.scss';
+@import '../assets/css/style.scss';
 .connect-dialog {
   .el-dialog__header {
     border: none !important;

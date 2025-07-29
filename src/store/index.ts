@@ -10,6 +10,7 @@ export default createStore<State>({
     network: storage.get('network') || '',
     isWrongChain: false,
     showConnect: false,
+    connectChainIds: [],
     lang: storage.get('lang'),
     assetList: storage.get('assetList', 'session') || [],
     nvtPrice: '',
@@ -42,6 +43,9 @@ export default createStore<State>({
     },
     changeConnectShow(state, data) {
       state.showConnect = data;
+    },
+    changeConnectChainIds(state, data) {
+      state.connectChainIds = data;
     },
     switchLang(state, data) {
       state.lang = data;
