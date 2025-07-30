@@ -6,10 +6,10 @@
         <el-tabs v-model="activeName">
           <el-tab-pane
             :name="TransferType.CrossIn"
-            v-if="transferAsset?.canToL1"
+            v-if="initialLoading || transferAsset?.canToL1"
           >
             <template #label>
-              <span v-if="disableTx" @click.stop="showSwitch">
+              <span v-if="initialLoading || disableTx" @click.stop="showSwitch">
                 {{ $t('transfer.transfer1') }}
               </span>
               <span v-else>{{ $t('transfer.transfer1') }}</span>
@@ -18,13 +18,20 @@
           <el-tab-pane
             :name="TransferType.General"
             :label="$t('transfer.transfer2')"
-          ></el-tab-pane>
-          <el-tab-pane
-            :name="TransferType.Withdrawal"
-            v-if="transferAsset?.canToL1"
           >
             <template #label>
-              <span v-if="disableTx" @click.stop="showSwitch">
+              <span v-if="initialLoading" @click.stop>
+                {{ $t('transfer.transfer2') }}
+              </span>
+              <span v-else>{{ $t('transfer.transfer2') }}</span>
+            </template>
+          </el-tab-pane>
+          <el-tab-pane
+            :name="TransferType.Withdrawal"
+            v-if="initialLoading || transferAsset?.canToL1"
+          >
+            <template #label>
+              <span v-if="initialLoading || disableTx" @click.stop="showSwitch">
                 {{ $t('transfer.transfer3') }}
               </span>
               <span v-else>{{ $t('transfer.transfer3') }}</span>
@@ -33,7 +40,7 @@
         </el-tabs>
       </div>
     </div>
-    <div class="bottom">
+    <div class="bottom" v-loading="initialLoading">
       <div v-show="activeName === TransferType.CrossIn">
         <BTCCrossIn v-if="network === 'BTC'" />
         <FCHCrossIn
@@ -86,7 +93,8 @@ export default defineComponent({
       type: Object as PropType<AssetItemType>
     },
     disableTx: Boolean,
-    network: String
+    network: String,
+    initialLoading: Boolean
   },
   setup(props, { emit }) {
     const activeName = ref<TransferType>(props.currentTab);
@@ -106,9 +114,11 @@ export default defineComponent({
     );
     function back() {
       emit('update:show', false);
+      emit('back');
     }
 
     function showSwitch() {
+      if (props.initialLoading) return;
       emit('showSwitch');
     }
     return {

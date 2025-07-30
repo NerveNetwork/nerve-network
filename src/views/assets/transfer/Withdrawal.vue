@@ -156,7 +156,16 @@ export default defineComponent({
       });
     });
 
-    const transferAsset = ref(father.transferAsset);
+    const transferAsset = ref<AssetItemType>({} as AssetItemType);
+    watch(
+      () => father.transferAsset,
+      val => {
+        if (val?.assetKey && !transferAsset.value.assetKey) {
+          transferAsset.value = val;
+        }
+      },
+      { immediate: true }
+    );
     const balance = computed(() => {
       const asset = assetsList.value.find(asset => {
         return asset.assetKey === transferAsset.value.assetKey;

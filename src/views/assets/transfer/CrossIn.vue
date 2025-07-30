@@ -141,13 +141,24 @@ export default defineComponent({
     });
 
     const assetsList = ref<AssetItemType[]>([]);
-    const transferAsset = ref(father.transferAsset);
+    const transferAsset = ref<AssetItemType>({} as AssetItemType);
 
     let timer: number;
-    onMounted(() => {
-      getAssetsList();
-      selectAsset(transferAsset.value);
-    });
+    watch(
+      () => father.transferAsset,
+      val => {
+        if (val?.assetKey && !transferAsset.value.assetKey) {
+          getAssetsList();
+          selectAsset(val);
+        }
+      },
+      { immediate: true }
+    );
+
+    // onMounted(() => {
+    //   getAssetsList();
+    //   selectAsset(transferAsset.value);
+    // });
     onBeforeUnmount(() => {
       if (timer) clearInterval(timer);
     });

@@ -169,6 +169,8 @@
       :transferAsset="transferAsset"
       :network="network"
       @showSwitch="showSwitch = true"
+      :initialLoading="transferLoading"
+      @back="clearTransferAsset"
     />
     <assets-manage
       v-model:showAssetManage="showAssetManage"
@@ -204,6 +206,7 @@ import {
   reactive,
   watch
 } from 'vue';
+import { useRoute } from 'vue-router';
 import AssetsControl from './AssetsControl.vue';
 import SymbolInfo from '@/components/SymbolInfo.vue';
 import AssetsManage from './AssetsManage.vue';
@@ -214,6 +217,7 @@ import { useStore } from '@/store';
 import useStoreState from '@/hooks/useStoreState';
 import useAssetsList from './hooks/useAssetsList';
 import { specialChain } from '@/hooks/useEthereum';
+import storage from '@/utils/storage';
 
 import { AssetItemType, rootCmpKey, TransferType } from './types';
 
@@ -227,6 +231,7 @@ export default defineComponent({
     AssetsControl
   },
   setup() {
+    const route = useRoute();
     const store = useStore();
     const internalInstance = getCurrentInstance();
     // provide<InstanceType<typeof internalInstance?.proxy>>("father", internalInstance?.proxy);
@@ -264,6 +269,40 @@ export default defineComponent({
     const showTransfer = ref(false);
     const transferAsset = ref<AssetItemType>({} as AssetItemType); // 当前交易的资产
     const assetCanCross = ref(true);
+    const transferAssetKey = storage.get('transferAsset', 'session');
+    const transferType = storage.get('transferType', 'session');
+    const transferLoading = ref(!!transferAssetKey);
+
+    watch(
+      () => route.path,
+      () => {
+        clearTransferAsset();
+      }
+    );
+
+    watch(
+      () => allAssetsList.value,
+      val => {
+        if (transferAsset.value.assetKey || !transferAssetKey) return;
+        if (transferAssetKey) {
+          transferLoading.value = true;
+          currentTab.value = transferType;
+          showTransfer.value = true;
+        }
+        if (!val.length) return;
+        const asset = val.find(v => v.assetKey === transferAssetKey);
+        transferLoading.value = false;
+        if (asset) {
+          assetCanCross.value = !(disableTx.value || !canToL1OnCurrent(asset));
+          transferAsset.value = asset;
+        } else {
+          clearTransferAsset();
+        }
+      },
+      {
+        immediate: true
+      }
+    );
 
     function transfer(asset: AssetItemType, type: TransferType) {
       assetCanCross.value = !(disableTx.value || !canToL1OnCurrent(asset));
@@ -276,6 +315,8 @@ export default defineComponent({
         }
       }
       showTransfer.value = true;
+      storage.set('transferAsset', asset.assetKey, 'session');
+      storage.set('transferType', type, 'session');
     }
 
     function canToL1OnCurrent(asset: AssetItemType) {
@@ -291,6 +332,11 @@ export default defineComponent({
       );
       store.commit('changeConnectChainIds', chainIds);
       store.commit('changeConnectShow', true);
+    }
+
+    function clearTransferAsset() {
+      storage.remove('transferAsset', 'session');
+      storage.remove('transferType', 'session');
     }
 
     const rootCmp = reactive({
@@ -332,7 +378,9 @@ export default defineComponent({
       assetCanCross,
       canToL1OnCurrent,
       showSwitch,
-      showReConnect
+      showReConnect,
+      transferLoading,
+      clearTransferAsset
     };
   }
 });
