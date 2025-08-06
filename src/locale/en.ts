@@ -458,7 +458,7 @@ const en = {
     home2:
       'NerveNetwork is an infrastructure layer designed to enable seamless cross-chain flows of digital assets.It aims to connect isolated blockchain ecosystems, establish a cross-chain asset exchange and settlement network, and provide the essential foundation for the DeFi ecosystem — allowing every digital asset holder to access truly secure, open, and transparent DeFi services.',
     home3: '2 seconds confirmation and 0 gas fee',
-    home4: 'Support 41 chains',
+    home4: 'Support 42 chains',
     home5: 'Launch Swap ',
     home6: 'Launch Bridge',
     home7: 'Total Volume',
@@ -469,7 +469,7 @@ const en = {
     home12: 'Staking',
     home13: 'Total Assets on Nerve',
     home14: 'Total Flow on Nerve / 24H',
-    home15: 'Support 41 Networks',
+    home15: 'Support 42 Networks',
     home16: 'Total Supply',
     home17: 'Max. Supply',
     home18: 'Circulating Market Cap'

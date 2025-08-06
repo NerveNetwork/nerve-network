@@ -144,6 +144,7 @@ export default defineComponent({
     const transferAsset = ref<AssetItemType>({} as AssetItemType);
 
     let timer: number;
+    let heterogeneousInfo: HeterogeneousInfo;
     watch(
       () => father.transferAsset,
       val => {
@@ -191,7 +192,6 @@ export default defineComponent({
       assetsList.value.unshift(tempAsset);
     }
 
-    let heterogeneousInfo: HeterogeneousInfo;
     async function selectAsset(asset: AssetItemType) {
       transferAsset.value = asset;
       // console.log(asset, 789654, this.father);

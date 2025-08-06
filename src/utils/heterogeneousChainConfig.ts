@@ -47,6 +47,7 @@ import FCHLogo from '@/assets/img/chainLogo/FCH.jpg';
 import BCHLogo from '@/assets/img/chainLogo/BCH.png';
 import MintLogo from '@/assets/img/chainLogo/Mint.jpg';
 import TBCLogo from '@/assets/img/chainLogo/TBC.png';
+import AkashicLogo from '@/assets/img/chainLogo/AKS.jpg';
 
 // explorer
 const Origin = {
@@ -135,7 +136,8 @@ const Origin = {
   FCH: 'https://freecash.info',
   BCH: 'https://www.oklink.com/bch',
   Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : '',
-  TBC: 'http://explorer.turingbitchain.io'
+  TBC: 'http://explorer.turingbitchain.io',
+  Akashic: 'https://blockscout-mainnet.akashicrecords.io'
 };
 
 export const RPC_URL = {
@@ -234,7 +236,8 @@ export const RPC_URL = {
     ? 'https://rpc.v4.testnet.pulsechain.com'
     : 'https://rpc.pulsechain.com',
   Mint: isBeta ? 'https://sepolia-testnet-rpc.mintchain.io' : '',
-  TBC: 'https://turingwallet.xyz/v1/tbc'
+  TBC: 'https://turingwallet.xyz/v1/tbc',
+  Akashic: 'https://rpc2-mainnet.akashicrecords.io'
 };
 
 interface IChain {
@@ -824,6 +827,19 @@ export const _networkInfo: IChain = {
     logo: TBCLogo,
     decimals: 6,
     rpcUrl: RPC_URL.TBC
+  },
+  Akashic: {
+    type: 'EVM',
+    name: 'Akashic',
+    chainName: isBeta ? 'Akashic_Beta' : 'Akashic',
+    chainId: 143,
+    assetKey: isBeta ? '5-192' : '',
+    origin: Origin.Akashic,
+    mainAsset: 'AKC',
+    nativeId: '0x236e',
+    logo: AkashicLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.Akashic
   },
   // Heco: {
   //   type: 'EVM',

@@ -64,6 +64,7 @@ import Pulse from '@/assets/img/supportChains/Pulse.svg';
 import FCH from '@/assets/img/supportChains/FCH.svg';
 import TBC from '@/assets/img/supportChains/TBC.svg';
 import ENULS from '@/assets/img/supportChains/ENULS.svg';
+import Akashic from '@/assets/img/supportChains/akashic.svg';
 
 /* import Heco from '@/assets/img/supportChains/Heco.png';
 import Janus from '@/assets/img/supportChains/janus.png';
@@ -112,7 +113,8 @@ const supportChains = [
   { src: Pulse },
   { src: FCH },
   { src: TBC },
-  { src: ENULS }
+  { src: ENULS },
+  { src: Akashic }
 ];
 
 const chainsRef = useObserveAnimate();

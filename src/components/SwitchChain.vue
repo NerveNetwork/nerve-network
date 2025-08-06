@@ -91,6 +91,7 @@ export default defineComponent({
     async function switchChain(item: ChainItem) {
       const { providerType, provider } = getProvider();
       const { provider: EVMProvider } = getEVMProvider();
+      const specialChains = ['BTC', 'TRON', 'FCH', 'BCH', 'TBC'];
       const network = storage.get('network');
       if (item.name === props.currentChain && !store.state.isWrongChain) return;
       show.value = false;
@@ -128,13 +129,8 @@ export default defineComponent({
             toastError('Please switch wallet');
           }
         } else {
-          if (
-            item.name === 'BTC' ||
-            item.name === 'TRON' ||
-            item.name === 'FCH' ||
-            item.name === 'BCH' ||
-            item.name === 'TBC'
-          ) {
+          // Nabox or other multi chain provider
+          if (specialChains.includes(item.name)) {
             if (!provider.isNabox) {
               toastError('Please switch wallet');
             } else {
@@ -170,9 +166,7 @@ export default defineComponent({
             const newChainId = EVMProvider.chainId;
             // newChainId !== oldChainId;
             if (
-              network === 'TRON' ||
-              network === 'BTC' ||
-              network === 'FCH' ||
+              specialChains.includes(network) ||
               network === 'NULS' ||
               network === 'NERVE'
             ) {

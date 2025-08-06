@@ -8450,7 +8450,7 @@ neo-async@^2.5.0, neo-async@^2.6.1, neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nerve-sdk-js@^1.0.36, nerve-sdk-js@^1.0.45:
+nerve-sdk-js@^1.0.36:
   version "1.0.45"
   resolved "https://registry.yarnpkg.com/nerve-sdk-js/-/nerve-sdk-js-1.0.45.tgz#152bf1b9c8a9ebbe97029c270bc33075e8f6c8ac"
   integrity sha512-xalM2SxqLXx9yLOcMOeU/edkAkF2grhS0ARhQZjAELBHe0Gjmc+vXjE6Q/xDGLDs5sVN7+zBfh7uvZ30f5J76Q==
@@ -8495,6 +8495,58 @@ nerve-sdk-js@^1.0.36, nerve-sdk-js@^1.0.45:
     rimraf "^2.6.3"
     sha256 "^0.2.0"
     stream-browserify "^3.0.0"
+    tiny-secp256k1 "^2.2.3"
+    webpack "^5.40.0"
+  optionalDependencies:
+    secp256k1 "3.7.1"
+
+nerve-sdk-js@^1.0.46:
+  version "1.0.46"
+  resolved "https://registry.yarnpkg.com/nerve-sdk-js/-/nerve-sdk-js-1.0.46.tgz#2e036d6445a9ae5efbd4f413b91c0008dbf2f5e2"
+  integrity sha512-u+Cq/t2AsozMqCTFuPD8+/l4G4V5Zdyn7u0xIIkmToMwMLz6sHXL7ZgeB9hsDRAlyEJsKHyT+EKIqOZZAnSK1Q==
+  dependencies:
+    "@babel/cli" "^7.0.0"
+    "@babel/core" "^7.0.0"
+    "@babel/plugin-proposal-class-properties" "^7.0.0"
+    "@babel/plugin-proposal-decorators" "^7.0.0"
+    "@babel/plugin-proposal-export-namespace-from" "^7.0.0"
+    "@babel/plugin-proposal-function-sent" "^7.0.0"
+    "@babel/plugin-proposal-json-strings" "^7.0.0"
+    "@babel/plugin-proposal-numeric-separator" "^7.0.0"
+    "@babel/plugin-proposal-throw-expressions" "^7.0.0"
+    "@babel/plugin-syntax-dynamic-import" "^7.0.0"
+    "@babel/plugin-syntax-import-meta" "^7.0.0"
+    "@babel/plugin-transform-runtime" "^7.0.0"
+    "@babel/preset-env" "^7.0.0"
+    "@babel/preset-react" "^7.14.5"
+    "@types/node" "^22.10.1"
+    acorn "7.1.1"
+    axios "^1.6.8"
+    babel-plugin-transform-runtime "^6.23.0"
+    bignumber.js "^9.0.0"
+    bitcoinjs-lib "^6.1.5"
+    bitcore-lib "^10.0.23"
+    bitcore-mnemonic "^10.0.23"
+    browserify "16.2.3"
+    bs58 "4.0.1"
+    bs58check "^3.0.1"
+    buffer "^5.2.1"
+    buffer-from "^1.1.1"
+    crypto-browserify "^3.12.0"
+    crypto-js "3.1.9-1"
+    ecpair "^2.1.0"
+    ecurve "1.0.6"
+    elliptic "6.5.3"
+    es6-promise "3.0.2"
+    ethers "^4.0.47"
+    fch-sdk "^1.0.6"
+    jsrsasign "8.0.20"
+    nan "2.11.1"
+    randombytes "2.0.6"
+    rimraf "^2.6.3"
+    sha256 "^0.2.0"
+    stream-browserify "^3.0.0"
+    tbc-lib-js "^1.0.21"
     tiny-secp256k1 "^2.2.3"
     webpack "^5.40.0"
   optionalDependencies:

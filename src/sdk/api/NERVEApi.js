@@ -1533,17 +1533,22 @@ export async function getTxHex({
   }
   hash = '0x' + tAssemble.getHash().toString('hex');
   const signature = await signHash(provider, hash, signAddress);
-  tAssemble.signatures = nerve.appSplicingPub(signature, pub);
+  tAssemble.signatures = nerve.appSplicingPubWithPS(signature, pub);
   return tAssemble.txSerialize().toString('hex');
 }
 
 async function signHash(provider, hash, signAddress) {
-  hash = hash.startsWith('0x') ? hash : '0x' + hash;
+  const message = nerve.getSignMessageWithPS(hash);
+  // console.log(nerve.getSignMessageWithPS, 234234);
+  // Convert to hexadecimal (required for personal_sign)
+  // const hexMessage = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
+  // hash = hash.startsWith('0x') ? hash : '0x' + hash;
   const _provider = getWebProvider(provider);
   let flat = await _provider.request({
-    method: 'eth_sign',
-    params: [signAddress, hash]
+    method: 'personal_sign',
+    params: [message, signAddress]
   });
+  // return flat;
   // console.log(flat, 66, signAddress)
   flat = flat.slice(2);
   const r = flat.slice(0, 64);
