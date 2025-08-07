@@ -274,7 +274,7 @@ export default defineComponent({
     const canRefresh = ref(true); // can click to refresh
     const stopRefresh = ref(false); // stop interval refresh
 
-    const { getWalletInfo, handleResult, handleHex } = useBroadcastNerveHex();
+    const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 
     const swap = new nerveswap.swap();
 

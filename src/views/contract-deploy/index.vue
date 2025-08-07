@@ -230,7 +230,7 @@ function submitForm() {
     }
   });
 }
-const { getWalletInfo, handleResult, handleHex } = useBroadcastNerveHex();
+const { getWalletInfo } = useBroadcastNerveHex();
 
 async function handleDeploy() {
   loading.value = true;

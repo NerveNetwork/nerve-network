@@ -324,16 +324,7 @@ async function farmStake(number: string) {
       tokenInfo;
     const farmHash = props.tokenInfo.farmHash || route.params?.hash;
     const amount = timesDecimals(number, stakeTokenDecimals);
-    // const tx = await nerve.swap.farmStake(
-    //   currentAccount.value?.address?.NERVE,
-    //   nerve.swap.token(stakeTokenChainId, stakeTokenAssetId),
-    //   config.chainId,
-    //   config.prefix,
-    //   amount,
-    //   farmHash,
-    //   ''
-    // );
-    // await handleHex(tx.hex, 66);
+
     let result;
     if (number !== '0') {
       result = await nerveswap.farm.stake({
@@ -447,16 +438,7 @@ async function farmWithdrawal(number: string) {
       farmHash
     } = tokenInfo;
     const amount = timesDecimals(number, stakeTokenDecimals);
-    /* const tx = await nerve.swap.farmWithdraw(
-      currentAccount.value?.address?.NERVE,
-      nerve.swap.token(stakeTokenChainId, stakeTokenAssetId),
-      // config.chainId,
-      // config.prefix,
-      amount,
-      farmHash,
-      ''
-    );
-    await handleHex(tx.hex, 67); */
+
     const result = await nerveswap.farm.withdrawal({
       provider,
       from: currentAccount.value?.address?.NERVE,
@@ -508,14 +490,6 @@ async function LPOperation(type: LpOperate, value: string) {
     toastError(e);
   }
 }
-
-// nerve 签名hash&广播hex
-/* async function handleHex(hex: string, type: number) {
-  const result: any = await handleNerveHex(hex, type);
-  if (result && result.hash) {
-    dialogAddOrMinus.value = false;
-  }
-} */
 
 function toAddLiquidity() {
   const {

@@ -64,10 +64,8 @@ export class NTransfer {
       // 调用metamask签名hash，然后拼接公钥完成交易签名
     }
     hash = '0x' + tAssemble.getHash().toString('hex');
-    console.log(hash, 3456)
-    return;
     const signature = await this.signHash(hash, signAddress);
-    tAssemble.signatures = nerve.appSplicingPub(signature, pub);
+    tAssemble.signatures = nerve.appSplicingPubWithPS(signature, pub);
     return tAssemble.txSerialize().toString('hex');
   }
 
@@ -112,10 +110,11 @@ export class NTransfer {
    * @param signAddress 签名账户地址
    */
   async signHash(hash: string, signAddress: string) {
-    hash = hash.startsWith('0x') ? hash : '0x' + hash;
+    // hash = hash.startsWith('0x') ? hash : '0x' + hash;
+    const message = nerve.getSignMessageWithPS(hash);
     let flat = await this.provider.request({
-      method: 'eth_sign',
-      params: [signAddress, hash]
+      method: 'personal_sign',
+      params: [message, signAddress]
     });
     // console.log(flat, 66, signAddress)
     flat = flat.slice(2); // 去掉0x

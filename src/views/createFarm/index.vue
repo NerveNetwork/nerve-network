@@ -277,9 +277,7 @@ function disableTime(date: Date) {
 }
 
 function submitForm() {
-  console.log(model, 999);
   form.value?.validate(valid => {
-    console.log(valid, 33)
     if (valid) {
       createFarm();
     } else {
@@ -288,7 +286,7 @@ function submitForm() {
     }
   });
 }
-const { getWalletInfo, handleResult, handleHex } = useBroadcastNerveHex();
+const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 async function createFarm() {
   loading.value = true;
   try {
