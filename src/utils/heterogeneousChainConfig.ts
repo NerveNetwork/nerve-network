@@ -833,7 +833,7 @@ export const _networkInfo: IChain = {
     name: 'Akashic',
     chainName: isBeta ? 'Akashic_Beta' : 'Akashic',
     chainId: 143,
-    assetKey: isBeta ? '5-192' : '',
+    assetKey: isBeta ? '5-192' : '9-907',
     origin: Origin.Akashic,
     mainAsset: 'AKC',
     nativeId: '0x236e',
