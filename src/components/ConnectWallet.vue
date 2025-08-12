@@ -47,12 +47,12 @@
           <span class="wallet-name">{{ item.name }}</span>
           <img class="fr" :src="item.src" alt="" />
         </div>
-        <p
+        <!-- <p
           class="ledger-tip"
           :class="{ tc: providerList[chainType].length > 1 }"
         >
           The only hardware wallet supported is Ledger NULS
-        </p>
+        </p> -->
       </div>
     </template>
   </el-dialog>
