@@ -30,7 +30,7 @@ import PolygonZkEVM from '@/assets/img/chainLogo/PolygonzkEVM.png';
 import Linea from '@/assets/img/chainLogo/Linea.png';
 import CELOLogo from '@/assets/img/chainLogo/CELO.svg';
 import ETCLogo from '@/assets/img/chainLogo/ETC.png';
-import BASELogo from '@/assets/img/chainLogo/BASE.svg';
+import BASELogo from '@/assets/img/chainLogo/BASE.png';
 import ScrollLogo from '@/assets/img/chainLogo/Scroll.jpg';
 import BitgertLogo from '@/assets/img/chainLogo/Bitgert.jpg';
 import JanusLogo from '@/assets/img/chainLogo/Janus.jpg';
