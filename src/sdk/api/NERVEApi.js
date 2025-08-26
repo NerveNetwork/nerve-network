@@ -1531,6 +1531,16 @@ export async function getTxHex({
       txData
     );
   }
+  if (type === 10) {
+    if (provider.isNabox || !provider.nai) {
+      return await provider.nai.signTxHex({
+        address: signAddress,
+        txHex: tAssemble.txSerialize().toString('hex')
+      });
+    } else {
+      throw new Error('This transaction can only be signed using NaboxWallet');
+    }
+  }
   hash = '0x' + tAssemble.getHash().toString('hex');
   const signature = await signHash(provider, hash, signAddress);
   tAssemble.signatures = nerve.appSplicingPubWithPS(signature, pub);
