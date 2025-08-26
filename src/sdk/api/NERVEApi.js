@@ -1532,7 +1532,7 @@ export async function getTxHex({
     );
   }
   if (type === 10) {
-    if (provider.isNabox || !provider.nai) {
+    if (provider.isNabox && provider.nai) {
       return await provider.nai.signTxHex({
         address: signAddress,
         txHex: tAssemble.txSerialize().toString('hex')
