@@ -1,5 +1,5 @@
 <template>
-  <div class="w1200 info-page">
+  <div class="w1200">
     <InfoNav />
     <router-view></router-view>
   </div>
@@ -12,9 +12,3 @@ get300DaysData();
 getTokenList({});
 getTxs({});*/
 </script>
-
-<style lang="scss">
-.info-page {
-  margin-top: -10px;
-}
-</style>

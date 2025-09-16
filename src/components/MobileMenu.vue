@@ -1,123 +1,74 @@
 <template>
-  <transition name="drawer-fade">
-    <div class="mobile-menu" v-show="visible">
-      <transition name="model">
-        <div class="mask" v-show="visible" @click="chooseMenu"></div>
-      </transition>
-      <Menu
-        :class="['menu', visible ? '' : 'hide-menu']"
-        v-bind="$attrs"
-        @clickMenu="chooseMenu"
-      />
+  <transition
+    enter-from-class="opacity-0"
+    enter-to-class="opacity-100"
+    enter-active-class="transition duration-200 ease-in"
+    leave-active-class="transition duration-150 ease-out"
+    leave-from-class="opacity-100"
+    leave-to-class="opacity-0"
+    name="drawer-fade">
+    <div class="fixed inset-0 z-[9999] mobile-menu" v-show="visible">
+      <div class="fixed inset-0 bg-mask"></div>
+      <div
+        :class="
+          clsxm(
+            'fixed right-0 top-0 h-full',
+            visible ? ' animate-xDrawerShow' : 'animate-xDrawerHide'
+          )
+        ">
+        <Menu v-bind="$attrs" @clickMenu="chooseMenu" />
+      </div>
     </div>
   </transition>
 </template>
 
-<script lang="ts">
-export default {
-  inheritAttrs: false
-};
-</script>
-
 <script lang="ts" setup>
-import { computed, nextTick, watch } from 'vue';
-import Menu from './Menu.vue';
+import { onMounted, computed, nextTick, watch, onUnmounted } from 'vue'
+import clsxm from '@/utils/clsxm'
+import Menu from './Menu.vue'
 
 const props = defineProps<{
-  show: boolean;
-}>();
+  show: boolean
+}>()
 
-const emit = defineEmits(['update:show']);
+const emit = defineEmits(['update:show'])
 
 const visible = computed({
   get() {
-    return props.show;
+    return props.show
   },
   set(val) {
-    emit('update:show', val);
+    emit('update:show', val)
   }
-});
+})
+
+function onResize() {
+  if (document.documentElement.clientWidth < 1280) {
+    emit('update:show', false)
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('resize', onResize);
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', onResize)
+})
 
 watch(
   () => visible.value,
   val => {
     if (val) {
-      document.body.classList.add('overhide');
+      document.body.classList.add('overhide')
     } else {
-      document.body.classList.remove('overhide');
+      document.body.classList.remove('overhide')
     }
   }
-);
+)
 function chooseMenu() {
   nextTick(() => {
-    visible.value = false;
-  });
+    visible.value = false
+  })
 }
 </script>
-
-<style lang="scss">
-.mobile-menu {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 60px;
-  bottom: 0;
-  z-index: 9999;
-
-  &.mobile-menu-show {
-    z-index: 9999;
-  }
-
-  .mask {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0.46;
-    background-color: #212121;
-  }
-
-  .menu {
-    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-    animation: rtl-drawer-in 0.3s;
-    &.hide-menu {
-      animation: rtl-drawer-out 0.3s;
-    }
-  }
-}
-.drawer-fade-enter-active,
-.drawer-fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.drawer-fade-enter,
-.drawer-fade-leave-to {
-  opacity: 0;
-}
-
-.model-enter-active,
-.model-leave-active {
-  transition: opacity 0.2s;
-}
-
-.model-enter,
-.model-leave-to {
-  opacity: 0;
-}
-@keyframes rtl-drawer-in {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
-@keyframes rtl-drawer-out {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-</style>

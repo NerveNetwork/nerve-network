@@ -1,13 +1,12 @@
 <template>
-  <el-dialog
-    custom-class="node-deposit-dialog"
+  <Modal
+    container-class="w-[500px]"
     :title="
       handleType === HandleType.ADDITION
         ? $t('nodeDetail.nodeDetail14')
         : $t('nodeDetail.nodeDetail13')
     "
     v-model="visible"
-    width="500px"
     @closed="resetForm"
   >
     <div v-loading="loading">
@@ -19,7 +18,7 @@
       >
         <el-form-item prop="amount">
           <template #label>
-            <p class="flex-between">
+            <p class="flex items-center justify-between">
               <span>
                 {{
                   handleType === HandleType.ADDITION
@@ -27,32 +26,33 @@
                     : $t('nodeDetail.nodeDetail16') + ': '
                 }}
               </span>
-              <span v-if="handleType === HandleType.ADDITION">
-                {{ $t('public.public12') }}{{ balance }}
-              </span>
+              <div class="flex items-center gap-1.5" v-if="handleType === HandleType.ADDITION">
+                <i-custom-wallet />
+                {{ balance }}
+              </div>
             </p>
           </template>
-          <el-input v-model="formData.amount"></el-input>
+          <Input v-model="formData.amount" />
         </el-form-item>
         <!--      <el-form-item :label="$t('public.fee')+': '">
                 <span class="fee">0.001 NVT</span>
               </el-form-item>-->
       </el-form>
-      <div class="dialog-footer">
-        <el-button @click="visible = false">
-          {{ $t('public.public8') }}
-        </el-button>
-        <el-button type="primary" @click="handleSubmit">
-          {{ $t('public.public9') }}
-        </el-button>
+      <div class="flex gap-3 pt-7">
+        <Button class="flex-1" variant="outline" @click="visible = false">{{ $t('public.public8') }}</Button>
+        <Button class="flex-1" @click="handleSubmit">{{ $t('public.public9') }}</Button>
       </div>
     </div>
-  </el-dialog>
+  </Modal>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue';
 import { ElForm } from 'element-plus';
+import Modal from '@/components/Base/Modal/index.vue'
+import Input from '@/components/Base/Input/index.vue'
+import Button from '@/components/Base/Button/index.vue'
+
 import { HandleType } from '@/views/node/types';
 import { useI18n } from 'vue-i18n';
 
@@ -131,5 +131,3 @@ function resetForm() {
   formRef.value?.resetFields();
 }
 </script>
-
-<style lang="scss"></style>

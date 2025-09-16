@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --colors-text: #ffffff;
+  --colors-label: #878dab;
+  --colors-primary: #2e90ff;
+  --colors-btn-primary: #0056ff;
+  --colors-placeholder: #55596a;
+  --colors-scrollbar: #97a9f0;
+  --colors-error: #fd4b4e;
+  --colors-line: #2b2e39;
+  --colors-card: #15171d;
+  --colors-card2: #20232d;
+  --colors-mask: rgba(0, 0, 0, 0.75);
+  --colors-footer: #111216;
+  --colors-input: #08090b;
+  --colors-tip: #ffa200;
+  --colors-up: #00e990;
+  --colors-down: #ff2327;
+}
+
+html {
+  height: 100%;
+  background-color: #000;
+}
+
+body {
+  height: 100%;
+  font-size: 14px;
+  color: var(--colors-text);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  outline: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--colors-scrollbar);
+  border-radius: 6px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+input::placeholder {
+  color: var(--colors-placeholder);
+}
+
+textarea::placeholder {
+  color: var(--colors-placeholder);
+}
+
+.Vue-Toastification__toast--success {
+  background-color: #00a0e9;
+}
+
+.no-data {
+  @apply text-center text-xs text-label;
+}
+
+.linear-data {
+  @apply bg-[linear-gradient(90deg,#5BE4FF_0%,#029DF7_100%)] bg-clip-text text-xl font-bold text-transparent xl:text-2xl;
+}
+
+.linear-data-h {
+  @apply bg-[linear-gradient(90deg,#5CD6FF_0%,#3D74FF_100%)] bg-clip-text text-xl font-bold text-transparent xl:text-2xl;
+}
+
+.btn {
+  @apply cursor-pointer transition-all duration-300 hover:opacity-70;
+}
+
+.card-wrapper {
+  @apply c-table p-4 xl:p-6 bg-card rounded-xl
+}
+
+.card-wrapper-not {
+  @apply p-4 xl:p-6 bg-card rounded-xl
+}
+
+.w1200 {
+  width: 1280px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1280px) {
+  .w1200 {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+    /* padding: 0 16px; */
+  }
+}
+
+.c-table tr.el-table__row {
+  cursor: pointer;
+}

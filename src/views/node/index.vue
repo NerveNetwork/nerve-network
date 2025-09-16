@@ -1,5 +1,5 @@
 <template>
-  <div class="node-page" v-loading="loading">
+  <div class="min-h-[300px]" v-loading="loading">
     <template v-if="!nodeHash || !nodeDeposit">
       <CreateNode
         :address="nerveAddress"
@@ -18,13 +18,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import CreateNode from './CreateNode.vue';
 import NodeDetail from './NodeDetail.vue';
-import useStoreState from '@/hooks/useStoreState';
+import { useWalletStore } from '@/store/wallet';
 import { getAccountConsensusNode } from '@/service/api';
 
-const { nerveAddress, assetsList } = useStoreState();
+const walletStore = useWalletStore()
+const { nerveAddress, assetsList } = storeToRefs(walletStore)
 
 const nodeHash = ref('');
 const nodeDeposit = ref(0);
@@ -44,6 +46,7 @@ watch(
 
 async function getNodeInfo() {
   const address = nerveAddress.value;
+  // const address = 'NERVEepb6bT6dAfEtY9Z4c38Khawdr4LKZNais';
   // const address = 'TNVTdTSPSaKU5hqs4NAG1FNExqXm4qsxKHrd2';
   if (address) {
     loading.value = true;
@@ -71,9 +74,3 @@ async function refreshInfo() {
   }
 }
 </script>
-
-<style lang="scss">
-.node-page {
-  min-height: 300px;
-}
-</style>

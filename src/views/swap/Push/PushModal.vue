@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    custom-class="push-confirm-modal"
+    class="push-confirm-modal"
     top="10vh"
     v-model="showConfirmModal"
     :show-close="false"
@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, withDefaults } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   toThousands,
@@ -234,7 +234,7 @@ const createOrder = async () => {
       EVMAddress,
       pub
     });
-    handleResult(229, result);
+    handleResult(229, result, '');
     // const result: any = await handleTxInfo(transferInfo, 229, txData);;
     if (result && result.hash) {
       //
@@ -257,7 +257,7 @@ defineExpose({
 </script>
 
 <style lang="scss">
-@import '../../../assets/css/style';
+@use '../../../assets/css/style';
 .push-confirm-modal {
   width: 470px;
   .label {

@@ -1,24 +1,16 @@
 <template>
-  <div class="support-chains" ref="chainsRef">
-    <h3>{{ $t('home.home15') }}</h3>
+  <div class="w1200 py-20" ref="chainsRef">
+    <h3 class="text-2xl font-semibold text-center mb-14">{{ $t('home.home15') }}</h3>
     <!--    <div class="partner-list">-->
-    <div class="chain-list">
+    <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
       <div
-        class="img-wrap"
+        class="flex items-center justify-center border border-[#42465A] h-[68px] rounded-[40px]"
         v-for="(item, idx) in supportChains"
         :key="item.src"
       >
-        <!-- :ref="el => itemRefs[index] = el" -->
         <img :src="item.src" alt="" />
       </div>
     </div>
-    <!-- <el-row :gutter="20" class="chain-list">
-      <el-col :span="12" :lg="6" v-for="(item, idx) in supportChains" :key="item.src">
-        <div class="img-wrap">
-          <img :src="item.src" alt="" />
-        </div>
-      </el-col>
-    </el-row> -->
   </div>
 </template>
 
@@ -122,74 +114,3 @@ const chainsRef = useObserveAnimate();
 // 为每一项生成ref和observer，延迟依次递增
 // const itemRefs = supportChains.map((_, idx) => useObserveAnimate('animate-in', undefined, idx * 500));
 </script>
-
-<style lang="scss">
-.support-chains {
-  padding-top: 90px;
-  margin-bottom: 50px;
-
-  h3 {
-    color: #475472;
-    font-size: 30px;
-    margin-bottom: 50px;
-    text-align: center;
-    font-weight: 600;
-  }
-
-  .chain-list {
-    display: grid;
-    gap: 24px;
-    // grid-column: ;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    .el-col {
-      margin-bottom: 20px;
-    }
-    .img-wrap {
-      background-color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      // width: 180px;
-      height: 78px;
-      border-radius: 15px;
-    }
-    img {
-      // width: 100%;
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    margin-bottom: 20px;
-    padding-top: 0;
-    h3 {
-      font-size: 24px;
-      margin: 50px 0 20px;
-    }
-    .chain-list {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      // .el-col {
-      //   margin-bottom: 10px;
-      //   img {
-      //     width: 80%;
-      //   }
-      // }
-    }
-    .el-col-12 {
-      padding-left: 6px !important;
-      padding-right: 6px !important;
-    }
-  }
-  @media screen and (max-width: 768px) {
-    .chain-list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      .img-wrap {
-        height: 60px;
-      }
-    }
-  }
-  @media screen and (max-width: 520px) {
-    .chain-list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-}
-</style>

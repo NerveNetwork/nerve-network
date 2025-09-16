@@ -1,5 +1,5 @@
 <template>
-  <ElConfigProvider :locale="localeLang">
+  <ElConfigProvider :locale="elLang">
     <Header />
     <div id="inner_content" class="inner_content">
       <router-view></router-view>
@@ -10,71 +10,53 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, computed, onMounted, onUnmounted } from 'vue';
-import { useStore } from 'vuex';
-import { ElConfigProvider } from 'element-plus';
-import Header from '@/components/Header/index.vue';
-import Footer from '@/components/Footer.vue';
-import ConnectWallet from '@/components/ConnectWallet.vue';
-import useLang from '@/hooks/useLang';
-import nerve from 'nerve-sdk-js';
-import config from '@/config';
-import { getBlockInfo, getNVTPrice } from '@/service/api';
-// 设置sdk网络
-nerve.customnet(config.chainId, config.API_URL, config.timeout);
+import { watch, onMounted, onUnmounted } from 'vue'
+import { ElConfigProvider } from 'element-plus'
+import Header from '@/components/Header/index.vue'
+import Footer from '@/components/Footer.vue'
+import ConnectWallet from '@/components/ConnectWallet.vue'
+import useLang from '@/hooks/useLang'
+import nerve from 'nerve-sdk-js'
+import config from '@/config'
 
-const store = useStore();
-const { localeLang } = useLang();
+import { useWalletStore } from './store/wallet'
 
-let timer: number;
-let timer2: number;
-const nerveAddress = computed(() => store.getters.nerveAddress);
-// 统一获取资产列表
+nerve.customnet(config.chainId, config.API_URL, config.timeout)
+
+const walletStore = useWalletStore()
+
+const { elLang } = useLang()
+
+let timer: number
+let timer2: number
 watch(
-  nerveAddress,
+  () => walletStore.nerveAddress,
   val => {
     if (val) {
-      store.dispatch('getAssetList', val);
-      if (timer) clearInterval(timer);
+      walletStore.getAssetList(val)
+      if (timer) clearInterval(timer)
       timer = window.setInterval(() => {
-        store.dispatch('getAssetList', val);
-      }, 10000);
+        walletStore.getAssetList(val)
+      }, 10000)
     } else {
-      store.commit('setAssetList', []);
+      walletStore.getAssetList(undefined)
     }
-  },
-  {
-    immediate: true
   }
-);
+)
 onMounted(() => {
-  getNvtPrice();
-  // getHeight(); // farm 里面获取
-  // setInterval(() => {
-  //   getHeight();
-  // }, 2000);
+  walletStore.getNVTPrice()
   timer2 = window.setInterval(() => {
-    getNvtPrice();
-  }, 10000);
-});
+    walletStore.getNVTPrice()
+  }, 10000)
+})
 onUnmounted(() => {
-  if (timer) clearInterval(timer);
-  if (timer2) clearInterval(timer2);
-});
-// 获取nvt价格
-async function getNvtPrice() {
-  const result = await getNVTPrice(config.chainId, config.assetId);
-  store.commit('changeNVTPrice', result?.usdPrice || '0');
-}
-// 获取高度
-async function getHeight() {
-  const result = await getBlockInfo();
-  store.commit('changeHeight', result?.blockHeight || null);
-}
+  if (timer) clearInterval(timer)
+  if (timer2) clearInterval(timer2)
+})
 </script>
 
 <style lang="scss">
-@import 'assets/css/base.scss';
+@use 'assets/css/base.scss';
 
 #app {
   width: 100%;
@@ -83,10 +65,10 @@ async function getHeight() {
 }
 
 .inner_content {
-  padding-top: 80px;
-  min-height: calc(100vh - 80px);
-  padding-bottom: 30px;
-  @media screen and (max-width: 1200px) {
+  padding-top: 40px;
+  min-height: calc(100vh - 40px);
+  padding-bottom: 60px;
+  @media screen and (max-width: 1280px) {
     padding-top: 30px;
     min-height: calc(100vh - 30px);
   }
@@ -94,12 +76,16 @@ async function getHeight() {
 
 .Vue-Toastification__container.top-right {
   top: 80px !important;
+  .Vue-Toastification__toast {
+    padding: 20px 16px;
+    min-height: 60px;
+  }
   @media only screen and (max-width: 600px) {
     top: 60px !important;
     width: 96%;
     left: 2%;
     .Vue-Toastification__toast {
-      padding: 0 24px;
+      padding: 0 16px;
       align-items: center;
       min-height: 54px;
       border-radius: 10px;

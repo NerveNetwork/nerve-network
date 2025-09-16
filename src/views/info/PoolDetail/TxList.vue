@@ -1,6 +1,6 @@
 <template>
-  <div class="info-tx-list">
-    <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="tabChange">
+  <div class="info-tx-list card-wrapper">
+    <!-- <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="tabChange">
       <el-tab-pane :label="$t('info.info20')" :name="TxType.ALL"></el-tab-pane>
       <el-tab-pane :label="$t('info.info21')" :name="TxType.SWAP"></el-tab-pane>
       <el-tab-pane
@@ -11,20 +11,24 @@
         :label="$t('info.info23')"
         :name="TxType.REOMVELP"
       ></el-tab-pane>
-      <Table
+      
+    </el-tabs> -->
+    <Tabs :active-tab="activeTab" :tabs="tabs" @change="tabChange" />
+    <TxTable
         :data="txList"
         :page-index="currentPage"
         :total="txTotal"
         @pageChange="pageChange"
         :is-multi-routing="props.isMultiRouting"
       />
-    </el-tabs>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import Table from './Table.vue';
+import { ref, watch, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Tabs from '@/components/Base/Tabs/index.vue'
+import TxTable from './TxTable.vue';
 import { getTxs, getMultiPairTxs } from '@/service/api';
 import dayjs from 'dayjs';
 import {
@@ -42,10 +46,20 @@ const props = defineProps<{
   isMultiRouting?: boolean;
 }>();
 
+const { t } = useI18n()
 const activeTab = ref(TxType.ALL);
 const txList = ref<TxItem[]>([]);
 const txTotal = ref(0);
 const currentPage = ref(1);
+
+const tabs = computed(() => {
+  return [
+    { label: t('info.info20'), value: TxType.ALL },
+    { label: t('info.info21'), value: TxType.SWAP },
+    { label: t('info.info22'), value: TxType.ADDLP },
+    { label: t('info.info23'), value: TxType.REOMVELP },
+  ]
+})
 
 watch(
   () => props.assetKey,
@@ -179,7 +193,8 @@ async function getMultiRoutingTxData() {
   }
 }
 
-function tabChange() {
+function tabChange(type: TxType) {
+  activeTab.value = type
   currentPage.value = 1;
   getData();
 }
@@ -189,11 +204,3 @@ function pageChange(index: number) {
   getData();
 }
 </script>
-
-<style lang="scss" scoped>
-.info-tx-list {
-  ::v-deep .el-tabs .el-tabs__nav-wrap::after {
-    width: 100%;
-  }
-}
-</style>

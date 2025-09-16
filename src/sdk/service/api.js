@@ -12,7 +12,6 @@ export async function broadcastHex(txHex) {
 
 export async function getTradeExactIn(tokenInStr, tokenOutStr, tokenInAmount) {
   const maxPairSize = 3;
-  console.log(2345666);
   const res = await sPost('/swap/wholeTradeExactIn', {
     tokenInStr,
     tokenInAmount,

@@ -1,9 +1,9 @@
 <template>
-  <div class="mint-page w1200">
-    <div class="mint-nav">
-      <div class="nav-item">Mint</div>
-      <div class="nav-item">
-        <router-link to="/assets">Assets</router-link>
+  <div class="mint-page w1200 card-wrapper">
+    <div class="mint-nav flex mb-4">
+      <div class="mr-4 border-b-[2px] pb-2 text-base font-semibold md:mr-6 md:text-lg border-primary text-text">Mint</div>
+      <div class="mr-4 border-b-[2px] pb-2 text-base font-semibold md:mr-6 md:text-lg border-transparent text-label">
+        <router-link to="/asset-center">Assets</router-link>
       </div>
     </div>
     <Search @search="onSearch" />
@@ -21,10 +21,11 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, onUnmounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import Search from './Search.vue';
 import MintList from './MintList.vue';
 import dayjs from 'dayjs';
-import useStoreState from '@/hooks/useStoreState';
+import { useWalletStore } from '@/store/wallet';
 import useMintBaseInfo from '../mintDeploy/useMintBaseInfo';
 import { divisionDecimals, fixNumber, Division } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
@@ -32,7 +33,9 @@ import { getMintList } from '@/service/api/mint';
 import { IMintItem } from '@/service/api/types/mint';
 import { NKey, NDecimals, NSymbol, replaceNULS } from '@/constants/constants';
 
-const { nerveAddress } = useStoreState();
+const walletStore = useWalletStore()
+const { nerveAddress } = storeToRefs(walletStore)
+
 const { targetAddress } = useMintBaseInfo();
 
 const loading = ref(true);
@@ -112,7 +115,7 @@ function onPageChange(index: number) {
   getList();
 }
 function onRefresh() {
-  loading.value = true;
+  // loading.value = true;
   setTimeout(() => {
     stopTimer();
     startTimer();
@@ -120,36 +123,3 @@ function onRefresh() {
   }, 2000);
 }
 </script>
-
-<style lang="scss">
-@import '../../assets/css/style.scss';
-.mint-page {
-  .mint-nav {
-    position: relative;
-    border-bottom: 1px solid #dfe4ef;
-    display: flex;
-    align-items: center;
-    &:after {
-      content: ' ';
-      display: inline;
-      height: 2px;
-      width: 24px;
-      background-color: $btnColor;
-      position: absolute;
-      bottom: 0;
-      left: 10px;
-    }
-  }
-  .nav-item {
-    font-size: 20px;
-    line-height: 18px;
-    font-weight: 500;
-    height: 36px;
-    color: $txColor;
-    margin-right: 60px;
-    cursor: pointer;
-  }
-  .search-warp {
-  }
-}
-</style>

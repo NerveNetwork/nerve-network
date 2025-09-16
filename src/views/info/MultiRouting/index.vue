@@ -1,6 +1,7 @@
 <template>
-  <div class="multi-routing">
+  <div class="multi-routing card-wrapper">
     <Table
+      :loading="loading"
       :title="$t('info.info32')"
       :data="pairs"
       :total="total"
@@ -9,8 +10,8 @@
       @pageChange="pageChange"
     >
       <template #name="scope">
-        <div class="asset-wrap flex-center">
-          <SymbolIcon :icon="scope.row.logo" />
+        <div class="flex items-center">
+          <SymbolIcon class="mr-1.5 md:mr-3" :icon="scope.row.logo" />
           {{ scope.row.name }}
         </div>
       </template>
@@ -19,9 +20,9 @@
       <template #liq="scope">{{ $format(scope.row.liq) }}</template>
       <template #liqTvl="scope">${{ $format(scope.row.liqTvl) }}</template>
       <template #supportChain="scope">
-        <div class="chain-list">
+        <div class="flex gap-2 flex-wrap">
           <template v-for="item in scope.row.supportChain" :key="item">
-            <SymbolIcon :icon="item" />
+            <SymbolIcon class="!w-6 !h-6" :icon="item" />
           </template>
         </div>
       </template>
@@ -38,14 +39,12 @@ import { MultiRoutingItem } from '@/views/info/types';
 import { getMultiPairs } from '@/service/api';
 import { divisionAndFix } from '@/utils/util';
 import { _networkInfo, getChainNameById } from '@/utils/heterogeneousChainConfig';
-import config from '@/config';
 
 const { t } = useI18n();
 const router = useRouter();
 
 const columns = computed(() => {
   return [
-    { width: 30 },
     {
       prop: 'name',
       label: t('info.info36'),
@@ -75,6 +74,7 @@ onMounted(() => {
   getList();
 });
 
+const loading = ref(true)
 const pairs = ref<MultiRoutingItem[]>([]);
 const total = ref(0);
 async function getList(pageIndex = 1) {
@@ -99,6 +99,7 @@ async function getList(pageIndex = 1) {
         )
       });
     });
+    loading.value = false
     pairs.value = list;
     total.value = res.total;
   }
@@ -112,26 +113,3 @@ function pageChange(index: number) {
   getList(index);
 }
 </script>
-
-<style lang="scss">
-.multi-routing {
-  .asset-wrap img {
-    width: 28px;
-    height: 28px;
-    margin-right: 10px;
-  }
-  .chain-list {
-    display: flex;
-    flex-wrap: wrap;
-    img {
-      width: 28px;
-      height: 28px;
-      margin-right: 10px;
-      margin-bottom: 5px;
-    }
-  }
-  tr.el-table__row {
-    cursor: pointer;
-  }
-}
-</style>

@@ -1,10 +1,11 @@
-import useStoreState from '@/hooks/useStoreState';
+import { useI18n } from 'vue-i18n';
+import { storeToRefs } from 'pinia';
 import nerve from 'nerve-sdk-js';
+import { useWalletStore } from '@/store/wallet';
 import { NTransfer } from '@/utils/api';
 import { broadcastHex } from '@/service/api';
 import storage from '@/utils/storage';
 import { Account, TxInfo } from '@/store/types';
-import { useI18n } from 'vue-i18n';
 import { checkIsNULSLedger } from './useEthereum';
 import useToast from './useToast';
 import { getEVMProvider } from '@/utils/providerUtil';
@@ -34,7 +35,8 @@ export function setAccountTxs(pub: string, tx: TxInfo) {
 }
 
 export default function useBroadcastNerveHex() {
-  const { currentAccount } = useStoreState();
+  const walletStore = useWalletStore()
+  const { addressInfo: currentAccount } = storeToRefs(walletStore)
   const { t } = useI18n();
   const { toastSuccess, toastError } = useToast();
 
@@ -128,13 +130,14 @@ export default function useBroadcastNerveHex() {
     }
   }
 
-  function handleResult(type: number, res: any, hId?: number) {
+  function handleResult(type: number, res: any, amountRemark: string, hId?: number) {
     if (res && res.hash) {
       const txInfo: TxInfo = {
         type,
         hash: res.hash,
         time: new Date().getTime(),
         status: 0,
+        amountRemark,
         hId
       };
       setAccountTxs(currentAccount.value?.pub, txInfo);

@@ -1,54 +1,51 @@
 <template>
-  <div class="n-breadcrumb">
+  <div class="mb-8 flex items-center gap-4">
     <template v-for="(item, index) in props.items" :key="index">
       <span
-        class="label"
-        :class="item.path ? 'route' : ''"
-        @click="toUrl(item)"
-      >
+        :class="
+          clsxm(
+            'text-base text-text',
+            item.path && 'cursor-pointer text-primary'
+          )
+        "
+        @click="toUrl(item)">
         {{ item.label }}
       </span>
-      <span class="separator" v-if="item.path">/</span>
+      <svg
+        v-if="item.path"
+        width="6"
+        height="10"
+        viewBox="0 0 6 10"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M1 1L5 5L1 9"
+          stroke="#878DAB"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
+import clsxm from '@/utils/clsxm'
 
 interface BreadItem {
-  label: string;
-  path?: string;
+  label: string
+  path?: string
 }
 
 const props = defineProps<{
-  items: BreadItem[];
-}>();
+  items: BreadItem[]
+}>()
 
-const router = useRouter();
+const router = useRouter()
 
 function toUrl(item: BreadItem) {
   if (item.path) {
-    router.push(item.path);
+    router.push(item.path)
   }
 }
 </script>
-
-<style lang="scss">
-.n-breadcrumb {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  .label {
-    color: #475472;
-  }
-  .route {
-    color: #2688f7;
-    cursor: pointer;
-  }
-  .separator {
-    color: #475472;
-    margin: 0 6px;
-  }
-}
-</style>

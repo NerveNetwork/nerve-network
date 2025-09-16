@@ -2,33 +2,34 @@
   <div class="info-pools">
     <!--  关注的池子  -->
     <PoolsTable
+      class="mb-6"
       :title="$t('info.info15')"
+      :loading="loading"
       :data="focusPools"
       :page-size="focusPools.length"
-      :total="focusPools.length"
-    />
+      :total="focusPools.length" />
     <!-- 全部池子   -->
     <PoolsTable
       :title="$t('info.info16')"
+      :loading="poolLoading"
       :data="pools"
       :total="poolTotal"
-      @pageChange="getPoolsList"
-    />
+      @pageChange="getPoolsList" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import { useFocusPools } from '../hooks/useFocusTokensAndPools';
-import useTokensAndPools from '../hooks/useTokensAndPools';
-import PoolsTable from '../Overview/PoolsTable.vue';
+import { onMounted } from 'vue'
+import { useFocusPools } from '../hooks/useFocusTokensAndPools'
+import useTokensAndPools from '../hooks/useTokensAndPools'
+import PoolsTable from '../Overview/PoolsTable.vue'
 
-const { focusPools } = useFocusPools();
-const { pools, poolTotal, getPoolsList } = useTokensAndPools();
+const { loading, focusPools } = useFocusPools()
+const { poolLoading, pools, poolTotal, getPoolsList } = useTokensAndPools()
 
 onMounted(() => {
-  getPoolsList();
-});
+  getPoolsList()
+})
 </script>
 
 <style></style>

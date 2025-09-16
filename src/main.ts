@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia'
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -8,6 +9,9 @@ import { getLogoConfig } from '@/utils/logoConfig';
 import { getSystemConfig } from '@/utils/getSystemConfig';
 import { testnet, mainnet } from 'nerveswap-sdk';
 import config from './config';
+import './style.css'
+import '@/assets/css/font.css'
+
 if (config.isBeta) {
   testnet();
 } else {
@@ -28,8 +32,14 @@ setTimeout(() => {
 getLogoConfig();
 getSystemConfig();
 
+const app = createApp(App)
+const pinia = createPinia()
+
 setTimeout(() => {
   // setTimeout to get ethereum.selectedAddress???
-  const app = createApp(App);
-  app.use(router).use(store).use(usePlugins).mount('#app');
+  app.use(pinia)
+  app.use(store)
+  app.use(router)
+  app.use(usePlugins)
+  app.mount('#app')
 }, 500);

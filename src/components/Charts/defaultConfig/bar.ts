@@ -1,4 +1,4 @@
-const color = '#2688f7';
+const color = '#71FF8D';
 const barConfig = {
   color,
   xAxis: {

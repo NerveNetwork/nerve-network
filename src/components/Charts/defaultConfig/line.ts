@@ -1,16 +1,16 @@
-const color = '#2688f7';
+const color = '#E17AFF'
 const lineConfig = {
   color,
   xAxis: {
     type: 'category',
     axisLabel: {
-      color: '#475472'
+      color: 'var(--colors-label)'
     }
   },
   yAxis: {
     type: 'value',
     axisLabel: {
-      color: '#475472'
+      color: 'var(--colors-label)'
     }
   },
   grid: {
@@ -22,9 +22,9 @@ const lineConfig = {
   },
   series: [
     {
-      type: 'bar'
+      type: 'line'
     }
   ]
-};
+}
 
-export default lineConfig;
+export default lineConfig

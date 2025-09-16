@@ -1,36 +1,39 @@
 <template>
-  <div class="key-info flex-between">
-    <div class="left flex-center">
-      <div class="symbol-wrap flex-center" v-if="props.isPool">
-        <SymbolIcon :icon="symbols[1]" :asset-key="assetKeys[1]"></SymbolIcon>
+  <div class="key-info flex items-center">
+    <!-- Pool -->
+    <template v-if="props.isPool">
+      <div class="flex items-center" v-if="props.isPool">
+        <SymbolIcon class="mr-1.5" :icon="symbols[1]" :asset-key="assetKeys[1]"></SymbolIcon>
         <SymbolIcon :icon="symbols[0]" :asset-key="assetKeys[0]"></SymbolIcon>
       </div>
-      <div class="symbol-wrap" v-else>
-        <SymbolIcon :icon="props.info.name" :asset-key="props.info.assetKey" />
+      <div class="text-base font-medium md:text-2xl md:leading-[30px] mr-1.5">
+        <router-link :to="`/info/tokens/${assetKeys[0]}`" class="text-primary cursor-pointer">
+          {{ symbols[0] }}
+        </router-link>
+        /
+        <router-link :to="`/info/tokens/${assetKeys[1]}`" class="text-primary cursor-pointer">
+          {{ symbols[1] }}
+        </router-link>
       </div>
-      <div class="symbol-info">
-        <p class="name fw">
-          <template v-if="props.isPool">
-            <span class="link" @click="toAsset(assetKeys[0])">
-              {{ symbols[0] }}
-            </span>
-            /
-            <span class="link" @click="toAsset(assetKeys[1])">
-              {{ symbols[1] }}
-            </span>
-          </template>
-          <template v-else>{{ props.info.name }}</template>
-<!--          {{ props.isPool ? symbols[0] + '/' + symbols[1] : props.info.name }}-->
-        </p>
-        <p class="key">
-          ID: {{ props.info.assetKey || props.info.tokenLP }}
-          <span v-if="!props.isPool" style="color: #475472; font-size: 16px">
-            ${{ props.info.price }}
-          </span>
-        </p>
+      <div class="text-label">ID: {{ props.info.assetKey || props.info.tokenLP }}</div>
+      <CollectIcon class="ml-7" v-model="isCollected" @change="change" />
+    </template>
+    <!-- Token -->
+    <template v-else>
+      <SymbolIcon class="mr-3 md:h-10 md:w-10" :icon="props.info.name" :asset-key="props.info.assetKey" />
+      <div>
+        <div class="flex items-center">
+          <div class="text-base font-medium md:text-2xl md:leading-[30px]">
+            {{ props.info.name }}
+          </div>
+          <div class="text-label">ID: {{ props.info.assetKey || props.info.tokenLP }}</div>
+          <CollectIcon class="ml-7" v-model="isCollected" @change="change" />
+        </div>
+        <div class="text-base">
+          ${{ props.info.price }}
+        </div>
       </div>
-    </div>
-    <CollectIcon v-model="isCollected" @change="change" />
+    </template>
   </div>
 </template>
 
@@ -40,7 +43,7 @@ import { useRouter } from 'vue-router';
 import useCollect from '../hooks/useCollect';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import CollectIcon from '@/components/CollectIcon.vue';
-import { useStore } from '@/store';
+import { useInfoStore } from '@/store/info';
 import { sortAssetsByValuation } from '@/utils/util';
 
 const props = defineProps<{
@@ -49,12 +52,13 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
-const store = useStore();
+const infoStore = useInfoStore()
+
 const { changeCollect } = useCollect();
-console.log(props.info, 881222222);
+
 const symbols = computed(() => {
   const { token0Symbol, token1Symbol } = props.info;
-  console.log(props.info, 881222222);
+
   if (!token0Symbol) return ['', ''];
   if (!token1Symbol) return [token0Symbol, ''];
   return sortAssetsByValuation(token0Symbol, token1Symbol);
@@ -80,10 +84,10 @@ const isCollected = ref(false);
 function checkIsCollected(info: any) {
   let flag = false;
   if (props.isPool) {
-    const watchPools = store.state.watchPools;
+    const watchPools = infoStore.watchPools;
     flag = watchPools.indexOf(info.address) > -1;
   } else {
-    const watchTokens = store.state.watchTokens;
+    const watchTokens = infoStore.watchTokens;
     flag = watchTokens.indexOf(info.assetKey) > -1;
   }
   isCollected.value = flag;
@@ -100,47 +104,3 @@ function toAsset(key: string) {
   router.push('/info/tokens/' + key);
 }
 </script>
-
-<style lang="scss">
-.key-info {
-  .symbol-wrap {
-    margin-right: 10px;
-    img {
-      width: 42px;
-      height: 42px;
-      background-color: #fff;
-    }
-    img:nth-child(2) {
-      margin-left: -10px;
-    }
-  }
-  .symbol-info {
-    .name {
-      font-size: 20px;
-    }
-    .key {
-      color: #94a6ce;
-      font-size: 14px;
-    }
-  }
-  .collect {
-    cursor: pointer;
-  }
-  @media screen and (max-width: 1200px) {
-    .symbol-wrap {
-      img {
-        width: 35px;
-        height: 35px;
-      }
-    }
-    .symbol-info {
-      .name {
-        font-size: 18px;
-      }
-      .key {
-        font-size: 14px;
-      }
-    }
-  }
-}
-</style>

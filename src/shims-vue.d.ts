@@ -1,26 +1,11 @@
-/* eslint-disable */
-declare module "*.vue" {
-  import type { DefineComponent } from "vue";
-  const component: DefineComponent<{}, {}, any>;
-  export default component;
-}
-
-declare module "*.png";
-declare module "*.jpg";
-declare module "*.jpeg";
-declare module "*.gif";
-declare module "*.svg";
-declare module "*.bmp";
-
-declare module "*.css";
-declare module "*.less";
-declare module "*.scss";
-
-declare module "lodash";
-declare module "nerve-sdk-js"
-declare module "nerveswap-sdk"
-declare module "@/sdk"
-
-declare module "element-ui/lib/locale/lang/*" {
-  export const elementLocale: any;
+import Vue from 'vue'
+import { I18n } from 'vue-i18n'
+import { toThousands, formatNumber } from './utils/util'
+declare module '@vue/runtime-core' {
+  export interface ComponentCustomProperties {
+    $t: I18n['t'],
+    $thousands: typeof toThousands,
+    $format: typeof formatNumber,
+    $copy: (str: string) => void
+  }
 }

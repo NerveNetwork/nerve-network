@@ -1,18 +1,26 @@
 <template>
-  <div class="mint-list" v-loading="loading">
+  <!-- <div class="mint-list" v-loading="loading"> -->
+  <div class="mint-list">
+    <template v-if="loading">
+      <div class="flex flex-col gap-4">
+        <Skeleton class="h-9" />
+        <Skeleton class="h-9" />
+        <Skeleton class="h-9" />
+        <Skeleton class="h-9" />
+      </div>
+    </template>
     <Table
+      v-else
       title=""
       :data="list"
       :total="total"
       :columns="columns"
-      @pageChange="pageChange"
-    >
+      @pageChange="pageChange">
       <template #name="scope">
         <el-tooltip
           placement="top"
           v-if="scope.row.mintAssetSourceContract"
-          popper-class="mint-popper"
-        >
+          popper-class="mint-popper">
           <template #content>
             <div>
               <span>
@@ -24,15 +32,13 @@
           <SymbolInfo
             :name="scope.row.mintAssetSymbol"
             :chain="scope.row.registerChain"
-            :asset-key="scope.row.mintAsset"
-          ></SymbolInfo>
+            :asset-key="scope.row.mintAsset"></SymbolInfo>
         </el-tooltip>
         <SymbolInfo
           v-else
           :name="scope.row.mintAssetSymbol"
           :chain="scope.row.registerChain"
-          :asset-key="scope.row.mintAsset"
-        ></SymbolInfo>
+          :asset-key="scope.row.mintAsset"></SymbolInfo>
       </template>
       <template #amountHeader>
         <Tip label="SMA/HT" :tip="$t('mint.mint38')" white />
@@ -41,12 +47,12 @@
         {{ $thousands(scope.row.mintEach) }}/{{ $thousands(scope.row.mintMax) }}
       </template>
       <template #startTime="scope">
-        <p class="time-item">{{ scope.row.startTime?.split(' ')[0] }}</p>
-        <p class="time-item">{{ scope.row.startTime?.split(' ')[1] }}</p>
+        <p>{{ scope.row.startTime?.split(' ')[0] }}</p>
+        <p>{{ scope.row.startTime?.split(' ')[1] }}</p>
       </template>
       <template #assetUnlockTime="scope">
-        <p class="time-item">{{ scope.row.assetUnlockTime?.split(' ')[0] }}</p>
-        <p class="time-item">{{ scope.row.assetUnlockTime?.split(' ')[1] }}</p>
+        <p>{{ scope.row.assetUnlockTime?.split(' ')[0] }}</p>
+        <p>{{ scope.row.assetUnlockTime?.split(' ')[1] }}</p>
       </template>
       <template #mintFee="scope">
         {{ $thousands(scope.row.mintFee) }} {{ scope.row.mintFeeAssetSymbol }}
@@ -56,13 +62,16 @@
         {{ $t('mint.mint56') }}
       </template>
       <template #progress="scope">
-        <div class="progress-item">
-          <p>{{ scope.row.progress }}%</p>
-          <div class="progress-wrap">
+        <div class="w-[100px]">
+          <p class="text-center text-xs">{{ scope.row.progress }}%</p>
+          <div class="h-1.5 rounded-[2px] bg-[#292C36]">
             <div
-              class="progress-bar"
-              :style="{ width: scope.row.progress + 'px' }"
-            ></div>
+              class="h-full rounded-[2px]"
+              :style="{
+                width: scope.row.progress + 'px',
+                background:
+                  'linear-gradient(85.01deg, #FFDA56 0.66%, #F50FF9 99.34%)'
+              }"></div>
           </div>
         </div>
       </template>
@@ -70,8 +79,7 @@
         <MintHandle
           :item="scope.row"
           @mint="mint"
-          :nerveAddress="nerveAddress"
-        />
+          :nerveAddress="nerveAddress" />
       </template>
     </Table>
   </div>
@@ -79,33 +87,32 @@
     v-model:show="showConfirmModal"
     :id="pid"
     :targetAddress="targetAddress"
-    @refresh="emit('refresh')"
-  />
+    @refresh="emit('refresh')" />
 </template>
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Table from '@/components/Table/index.vue';
-import SymbolInfo from '@/components/SymbolInfo.vue';
-import MintHandle from './MintHandle.vue';
-import ConfirmModal from './ConfirmModal.vue';
-import Tip from '../mintDeploy/Tip.vue';
-import { IMintItem } from '@/service/api/types/mint';
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import Table from '@/components/Table/index.vue'
+import Skeleton from '@/components/Base/Skeleton/index.vue'
+import SymbolInfo from '@/components/SymbolInfo.vue'
+import MintHandle from './MintHandle.vue'
+import ConfirmModal from './ConfirmModal.vue'
+import Tip from '../mintDeploy/Tip.vue'
+import { IMintItem } from '@/service/api/types/mint'
 
 const props = defineProps<{
-  loading: boolean;
-  list: IMintItem[];
-  total: number;
-  targetAddress: string;
-  nerveAddress: string;
-}>();
+  loading: boolean
+  list: IMintItem[]
+  total: number
+  targetAddress: string
+  nerveAddress: string
+}>()
 
-const emit = defineEmits(['onChange', 'refresh']);
+const emit = defineEmits(['onChange', 'refresh'])
 
-const { t } = useI18n();
+const { t } = useI18n()
 const columns = computed(() => {
   return [
-    { width: 10 },
     {
       label: t('mint.mint37'),
       slotName: 'name',
@@ -144,48 +151,19 @@ const columns = computed(() => {
       slotName: 'opt'
     },
     { width: 10 }
-  ];
-});
+  ]
+})
 
-const pid = ref(0);
+const pid = ref(0)
+const showConfirmModal = ref(false)
 
 const pageChange = (index: number) => {
-  emit('onChange', index);
-};
+  emit('onChange', index)
+}
 
 const mint = (id: number) => {
-  pid.value = id;
-  showConfirmModal.value = true;
-};
+  pid.value = id
+  showConfirmModal.value = true
+}
 
-const showConfirmModal = ref(false);
 </script>
-<style lang="scss" scoped>
-@import '../../assets/css/style.scss';
-.mint-list {
-  .progress-item {
-    p {
-      text-align: center;
-      font-size: 12px;
-      line-height: 16px;
-    }
-  }
-  .progress-wrap {
-    width: 100px;
-    height: 4px;
-    border-radius: 2px;
-    background-color: #eef2fc;
-    .progress-bar {
-      height: 100%;
-      border-radius: 2px;
-      background: linear-gradient(to right, #37e4cc, #4d62e4);
-    }
-  }
-  .time-item {
-    line-height: 1.1;
-  }
-}
-:deep(.mint-popper) {
-  background-color: red !important;
-}
-</style>

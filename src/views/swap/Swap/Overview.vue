@@ -1,199 +1,103 @@
 <template>
-  <div class="overview pd_40_rd_20">
-    <div class="head" v-if="swapSymbol.to">
-      <div class="top flex-center">
-        <symbol-icon class="img1" :icon="swapSymbol.from" :key="swapSymbol.from"></symbol-icon>
-        <symbol-icon class="img2" :icon="swapSymbol.to" :key="swapSymbol.to"></symbol-icon>
-        <div class="pair">{{ swapSymbol.from }}/{{ swapSymbol.to }}</div>
+  <div
+    class="xl:max-h-auto mr-5 max-h-[500px] w-full overflow-auto rounded-xl bg-card p-6 pt-4 xl:h-[790px] xl:w-3/5">
+    <div class="mb-6" v-if="swapSymbol.to">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <SymbolIcon
+            class="!h-6 !w-6"
+            :icon="swapSymbol.from"
+            :key="swapSymbol.from" />
+          <SymbolIcon
+            class="-ml-1 !h-6 !w-6"
+            :icon="swapSymbol.to"
+            :key="swapSymbol.to" />
+          <div class="ml-2">{{ swapSymbol.from }}/{{ swapSymbol.to }}</div>
+        </div>
+        <div class="text-xl" v-if="false">$448.68K</div>
       </div>
-      <div class="bottom" v-if="swapRate">{{ swapRate }}</div>
     </div>
-    <div class="order-history">
-      <div class="order-nav">
-        <span
-          :class="{ active: txType === 'swap' }"
-          @click="changeTxType('swap')"
-        >
-          {{ $t('trading.trading23') }}
-        </span>
-        <span
-          :class="{ active: txType === 'multiRouting' }"
-          @click="changeTxType('multiRouting')"
-        >
-          {{ $t('trading.trading24') }}
-        </span>
-      </div>
-      <TxList :list="list" v-show="txType === 'swap'"></TxList>
-      <TxList :list="list" v-show="txType === 'multiRouting'"></TxList>
-      <pagination v-model:pager="newPager" @change="changeList"></pagination>
-    </div>
+
+    <!-- Tabs -->
+    <Tabs :activeTab="txType" :tabs="tabs" @change="changeTxType"  />
+    <!-- <div class="mb-4 flex">
+      <template v-for="item in tabs" :key="item.value">
+        <div
+          :class="
+            clsxm(
+              'mr-4 cursor-pointer border-b-[2px] pb-2 text-base font-semibold md:mr-6 md:text-lg',
+              item.value === txType
+                ? 'border-primary text-text'
+                : 'border-transparent text-label'
+            )
+          "
+          @click="changeTxType(item.value)">
+          {{ item.label }}
+        </div>
+      </template>
+    </div> -->
+
+    <TxList :list="list" v-show="txType === 'swap'"></TxList>
+    <TxList :list="list" v-show="txType === 'multiRouting'"></TxList>
+    <Pagination
+      class="pt-4"
+      v-model:current-page="newPager.index"
+      :page-size="newPager.size"
+      :total="newPager.total"
+      @change="changeList" />
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
-import SymbolIcon from '@/components/SymbolIcon.vue';
-import TxList from './TxList.vue';
-import Pagination from '@/components/Pagination.vue';
-import { SwapSymbol, OrderItem, Pager } from '../types';
-import { openExplorer, superLong } from '@/utils/util';
-export default defineComponent({
-  props: {
-    swapSymbol: {
-      type: Object as PropType<SwapSymbol>,
-      default: () => {}
-    },
-    swapRate: String,
-    list: {
-      type: Array as PropType<OrderItem[]>,
-      default: () => []
-    },
-    loading: Boolean,
-    pager: {
-      type: Object as PropType<Pager>,
-      default: () => {}
-    },
-    txType: String
-  },
-  components: {
-    SymbolIcon,
-    TxList,
-    Pagination
-  },
-  setup(props, { emit }) {
-    const newPager = computed({
-      get() {
-        return props.pager;
-      },
-      set(val) {
-        emit('update:pager', val);
-      }
-    });
-    function changeTxType(type: string) {
-      if (type === props.txType) return;
-      emit('update:txType', type);
-    }
-    function changeList() {
-      emit('changeList');
-    }
-    return {
-      newPager,
-      changeTxType,
-      changeList,
-      openExplorer,
-      superLong
-    };
-  }
-});
-</script>
+<script lang="ts" setup>
+import { computed } from 'vue'
+import SymbolIcon from '@/components/SymbolIcon.vue'
+import Tabs from '@/components/Base/Tabs/index.vue'
+import TxList from './TxList.vue'
+import Pagination from '@/components/Base/Pagination/index.vue'
+import clsxm from '@/utils/clsxm'
+import { SwapSymbol, OrderItem, Pager } from '../types'
 
-<style lang="scss" scoped>
-@import '../../../assets/css/style';
-.overview {
-  //width: 790px;
-  width: 60%;
-  height: 752px;
-  margin-right: 30px;
-  //margin-right: 40px;
-  .head {
-    margin-bottom: 10px;
-    .img1,
-    .img2 {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-    }
-    .img2 {
-      margin-left: -8px;
-    }
-    .pair {
-      margin-left: 10px;
-      font-size: 24px;
-    }
-    .bottom {
-      padding-top: 8px;
-      font-size: 36px;
-      color: #475472;
-    }
-  }
-  .order-history {
-    .order-nav {
-      margin-bottom: 15px;
-      span {
-        display: inline-block;
-        height: 40px;
-        line-height: 40px;
-        font-size: 20px;
-        margin-right: 40px;
-        color: #475472;
-        cursor: pointer;
-        &.active {
-          color: #2688f7;
-          border-bottom: 3px solid #2688f7;
-        }
-      }
-    }
-    :deep(.el-table) {
-      border: none !important;
-      th .cell {
-        font-size: 16px;
-        font-weight: 400;
-      }
-      tr td {
-        border-bottom: 1px solid #e4efff !important;
-      }
-      tr .cell {
-        line-height: 46px;
-        font-size: 16px;
-        //color: #333;
-      }
-      .iconfont {
-        color: #1678ff;
-        font-size: 26px;
-      }
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    padding: 20px;
-    .head {
-      margin-bottom: 10px;
-      .bottom {
-        font-size: 32px;
-      }
-    }
-    .order-history {
-      .order-nav {
-        margin-bottom: 10px;
-        span {
-          height: 34px;
-          line-height: 34px;
-          font-size: 18px;
-          margin-right: 30px;
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 1000px) {
-    width: 100%;
-    max-height: 460px;
-    border: none;
-    padding: 0;
-    .head {
-      margin-bottom: 10px;
-      .top {
-        img {
-          width: 30px;
-          height: 30px;
-        }
-        .pair {
-          font-size: 18px;
-        }
-      }
-      .bottom {
-        padding-top: 5px;
-        font-size: 22px;
-      }
-    }
-  }
+interface Props {
+  swapSymbol: SwapSymbol
+  swapRate: string
+  list: OrderItem[]
+  pager: Pager
+  txType: string
 }
-</style>
+
+interface Emit {
+  (e: 'update:pager', pager: Pager): void
+  (e: 'update:txType', type: string): void
+  (e: 'changeList'): void
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  swapSymbol: () => ({}) as SwapSymbol,
+  list: () => [],
+  pager: () => ({}) as Pager
+})
+const emit = defineEmits<Emit>()
+
+const tabs = computed(() => {
+  return [
+    { label: 'Transaction', value: 'swap' },
+    { label: 'Multi-routing', value: 'multiRouting' }
+  ]
+})
+
+const newPager = computed({
+  get() {
+    return props.pager
+  },
+  set(val) {
+    emit('update:pager', val)
+  }
+})
+function changeTxType(type: string) {
+  if (type === props.txType) return
+  emit('update:txType', type)
+}
+function changeList() {
+  emit('changeList')
+}
+</script>

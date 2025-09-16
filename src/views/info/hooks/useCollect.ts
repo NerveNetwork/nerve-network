@@ -1,8 +1,8 @@
-import { useStore } from '@/store';
+import { useInfoStore } from '@/store/info';
 import storage from '@/utils/storage';
 
 export default function useCollect() {
-  const store = useStore();
+  const infoStore = useInfoStore()
   function changeCollect(key: string, status: boolean, type: 'pool' | 'token') {
     if (type === 'pool') {
       const watchPools = storage.get('watchPools') || [];
@@ -13,7 +13,7 @@ export default function useCollect() {
         watchPools.splice(index, 1);
       }
       storage.set('watchPools', watchPools);
-      store.commit('changeWatchPools', watchPools);
+      infoStore.changeWatchPools(watchPools)
     } else {
       const watchTokens = storage.get('watchTokens') || [];
       if (status) {
@@ -23,7 +23,7 @@ export default function useCollect() {
         watchTokens.splice(index, 1);
       }
       storage.set('watchTokens', watchTokens);
-      store.commit('changeWatchTokens', watchTokens);
+      infoStore.changeWatchTokens(watchTokens)
     }
   }
   return {

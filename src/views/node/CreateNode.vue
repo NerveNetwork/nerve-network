@@ -1,74 +1,80 @@
 <template>
-  <div class="create-node" v-loading="loading">
-    <div class="content box_wrapper">
-      <h3 class="title">{{ $t('createNode.createNode1') }}</h3>
-      <el-form
-        :model="formData"
-        :rules="rules"
-        ref="formRef"
-        label-position="top"
-      >
-        <el-form-item :label="$t('createNode.createNode2')">
-          <el-input :modelValue="address" disabled></el-input>
-        </el-form-item>
-        <el-form-item
-          :label="$t('createNode.createNode3')"
-          prop="rewardAddress"
-        >
-          <el-input
-            v-model.trim="formData.rewardAddress"
-            maxlength="50"
-          ></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('createNode.createNode4')" prop="blockAddress">
-          <el-input
-            v-model.trim="formData.blockAddress"
-            maxlength="50"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          :label="$t('createNode.createNode5') + '(NVT)'"
-          prop="amount"
-        >
-          <template #label>
-            <p class="flex-between">
-              <span>
-                {{ $t('createNode.createNode5') + '(NVT)' }}
-              </span>
-              <span class="font12">
-                {{ $t('public.public12') }}{{ nvtBalance }}
-              </span>
-            </p>
-          </template>
-          <el-input v-model.trim="formData.amount"></el-input>
-        </el-form-item>
-        <!--      <div class="font14">
-                <el-tooltip placement="top">
-                  <div slot="content">{{$t('transfer.transfer5')}}</div>
-                  <i class="el-icon-warning"></i>
-                </el-tooltip>
-                {{$t('public.fee')}}: 0.001 <span class="fCN">{{agentAsset.agentAsset.symbol}}</span>
-              </div>-->
-        <el-form-item class="form-next">
-          <el-button
-            type="primary"
-            @click="createForm"
-            :disabled="isRed"
-            v-if="address"
-          >
-            {{ $t('public.public9') }}
-          </el-button>
-          <AuthButton v-else />
-        </el-form-item>
-      </el-form>
+  <div class="card-wrapper mx-auto max-w-[470px]" v-loading="loading">
+    <div class="relative mb-6 text-center">
+      <button
+        class="absolute left-0 rounded-full p-1.5 transition-colors duration-300 hover:bg-card2"
+        @click="router.go(-1)">
+        <i-custom-back class="h-5 w-5" />
+      </button>
+      <span class="text-lg">{{ $t('createNode.createNode1') }}</span>
     </div>
+    <el-form
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
+      label-position="top"
+    >
+      <el-form-item :label="$t('createNode.createNode2')">
+        <Input class="bg-input" disabled :model-value="address" />
+      </el-form-item>
+      <el-form-item
+        :label="$t('createNode.createNode3')"
+        prop="rewardAddress"
+      >
+        <Input
+          class="bg-input"
+          v-model.trim="formData.rewardAddress"
+          maxlength="50"
+        ></Input>
+      </el-form-item>
+      <el-form-item :label="$t('createNode.createNode4')" prop="blockAddress">
+        <Input
+          class="bg-input"
+          v-model.trim="formData.blockAddress"
+          maxlength="50"
+        ></Input>
+      </el-form-item>
+      <el-form-item
+        :label="$t('createNode.createNode5') + '(NVT)'"
+        prop="amount"
+      >
+        <template #label>
+          <p class="flex items-center justify-between">
+            <span>
+              {{ $t('createNode.createNode5') + '(NVT)' }}
+            </span>
+            <div class="flex items-center gap-1.5">
+              <i-custom-wallet />
+              <span>{{ nvtBalance }}</span>
+            </div>
+          </p>
+        </template>
+        <!-- <el-input v-model.trim="formData.amount"></el-input> -->
+        <Input class="bg-input" v-model="formData.amount" />
+      </el-form-item>
+      <el-form-item>
+        <div class="w-full pt-7">
+          <Button
+            class="w-full"
+            @click="createForm"
+            v-if="address"
+            :disabled="isRed">
+            {{ $t('public.public9') }}
+          </Button>
+          <auth-button class="w-full" v-else></auth-button>
+        </div>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
-import AuthButton from '@/components/AuthButton.vue';
+import { useRouter } from 'vue-router';
 import { ElForm } from 'element-plus';
+import Input from '@/components/Base/Input/index.vue'
+import Button from '@/components/Base/Button/index.vue'
+import AuthButton from '@/components/AuthButton.vue';
 import { useI18n } from 'vue-i18n';
 import useToast from '@/hooks/useToast';
 import { timesDecimals, isValidNerveAddress } from '@/utils/util';
@@ -83,6 +89,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['refresh']);
 
+const router = useRouter()
 const { t } = useI18n();
 const { toast, toastError} = useToast();
 const { getWalletInfo, handleResult } = useBroadcastNerveHex();
@@ -186,7 +193,7 @@ function createForm() {
           EVMAddress,
           pub
         });
-        handleResult(4, result);
+        handleResult(4, result, '');
         // const result: any = await handleTxInfo(transferInfo, 4, txData);
         // if (result && result.hash) {
         //   emit('refresh');
@@ -200,70 +207,3 @@ function createForm() {
   });
 }
 </script>
-
-<style lang="scss">
-.create-node {
-  //padding: 0 0 50px;
-  width: 800px;
-  margin: 0 auto;
-  h3 {
-    text-align: center;
-    padding: 30px 0;
-    color: #475472;
-    font-size: 22px;
-    font-weight: 600;
-  }
-
-  .el-form {
-    width: 600px;
-    margin: 0 auto;
-  }
-
-  .form-next {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    .el-form-item__content {
-      display: flex;
-      justify-content: center;
-    }
-    .el-button {
-      width: 68%;
-      border-radius: 6px;
-    }
-    .auth-button {
-      width: 68%;
-      .el-button {
-        width: 100%;
-      }
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    //padding: 0 0 50px;
-    padding: 0 16px;
-    width: 100%;
-    margin: 0 auto;
-    .content {
-      padding: 0 16px;
-    }
-    h3 {
-      padding: 18px 0;
-      font-size: 20px;
-    }
-
-    .el-form {
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    .form-next {
-      text-align: center;
-      padding-top: 20px;
-
-      .el-button {
-        width: 68%;
-        border-radius: 6px;
-      }
-    }
-  }
-}
-</style>

@@ -1,21 +1,21 @@
 <template>
-  <div class="node-info box_wrapper">
-    <div class="head flex-between">
-      <div class="left">
-        <span class="tx-uppercase font18">ID: {{ nodeInfo.agentId }}</span>
+  <div class="card-wrapper mb-6">
+    <div class="flex items-center justify-between border-b border-line pb-3">
+      <div>
+        <span class="uppercase text-lg">ID: {{ nodeInfo.agentId }}</span>
         <template v-if="props.address === nodeInfo.agentAddress">
           &nbsp;|&nbsp;
-          <span class="click font14" style="color: #f1313c" @click="stopNode">
+          <span class="cursor-pointer text-error" style="color: #f1313c" @click="stopNode">
             {{ $t('nodeDetail.nodeDetail1') }}
           </span>
         </template>
       </div>
-      <div class="right">
-        <span class="font14 link" @click="openExplorer('consensus', '')">
+      <div>
+        <span class="cursor-pointer text-primary underline underline-offset-4" @click="openExplorer('consensus', '')">
           {{ $t('nodeDetail.nodeDetail2') }}
         </span>
         &nbsp;|&nbsp;
-        <span :class="[nodeInfo.status === 1 ? 'resolve' : 'yellow']">
+        <span :class="[nodeInfo.status === 1 ? 'text-[#4ade5f]' : 'text-[]']">
           {{
             nodeInfo.status === 1
               ? $t('nodeDetail.nodeDetail3')
@@ -24,88 +24,84 @@
         </span>
       </div>
     </div>
-    <div class="body clear">
-      <div class="left-part">
-        <p>
-          {{ $t('createNode.createNode5') }}
-          <label>
-            {{ nodeInfo.deposit }}
-            <span class="fCN">NVT</span>
-          </label>
-        </p>
-        <p>
-          {{ $t('nodeDetail.nodeDetail5') }}
-          <label>
-            {{ nodeInfo.reward }}
-            <span class="fCN">NVT</span>
-          </label>
-        </p>
-        <p>
-          {{ $t('nodeDetail.nodeDetail6') }}
-          <label>{{ nodeInfo.interestRate }}%</label>
-        </p>
-        <p>
-          {{ $t('nodeDetail.nodeDetail7') }}
-          <label>{{ nodeInfo.creditValue }}</label>
-        </p>
-        <p>
-          {{ $t('nodeDetail.nodeDetail9') }}
-          <label class="yellow-card link">
+    <div class="flex xl:gap-6 flex-wrap">
+      <div class="w-full xl:flex-1">
+        <div class="flex justify-between items-center py-2.5 px-3">
+          <span class="text-label">{{ $t('createNode.createNode5') }}</span>
+          <span>
+            {{ nodeInfo.deposit }} NVT
+          </span>
+        </div>
+        <div class="flex justify-between items-center py-2.5 bg-card2 px-3">
+          <span class="text-label">{{ $t('nodeDetail.nodeDetail5') }}</span>
+          <span>
+            {{ nodeInfo.reward }} NVT
+          </span>
+        </div>
+        <div class="flex justify-between items-center py-2.5 px-3">
+          <span class="text-label">{{ $t('nodeDetail.nodeDetail6') }}</span>
+          <span>
+            {{ nodeInfo.interestRate }}%
+          </span>
+        </div>
+        <div class="flex justify-between items-center py-2.5 bg-card2 px-3">
+          <span class="text-label">{{ $t('nodeDetail.nodeDetail7') }}</span>
+          <span>
+            {{ nodeInfo.creditValue }}
+          </span>
+        </div>
+        <div class="flex justify-between items-center py-2.5 px-3">
+          <span class="text-label">{{ $t('nodeDetail.nodeDetail9') }}</span>
+          <label class="cursor-pointer text-primary underline underline-offset-2">
             <span @click="openExplorer('consensusInfo', nodeInfo.txHash)">
               {{ nodeInfo.yellowCardCount }}
               {{ $t('nodeDetail.nodeDetail12') }}
             </span>
           </label>
-        </p>
-        <p>
-          {{ $t('nodeDetail.nodeDetail11') }}
-          <label>{{ nodeInfo.agentAlias ? nodeInfo.agentAlias : '-' }}</label>
-        </p>
+        </div>
+        <div class="flex justify-between items-center py-2.5 bg-card2 px-3">
+          <span class="text-label">{{ $t('nodeDetail.nodeDetail11') }}</span>
+          <span>
+            {{ nodeInfo.agentAlias ? nodeInfo.agentAlias : '-' }}
+          </span>
+        </div>
       </div>
-      <div class="right-part">
-        <p>
-          {{ $t('createNode.createNode2') }}
-          <label
-            class="link"
-            @click="openExplorer('address', nodeInfo.agentAddress)"
-          >
-            {{ superLong(nodeInfo.agentAddress) }}
-          </label>
-        </p>
-        <p>
-          {{ $t('createNode.createNode3') }}
-          <label
-            class="link"
-            @click="openExplorer('address', nodeInfo.rewardAddress)"
-          >
-            {{ superLong(nodeInfo.rewardAddress) }}
-          </label>
-        </p>
-        <p>
-          {{ $t('createNode.createNode4') }}
-          <label
-            class="link"
-            @click="openExplorer('address', nodeInfo.packingAddress)"
-          >
-            {{ superLong(nodeInfo.packingAddress) }}
-          </label>
-        </p>
-        <p>
-          {{ $t('nodeDetail.nodeDetail8') }}
-          <label>
+      <div class="w-full xl:flex-1">
+        <div class="flex justify-between items-center py-2.5 px-3">
+          <span class="text-label">{{ $t('createNode.createNode2') }}</span>
+          <Link :label="superLong(nodeInfo.agentAddress)" @click="openExplorer('address', nodeInfo.agentAddress)" />
+        </div>
+
+        <div class="flex justify-between items-center py-2.5 bg-card2 px-3">
+          <span class="text-label">{{ $t('createNode.createNode3') }}</span>
+          <Link :label="superLong(nodeInfo.rewardAddress)" @click="openExplorer('address', nodeInfo.rewardAddress)" />
+        </div>
+
+        <div class="flex justify-between items-center py-2.5 px-3">
+          <span class="text-label">{{ $t('createNode.createNode4') }}</span>
+          <Link :label="superLong(nodeInfo.packingAddress)" @click="openExplorer('address', nodeInfo.packingAddress)" />
+        </div>
+
+        <div class="flex justify-between items-center py-2.5 bg-card2 px-3">
+          <span class="text-label">{{ $t('nodeDetail.nodeDetail8') }}</span>
+          <span>
             {{ judgeNodeType(nodeInfo.bankNode, nodeInfo.status) }}
-          </label>
-        </p>
-        <p>
-          {{ $t('nodeDetail.nodeDetail10') }}
-          <label>{{ nodeInfo.createTime }}</label>
-        </p>
+          </span>
+        </div>
+
+        <div class="flex justify-between items-center py-2.5 px-3">
+          <span class="text-label">{{ $t('nodeDetail.nodeDetail10') }}</span>
+          <span>
+            {{ nodeInfo.createTime }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import Link from '@/components/Link.vue';
 import { NodeInfo } from '@/views/node/types';
 import { useI18n } from 'vue-i18n';
 import { openExplorer, superLong } from '@/utils/util';
@@ -134,117 +130,3 @@ function stopNode() {
   emit('stopNode');
 }
 </script>
-
-<style lang="scss">
-.node-info {
-  padding: 0 30px 20px;
-
-  .head {
-    height: 48px;
-    line-height: 48px;
-    border-bottom: 1px solid #dfe4ef;
-
-    .right span {
-      font-size: 14px;
-
-      &.resolve {
-        color: #4ade5f;
-      }
-
-      &.yellow {
-        color: #fd9d2d;
-      }
-
-      &.link {
-        border-bottom: 1px solid #608fff;
-      }
-    }
-  }
-
-  .body {
-    display: flex;
-
-    .left-part,
-    .right-part {
-      width: 48.5%;
-
-      p {
-        height: 40px;
-        line-height: 40px;
-        padding: 0 30px;
-        font-size: 14px;
-        color: #8794b1;
-
-        label {
-          float: right;
-          color: #475472;
-
-          &.link {
-            color: #608fff;
-          }
-
-          &.yellow-card span {
-            border-bottom: 1px solid #608fff;
-          }
-        }
-
-        &:nth-of-type(2n) {
-          background-color: #f3f6fd;
-        }
-      }
-    }
-
-    .right-part {
-      margin-left: 3%;
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    padding: 15px 20px 20px;
-
-    .head {
-      height: auto;
-      line-height: 28px;
-      border-bottom: none;
-      flex-direction: column;
-      align-items: flex-start;
-      .left {
-        display: flex;
-        align-items: center;
-      }
-      .right span {
-        font-size: 14px;
-
-        &.resolve {
-          color: #4ade5f;
-        }
-
-        &.yellow {
-          color: #fd9d2d;
-        }
-
-        &.link {
-          border-bottom: 1px solid #608fff;
-        }
-      }
-    }
-
-    .body {
-      flex-wrap: wrap;
-      .left-part,
-      .right-part {
-        width: 100%;
-
-        p {
-          height: 36px;
-          line-height: 36px;
-          padding: 0 10px;
-        }
-      }
-
-      .right-part {
-        margin-left: 0;
-      }
-    }
-  }
-}
-</style>

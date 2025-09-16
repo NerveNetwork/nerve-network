@@ -5,8 +5,10 @@ import { divisionAndFix, Division, fixNumber, priceFormat, getOriginChain } from
 import { NSymbol, NDecimals, NKey, replaceNULS } from '@/constants/constants';
 
 export default function useTokensAndPools() {
+  const tokenLoading = ref(true)
   const tokens = ref<TokenItem[]>([]);
   const tokenTotal = ref(0);
+  const poolLoading = ref(true)
   const pools = ref<PoolItem[]>([]);
   const poolTotal = ref(0);
 
@@ -32,6 +34,7 @@ export default function useTokensAndPools() {
           liq: divisionAndFix(v.reserveUsdtValue, 18, 2)
         });
       });
+      tokenLoading.value = false
       tokens.value = list;
       tokenTotal.value = res.total;
     }
@@ -67,14 +70,17 @@ export default function useTokensAndPools() {
           liq: divisionAndFix(v.reserveUsdtValue, 18, 2)
         });
       });
+      poolLoading.value = false
       pools.value = list;
       poolTotal.value = res.total;
     }
   }
   return {
+    tokenLoading,
     tokens,
     tokenTotal,
     getAssetsList,
+    poolLoading,
     pools,
     poolTotal,
     getPoolsList

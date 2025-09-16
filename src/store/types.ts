@@ -57,6 +57,8 @@ export interface TxInfo {
   retryCount?: number;
   address?: string;
   hId?: number;
+  txTypeRemark?: string
+  amountRemark? :string
 }
 
 // 手动声明 state 类型

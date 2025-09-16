@@ -1,98 +1,78 @@
 <template>
-  <div class="search-wrap">
-    <div class="left">
+  <div class="search-wrap mb-4 flex flex-wrap items-center justify-between">
+    <!-- <Input
+        class="bg-card2 w-[340px]"
+        input-class="h-9"
+        v-model="inputVal"
+        :placeholder="$t('assets.assets8')"
+        @change="emitSearch">
+        <template #prepend><i-custom-search /></template>
+      </Input> -->
+    <div class="flex items-center mb-4 md:mb-0">
+      <div class="w-40 mr-4 ">
+        <Select
+          v-model="selectVal"
+          :options="options"
+          placeholder=""
+          class="h-9"
+          @change="emitSearch" />
+      </div>
+
+      <Input
+        class="w-auto bg-card2 md:w-[340px]"
+        input-class="h-9"
+        v-model="inputVal"
+        :placeholder="$t('assets.assets8')"
+        @change="emitSearch">
+        <template #prepend><i-custom-search /></template>
+      </Input>
+    </div>
+    <!-- <div class="left">
       <el-input
         class="search-input"
         v-model="inputVal"
         :placeholder="$t('assets.assets8')"
         :suffix-icon="Search"
-        @change="emitSearch"
-      />
+        @change="emitSearch" />
       <el-select
         v-model="selectVal"
         placeholder=""
         popper-class="select"
-        @change="emitSearch"
-      >
+        @change="emitSearch">
         <el-option :label="$t('mint.mint48')" value="1"></el-option>
         <el-option :label="$t('mint.mint49')" value="2"></el-option>
         <el-option :label="$t('mint.mint50')" value="3"></el-option>
       </el-select>
-    </div>
-    <div class="deploy">
-      <router-link :to="{ name: 'mintDeploy' }">
-        {{ $t('mint.mint1') }}
-      </router-link>
-    </div>
+    </div> -->
+
+    <router-link :to="{ name: 'mintDeploy' }">
+      <Button class="h-9 px-2">
+        <span class="mr-1">{{ $t('mint.mint1') }}</span>
+        <i-custom-add />
+      </Button>
+    </router-link>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { Search } from '@element-plus/icons-vue';
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import Select from '@/components/Base/Select/index.vue'
+import Input from '@/components/Base/Input/index.vue'
+import Button from '@/components/Base/Button/index.vue'
 
-const emits = defineEmits(['search']);
+const emits = defineEmits(['search'])
 
-const inputVal = ref('');
-const selectVal = ref('1');
+const { t } = useI18n()
+
+const inputVal = ref('')
+const selectVal = ref('1')
+const options = [
+  { label: t('mint.mint48'), value: '1' },
+  { label: t('mint.mint49'), value: '2' },
+  { label: t('mint.mint50'), value: '3' }
+]
 
 function emitSearch() {
-  emits('search', inputVal.value, selectVal.value);
+  emits('search', inputVal.value, selectVal.value)
 }
 </script>
-<style lang="scss" scoped>
-@import '../../assets/css/style.scss';
-.search-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 80px;
-  :deep(.search-input) {
-    width: 280px;
-    // border-radius: 10px;
-    margin-right: 10px;
-    .el-input__inner {
-      border-radius: 10px;
-    }
-  }
-  :deep(.el-select) {
-    width: 140px;
-    // border-radius: 10px;
-    .el-input__inner {
-      border-radius: 10px;
-    }
-  }
-  .deploy {
-    a {
-      font-size: 14px;
-      color: $btnColor;
-      border: 1px solid $btnColor;
-      border-radius: 10px;
-      padding: 8px;
-      &:hover {
-        opacity: 0.7;
-      }
-    }
-  }
-  @media screen and(max-width: 560px) {
-    // height: 12px;
-    margin: 20px 0;
-    flex-wrap: wrap;
-    .left {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-    }
-    :deep(.search-input) {
-      width: 220px;
-      margin-bottom: 15px;
-    }
-    :deep(.el-select) {
-      width: 120px;
-    }
-    .deploy {
-      width: 100%;
-      text-align: right;
-    }
-  }
-}
-</style>

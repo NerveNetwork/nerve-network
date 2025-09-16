@@ -1,17 +1,27 @@
 <template>
   <div class="w1200">
-    <div class="contract-deploy box_wrapper" v-loading="loading">
-      <div class="head">
-        <img src="../../assets/img/back-icon.svg" @click="router.go(-1)" />
-        <h3>Contract Deploy</h3>
+    <div
+      class="contract-deploy card-wrapper mx-auto max-w-[470px]"
+      v-loading="loading">
+      <div class="relative mb-6 text-center">
+        <button
+          class="absolute left-0 rounded-full p-1.5 transition-colors duration-300 hover:bg-card2"
+          @click="router.go(-1)">
+          <i-custom-back class="h-5 w-5" />
+        </button>
+        <span class="text-lg">Contract Deploy</span>
       </div>
       <el-form label-position="top" :model="model" :rules="rules" ref="form">
         <el-form-item label="Deploy Chain" prop="L1Chain">
-          <el-input disabled v-model="model.L1Chain"></el-input>
+          <Input class="bg-input" disabled v-model="model.L1Chain" />
         </el-form-item>
 
         <el-form-item label="Token" prop="token">
-          <el-select
+          <Select
+            v-model="model.token"
+            :options="tokenList"
+            placeholder="Select a token asset" />
+          <!-- <el-select
             v-model="model.token"
             filterable
             placeholder="Select a token asset"
@@ -23,30 +33,43 @@
               v-for="item in tokenList"
               :key="item.assetKey"
             ></el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="Token Name" prop="tokenName">
-          <el-input v-model="model.tokenName"></el-input>
+          <!-- <el-input v-model="model.tokenName"></el-input> -->
+          <Input class="bg-input" v-model="model.tokenName" />
         </el-form-item>
         <el-form-item label="Token Symbol" prop="tokenSymbol">
-          <el-input v-model="model.tokenSymbol"></el-input>
+          <!-- <el-input v-model="model.tokenSymbol"></el-input> -->
+          <Input class="bg-input" v-model="model.tokenSymbol" />
         </el-form-item>
         <el-form-item label="Token Decimals" prop="tokenDecimals">
-          <el-input v-model="model.tokenDecimals" disabled></el-input>
+          <!-- <el-input v-model="model.tokenDecimals" disabled></el-input> -->
+          <Input class="bg-input" disabled v-model="model.tokenDecimals" />
         </el-form-item>
         <el-form-item label="Minter" prop="minter">
-          <el-input v-model="model.minter" disabled></el-input>
+          <!-- <el-input v-model="model.minter" disabled></el-input> -->
+          <Input class="bg-input" disabled v-model="model.minter" />
         </el-form-item>
-        <el-form-item class="confirm-wrap">
-          <el-button type="primary" @click="submitForm" v-if="nerveAddress">
+        <el-form-item>
+          <div class="w-full pt-4">
+            <Button
+              class="w-full"
+              @click="submitForm"
+              v-if="nerveAddress">
+              {{ $t('farm.farm19') }}
+            </Button>
+            <auth-button class="w-full" v-else></auth-button>
+          </div>
+          <!-- <el-button type="primary" @click="submitForm" v-if="nerveAddress">
             {{ $t('farm.farm19') }}
           </el-button>
-          <auth-button v-else></auth-button>
+          <auth-button v-else></auth-button> -->
         </el-form-item>
       </el-form>
-      <div v-if="tokenContract">
-        <p>Token Contract:</p>
-        <span class="token-link" @click="openUrl(tokenContract)">
+      <div class="pt-5" v-if="tokenContract">
+        <h3 class="text-base font-medium">Token Contract:</h3>
+        <span class="cursor-pointer text-primary" @click="openUrl(tokenContract)">
           {{ tokenContract }}
         </span>
       </div>
@@ -57,8 +80,12 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import AuthButton from '@/components/AuthButton.vue';
-import useStoreState from '@/hooks/useStoreState';
+import { storeToRefs } from 'pinia';
+import AuthButton from '@/components/AuthButton.vue'
+import Input from '@/components/Base/Input/index.vue'
+import Select from '@/components/Base/Select/index.vue'
+import Button from '@/components/Base/Button/index.vue'
+import { useWalletStore } from '@/store/wallet'
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import useToast from '@/hooks/useToast';
 import { ElForm } from 'element-plus';
@@ -73,7 +100,8 @@ import {
 } from './deployConfig';
 import { openL1Explorer } from '@/utils/util';
 
-const { nerveAddress, assetsList: assetList, chain } = useStoreState();
+const walletStore = useWalletStore()
+const { nerveAddress, assetsList: assetList, chain } = storeToRefs(walletStore)
 
 const router = useRouter();
 const { toastError, toastSuccess } = useToast();
@@ -191,10 +219,15 @@ const tokenList = computed(() => {
     v => v.name === chain.value
   );
   const hId = chainInfo?.chainId;
-  return assetList.value.filter(v => {
+  return assetList.value
+    .filter(v => {
     // @ts-ignore
     return v.list && v.list.every(item => item.hId !== hId);
-  });
+    }).map(k => ({
+      ...k,
+      label: k.symbol + '(' + k.assetKey + ')',
+      value: k.assetKey
+    }));
 });
 
 watch(
@@ -221,12 +254,9 @@ const tokenInfo = computed(() => {
 });
 
 function submitForm() {
-  form.value?.validate(valid => {
+  form.value?.validate((valid: any) => {
     if (valid) {
       handleDeploy();
-    } else {
-      console.log('error submit!!');
-      return false;
     }
   });
 }
@@ -283,86 +313,3 @@ function openUrl(address: string) {
   openL1Explorer(chain.value, 'address', address);
 }
 </script>
-
-<style lang="scss">
-@import '../../assets/css/style.scss';
-.contract-deploy {
-  max-width: 470px;
-  width: 100%;
-  margin: 0 auto;
-  border-radius: 20px;
-  padding: 40px;
-  background: #fff;
-  .head {
-    position: relative;
-    text-align: center;
-    margin-bottom: 20px;
-    img {
-      cursor: pointer;
-      position: absolute;
-      left: 0px;
-      top: 5px;
-    }
-    h3 {
-      text-align: center;
-      font-size: 24px;
-    }
-  }
-  .el-form {
-    .el-form-item {
-      margin-bottom: 16px;
-    }
-    .el-form-item__label {
-      line-height: 30px;
-      padding-bottom: 0;
-    }
-    .balance {
-      float: right;
-      line-height: 20px;
-      padding-bottom: 0;
-      font-size: 14px;
-      color: $subLabelColor;
-    }
-    .el-select {
-      width: 100%;
-    }
-
-    .confirm-wrap {
-      margin-top: 30px;
-      .auth-button {
-        width: 100%;
-      }
-    }
-  }
-
-  .my-farms {
-    padding-top: 20px;
-    h3 {
-      font-size: 16px;
-    }
-    li {
-      span {
-        font-size: 14px;
-        cursor: pointer;
-        color: $linkColor;
-      }
-    }
-  }
-  .token-link {
-    font-size: 14px;
-    cursor: pointer;
-    color: $linkColor;
-  }
-}
-.asset-select.el-select__popper.el-popper[role='tooltip'] {
-  .el-popper__arrow:before {
-    //background: $formItemColor;
-    border: 0 !important;
-  }
-}
-@media screen and (max-width: 1200px) {
-  .contract-deploy {
-    padding: 20px;
-  }
-}
-</style>

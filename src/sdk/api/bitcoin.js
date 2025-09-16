@@ -1,11 +1,23 @@
 import nerve from 'nerve-sdk-js';
-const {
-  BitcoinRechargeData
-} = require('nerve-sdk-js/lib/model/BitcoinRechargeData');
+// const {
+//   BitcoinRechargeData
+// } = require('nerve-sdk-js/lib/model/BitcoinRechargeData');
+import { BitcoinRechargeData } from 'nerve-sdk-js/lib/model/BitcoinRechargeData'
 import { isBeta } from '../utils/utils';
 import { getUtxoCheckedInfo } from '../service/api';
 
-nerve.bitcoin.initEccLibForWeb();
+nerve.bitcoin.initEccLibForNode();
+
+// 异步初始化 ECC 库
+let eccInitialized = false;
+async function initEcc() {
+  if (!eccInitialized) {
+    await nerve.bitcoin.initEccLibForWeb();
+    eccInitialized = true;
+  }
+}
+
+// initEcc();
 
 export async function getBTCPub(provider) {
   return await provider.getPublicKey();

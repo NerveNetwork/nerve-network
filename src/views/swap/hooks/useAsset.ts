@@ -1,6 +1,7 @@
 import { ref, watch, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import useStoreState from '@/hooks/useStoreState';
+import { storeToRefs } from 'pinia';
+import { useWalletStore } from '@/store/wallet';
 import { DefaultAsset, AssetItem, HotAsset } from '../types';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import {
@@ -8,7 +9,7 @@ import {
   getHotAssets as getHotAssetsApi
 } from '@/service/api';
 import { isBeta } from '@/utils/util';
-import { NSymbol, replaceNULS } from '@/constants/constants';
+import { replaceNULS } from '@/constants/constants';
 
 const LpSource = [10, 11, 12];
 
@@ -20,7 +21,8 @@ const FORBID_KEY = [USDTN_kEY, ETHN_KEY, USDCN_KEY];
 
 export default function useAsset(isLiquidity = false) {
   const route = useRoute();
-  const { assetsList } = useStoreState();
+  const walletStore = useWalletStore()
+  const { assetsList } = storeToRefs(walletStore)
   // 兑换、添加流动性屏蔽LP资产
   const filterLPAssets = computed(() => {
     return assetsList.value.filter(item => {
@@ -35,7 +37,7 @@ export default function useAsset(isLiquidity = false) {
 
   const liquidityAssets = ref<AssetItem[]>([]);
   // 不能添加流动性的稳定币资产
-  const stableCoins = ref({});
+  const stableCoins = ref<any>({});
   onMounted(() => {
     getStableCoins();
     getHotAssets();

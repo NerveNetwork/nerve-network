@@ -927,3 +927,14 @@ export function getChainNameById(sourceChainId: number, assetChainId: number) {
   }
   return chainName;
 }
+
+export function getChainLogoById(sourceChainId: number, assetChainId: number) {
+  const chains = Object.values(_networkInfo);
+  let logo = '';
+  if (sourceChainId !== 0) {
+    logo = chains.find(v => v.chainId === sourceChainId)!.logo || '';
+  } else {
+    logo = config.chainId === assetChainId ? NERVELogo : NULSLogo;
+  }
+  return logo;
+}

@@ -1,61 +1,79 @@
 <template>
-  <div class="horizon-menu" @click.stop="">
+  <nav
+    class="nav-menu flex h-full w-[150px] flex-col bg-card pt-0 xl:w-full xl:flex-row xl:bg-transparent xl:pt-3"
+    @click.stop="">
     <template v-for="item in menus" :key="item.key">
       <div
-        class="menu-item"
-        :class="{ active: activeMenu === item.key, disable: item.disable }"
-        @click="emit('clickMenu')"
-      >
-        <a v-if="item.url" :href="item.url" target="_blank">{{ item.label }}</a>
-        <router-link v-else :to="'/' + item.key">
+        :class="
+          clsxm(
+            'h-12 px-4 leading-[48px] text-text transition-colors duration-300 hover:text-primary xl:h-auto xl:leading-normal',
+            activeMenu === item.key && 'text-primary'
+          )
+        "
+        @click="emit('clickMenu')">
+        <!-- <div v-if="item.url" class="flex items-center cursor-pointer gap-1.5">
+          <span>More</span>
+          <svg
+            width="8"
+            height="8"
+            viewBox="0 0 8 8"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M1.5 2.75L4 5.25L6.5 2.75"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div> -->
+        <router-link :to="'/' + item.key">
           {{ item.label }}
         </router-link>
       </div>
     </template>
-    <!-- <div class="lang-warp mobile" @click="changeLang">
-      <img src="../assets/img/lang.svg" alt="" />
-      {{ lang }}
-    </div> -->
-  </div>
+    <div class="hidden px-4 text-text xl:block">
+      <More />
+    </div>
+  </nav>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
-import { isBeta } from '@/utils/util';
-import useLang from '@/hooks/useLang';
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+import More from './MenuMore.vue'
+import clsxm from '@/utils/clsxm'
 
-const emit = defineEmits(['clickMenu']);
+const emit = defineEmits(['clickMenu'])
 
-const { t } = useI18n();
+const { t } = useI18n()
 
-const route = useRoute();
+const route = useRoute()
 
 const activeMenu = computed(() => {
-  const path = route.path;
+  const path = route.path
   if (path === '/create-farm') {
-    return 'farm';
+    return 'farm'
   } else if (path === '/mint-deploy') {
-    return 'mint';
+    return 'mint'
   }
-  return path.split('/')[1] || 'home';
-});
+  return path.split('/')[1] || 'home'
+})
 
 const menus = computed(() => {
   return [
+    // {
+    //   label: t('header.header10'),
+    //   key: 'assets',
+    //   needAuth: true
+    // },
     {
-      label: t('header.header10'),
-      key: 'assets',
-      needAuth: true
+      label: t('header.header1'),
+      key: 'swap'
     },
     {
       label: t('header.header11'),
       key: 'consensus'
-    },
-    {
-      label: t('header.header1'),
-      key: 'swap'
     },
     {
       label: t('header.header8'),
@@ -72,97 +90,13 @@ const menus = computed(() => {
     {
       label: t('header.header12'),
       key: 'info'
-    },
-    {
-      label: 'Bridge',
-      key: 'Bridge',
-      url: isBeta
-        ? 'http://beta.bridge.nerve.network/'
-        : 'https://bridge.nerve.network/'
-    },
-    {
-      label: t('header.header13'),
-      key: 'Explorer',
-      url: isBeta
-        ? 'http://beta.scan.nerve.network/'
-        : 'https://scan.nerve.network/'
     }
-  ];
-});
+  ]
+})
 
-const { lang, switchLang } = useLang();
+/* const { lang, switchLang } = useLang();
 function changeLang() {
   switchLang();
   emit('clickMenu');
-}
+} */
 </script>
-
-<style lang="scss">
-.horizon-menu {
-  display: flex;
-
-  .menu-item {
-    padding: 18px 0;
-    a {
-      display: inline-block;
-      height: 44px;
-      line-height: 44px;
-      padding: 0 20px;
-      color: #5e6983;
-      //font-size: 18px;
-      &:hover,
-      &:focus,
-      &:active {
-        color: #2688f7;
-        //background-color: #387cf4;
-      }
-    }
-
-    &.active a {
-      color: #fff;
-      background-color: #387cf4;
-      border-radius: 20px;
-    }
-    &.disable {
-      cursor: not-allowed;
-      a {
-        pointer-events: none;
-      }
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    position: absolute;
-    z-index: 100;
-    right: 0;
-    width: 150px;
-    height: 100%;
-    background: #fff;
-    flex-direction: column;
-    padding-top: 20px;
-    .menu-item {
-      padding: 0;
-      a {
-        height: 48px;
-        line-height: 48px;
-      }
-
-      &.active a {
-        color: #387cf4;
-        background-color: #fff;
-        border-radius: 0;
-      }
-    }
-    .lang-warp {
-      position: absolute;
-      bottom: 20px;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      img {
-        width: 25px;
-        margin-right: 10px;
-      }
-    }
-  }
-}
-</style>

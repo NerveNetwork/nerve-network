@@ -128,5 +128,3 @@ defineExpose({
   chart: chartInstance
 });
 </script>
-
-<style lang="scss"></style>

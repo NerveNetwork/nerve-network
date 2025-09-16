@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, withDefaults } from 'vue';
+import { computed } from 'vue';
 import Chart from './index.vue';
 import type { EChartsOption } from 'echarts';
 import _ from 'lodash';
@@ -58,5 +58,3 @@ const pieOptions = computed(() => {
   return _.merge({}, defaultOptions, props.options);
 });
 </script>
-
-<style lang="scss"></style>

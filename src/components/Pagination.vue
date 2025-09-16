@@ -11,37 +11,33 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import { Pager } from '@/views/swap/types';
 
-export default defineComponent({
-  name: 'Pagination',
-  props: {
-    pager: {
-      type: Object as PropType<Pager>,
-      default: () => {}
-    }
+const props = withDefaults(defineProps<{
+  pager: Pager
+}>(), {
+  pager: () => ({} as Pager)
+})
+
+const emit = defineEmits<{
+  (e: 'update:pager', pager: Pager): void
+  (e: 'change', index: number): void
+}>()
+
+const newPager = computed<Pager>({
+  get() {
+    return props.pager;
   },
-  setup(props, context) {
-    const newPager = computed<Pager>({
-      get() {
-        return props.pager;
-      },
-      set(val) {
-        context.emit('update:pager', val);
-      }
-    });
-    function pageChange(index: number) {
-      newPager.value.index = index;
-      context.emit('change', index);
-    }
-    return {
-      newPager,
-      pageChange
-    };
+  set(val) {
+    emit('update:pager', val);
   }
 });
+function pageChange(index: number) {
+  newPager.value.index = index;
+  emit('change', index);
+}
 </script>
 
 <style scoped>

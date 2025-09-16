@@ -1,45 +1,38 @@
 <template>
-  <div>
-    <div class="info-bar" v-if="showInfo">
-      <div class="text-e3 size-20">{{ $t('liquidity.liquidity15') }}</div>
-      <div class="detail-info">
-        <div>
-          <span>{{ props.info && props.info.token0.symbol }}</span>
+  <div class="bg-card2 p-4 rounded-b-xl">
+    <div class="mb-4" v-if="showInfo">
+      <div class="text-base">{{ $t('liquidity.liquidity15') }}</div>
+      <div>
+        <div class="flex justify-between py-3">
+          <span class="text-label">{{ props.info && props.info.token0.symbol }}</span>
           <span>{{ (!!expectedAmountA && expectedAmountA) || 0 }}</span>
         </div>
-        <div>
-          <span>{{ props.info && props.info.token1.symbol }}</span>
+        <div class="flex justify-between">
+          <span class="text-label">{{ props.info && props.info.token1.symbol }}</span>
           <span>{{ (!!expectedAmountB && expectedAmountB) || 0 }}</span>
         </div>
       </div>
     </div>
     <div class="detail-bar">
-      <!--:value="quitNumber"-->
-      <el-input
-        placeholder=""
-        v-model="quitNumber"
-        @input="handleInput"
-      ></el-input>
-      <div class="text-red" v-if="amountError">{{ amountError }}</div>
-      <div class="rate">
-        <span
-          class="click"
+      <Input v-model="quitNumber"
+        @input="handleInput" />
+      <div class="text-error" v-if="amountError">{{ amountError }}</div>
+      <div class="rate flex mt-3 mb-5 gap-5">
+        <div
+          :class="[
+            'flex-1 cursor-pointer h-7 leading-7 text-center rounded-md text-white',
+            currentIndex === index ? 'bg-primary' : 'bg-card'
+          ]"
           v-for="(item, index) in rates"
           :key="item"
-          :class="{ active_click: currentIndex === index }"
           @click="getNumber(item, index)"
         >
           {{ item }}%
-        </span>
+        </div>
       </div>
-      <div class="confirm-wrap">
-        <el-button
-          :disabled="quitNumber === '' || !!amountError"
-          @click="quit"
-          type="primary"
-        >
-          {{ $t('liquidity.liquidity6') }}
-        </el-button>
+      <div class="pt-6">
+        <Button class="w-full" :disabled="quitNumber === '' || !!amountError"
+          @click="quit">{{ $t('liquidity.liquidity6') }}</Button>
       </div>
     </div>
   </div>
@@ -47,9 +40,11 @@
 
 <script lang="ts" setup>
 import { ref, PropType } from 'vue';
-import { Times, timesDecimals, divisionDecimals, Minus } from '@/utils/util';
+import { Times, timesDecimals, divisionDecimals, Minus, toThousands } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
 import nerveswap from 'nerveswap-sdk';
+import Input from '@/components/Base/Input/index.vue'
+import Button from '@/components/Base/Button/index.vue'
 import useToast from '@/hooks/useToast';
 import { LiquidityItem } from './types';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
@@ -147,7 +142,8 @@ async function quit() {
       EVMAddress,
       pub
     });
-    handleResult(65, res);
+    const amounRemark = `${toThousands(quitNumber.value)} ${LP.token.symbol}`
+    handleResult(65, res, amounRemark);
     if (res && res.hash) {
       quitNumber.value = '';
       setTimeout(() => {
@@ -161,92 +157,3 @@ async function quit() {
   emit('loading', false);
 }
 </script>
-
-<style lang="scss" scoped>
-@import '../../assets/css/style.scss';
-.detail-bar {
-  min-height: 174px;
-  padding: 20px;
-  border-radius: 20px;
-  background-color: $detailBar;
-  //border: 1px solid #e4efff;
-  .rate {
-    margin: 10px 0 20px;
-    display: flex;
-    span {
-      width: 65px;
-      height: 28px;
-      background-color: #e4e7ff;
-      color: #4a5ef2;
-      text-align: center;
-      line-height: 28px;
-      border-radius: 6px;
-      margin-right: 30px;
-      &:last-child {
-        margin-right: 0;
-      }
-      &.active_click {
-        background-color: #4a5ef2;
-        color: #ffffff;
-      }
-    }
-  }
-  :deep(.el-input) {
-    //border: 1px solid #e4efff;
-    .el-input__inner {
-      //border: 0;
-    }
-  }
-  @media screen and (max-width: 500px) {
-    padding: 16px;
-    :deep(.el-input) {
-      line-height: 36px;
-      .el-input__inner {
-        height: 36px;
-        line-height: 36px;
-      }
-    }
-
-    .rate {
-      margin: 10px 0 20px;
-      display: flex;
-      flex-wrap: wrap;
-      span {
-        width: 22%;
-        margin-right: 4%;
-      }
-    }
-  }
-}
-.info-bar {
-  .text-e3 {
-    color: $labelColor;
-  }
-  .size-20 {
-    font-size: 14px;
-  }
-  .detail-info {
-    font-size: 13px;
-    div {
-      display: flex;
-      margin-top: 15px;
-      align-items: center;
-      justify-content: space-between;
-      &:nth-child(2) {
-        margin-bottom: 15px;
-      }
-    }
-  }
-  @media screen and (max-width: 500px) {
-    .detail-info {
-      div {
-        margin-top: 8px;
-      }
-    }
-  }
-}
-.text-red {
-  color: #f56c6c;
-  font-size: 12px;
-}
-</style>

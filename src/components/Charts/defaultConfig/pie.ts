@@ -1,8 +1,16 @@
-const colors = ['#759bf5', '#76e9a7', '#f3a83c', '#9f95f0', '#67d1fe'];
+const colors = ['#1674E8', '#F7931A', '#5BABFF', '#FFD33C', '#67d1fe'];
 const pieConfig = {
   color: colors,
   legend: {
     show: false
+  },
+  tooltip: {
+    backgroundColor: 'var(--colors-card2)',
+    borderColor: 'var(--colors-line)',
+    borderWidth: 1,
+    textStyle: {
+      color: 'var(--colors-text)'
+    }
   },
   series: [
     {
@@ -18,7 +26,7 @@ const pieConfig = {
             fontSize: '18',
             fontWeight: 'bold'
           },
-          formatter: '{d}%'
+          formatter: ''
         }
       },
       center: ['45%', '50%'],
@@ -26,8 +34,8 @@ const pieConfig = {
       minAngle: 5,
       itemStyle: {
         normal: {
-          borderWidth: 3,
-          borderColor: '#ffffff'
+          borderWidth: 4,
+          borderColor: 'var(--colors-card)'
         }
       }
     }

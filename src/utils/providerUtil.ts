@@ -3,17 +3,17 @@ import { isMobile } from './util';
 
 import MetaMaskLogo from '@/assets/img/provider/metamask.svg';
 import NaboxLogo from '@/assets/img/provider/nabox.svg';
-import BinanceW3WLogo from '@/assets/img/provider/binance-w3w.png';
+import BinanceW3WLogo from '@/assets/img/provider/binance-w3w.svg';
 import TrustWalletLogo from '@/assets/img/provider/trustwallet.svg';
-import TokenpocketLogo from '@/assets/img/provider/Tokenpocket.jpg';
+import TokenpocketLogo from '@/assets/img/provider/Tokenpocket.svg';
 import MathwalletLogo from '@/assets/img/provider/mathwallet.svg';
 // import binancechainLogo from '@/assets/img/provider/binancechain.svg';
-import OKXLogo from '@/assets/img/provider/metax.jpg';
+import OKXLogo from '@/assets/img/provider/metax.svg';
 import safepalLogo from '@/assets/img/provider/safepal.svg';
 import coin98Logo from '@/assets/img/provider/coin98.svg';
 // import bitkeep from '@/assets/img/provider/bitkeep.jpg';
-import BitgetLogo from '@/assets/img/provider/Bitget.svg';
-import ontoLogo from '@/assets/img/provider/ONTO.png';
+import BitgetLogo from '@/assets/img/provider/bitget.svg';
+import ontoLogo from '@/assets/img/provider/ONTO.svg';
 import unisatLogo from '@/assets/img/provider/unisat.svg';
 import tronLogo from '@/assets/img/provider/tronlink.svg';
 
@@ -100,6 +100,8 @@ const BTCProvider = [Nabox, BinanceW3W, OKXWallet, Unisat, Bitget];
 
 const TRONProvider = [Nabox, BinanceW3W, OKXWallet, TronLink, Bitget];
 
+export const ALL_Provider = [...EVMProvider, ...BTCProvider, ...TRONProvider]
+
 export const providerList = {
   BTC: BTCProvider,
   EVM: EVMProvider,
@@ -133,6 +135,10 @@ export function getProvider(type?: string, network?: string) {
     }
     return EVMProvider; */
   }
+}
+
+export function getProviderName() {
+  return storage.get('providerName') || ''
 }
 
 export function getEVMProvider(type?: string) {

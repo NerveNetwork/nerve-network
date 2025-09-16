@@ -1,18 +1,17 @@
 <template>
-  <div class="chart-tab">
+  <div class="bg-[#1B1E25] rounded-xl w-full overflow-hidden h-[430px] flex flex-col">
     <slot></slot>
-    <div class="tabs flex">
+    <div class="flex h-[50px] leading-[50px] text-base bg-[#262A35] rounded-t-xl">
       <template v-for="item in chartTab" :key="item.label">
         <div
-          class="tab-item"
-          :class="item.key === activeTab ? 'active' : ''"
+          :class="clsxm('cursor-pointer flex-1 text-center text-label', item.key === activeTab && 'text-white rounded-t-xl bg-card')"
           @click="activeTab = item.key"
         >
           <span>{{ item.label }}</span>
         </div>
       </template>
     </div>
-    <div class="tab-content">
+    <div class="flex-1 bg-card px-6 py-4 rounded-b-xl">
       <Chart
         :type="chartTab[activeTab].type"
         :data="chartData[activeTab] || []"
@@ -26,6 +25,7 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Chart from '../Overview/Chart.vue';
+import clsxm from '@/utils/clsxm';
 import {
   getTokenAnalytics,
   get300DaysData,
@@ -43,6 +43,8 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+
+const chartData = ref<ChartTabItem>({} as ChartTabItem);
 
 watch(
   () => props.assetKey,
@@ -65,7 +67,6 @@ watch(
   }
 );
 
-const chartData = ref<ChartTabItem>({} as ChartTabItem);
 async function getChartData(key: string, tokenKey?: string) {
   let res;
   console.log(key, tokenKey, 666);
@@ -122,42 +123,3 @@ const chartTab = computed(() => {
   };
 });
 </script>
-
-<style lang="scss">
-.chart-tab {
-  .tabs {
-    height: 68px;
-    line-height: 68px;
-    color: #94a6ce;
-    background-color: #f3f6fd;
-    font-size: 18px;
-    border-radius: 20px 20px 0 0;
-  }
-  .tab-item {
-    flex: 1;
-    text-align: center;
-    cursor: pointer;
-    &.active {
-      background-color: #fff;
-      border-radius: 20px 20px 0 0;
-      color: #475472;
-    }
-  }
-  .tab-content {
-    height: 385px;
-    padding: 15px 30px 30px;
-    background-color: #fff;
-    border-radius: 0 0 20px 20px;
-  }
-  @media screen and (max-width: 1200px) {
-    .tabs {
-      height: 48px;
-      line-height: 48px;
-      font-size: 16px;
-    }
-    .tab-content {
-      padding: 15px;
-    }
-  }
-}
-</style>

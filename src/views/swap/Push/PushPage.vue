@@ -57,7 +57,7 @@
             {{ btnConfig.title }}
           </el-button>
           <template v-else>
-            <AuthButton @loading="handleLoading" />
+            <AuthButton />
           </template>
         </div>
       </div>
@@ -210,12 +210,13 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { storeToRefs } from 'pinia';
 import Tab from './Tab.vue';
 import CustomInput from '@/components/CustomInput.vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import AuthButton from '@/components/AuthButton.vue';
 import PushModal from './PushModal.vue';
-import useStoreState from '@/hooks/useStoreState';
+import { useWalletStore } from '@/store/wallet';
 import {
   Times,
   toThousands,
@@ -236,7 +237,8 @@ import {
 import nerveswap from 'nerveswap-sdk';
 
 const { t } = useI18n();
-const { nerveAddress, assetsList } = useStoreState();
+const walletStore = useWalletStore()
+const { nerveAddress, assetsList } = storeToRefs(walletStore)
 const { toastError } = useToast();
 
 const buyMode = ref(true); // true 挂买单 false 挂卖单
@@ -391,7 +393,7 @@ const creatOrder = async () => {
       EVMAddress,
       pub
     });
-    handleResult(229, result);
+    handleResult(229, result, '');
     if (result && result.hash) {
       //
     }
@@ -443,7 +445,7 @@ const revokeOrder = async (item: IMyOrderItem) => {
       EVMAddress,
       pub
     });
-    handleResult(230, result);
+    handleResult(230, result, '');
     // const result: any = await handleTxInfo(transferInfo, 230, txData);
     if (result && result.hash) {
       //
@@ -456,7 +458,7 @@ const revokeOrder = async (item: IMyOrderItem) => {
 </script>
 
 <style lang="scss">
-@import '../../../assets/css/style';
+@use '../../../assets/css/style';
 .push-page {
   display: flex;
   align-items: center;
@@ -473,9 +475,9 @@ const revokeOrder = async (item: IMyOrderItem) => {
       .fee-wrap {
         margin: 20px 0 40px;
         span {
-          color: $subLabelColor;
+          // color: $subLabelColor;
           &:last-of-type {
-            color: $txColor;
+            // color: $txColor;
           }
         }
       }

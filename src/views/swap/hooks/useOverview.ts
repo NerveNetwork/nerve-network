@@ -7,7 +7,7 @@ export default function useOverview() {
   }
   const isMobile = ref(false);
   function checkIsMobile() {
-    isMobile.value = document.documentElement.clientWidth < 1000;
+    isMobile.value = document.documentElement.clientWidth < 1280;
   }
   onMounted(() => {
     checkIsMobile();
@@ -20,8 +20,13 @@ export default function useOverview() {
     window.removeEventListener('resize', checkIsMobile);
   });
 
-  const showMobileOverview = computed(() => {
-    return isMobile.value && showOverview.value;
+  const showMobileOverview = computed({
+    get() {
+      return isMobile.value && showOverview.value
+    },
+    set(val) {
+      showOverview.value = val
+    }
   });
 
   return {

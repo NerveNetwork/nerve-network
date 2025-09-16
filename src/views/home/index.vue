@@ -1,5 +1,5 @@
 <template>
-  <div class="home w1200">
+  <div class="home -mt-10">
     <Description />
     <LinkWrapper />
     <DataInfo />
@@ -30,11 +30,5 @@ import SupportChains from './SupportChains.vue';
   opacity: 1;
   transform: translateY(0) scale(1);
   // filter: blur(0) !important;
-}
-
-.home {
-  @media screen and (max-width: 1200px) {
-    padding: 0 16px;
-  }
 }
 </style>

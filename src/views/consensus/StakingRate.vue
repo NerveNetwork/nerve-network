@@ -1,290 +1,180 @@
 <template>
-  <div class="staking-rate box_wrapper">
-    <h3 class="title-label">
-      {{ $t('staking.staking3') }}
-      <span class="fr">
+  <div class="mb-4 h-auto w-full rounded-xl bg-card xl:h-[360px] xl:w-[732px]">
+    <!-- title -->
+    <div class="flex items-center justify-between p-3 sm:px-6 sm:py-4">
+      <span class="text-base font-semibold sm:text-lg">{{
+        $t('staking.staking3')
+      }}</span>
+      <span class="font-medium text-label">
         {{ $t('staking.staking0') }}:
-        <span class="click" @click="openExplorerUrl">
+        <a
+          href="https://scan.nerve.network"
+          target="_blank"
+          class="text-primary">
           ${{ $thousands(totalRewardUSD) }}
-        </span>
+        </a>
       </span>
-    </h3>
-    <div class="rate-table">
-      <el-table
-        :data="stakingRate"
-        stripe
-        v-loading="loading"
-        height="220px"
-        class="staking_rate_table"
-      >
-        <el-table-column
-          fixed
-          width="135"
-          :label="$t('staking.staking4')"
-          align="center"
-          prop="symbol"
-        ></el-table-column>
-        <el-table-column
-          width="90"
-          :label="$t('staking.staking5')"
-          align="center"
-          prop="rate1"
-        ></el-table-column>
-        <el-table-column
-          width="90"
-          :label="$t('staking.staking6')"
-          align="center"
-          prop="rate2"
-        ></el-table-column>
-        <el-table-column
-          width="95"
-          :label="$t('staking.staking7')"
-          align="center"
-          prop="rate3"
-        ></el-table-column>
-        <el-table-column
-          width="95"
-          :label="$t('staking.staking8')"
-          align="center"
-          prop="rate4"
-        ></el-table-column>
-        <el-table-column
-          width="95"
-          :label="$t('staking.staking9')"
-          align="center"
-          prop="rate5"
-        ></el-table-column>
-        <el-table-column
-          width="95"
-          :label="$t('staking.staking10')"
-          align="center"
-          prop="rate6"
-        ></el-table-column>
-        <el-table-column
-          width="95"
-          :label="$t('staking.staking11')"
-          align="center"
-          prop="rate7"
-        ></el-table-column>
-        <el-table-column
-          width="100"
-          :label="$t('staking.staking12')"
-          align="center"
-          prop="rate8"
-        ></el-table-column>
-      </el-table>
-      <el-table
-        :data="stakingRate"
-        stripe
-        v-loading="loading"
-        height="220px"
-        class="staking_rate_table_mobile"
-      >
-        <el-table-column
-          min-width="85"
-          :label="$t('staking.staking4')"
-          align="center"
-          prop="symbol"
-        ></el-table-column>
-        <el-table-column
-          min-width="90"
-          :label="$t('staking.staking5')"
-          align="center"
-          prop="rate1"
-        ></el-table-column>
-        <el-table-column
-          min-width="90"
-          :label="$t('staking.staking6')"
-          align="center"
-          prop="rate2"
-        ></el-table-column>
-        <el-table-column
-          min-width="95"
-          :label="$t('staking.staking7')"
-          align="center"
-          prop="rate3"
-        ></el-table-column>
-        <el-table-column
-          min-width="95"
-          :label="$t('staking.staking8')"
-          align="center"
-          prop="rate4"
-        ></el-table-column>
-        <el-table-column
-          min-width="95"
-          :label="$t('staking.staking9')"
-          align="center"
-          prop="rate5"
-        ></el-table-column>
-        <el-table-column
-          min-width="95"
-          :label="$t('staking.staking10')"
-          align="center"
-          prop="rate6"
-        ></el-table-column>
-        <el-table-column
-          min-width="95"
-          :label="$t('staking.staking11')"
-          align="center"
-          prop="rate7"
-        ></el-table-column>
-        <el-table-column
-          min-width="100"
-          :label="$t('staking.staking12')"
-          align="center"
-          prop="rate8"
-        ></el-table-column>
-      </el-table>
+    </div>
+
+    <!-- table -->
+    <div class="px-3 sm:px-6">
+      <template v-if="loading">
+        <div class="flex flex-col gap-4">
+          <Skeleton class="h-9" />
+          <Skeleton class="h-9" />
+          <Skeleton class="h-9" />
+        </div>
+      </template>
+      <template v-else>
+        <el-table
+          :data="stakingRate"
+          v-loading="loading"
+          max-height="280px"
+          class="hidden xl:block">
+          <el-table-column
+            width="135"
+            :label="$t('staking.staking4')"
+            prop="symbol"></el-table-column>
+          <el-table-column
+            width="90"
+            :label="$t('staking.staking5')"
+            prop="rate1"></el-table-column>
+          <el-table-column
+            width="90"
+            :label="$t('staking.staking6')"
+            prop="rate2"></el-table-column>
+          <el-table-column
+            width="95"
+            :label="$t('staking.staking7')"
+            prop="rate3"></el-table-column>
+          <el-table-column
+            width="95"
+            :label="$t('staking.staking8')"
+            prop="rate4"></el-table-column>
+          <el-table-column
+            width="95"
+            :label="$t('staking.staking9')"
+            prop="rate5"></el-table-column>
+          <el-table-column
+            width="95"
+            :label="$t('staking.staking10')"
+            prop="rate6"></el-table-column>
+          <el-table-column
+            width="95"
+            :label="$t('staking.staking11')"
+            prop="rate7"></el-table-column>
+          <el-table-column
+            width="100"
+            :label="$t('staking.staking12')"
+            prop="rate8"></el-table-column>
+        </el-table>
+        <el-table
+          :data="stakingRate"
+          v-loading="loading"
+          class="block xl:hidden">
+          <el-table-column
+            min-width="85"
+            :label="$t('staking.staking4')"
+            prop="symbol"></el-table-column>
+          <el-table-column
+            min-width="90"
+            :label="$t('staking.staking5')"
+            prop="rate1"></el-table-column>
+          <el-table-column
+            min-width="90"
+            :label="$t('staking.staking6')"
+            prop="rate2"></el-table-column>
+          <el-table-column
+            min-width="95"
+            :label="$t('staking.staking7')"
+            prop="rate3"></el-table-column>
+          <el-table-column
+            min-width="95"
+            :label="$t('staking.staking8')"
+            prop="rate4"></el-table-column>
+          <el-table-column
+            min-width="95"
+            :label="$t('staking.staking9')"
+            prop="rate5"></el-table-column>
+          <el-table-column
+            min-width="95"
+            :label="$t('staking.staking10')"
+            prop="rate6"></el-table-column>
+          <el-table-column
+            min-width="95"
+            :label="$t('staking.staking11')"
+            prop="rate7"></el-table-column>
+          <el-table-column
+            min-width="100"
+            :label="$t('staking.staking12')"
+            prop="rate8"></el-table-column>
+        </el-table>
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
+import Skeleton from '@/components/Base/Skeleton/index.vue'
 import {
   getStakingInfo as getStakingInfoApi,
   getStackingRate
-} from '@/service/api';
-import { fixNumber, Plus, Times } from '@/utils/util';
-import config from '@/config';
-import { StakingRateListItem } from './types';
-import { replaceNULS } from '@/constants/constants';
+} from '@/service/api'
+import { fixNumber, Plus, Times } from '@/utils/util'
+import config from '@/config'
+import { StakingRateListItem } from './types'
+import { replaceNULS } from '@/constants/constants'
 
-const loading = ref(true);
+const loading = ref(true)
 onMounted(() => {
-  getTotalStakingInfo();
-  getStakingRate();
-});
+  getTotalStakingInfo()
+  getStakingRate().then(() => {
+    loading.value = false
+  })
+})
 
-const totalRewardUSD = ref('0');
+const totalRewardUSD = ref('0')
 
 async function getTotalStakingInfo() {
-  const result: any = await getStakingInfoApi();
+  const result: any = await getStakingInfoApi()
   if (result && result.length) {
-    let totalUsd = '0';
+    let totalUsd = '0'
     result.map((v: any) => {
-      totalUsd = Plus(v.usdValue, totalUsd).toFixed();
-    });
-    totalRewardUSD.value = fixNumber(totalUsd, 2);
+      totalUsd = Plus(v.usdValue, totalUsd).toFixed()
+    })
+    totalRewardUSD.value = fixNumber(totalUsd, 2)
   }
 }
 
 // 年化利率表
-const stakingRate = ref<StakingRateListItem[]>([]);
+const stakingRate = ref<StakingRateListItem[]>([])
 //获取各种币种stacking收益率
 async function getStakingRate() {
-  const result: any = await getStackingRate();
+  const result: any = await getStackingRate()
   if (result && result.length) {
-    const res: StakingRateListItem[] = [];
+    const res: StakingRateListItem[] = []
     result.map((v: StakingRateListItem) => {
-      const obj = {} as StakingRateListItem;
-      v.symbol = replaceNULS(v.symbol);
-      obj.symbol = v.symbol;
+      const obj = {} as StakingRateListItem
+      v.symbol = replaceNULS(v.symbol)
+      obj.symbol = v.symbol
       v.detailList
         .filter(v => v.timeType !== 7)
         .forEach((item, index) => {
           obj['rate' + (index + 1)] =
-            Number(Times(item.totalAddition, 100)).toFixed(2) + '%';
-        });
-      res.push(obj);
-    });
-    stakingRate.value = res;
-    loading.value = false;
+            Number(Times(item.totalAddition, 100)).toFixed(2) + '%'
+        })
+      res.push(obj)
+    })
+    stakingRate.value = res
+    // loading.value = false;
   }
 }
 
 function openExplorerUrl() {
-  window.open(config.explorerUrl);
+  window.open(config.explorerUrl)
 }
 defineExpose({
   refreshList: getStakingRate
-});
+})
 </script>
-
-<style lang="scss">
-.staking-rate {
-  width: 700px;
-  height: 315px;
-
-  h3 {
-    font-size: 16px;
-    height: 48px;
-    line-height: 48px;
-    border-bottom: 1px solid #dfe4ef;
-    padding: 0 30px;
-    margin-bottom: 20px;
-    span {
-      font-size: 14px;
-
-      span {
-        color: #2688f7;
-      }
-    }
-  }
-  .rate-table {
-    padding: 0 30px;
-    .el-table {
-      border: none !important;
-    }
-  }
-
-  .staking_rate_table {
-    .el-table__fixed {
-      .el-table__fixed-body-wrapper {
-        .el-table__body {
-          .el-table__row {
-            td {
-              padding: 11px 0 !important;
-              font-size: 12px;
-            }
-          }
-        }
-      }
-    }
-
-    .el-table__body-wrapper {
-      .el-table__row {
-        td {
-          font-size: 12px;
-          padding: 11px 0 !important;
-        }
-      }
-    }
-  }
-
-  .staking_rate_table_mobile {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 1300px) {
-  .staking-rate {
-    //height: auto;
-    width: 100%;
-    margin-bottom: 20px;
-
-    h3 {
-      padding: 0 12px;
-      font-size: 14px;
-      height: 36px;
-      line-height: 36px;
-      span {
-        font-size: 14px;
-      }
-    }
-    .rate-table {
-      padding: 0 12px;
-    }
-    .staking_rate_table {
-      display: none;
-    }
-
-    .staking_rate_table_mobile {
-      display: block;
-      .el-table__body-wrapper {
-        overflow-x: auto;
-      }
-    }
-  }
-}
-</style>

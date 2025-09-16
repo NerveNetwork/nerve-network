@@ -1,5 +1,5 @@
 import { computed, ref, watch } from 'vue';
-import { useStore } from '@/store';
+import { useInfoStore } from '@/store/info';
 import { getFocusPairsInfo, getFocusAssetsInfo } from '@/service/api';
 import {
   Division,
@@ -13,10 +13,12 @@ import { TokenItem, PoolItem } from '../types';
 import { NKey, NSymbol, replaceNULS } from '@/constants/constants';
 
 export function useFocusPools() {
-  const store = useStore();
+  const infoStore = useInfoStore()
+
+  const loading = ref(true)
   const focusPools = ref<PoolItem[]>([]);
   const focusAddress = computed(() => {
-    return store.state.watchPools;
+    return infoStore.watchPools;
   });
   watch(
     () => focusAddress.value,
@@ -52,20 +54,23 @@ export function useFocusPools() {
           liq: divisionAndFix(v.reserveUsdtValue, 18, 2)
         });
       });
+      loading.value = false
       focusPools.value = list;
     }
   }
   return {
+    loading,
     focusPools,
     getFocusPools
   };
 }
 
 export function useFocusTokens() {
-  const store = useStore();
+  const infoStore = useInfoStore()
+  const loading = ref(true)
   const focusTokens = ref<TokenItem[]>([]);
   const focusKeys = computed(() => {
-    return store.state.watchTokens;
+    return infoStore.watchTokens;
   });
   watch(
     () => focusKeys.value,
@@ -101,10 +106,12 @@ export function useFocusTokens() {
           liq: divisionAndFix(v.reserveUsdtValue, 18, 2)
         });
       });
+      loading.value = false
       focusTokens.value = list;
     }
   }
   return {
+    loading,
     focusTokens,
     getFocusTokens
   };

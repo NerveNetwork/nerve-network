@@ -1,82 +1,73 @@
 <template>
-  <div class="auth-button">
-    <slot>
-      <el-button
-        type="primary"
-        v-if="!address"
-        @click="showConnectDialog(true)"
-      >
-        {{ $t('header.header3') }}
-      </el-button>
-      <el-button v-else type="primary" @click="derivedAddress">
-        {{ $t('login.login2') }}
-      </el-button>
-    </slot>
-  </div>
+  <Button
+    :class="props.class"
+    variant="gradient"
+    v-if="!walletStore.currentAddress"
+    @click="showConnect">
+    {{ $t('header.header3') }}
+  </Button>
+  <Button
+    :class="props.class"
+    v-else
+    variant="gradient"
+    @click="derivedAddress">
+    {{ $t('login.login2') }}
+  </Button>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useStore } from 'vuex';
-import { generateAddress } from '@/hooks/useEthereum';
-import useToast from '@/hooks/useToast';
-import { useI18n } from 'vue-i18n';
-import storage from '@/utils/storage';
-import { Account } from '@/store/types';
+import Button from '@/components/Base/Button/index.vue'
+import { useWalletStore } from '@/store/wallet'
+import { generateAddress } from '@/hooks/useEthereum'
+import useToast from '@/hooks/useToast'
+import { useI18n } from 'vue-i18n'
+import storage from '@/utils/storage'
+import { Account } from '@/store/types'
 
-const emit = defineEmits(['loading']);
+const props = defineProps<{ class?: string }>()
+const emit = defineEmits(['loading'])
 
-const store = useStore();
-const { t } = useI18n();
-const { toastError } = useToast();
-
-const address = computed(() => {
-  return store.state.address;
-});
-
-function showConnectDialog(state: boolean) {
-  store.commit('changeConnectShow', state);
-}
+const walletStore = useWalletStore()
+const { t } = useI18n()
+const { toastError } = useToast()
 
 async function derivedAddress() {
-  let result = false;
-  emit('loading', true);
+  let result = false
+  emit('loading', true)
+  const address = walletStore.currentAddress
   try {
-    if (!address.value) {
-      showConnect();
-      return;
+    if (!address) {
+      showConnect()
+      return
     }
-    const account = await generateAddress(address.value);
-    const accountList: Account[] = storage.get('accountList') || [];
-    const existIndex = accountList.findIndex(v => v.pub === account.pub);
+    const account = await generateAddress(address)
+    const accountList: Account[] = storage.get('accountList') || []
+    const existIndex = accountList.findIndex(v => v.pub === account.pub)
     // replace if present
     if (existIndex > -1) {
       accountList[existIndex] = {
         ...accountList[existIndex],
         address: account.address,
         pub: account.pub
-      };
+      }
     } else {
-      accountList.push(account);
+      accountList.push(account)
     }
-    storage.set('accountList', accountList);
-    store.commit('setCurrentAddress', account);
-    result = true;
+    storage.set('accountList', accountList)
+    walletStore.changeAccount(account)
+    result = true
   } catch (e) {
     // console.log(e, 4444)
-    toastError(t('login.login3'));
+    toastError(t('login.login3'))
   }
-  emit('loading', false);
-  return result;
+  emit('loading', false)
+  return result
 }
 function showConnect() {
-  store.commit('changeConnectShow', true);
+  walletStore.changeConnectShow(true)
 }
 
 defineExpose({
-  showConnectDialog,
   derivedAddress
-});
+})
 </script>
-
-<style lang="scss"></style>

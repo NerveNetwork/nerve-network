@@ -1,15 +1,18 @@
 <template>
   <div class="swap-tx-list">
-    <el-table :data="props.list" max-height="435" v-loading="loading">
-      <el-table-column width="10px"></el-table-column>
+    <el-table class="hidden md:block" :data="props.list" v-loading="loading">
       <el-table-column :label="$t('trading.trading3')">
         <template #default="scope">
-          {{ $thousands(scope.row.toAmount) }} {{ scope.row.toSymbol }}
+          <el-tooltip :content="scope.row.toAmount" placement="top">
+            {{ toThousands(fixNumber(scope.row.toAmount, 6)) }} {{ scope.row.toSymbol }}
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column prop="lock" :label="$t('trading.trading4')">
         <template #default="scope">
-          {{ $thousands(scope.row.fromAmount) }} {{ scope.row.fromSymbol }}
+          <el-tooltip :content="scope.row.fromAmount" placement="top">
+            {{ toThousands(fixNumber(scope.row.fromAmount, 6)) }} {{ scope.row.fromSymbol }}
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column
@@ -18,47 +21,41 @@
       ></el-table-column>
       <el-table-column :label="$t('trading.trading5')" width="100px">
         <template #default="scope">
-          <span class="iconfont icon-chenggong" :scope="scope"></span>
-          <span
-            class="click iconfont icon-tiaozhuanlianjie"
-            :scope="scope"
-            style="margin-left: 10px"
-            @click="openExplorer('hash', scope.row.hash)"
-          ></span>
+          <i-custom-success class="w-4 h-4 mr-2.5" />
+          <i-custom-open class="btn w-4 h-4 text-primary cursor-pointer" @click="openExplorer('hash', scope.row.hash)" />
+
         </template>
       </el-table-column>
     </el-table>
-    <div class="mobile-list">
-      <ul>
-        <li v-for="(item, index) in props.list" :key="index">
-          <div class="flex-between">
-            <div class="left">
-              <div>
-                <span>{{ $t('trading.trading3') }}</span>
-                <p>{{ $thousands(item.toAmount) + item.toSymbol }}</p>
-              </div>
-              <div>
-                <span>{{ $t('trading.trading4') }}</span>
-                <p>{{ $thousands(item.fromAmount) + item.fromSymbol }}</p>
-              </div>
+    <div class="block md:hidden">
+      <ul class=" overflow-y-auto max-h-[500px]">
+        <li class="pb-2.5 mb-2.5 border-b border-line" v-for="(item, index) in props.list" :key="index">
+          <div class="flex justify-between mb-1">
+            <div>
+              <div class="text-label">{{ $t('trading.trading3') }}</div>
+              <div>{{ $thousands(item.toAmount) + item.toSymbol }}</div>
             </div>
-            <div class="right">
-              <div>
-                <span>{{ $t('trading.trading5') }}</span>
-                <p>{{ $t('trading.trading18') }}</p>
-              </div>
-              <div>
-                <span>{{ $t('trading.trading2') }}</span>
-                <p>{{ item.time }}</p>
-              </div>
+            <div class="text-right">
+              <div class="text-label">{{ $t('trading.trading5') }}</div>
+              <div>{{ $t('trading.trading18') }}</div>
             </div>
           </div>
-          <p>
-            Hash:
-            <span class="link" @click="openExplorer('hash', item.hash)">
+          <div class="flex justify-between  mb-1">
+            <div>
+              <div class="text-label">{{ $t('trading.trading4') }}</div>
+              <div>{{ $thousands(item.fromAmount) + item.fromSymbol }}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-label">{{ $t('trading.trading2') }}</div>
+              <div>{{ item.time }}</div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-label">Hash</div>
+            <span class=" cursor-pointer btn text-primary" @click="openExplorer('hash', item.hash)">
               {{ superLong(item.hash, 8) }}
             </span>
-          </p>
+          </div>
         </li>
       </ul>
     </div>
@@ -66,94 +63,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { openExplorer, superLong } from '@/utils/util';
+import { openExplorer, superLong, toThousands, fixNumber } from '@/utils/util';
 
 const props = defineProps({
   list: Array,
   loading: Boolean
 });
-
-const name = ref('hi');
 </script>
-
-<style lang="scss">
-@import '../../../assets/css/style';
-.swap-tx-list {
-  .el-table {
-    border: none !important;
-    th .cell {
-      font-size: 16px;
-      font-weight: 400;
-    }
-    tr td {
-      border-bottom: 1px solid #e4efff !important;
-    }
-    tr .cell {
-      line-height: 46px;
-      font-size: 16px;
-      //color: #333;
-    }
-    .iconfont {
-      color: #1678ff;
-      font-size: 26px;
-    }
-  }
-  .mobile-list {
-    display: none;
-  }
-  @media screen and (max-width: 1200px) {
-    .el-table {
-      th .cell {
-        font-size: 14px;
-      }
-      tr .cell {
-        line-height: 24px;
-        font-size: 14px;
-      }
-      .iconfont {
-        font-size: 22px;
-      }
-    }
-  }
-  @media screen and (max-width: 1000px) {
-    .el-table {
-      display: none;
-    }
-    .mobile-list {
-      display: block;
-      ul {
-        max-height: 335px;
-        overflow: auto;
-      }
-      li {
-        padding: 10px 0;
-        border-bottom: 1px solid #e4e9f4;
-        &:first-child {
-          padding-top: 0;
-        }
-        &:last-child {
-          border-bottom: none;
-        }
-      }
-      .left,
-      .right {
-        div:first-child {
-          margin-bottom: 2px;
-        }
-        span {
-          font-size: 14px;
-          color: $labelColor;
-        }
-        p {
-          font-size: 14px;
-        }
-        .iconfont {
-          color: #21d8ba;
-          font-size: 20px;
-        }
-      }
-    }
-  }
-}
-</style>

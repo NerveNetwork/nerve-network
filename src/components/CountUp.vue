@@ -39,5 +39,3 @@ function update(newEndVal) {
   return countUpInstance.update(newEndVal);
 }
 </script>
-
-<style lang="scss"></style>

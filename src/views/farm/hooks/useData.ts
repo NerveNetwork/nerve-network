@@ -1,17 +1,19 @@
 import { onMounted, onUnmounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import * as subSocket from '@/service/socket/websocket';
 import config from '@/config';
 import { fixNumber, Minus, Times } from '@/utils/util';
 import { getBlockInfo, getNerveFarm } from '@/service/api';
-import useStoreState from '@/hooks/useStoreState';
-import { useStore } from 'vuex';
+import { useWalletStore } from '@/store/wallet';
 import { NerveFarmItem, UserStakeFarm } from '../types';
 import { NDecimals, NKey, NSymbol, replaceNULS } from '@/constants/constants';
 
 const url = config.WS_URL;
 
 export default function useData() {
-  const store = useStore();
+  const walletStore = useWalletStore()
+  const { addressInfo: currentAccount, height } = storeToRefs(walletStore)
+  
   const list = ref<NerveFarmItem[]>([]);
   let totalNerveList: NerveFarmItem[] = [];
   let filterType = '1'; // 排序类型 1.按照收益排名 2.按照流动性排名
@@ -26,11 +28,11 @@ export default function useData() {
   async function getHeight() {
     const result = await getBlockInfo();
     let height = result?.blockHeight || null;
-    store.commit('changeHeight', height);
+    walletStore.changeHeight(height)
     if (height) {
       heightTimer = window.setInterval(() => {
         height += 1;
-        store.commit('changeHeight', height);
+        walletStore.changeHeight(height)
       }, 2000);
     } else {
       if (heightTimer) {
@@ -76,8 +78,6 @@ export default function useData() {
     totalNerveList = [...data].sort((a, b) => a.orderNum - b.orderNum);
     list.value = await filter(totalNerveList, filterType, onlySeeMortgage);
   }
-
-  const { currentAccount, height } = useStoreState();
 
   // 用户参与的farm
   function getUserFarm(farmHash?: string) {

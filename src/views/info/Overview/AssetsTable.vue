@@ -1,21 +1,21 @@
 <template>
-  <div class="assets-table">
+  <div :class="clsxm('card-wrapper', props.class)">
     <Table
-      v-bind="props"
+      :loading="loading"
+      v-bind="{ title, data, total, pageIndex, pagination, pageSize }"
       :columns="columns"
       @rowClick="rowClick"
-      @pageChange="pageChange"
-    >
+      @pageChange="pageChange">
       <template #name="scope">
         <SymbolInfo
+          class="!h-8 !w-8"
           :name="scope.row.name"
           :chain="scope.row.originChain"
-          :asset-key="scope.row.assetKey"
-        ></SymbolInfo>
+          :asset-key="scope.row.assetKey"></SymbolInfo>
       </template>
       <template #price="scope">${{ scope.row.price }}</template>
       <template #priceChange="scope">
-        <span :class="scope.row.priceChange > 0 ? 'price-up' : 'price-down'">
+        <span :class="scope.row.priceChange > 0 ? 'text-up' : 'text-down'">
           {{
             scope.row.priceChange > 0
               ? '+' + scope.row.priceChange
@@ -30,35 +30,36 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, withDefaults } from 'vue';
-import Table from '@/components/Table/index.vue';
-import SymbolInfo from '@/components/SymbolInfo.vue';
-import SymbolIcon from '@/components/SymbolIcon.vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { TokenItem } from '../types';
+import { computed } from 'vue'
+import Table from '@/components/Table/index.vue'
+import SymbolInfo from '@/components/SymbolInfo.vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import clsxm from '@/utils/clsxm'
+import { TokenItem } from '../types'
 
 const props = withDefaults(
   defineProps<{
-    title: string;
-    data: TokenItem[];
-    total: number | string;
-    pageIndex?: number;
-    pagination?: boolean;
-    pageSize?: number | string;
+    title: string
+    data: TokenItem[]
+    total: number | string
+    pageIndex?: number
+    pagination?: boolean
+    pageSize?: number | string
+    class?: string
+    loading?: boolean
   }>(),
   {
     pagination: true
   }
-);
-const emit = defineEmits(['pageChange', 'rowClick']);
+)
+const emit = defineEmits(['pageChange', 'rowClick'])
 
-const { t } = useI18n();
-const router = useRouter();
+const { t } = useI18n()
+const router = useRouter()
 
 const columns = computed(() => {
   return [
-    { width: 40 },
     {
       prop: 'name',
       label: t('info.info8'),
@@ -74,37 +75,15 @@ const columns = computed(() => {
     },
     { prop: 'txs', label: t('info.info11'), width: 180, slotName: 'txs' },
     { prop: 'liq', label: t('info.info4'), width: 180, slotName: 'liq' }
-  ];
-});
+  ]
+})
 function rowClick(item: TokenItem) {
   // console.log(item);
   // emit('rowClick', item);
-  router.push('/info/tokens/' + item.assetKey);
+  router.push('/info/tokens/' + item.assetKey)
 }
 function pageChange(index: number) {
   // console.log(index);
-  emit('pageChange', index);
+  emit('pageChange', index)
 }
 </script>
-
-<style lang="scss">
-.assets-table {
-  tr.el-table__row {
-    cursor: pointer;
-  }
-  .symbol-chain-info {
-    img {
-      width: 30px;
-      height: 30px;
-      margin-right: 8px;
-    }
-  }
-  .price-up {
-    color: #47cd85;
-  }
-
-  .price-down {
-    color: #e24a58;
-  }
-}
-</style>

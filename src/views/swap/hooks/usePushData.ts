@@ -1,5 +1,6 @@
 import { computed, onBeforeUnmount, onMounted, Ref, ref, watch } from 'vue';
-import useStoreState from '@/hooks/useStoreState';
+import { storeToRefs } from 'pinia';
+import { useWalletStore } from '@/store/wallet';
 import {
   getPairInfo,
   getPendingOrderList,
@@ -21,7 +22,8 @@ interface IParis {
 
 export default function usePushData(buyMode: Ref<boolean>) {
   const { t } = useI18n();
-  const { nerveAddress, assetsList } = useStoreState();
+  const walletStore = useWalletStore()
+  const { nerveAddress, assetsList } = storeToRefs(walletStore)
 
   const pushAssetList = ref<IPushAssetItem[]>([]);
   const quoteAsset = ref<IPushAssetItem>({} as IPushAssetItem);

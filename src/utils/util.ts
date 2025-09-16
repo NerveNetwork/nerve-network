@@ -459,3 +459,12 @@ export function getOriginChain(
 export const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
   navigator.userAgent
 );
+
+export function createRegex(decimal: number) {
+  if (decimal === 0) {
+    return /^(?:0|[1-9]\d*)$/
+  }
+  return new RegExp(
+    `^(?:(?:0|[1-9]\\d*)(?:\\.\\d{0,${decimal}})?|\\.\\d{1,${decimal}})$`
+  )
+}

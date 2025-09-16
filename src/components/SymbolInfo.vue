@@ -1,12 +1,17 @@
 <template>
-  <div class="symbol-chain-info flex-center">
+  <div class="flex items-center">
     <SymbolIcon
       :icon="props.logo || props.name"
       :asset-key="props.assetKey"
-    ></SymbolIcon>
-    <div class="chain-info">
-      <span class="name">{{ props.name }}</span>
-      <span class="chain">
+      :class="clsxm('mr-1 md:mr-3', props.class)"></SymbolIcon>
+    <div class="flex flex-col">
+      <span
+        :class="
+          clsxm('mb-1 text-sm leading-none md:text-[16px]', props.nameClass)
+        "
+        >{{ props.name }}</span
+      >
+      <span :class="clsxm('text-xs text-label', props.keyClass)">
         {{ chainName }}&nbsp;&nbsp;|&nbsp;&nbsp;ID: {{ props.assetKey }}
       </span>
     </div>
@@ -14,46 +19,26 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import SymbolIcon from '@/components/SymbolIcon.vue';
+import { computed, ref } from 'vue'
+import clsxm from '@/utils/clsxm'
+import SymbolIcon from '@/components/SymbolIcon.vue'
 
 const props = defineProps<{
-  logo?: string;
-  name: string;
-  chain?: string;
-  assetKey: string;
-}>();
+  logo?: string
+  name: string
+  chain?: string
+  assetKey: string
+  class?: string
+  nameClass?: string
+  keyClass?: string
+}>()
 
-const name = ref('hi');
+const name = ref('hi')
 
 const chainName = computed(() => {
   if (props.chain === 'NULS' || props.chain === 'NAI') {
-    return 'NULS AI';
+    return 'NULS AI'
   }
-  return props.chain;
-});
+  return props.chain
+})
 </script>
-
-<style lang="scss">
-.symbol-chain-info {
-  .symbol-icon {
-    margin-right: 10px;
-  }
-  .chain-info {
-    display: flex;
-    flex-direction: column;
-    span {
-      line-height: 1;
-    }
-    .name {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 3px;
-    }
-    .chain {
-      font-size: 12px;
-      color: #94a6ce;
-    }
-  }
-}
-</style>

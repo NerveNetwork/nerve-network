@@ -1,5 +1,5 @@
 <template>
-  <div class="swap-page">
+  <div class="flex justify-center">
     <Overview
       v-if="showOverview && !isMobile"
       :swapSymbol="swapSymbol"
@@ -13,17 +13,18 @@
       :assetsList="assetsList"
       :hotAssets="hotAssets"
       :defaultAsset="defaultAsset"
+      :showOverview="showOverview"
       @toggleExpand="toggleOverview"
       @selectAsset="changeOrderList"
       @updateRate="updateRate"
     ></Swap>
-    <el-dialog
-      custom-class="mobile-overview-dialog"
-      top="10vh"
+    <Modal
+      container-class="mt-[10vh]"
+      body-class="!p-0"
       v-model="showMobileOverview"
       :show-close="false"
+      :show-title="false"
       @closed="showOverview = false"
-      :title="$t('trading.trading1')"
     >
       <Overview
         :swapSymbol="swapSymbol"
@@ -34,7 +35,7 @@
         v-model:txType="txType"
         @changeList="changeList"
       ></Overview>
-    </el-dialog>
+    </Modal>
   </div>
 </template>
 
@@ -42,6 +43,7 @@
 import { watch, ref } from 'vue';
 import Overview from './Overview.vue';
 import Swap from './Swap.vue';
+import Modal from '@/components/Base/Modal/index.vue'
 import useOverview from '../hooks/useOverview';
 import useAsset from '../hooks/useAsset';
 import useSelectAsset from '../hooks/useSelectAsset';
@@ -98,6 +100,7 @@ watch(
     if (val) {
       pager.index = 1;
       pager.total = 0;
+      orderList.value = []
       selectAsset(selectedAsset.value?.from, selectedAsset.value?.to);
     }
   }
@@ -108,10 +111,3 @@ function updateRate(rate: string) {
   swapRate.value = rate;
 }
 </script>
-
-<style lang="scss">
-.swap-page {
-  display: flex;
-  justify-content: center;
-}
-</style>

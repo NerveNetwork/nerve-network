@@ -1,5 +1,6 @@
 import axios from 'axios';
-const tbc = require('tbc-lib-js');
+// const tbc = require('tbc-lib-js');
+import * as tbc from 'tbc-lib-js'
 import {API, poolNFT, poolNFT2, MultiSig, FT as FTUtil} from "tbc-contract";
 import { BitcoinRechargeData } from 'nerve-sdk-js/lib/model/BitcoinRechargeData';
 import { divisionDecimals, Plus, timesDecimals } from '../utils/utils';

@@ -1,64 +1,62 @@
 <template>
-  <el-dialog
-    center
-    width="470px"
-    custom-class="mint-modal"
+  <Modal
+    title="Mint"
+    container-class="mt-[15vh]"
     v-model="visible"
     :show-close="false"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
+    show-back
+    :closeOnBackdropClick="false"
+    @back="emit('update:show', false)"
     @closed="close"
   >
-    <template #title>
-      <img
-        class="click"
-        src="../../assets/img/back-icon.svg"
-        alt=""
-        @click="emit('update:show', false)"
-      />
-      <span>Mint</span>
-    </template>
     <div v-loading="loading">
-      <div class="info-item">
-        <div class="left">{{ $t('mint.mint37') }}</div>
-        <div class="right">
-          <p>{{ info.mintAssetSymbol }}</p>
-          <span class="id-info">
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-label">{{ $t('mint.mint37') }}</div>
+        <div class="text-right">
+          <div class="text-base font-medium">{{ info.mintAssetSymbol }}</div>
+          <div class="text-xs text-label">
             {{ info.registerChain }} | ID:{{ info.mintAsset }}
-          </span>
+          </div>
         </div>
       </div>
-      <div class="info-item">
-        <div class="left">{{ $t('mint.mint51') }}</div>
-        <div class="right">
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-label">{{ $t('mint.mint51') }}</div>
+        <div>
           {{ $thousands(info.mintEach) }}/{{ $thousands(info.mintMax) }}
         </div>
       </div>
-      <div class="info-item">
-        <div class="left">{{ $t('mint.mint41') }}</div>
-        <div class="right">
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-label">{{ $t('mint.mint41') }}</div>
+        <div>
           {{ $thousands(info.mintFee) }} {{ info.mintFeeAssetSymbol }}
         </div>
       </div>
-      <div class="info-item">
-        <div class="left">{{ $t('mint.mint52') }}</div>
-        <div class="right">{{ remainMintCount }}/{{ info.mintCountLimit }}</div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-label">{{ $t('mint.mint52') }}</div>
+        <div>{{ remainMintCount }}/{{ info.mintCountLimit }}</div>
       </div>
-      <div class="info-item">
-        <div class="left">{{ $t('mint.mint42') }}</div>
-        <div class="right">
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-label">{{ $t('mint.mint42') }}</div>
+        <div>
           {{ info.poolRatio }}%｜{{ info.lpLockDay }}
           {{ $t('mint.mint56') }}
         </div>
       </div>
-      <div class="info-item">
-        <div class="left">{{ $t('mint.mint40') }}</div>
-        <div class="right">{{ info.assetUnlockTime }}</div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-label">{{ $t('mint.mint40') }}</div>
+        <div>{{ info.assetUnlockTime }}</div>
       </div>
       <template v-if="remainMintCount">
-        <div class="info-item">
-          <div class="left">{{ $t('mint.mint53') }}</div>
-          <div class="right" style="position: relative">
+        <div class="mb-6">
+          <div class="text-label mb-3">{{ $t('mint.mint53') }}</div>
+          <div class="relative">
+            <Input :value="mintCount"
+              @input="changeInput" class="bg-input" input-class="text-center" />
+            <span v-if="!mintCount" class="el-form-item__error">
+              {{ $t('mint.mint64') }}
+            </span>
+          </div>
+          <!-- <div class="right" style="position: relative">
             <el-input
               :model-value="mintCount"
               @input="changeInput"
@@ -67,20 +65,31 @@
             <span v-if="!mintCount" class="el-form-item__error">
               {{ $t('mint.mint64') }}
             </span>
-          </div>
+          </div> -->
         </div>
-        <div class="info-item cost">
-          <div class="left flex-between">
+        <div class="mb-6">
+          <div class="text-label flex justify-between mb-3">
+            <span>{{ $t('mint.mint59') }}</span>
+            <span>Balance: {{ feeAsset.available || 0 }}</span>
+          </div>
+          <div class="h-12 leading-[48px] bg-[#878DAB66] rounded-xl text-center">
+            {{ totalCost }} {{ info.mintFeeAssetSymbol }}
+          </div>
+          <!-- <div class="left flex-between">
             <span>{{ $t('mint.mint59') }}</span>
             <span>
               {{ $t('public.public16') }}
               {{ feeAsset.available || 0 }} {{ info.mintFeeAssetSymbol }}
             </span>
           </div>
-          <div class="right">{{ totalCost }} {{ info.mintFeeAssetSymbol }}</div>
+          <div class="right">{{ totalCost }} {{ info.mintFeeAssetSymbol }}</div> -->
         </div>
-        <el-checkbox :label="$t('mint.mint54')" v-model="check"></el-checkbox>
-        <div class="confirm-btn">
+        <!-- <el-checkbox :label="$t('mint.mint54')" v-model="check"></el-checkbox> -->
+        <Checkbox v-model="check" :text="$t('mint.mint54')" /> 
+        <div class="mt-7">
+          <Button :loading="txLoading" :disabled="disabled" @click="handleMint" class="w-full">{{ btnText }}</Button>
+        </div>
+        <!-- <div class="confirm-btn">
           <el-button type="primary" :disabled="disabled" @click="handleMint">
             {{ btnText }}
             <el-icon
@@ -91,24 +100,32 @@
               <Loading />
             </el-icon>
           </el-button>
-        </div>
+        </div> -->
       </template>
       <template v-else>
-        <div class="confirm-btn">
+        <div class="pt-4">
+          <Button disabled class="w-full">{{ $t('mint.mint47') }}</Button>
+        </div>
+        <!-- <div class="confirm-btn">
           <el-button type="primary" disabled>
             {{ $t('mint.mint47') }}
           </el-button>
-        </div>
+        </div> -->
       </template>
     </div>
-  </el-dialog>
+  </Modal>
 </template>
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { storeToRefs } from 'pinia';
 import nerveswap from 'nerveswap-sdk';
-import useStoreState from '@/hooks/useStoreState';
+import Modal from '@/components/Base/Modal/index.vue'
+import Input from '@/components/Base/Input/index.vue'
+import Checkbox from '@/components/Base/Checkbox/index.vue'
+import Button from '@/components/Base/Button/index.vue'
+import { useWalletStore } from '@/store/wallet';
 import useToast from '@/hooks/useToast';
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import {
@@ -116,7 +133,8 @@ import {
   fixNumber,
   Division,
   Times,
-  timesDecimals
+  timesDecimals,
+  toThousands
 } from '@/utils/util';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
 import { getMinterInfo } from '@/service/api/mint';
@@ -134,7 +152,9 @@ const emit = defineEmits(['update:show', 'refresh']);
 
 const { t } = useI18n();
 
-const { nerveAddress, assetsList } = useStoreState();
+const walletStore = useWalletStore()
+const { nerveAddress, assetsList } = storeToRefs(walletStore)
+
 const { toastError } = useToast();
 const { getWalletInfo, handleResult } = useBroadcastNerveHex();
 
@@ -192,13 +212,14 @@ async function getInfo() {
   result.registerChain = Object.values(_networkInfo).find(
     k => k.chainId === result.mintAssetSourceChainId
   )!.name;
+  console.log(result, 234);
   info.value = result;
   loading.value = false;
 }
 
 const totalCost = computed(() => {
   if (!mintCount.value || !info.value.mintFee) return '0';
-  return Times(mintCount.value, info.value.mintFee);
+  return Times(mintCount.value, info.value.mintFee).toFixed();
 });
 
 const remainMintCount = computed(() => {
@@ -254,7 +275,7 @@ const disabled = computed(() => {
 async function handleMint() {
   txLoading.value = true;
   try {
-    const { mintFeeAsset, mintFeeAssetDecimals } = info.value;
+    const { mintFeeAsset, mintFeeAssetDecimals, mintFeeAssetSymbol } = info.value;
     const { provider, EVMAddress, pub } = getWalletInfo();
     const [assetChainId, assetId] = mintFeeAsset.split('-');
     const mint = {
@@ -274,7 +295,8 @@ async function handleMint() {
       pub
     });
     setTimeout(() => {
-      handleResult(2, result);
+      const amoutnRemark = `${toThousands(totalCost.value)} ${mintFeeAssetSymbol}`
+      handleResult(2, result, amoutnRemark);
       if (result.hash) {
         emit('refresh');
         emit('update:show', false);
@@ -292,87 +314,3 @@ const close = () => {
   //
 };
 </script>
-<style lang="scss">
-@import '../../assets/css/style.scss';
-.mint-modal {
-  .el-dialog__header {
-    border: none !important;
-    font-size: 20px;
-    font-weight: 500;
-    position: relative;
-    img {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-  }
-  .info-item {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-    .left,
-    .right {
-      width: 50%;
-    }
-    .left {
-      color: $subLabelColor;
-    }
-    .id-info {
-      font-size: 12px;
-      color: $subLabelColor;
-    }
-    .mint-count-input {
-      .el-input__inner {
-        width: 132px;
-        height: 36px;
-        line-height: 36px;
-        border-radius: 10px;
-      }
-    }
-  }
-  .cost {
-    padding-top: 20px;
-    .left {
-      width: 100%;
-    }
-    .right {
-      width: 100%;
-      height: 44px;
-      line-height: 44px;
-      font-size: 15px;
-      border-radius: 10px;
-      margin-top: 10px;
-      text-align: center;
-      border: 1px solid $borderColor;
-      background-color: #f7f9ff;
-    }
-  }
-  .el-checkbox {
-    .el-checkbox__inner {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      &::after {
-        height: 8px;
-        left: 6px;
-        top: 2px;
-        width: 4px;
-      }
-    }
-    .el-checkbox__label {
-      white-space: normal;
-      font-size: 13px;
-      line-height: 16px;
-      color: #aab2c9;
-    }
-  }
-  .confirm-btn {
-    width: 100%;
-    padding-top: 30px;
-    button {
-      width: 100%;
-    }
-  }
-}
-</style>

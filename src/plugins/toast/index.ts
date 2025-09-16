@@ -3,7 +3,7 @@ import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 
 // 配置默认toast
-const toastOptions = {
+export const toastOptions = {
   position: 'top-right',
   timeout: 2000,
   closeOnClick: false,

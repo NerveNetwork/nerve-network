@@ -1,10 +1,10 @@
 <template>
-  <div class="symbols-wrap flex-center">
-    <div class="img-wrap flex-center">
-      <SymbolIcon :icon="symbols[1]" :asset-key="assetKeys[1]"></SymbolIcon>
-      <SymbolIcon :icon="symbols[0]" :asset-key="assetKeys[0]"></SymbolIcon>
+  <div class="flex items-center">
+    <div class="flex mr-3">
+      <SymbolIcon class="!w-7 !h-7" :icon="symbols[1]" :asset-key="assetKeys[1]"></SymbolIcon>
+      <SymbolIcon class="!w-7 !h-7" :icon="symbols[0]" :asset-key="assetKeys[0]"></SymbolIcon>
     </div>
-    <span>{{ props.name || symbols[0] + '/' + symbols[1] }}</span>
+    <span :class="clsxm('text-base', props.textClass)">{{ props.name || symbols[0] + '/' + symbols[1] }}</span>
   </div>
 </template>
 
@@ -12,6 +12,7 @@
 import { computed } from 'vue';
 import SymbolIcon from '@/components/SymbolIcon.vue';
 import { sortAssetsByValuation } from '@/utils/util';
+import clsxm from '@/utils/clsxm';
 
 const props = defineProps<{
   symbol1: string;
@@ -19,6 +20,7 @@ const props = defineProps<{
   symbol2: string;
   assetKey2: string;
   name?: string;
+  textClass?: string
 }>();
 
 const symbols = computed(() => {
@@ -33,20 +35,3 @@ const assetKeys = computed(() => {
   }
 });
 </script>
-
-<style lang="scss">
-.symbols-wrap {
-  .img-wrap {
-    //margin-right: 10px;
-    img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-color: #fff;
-      &:last-child {
-        margin-left: -10px;
-      }
-    }
-  }
-}
-</style>

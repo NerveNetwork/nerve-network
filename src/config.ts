@@ -1,6 +1,6 @@
 type EnvType = 'beta' | 'prod';
 
-const env = process.env.BUILD_ENV as EnvType;
+const env = import.meta.env.MODE as EnvType
 
 /*function getWSUrl(): string {
   let url;

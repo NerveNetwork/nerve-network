@@ -1,29 +1,30 @@
 <template>
-  <div class="collect-icon" @click.stop="toggleCollect">
-    <img :src="props.modelValue ? collected : collect" alt="" />
+  <div
+    :class="clsxm('btn cursor-pointer flex items-center justify-center', props.class)"
+    @click.stop="toggleCollect">
+    <template v-if="props.modelValue">
+      <i-custom-light-on />
+    </template>
+    <template v-else>
+      <i-custom-light-off />
+    </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import collect from '@/assets/img/star.svg';
-import collected from '@/assets/img/star-fill.svg';
+import clsxm from '@/utils/clsxm'
 
 const props = defineProps<{
-  modelValue: boolean;
-}>();
-const emit = defineEmits(['update:modelValue']);
+  modelValue: boolean
+  class?: string
+}>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void
+  (e: 'change', value: boolean): void
+}>()
 
 function toggleCollect() {
-  emit('update:modelValue', !props.modelValue);
-  emit('change', !props.modelValue);
+  emit('update:modelValue', !props.modelValue)
+  emit('change', !props.modelValue)
 }
 </script>
-
-<style>
-.collect-icon {
-  cursor: pointer;
-}
-.collect-icon:hover {
-  opacity: 0.7;
-}
-</style>

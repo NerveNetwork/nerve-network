@@ -1,17 +1,22 @@
 <template>
-  <div class="node-detail w1200">
+  <div class="w1200">
     <NodeInfoCpm :nodeInfo="nodeInfo" @stopNode="stopNode" :address="address" />
-    <div class="record-list-wrap">
-      <div class="operation-wrap">
-        <el-button type="primary" @click="addition">
+    <div class=" card-wrapper-not">
+      <div class="text-right mb-4">
+        <Button @click="addition" class="h-9 mr-3">
           {{ $t('nodeDetail.nodeDetail14') }}
-        </el-button>
-        <el-button @click="quit">
+        </Button>
+        <Button variant="outline" @click="quit" class="h-9">
           {{ $t('nodeDetail.nodeDetail13') }}
-        </el-button>
+        </Button>
       </div>
       <RecordList :data="recordList" />
-      <Pagination v-model:pager="pager" @change="getRecordList"></Pagination>
+      <Pagination
+        class="mt-4"
+        v-model:currentPage="pager.index"
+        :pageSize="pager.size"
+        :total="pager.total" 
+        @change="getRecordList"></Pagination>
     </div>
     <DepositDialog
       :loading="depositLoading"
@@ -28,7 +33,8 @@
 import { reactive, ref, watch } from 'vue';
 import NodeInfoCpm from './NodeInfo.vue';
 import RecordList from './RecordList.vue';
-import Pagination from '@/components/Pagination.vue';
+import Button from '@/components/Base/Button/index.vue'
+import Pagination from '@/components/Base/Pagination/index.vue'
 import DepositDialog from './DepositDialog.vue';
 import { useRouter } from 'vue-router';
 import useToast from '@/hooks/useToast';
@@ -37,7 +43,8 @@ import {
   divisionAndFix,
   divisionDecimals,
   Times,
-  timesDecimals
+  timesDecimals,
+  toThousands
 } from '@/utils/util';
 import {
   getAllConsensusDeposit,
@@ -114,6 +121,8 @@ async function getRecordList() {
     });
     recordList.value = result.list;
     pager.total = result.totalCount;
+  } else {
+    recordList.value = []
   }
 }
 
@@ -145,7 +154,7 @@ async function stopNode() {
       EVMAddress,
       pub
     });
-    handleResult(9, result);
+    handleResult(9, result, '');
     // const result: any = await handleTxInfo(transferInfo, 9, txData);
     // if (result && result.hash) {
     //   router.push('/');
@@ -202,7 +211,7 @@ async function handleDeposit(amount: string, type: HandleType) {
         EVMAddress,
         pub
       });
-      handleResult(28, result);
+      handleResult(28, result, toThousands(amount) + ' NVT');
     } else {
       const reduceNonceList = await getReduceNonceList<any>(hash, newAmount, 0);
       transferInfo.fee = 100000; // 退出时底层未支持减免
@@ -218,7 +227,7 @@ async function handleDeposit(amount: string, type: HandleType) {
         EVMAddress,
         pub
       });
-      handleResult(29, result);
+      handleResult(29, result, toThousands(amount) + ' NVT');
     }
     if (result && result.hash) {
       showDepositDialog.value = false;
@@ -240,37 +249,3 @@ function refreshList() {
   }, 5000);
 }
 </script>
-
-<style lang="scss">
-.node-detail {
-  .record-list-wrap {
-    .operation-wrap {
-      padding: 40px 0 10px;
-      text-align: right;
-      .el-button {
-        min-height: 36px;
-        padding: 8px 12px;
-        border-radius: 6px;
-        span {
-          font-size: 14px;
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    .record-list-wrap {
-      .operation-wrap {
-        padding: 30px 0 10px;
-        .el-button {
-          min-height: 32px;
-          padding: 6px 12px;
-          border-radius: 6px;
-          span {
-            font-size: 14px;
-          }
-        }
-      }
-    }
-  }
-}
-</style>

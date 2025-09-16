@@ -52,7 +52,7 @@ const changeMode = () => {
 </script>
 
 <style lang="scss">
-@import '../../../assets/css/style';
+@use '../../../assets/css/style';
 .tabs {
   position: relative;
   display: flex;

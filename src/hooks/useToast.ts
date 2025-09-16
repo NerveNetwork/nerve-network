@@ -1,5 +1,5 @@
 import { useToast as useVToast } from 'vue-toastification';
-export { ToastOptions } from 'vue-toastification/src/types/index';
+export type { ToastOptions } from 'vue-toastification/dist/types/types';
 
 const errors = ['INSUFFICIENT_FUNDS'];
 

@@ -1,25 +1,25 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from '@/store';
+import { storeToRefs } from 'pinia';
 import storage from '@/utils/storage';
-import useStoreState from '@/hooks/useStoreState';
+import { useWalletStore } from '@/store/wallet'
 import { AccountFarm } from '@/store/types';
 
-interface Farm {
-  type: 'farm' | 'pool';
-  hash: string;
-  name: string;
-}
+// interface Farm {
+//   type: 'farm' | 'pool';
+//   hash: string;
+//   name: string;
+// }
 
 export default function useMyFarm() {
   const router = useRouter();
-  const store = useStore();
   const myFarms = ref<AccountFarm[]>([]);
-  const { currentAccount } = useStoreState();
+  const walletStore = useWalletStore()
+  const { addressInfo: currentAccount } = storeToRefs(walletStore)
   onMounted(() => {
     myFarms.value = currentAccount.value.farms || [];
   });
-  function toMyFarm(farm: Farm) {
+  function toMyFarm(farm: AccountFarm) {
     let url;
     if (farm.type === 'farm') {
       url = `/farm/${farm.hash}`;
@@ -29,7 +29,7 @@ export default function useMyFarm() {
     router.push(url);
   }
 
-  function updateMyFarms(farm: Farm) {
+  function updateMyFarms(farm: AccountFarm) {
     const accountList = storage.get('accountList') || [];
     accountList.map((v: any) => {
       if (v.pub === currentAccount.value.pub) {
@@ -39,7 +39,7 @@ export default function useMyFarm() {
           v.farms = [farm];
         }
         myFarms.value = v.farms;
-        store.commit('setCurrentAddress', v);
+        walletStore.changeAccount(v)
       }
     });
     storage.set('accountList', accountList);

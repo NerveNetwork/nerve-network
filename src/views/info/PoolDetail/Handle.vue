@@ -1,49 +1,39 @@
 <template>
-  <div class="handle-wrap">
-    <el-button @click="addLiquidity">{{ $t('info.info17') }}</el-button>
-    <el-button type="primary" @click="swap">{{ $t('info.info18') }}</el-button>
+  <div class="">
+    <Button class="h-10 w-32 mr-3" variant="outline" @click="addLiquidity">
+      {{ $t('info.info17') }}
+    </Button>
+    <Button class="h-10 w-32" @click="swap">
+      {{ $t('info.info18') }}
+    </Button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
+import Button from '@/components/Base/Button/index.vue'
 
 const props = defineProps<{
-  info: any;
-  isPool?: boolean;
-}>();
+  info: any
+  isPool?: boolean
+}>()
 
-const router = useRouter();
+const router = useRouter()
 
 function addLiquidity() {
   if (props.isPool) {
-    const { token0, token1 } = props.info;
-    router.push(`/liquidity/${token0}/${token1}`);
+    const { token0, token1 } = props.info
+    router.push(`/liquidity/${token0}/${token1}`)
   } else {
-    router.push(`/liquidity/${props.info.assetKey}`);
+    router.push(`/liquidity/${props.info.assetKey}`)
   }
 }
 function swap() {
   if (props.isPool) {
-    const { token0, token1 } = props.info;
-    router.push(`/swap/${token0}/${token1}`);
+    const { token0, token1 } = props.info
+    router.push(`/swap/${token0}/${token1}`)
   } else {
-    router.push(`/swap/${props.info.assetKey}`);
+    router.push(`/swap/${props.info.assetKey}`)
   }
 }
 </script>
-
-<style lang="scss">
-.handle-wrap {
-  .el-button {
-    min-width: 140px;
-    span {
-      font-size: 14px;
-    }
-    &:first-child {
-      color: #2688f7;
-      border-color: #2688f7;
-    }
-  }
-}
-</style>

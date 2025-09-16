@@ -1,7 +1,7 @@
 import { onMounted, reactive, ref } from 'vue';
-import useStoreState from '@/hooks/useStoreState';
 import nerve from 'nerve-sdk-js';
 import config from '@/config';
+import { useWalletStore } from '@/store/wallet';
 import {
   userTradeHistoryPage,
   userStableTradeHistoryPage,
@@ -19,7 +19,7 @@ import {
 import { NDecimals, NSymbol } from '@/constants/constants';
 
 export default function useSelectAsset() {
-  const { nerveAddress } = useStoreState();
+  const walletStore = useWalletStore()
   // let selectedAsset = null as DefaultAsset | null;
 
   let stablePairList: any = [];
@@ -40,8 +40,9 @@ export default function useSelectAsset() {
     total: 0
   });
   const txType = ref('swap'); // swap | multiRouting
+
   async function selectAsset(fromAsset?: AssetItem, toAsset?: AssetItem) {
-    if (!nerveAddress.value || !fromAsset || !toAsset) return;
+    if (!walletStore.nerveAddress || !fromAsset || !toAsset) return;
     selectedAsset.value = {
       from: fromAsset,
       to: toAsset
@@ -59,7 +60,8 @@ export default function useSelectAsset() {
     );
     const data = {
       pairAddress,
-      userAddress: nerveAddress.value,
+      // userAddress: walletStore.nerveAddress,
+      userAddress: 'NERVEepb65YYwPnX3rcMhd8u8jFfy9QMweY9rA',
       pageIndex: pager.index,
       pageSize: pager.size
     };

@@ -1,4 +1,6 @@
-const TronWeb = require('tronweb');
+// const TronWeb = require('tronweb');
+// @ts-ignore
+import TronWeb from 'tronweb'
 //官方文档地址： https://cn.developers.tron.network/reference#address
 import {
   isBeta,
@@ -9,7 +11,8 @@ import {
   Division
 } from '@/utils/util';
 import config from '@/config';
-const ethers = require('ethers');
+// const ethers = require('ethers');
+import { ethers } from 'ethers'
 
 const trxWithdrawFee = config.trxWithdrawFee;
 

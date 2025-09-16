@@ -1,545 +1,157 @@
 <template>
   <div
     :class="['header', route.path === '/' ? 'home-header' : '']"
-    @click="showMenu = false"
-  >
-    <div class="flex-between w1200">
-      <div class="left">
-        <div class="logo" @click="router.push('/')">
+    @click="showMenu = false">
+    <div class="mx-4 flex h-[60px] items-center justify-center xl:mx-5">
+      <div class="flex flex-1 items-center">
+        <router-link to="/" class="mr-2 w-[80px] sm:mr-20 sm:w-[100px]">
           <img src="../../assets/img/nervelogo.svg" alt="" />
+        </router-link>
+        <div class="hidden xl:block">
+          <Menu />
         </div>
-        <Menu class="pc-menu" />
       </div>
-      <div class="account-wrap">
-        <div class="account">
-          <div
-            class="connection"
-            v-if="!address"
-            @click="showConnectDialog(true)"
-          >
-            {{ $t('header.header3') }}
-          </div>
-          <AuthButton v-else-if="!nerveAddress"></AuthButton>
-          <div v-else class="flex-center">
-            <div class="chain-wrap">
-              <SwitchChain
-                v-model="showSwitchChain"
-                :currentChain="chain"
-                :address="address"
-              >
-                <div class="l1-chain" @click="showSwitchChain = true">
-                  <img :src="chainLogo" alt="" v-if="!wrongChain" />
-                  <img
-                    src="../../assets/img/net-error.svg"
-                    alt=""
-                    @click="showSwitchChain = true"
-                    v-else
-                  />
-                  <el-icon style="margin-right: 5px"><caret-bottom /></el-icon>
-                </div>
-              </SwitchChain>
-              <img
-                src="../../assets/img/nerveIcon.png"
-                alt=""
-                @click="manageAccount = true"
-              />
-              <span @click="manageAccount = true">
-                {{ superLong(nerveAddress, 5) }}
-              </span>
-              <template v-if="unConfirmedTx">
-                <el-icon color="#2688F7" class="is-loading">
-                  <loading />
-                </el-icon>
-              </template>
+      <template v-if="!address || !nerveAddress">
+        <AuthButton class="h-8 rounded-2xl px-5 text-xs" />
+      </template>
+      <template v-else>
+        <div class="flex">
+          <div class="group relative">
+            <router-link
+              to="/asset-center"
+              class="mr-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-card2 transition-all duration-300 hover:opacity-70">
+              <img src="../../assets/img/assets-center.svg" alt="" />
+            </router-link>
+            <div
+              class="absolute top-10 hidden h-8 items-center justify-center whitespace-nowrap rounded-[10px] bg-card px-2.5 text-xs group-hover:flex">
+              Asset Center
             </div>
           </div>
+
+          <div
+            class="flex h-8 items-center justify-center rounded-2xl bg-card2 p-1 pr-2.5">
+            <SwitchChain
+              v-model="showSwitchChain"
+              :currentChain="chain"
+              :address="address">
+              <div
+                class="flex cursor-pointer items-center transition-all duration-300 hover:opacity-70"
+                @click="showSwitchChain = true">
+                <img
+                  class="h-6 w-6 rounded-full"
+                  :src="chainLogo"
+                  alt=""
+                  v-if="!wrongChain" />
+                <img
+                  class="h-6 w-6"
+                  src="../../assets/img/net-error.svg"
+                  alt=""
+                  @click="showSwitchChain = true"
+                  v-else />
+                <div class="mx-1.5">
+                  <svg
+                    width="6"
+                    height="4"
+                    viewBox="0 0 6 4"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M3.3751 3.70958L5.84419 1.08724C5.99647 0.925512 6.04167 0.684029 5.95962 0.472824C5.87757 0.261619 5.68357 0.125 5.46942 0.125H0.530532C0.316372 0.125 0.122377 0.262357 0.0403287 0.472824C0.0132111 0.54298 0 0.616089 0 0.68846C0 0.834679 0.0542352 0.979421 0.155752 1.08724L2.62485 3.70958C2.72497 3.81518 2.85917 3.875 3.00032 3.875C3.14078 3.875 3.27636 3.81518 3.3751 3.70958Z"
+                      fill="#878DAB" />
+                  </svg>
+                </div>
+              </div>
+            </SwitchChain>
+            <div class="mx-2 h-[14px] w-[1px] bg-[#44495A]"></div>
+            <AccountInfo
+              v-model="manageAccount"
+              :address="nerveAddress"
+              @disconnect="disconnectProvider">
+              <div
+                class="flex cursor-pointer items-center transition-all duration-300 hover:opacity-70">
+                <img
+                  class="mr-1.5 h-6 w-6"
+                  src="../../assets/img/nerveIcon.png"
+                  alt=""
+                  @click="manageAccount = true" />
+                <span class="text-xs" @click="manageAccount = true">
+                  {{ superLong(nerveAddress, 5) }}
+                </span>
+              </div>
+            </AccountInfo>
+          </div>
         </div>
-        <!-- <span @click="switchLang" class="click pc" style="margin-left: 10px">
-          {{ lang }}
-        </span> -->
         <img
-          class="menu-icon mobile click"
+          class="ml-2.5 block cursor-pointer xl:hidden"
           src="../../assets/img/icon-menu.svg"
           alt=""
-          @click.stop="toggleShowMenu"
-        />
-      </div>
-      <!-- <ConnectWallet
-        v-model:show="showConnect"
-        @changeShow="showConnectDialog"
-        @connect="connectProvider"
-      /> -->
-      <AccountManage
-        v-model:show="manageAccount"
-        :address="nerveAddress"
-        @disconnect="disconnectProvider"
-        @addNewHash="addNewHash"
-        :txList="accountTxs"
-      />
+          @click.stop="toggleShowMenu" />
+      </template>
     </div>
+
     <MobileMenu v-model:show="showMenu" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useStore } from 'vuex';
-import Menu from '../Menu.vue';
-import ConnectWallet from './ConnectWallet.vue';
-import AccountManage from './AccountManage.vue';
-import MobileMenu from '../MobileMenu.vue';
-import SwitchChain from '@/components/SwitchChain.vue';
-import useEthereum from '@/hooks/useEthereum';
-import AuthButton from '../AuthButton.vue';
-import useStoreState from '@/hooks/useStoreState';
-import useToast from '@/hooks/useToast';
-import { _networkInfo } from '@/utils/heterogeneousChainConfig';
-import { getTronTx, getTx, getFCHTx } from '@/service/api';
-import { getCurrentAccount, isBeta, superLong } from '@/utils/util';
-import { Account, TxInfo } from '@/store/types';
-import storage from '@/utils/storage';
-import { ETransfer } from '@/utils/api';
-import nerveswap from 'nerveswap-sdk';
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useWalletStore } from '@/store/wallet'
+import Menu from '../Menu.vue'
+import MobileMenu from '../MobileMenu.vue'
+import SwitchChain from '@/components/SwitchChain.vue'
+import AccountInfo from '../Account.vue'
+import useEthereum from '@/hooks/useEthereum'
+import AuthButton from '../AuthButton.vue'
+import { _networkInfo } from '@/utils/heterogeneousChainConfig'
+import { getCurrentAccount, superLong } from '@/utils/util'
 
-const store = useStore();
-const router = useRouter();
-const route = useRoute();
-const { toastError } = useToast();
+const walletStore = useWalletStore()
+const { nerveAddress, wrongChain, chain } = storeToRefs(walletStore)
+const route = useRoute()
 
-const { address, initProvider, connect, disconnect } = useEthereum();
-const { nerveAddress, wrongChain, chain } = useStoreState();
-initProvider();
+const { address, initProvider, disconnect } = useEthereum()
+initProvider()
 
-const showSwitchChain = ref(false);
+const showSwitchChain = ref(false)
 
 watch(
   () => address.value,
   val => {
-    const currentAccount = getCurrentAccount(val);
-    store.commit('setCurrentAddress', currentAccount || {});
+    const currentAccount = getCurrentAccount(val)
+    // store.commit('setCurrentAddress', currentAccount || {});
+    walletStore.changeAccount(currentAccount || {})
   },
   {
     immediate: true
   }
-);
+)
 
-const manageAccount = ref(false);
-const showConnect = computed(() => store.state.showConnect);
-function showConnectDialog(state: boolean) {
-  store.commit('changeConnectShow', state);
-}
-async function connectProvider(provider: string, chainName: string) {
-  try {
-    await connect(provider, chainName);
-  } catch (e) {
-    // console.log(e, typeof e, e.message);
-    toastError(e);
-  }
-  store.commit('changeConnectShow', false);
-}
+const manageAccount = ref(false)
+
 function disconnectProvider() {
-  disconnect();
-  manageAccount.value = false;
-  store.commit('setCurrentAddress', {});
+  walletStore.changeAccount({} as any)
+  walletStore.changeAddress('')
+  disconnect()
+  manageAccount.value = false
 }
 
-const activeIndex = ref('');
+const activeIndex = ref('')
 watch(
   () => route.path,
   val => {
-    activeIndex.value = val?.split('/')[1];
+    activeIndex.value = val?.split('/')[1]
   }
-);
+)
 
 const chainLogo = computed(() => {
-  return _networkInfo[chain.value]?.logo;
-});
+  return _networkInfo[chain.value]?.logo
+})
 
-const showMenu = ref(false);
+const showMenu = ref(false)
 function toggleShowMenu() {
-  showSwitchChain.value = false;
-  showMenu.value = !showMenu.value;
-}
-
-let isQuery = false;
-onMounted(() => {
-  window.setInterval(() => {
-    checkTxStatus();
-  }, 5000);
-  checkTxStatus();
-});
-const accountTxs = ref<TxInfo[]>([]);
-
-const unConfirmedTx = computed(() => {
-  return accountTxs.value.filter(tx => !tx.status).length;
-});
-
-async function checkTxStatus() {
-  if (!address.value || !nerveAddress.value) return;
-  const account = getCurrentAccount(address.value);
-  const txs: TxInfo[] = account?.txs;
-  if (txs && txs.length && !isQuery) {
-    isQuery = true;
-    try {
-      accountTxs.value = [...txs];
-      const pendingTx = txs.filter((v: TxInfo) => !v.status);
-      if (pendingTx.length) {
-        const newTxs = await pollingTx(pendingTx);
-        newTxs.map(v => {
-          if (!v.result) {
-            txs.map(tx => {
-              if (tx.hash === v.hash) {
-                const retryCount = tx.retryCount || 0;
-                tx.retryCount = retryCount + 1;
-              }
-            });
-          } else {
-            txs.map(tx => {
-              if (tx.hash === v.hash) {
-                tx.retryCount = 0;
-                tx.status = v.result.status;
-              }
-            });
-          }
-        });
-        /* const deleteItemIndex = txs.findIndex(v => v.retryCount === 20);
-        if (deleteItemIndex !== -1) {
-          txs.splice(deleteItemIndex, 1);
-        } */
-        accountTxs.value = txs;
-        const accountList: Account[] = storage.get('accountList') || [];
-        accountList.map(v => {
-          const sameAddress = Object.values(v.address)
-            .flat()
-            .map((v: any) => v.toLowerCase())
-            .includes(address.value?.toLowerCase());
-          if (sameAddress) {
-            v.txs = txs;
-          }
-        });
-        storage.set('accountList', accountList);
-      }
-    } catch (e) {
-      //
-    }
-    isQuery = false;
-  }
-}
-
-async function pollingTx(txs: TxInfo[]) {
-  const txsQuery = txs.map(v => {
-    if (!v.L1Chain) {
-      if (v.type === 43) {
-        // 提现，目标链未确认前显示追加手续费按钮
-        return handleWithdrawalTx(v);
-      } else {
-        return handleTx(v);
-      }
-    } else if (v.L1Chain === 'TRON') {
-      return handleTronTx(v);
-    } else if (v.L1Chain === 'BTC') {
-      return handleBTCTx(v);
-    } else if (v.L1Chain === 'FCH') {
-      return handleFCHTx(v);
-    } else if (v.L1Chain === 'BCH') {
-      return handleBCHTx(v);
-    } else if (v.L1Chain === 'TBC') {
-      return handleTBCTx(v);
-    } else {
-      return handleEVMTx(v);
-    }
-  });
-  const res = await Promise.all(txsQuery);
-  return res;
-}
-
-async function handleTx(tx: TxInfo) {
-  const txState = { hash: tx.hash, result: null };
-  const res = await getTx(tx.hash);
-  if (res) {
-    return { hash: tx.hash, result: res };
-  }
-  return txState;
-}
-
-async function handleWithdrawalTx(tx: TxInfo) {
-  const txState = { hash: tx.hash, result: null };
-  const res = await getTx(tx.hash);
-  if (res) {
-    let status = 0;
-    if (res.txData?.state !== 'Unconfirmed') {
-      status = 1;
-    }
-    return { hash: tx.hash, result: { ...res, status } };
-  } else {
-    return txState;
-  }
-}
-
-async function handleTronTx(tx: TxInfo) {
-  return {
-    hash: tx.hash,
-    result: await getTronTx(tx.hash)
-  };
-}
-
-async function handleBTCTx(tx: TxInfo) {
-  const isConfirmed = await nerveswap.btc.checkTxConfirmed(tx.hash, !isBeta);
-  return {
-    hash: tx.hash,
-    result: {
-      status: isConfirmed ? 1 : 0
-    }
-  };
-}
-
-async function handleFCHTx(tx: TxInfo) {
-  const result = await getFCHTx(tx.hash);
-  return {
-    hash: tx.hash,
-    result: {
-      status: result?.blockHeight > 0 ? 1 : 0
-    }
-  };
-}
-
-async function handleBCHTx(tx: TxInfo) {
-  const result = await nerveswap.bch.getTx(tx.hash);
-  return {
-    hash: tx.hash,
-    result: {
-      status: result?.state === 'success' ? 1 : 0
-    }
-  };
-}
-async function handleTBCTx(tx: TxInfo) {
-  const result = await nerveswap.tbc.getTx(tx.hash);
-  // console.log(result, '0-0-0-0-');
-  return {
-    hash: tx.hash,
-    result: {
-      status: result.blockhash ? 1 : 0
-    }
-  };
-}
-
-async function handleEVMTx(tx: TxInfo) {
-  const transfer = new ETransfer(tx.L1Chain);
-  return {
-    hash: tx.hash,
-    result: await transfer.provider.getTransactionReceipt(tx.hash)
-  };
-}
-
-async function addNewHash(tx: TxInfo) {
-  const txs = [...accountTxs.value].concat(tx);
-  accountTxs.value = txs;
-  const accountList: Account[] = storage.get('accountList') || [];
-  accountList.map(v => {
-    const sameAddress = Object.values(v.address)
-      .flat()
-      .map((v: any) => v.toLowerCase())
-      .includes(address.value?.toLowerCase());
-    if (sameAddress) {
-      v.txs = txs;
-    }
-  });
-  storage.set('accountList', accountList);
+  showSwitchChain.value = false
+  showMenu.value = !showMenu.value
 }
 </script>
-
-<style lang="scss">
-@import '../../assets/css/style.scss';
-.header {
-  box-shadow: 0 0 10px rgb(0 0 0 / 10%);
-  .w1200 {
-    height: 80px;
-  }
-  &.home-header {
-    box-shadow: none;
-    background: transparent;
-  }
-  background-color: #fff;
-  .left {
-    flex: 1;
-    display: flex;
-    align-items: center;
-  }
-  .logo {
-    // width: 160px;
-    width: 120px;
-    cursor: pointer;
-    margin-right: 20px;
-    img {
-      width: 100%;
-    }
-  }
-  .account-wrap {
-    display: flex;
-    align-items: center;
-    .asset-icon {
-      height: 30px;
-      width: 32.5px;
-      img {
-        cursor: pointer;
-        height: 100%;
-        width: 100%;
-      }
-    }
-  }
-  .account {
-    min-width: 170px;
-    height: 36px;
-    margin-left: 10px;
-    //background: #fff;
-    //background-color: #eef2fc;
-    //border-radius: 18px;
-    font-size: 15px;
-    cursor: pointer;
-    color: $txColor;
-    line-height: 36px;
-    text-align: center;
-    .connection {
-      color: $linkColor;
-    }
-    .auth-button {
-      height: 100%;
-      .el-button {
-        width: 100%;
-        height: 100%;
-        border-radius: 18px;
-        min-height: auto;
-        padding: 0 20px;
-      }
-    }
-    .wrong-chain {
-      color: #f56c6c;
-    }
-    .chain-wrap {
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      cursor: pointer;
-      background-color: #eef2fc;
-      border-radius: 18px;
-      margin-left: 10px;
-      img {
-        width: 25px;
-        height: 25px;
-        margin-right: 5px;
-      }
-      span {
-        color: #475472;
-      }
-      .l1-chain {
-        margin-right: 5px;
-        color: #c2cadb;
-        display: flex;
-        align-items: center;
-        img {
-          width: 25px;
-          height: 25px;
-          border-radius: 50%;
-          margin-right: 0;
-        }
-      }
-    }
-    .address-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 10px 0 5px;
-      height: 100%;
-      //line-height: 1;
-      position: relative;
-      .switch-chain-wrapper {
-        width: 100%;
-      }
-      .wrong-chain {
-        color: red;
-        font-size: 14px;
-      }
-      .chain-wrap {
-        display: flex;
-        align-items: center;
-        position: relative;
-        span {
-          color: #475472;
-        }
-      }
-      img {
-        width: 28px;
-        cursor: pointer;
-      }
-      span {
-        cursor: pointer;
-        font-size: 14px;
-        height: 100%;
-        &:hover {
-          opacity: 0.6;
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    .w1200 {
-      height: 60px;
-    }
-    .logo {
-      width: 96px;
-      margin-right: 0;
-    }
-    .logo img {
-      margin-right: 0;
-    }
-    .pc-menu {
-      display: none;
-    }
-    .menu-icon {
-      margin-left: 10px;
-    }
-    .account .chain-wrap {
-      margin-left: 0;
-      line-height: 32px;
-    }
-  }
-  @media screen and (max-width: 375px) {
-    .w1200 {
-      height: 50px;
-      padding: 0 16px 0 12px;
-    }
-    .logo {
-      width: 86px;
-    }
-    .account {
-      margin-left: 2px;
-      line-height: 32px;
-      height: 32px;
-    }
-    .logo img {
-      margin-right: 0;
-    }
-    .pc-menu {
-      display: none;
-    }
-    .menu-icon {
-      margin-left: 10px;
-    }
-    .account .chain-wrap {
-      margin-left: 0;
-      line-height: 32px;
-    }
-  }
-}
-
-.el-popup-parent--hidden {
-  padding: 0 !important;
-}
-
-@media screen and (max-width: 610px) {
-  .header .account-wrap .asset-icon i {
-    font-size: 20px;
-  }
-}
-</style>
