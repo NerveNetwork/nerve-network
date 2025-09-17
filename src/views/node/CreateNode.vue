@@ -1,13 +1,6 @@
 <template>
   <div class="card-wrapper mx-auto max-w-[470px]" v-loading="loading">
-    <div class="relative mb-6 text-center">
-      <button
-        class="absolute left-0 rounded-full p-1.5 transition-colors duration-300 hover:bg-card2"
-        @click="router.go(-1)">
-        <i-custom-back class="h-5 w-5" />
-      </button>
-      <span class="text-lg">{{ $t('createNode.createNode1') }}</span>
-    </div>
+    <BackTitle :title="$t('createNode.createNode1')" />
     <el-form
       :model="formData"
       :rules="rules"
@@ -43,10 +36,7 @@
             <span>
               {{ $t('createNode.createNode5') + '(NVT)' }}
             </span>
-            <div class="flex items-center gap-1.5">
-              <i-custom-wallet />
-              <span>{{ nvtBalance }}</span>
-            </div>
+            <BalanceItem :balance="nvtBalance" />
           </p>
         </template>
         <!-- <el-input v-model.trim="formData.amount"></el-input> -->
@@ -70,11 +60,12 @@
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import { ElForm } from 'element-plus';
 import Input from '@/components/Base/Input/index.vue'
 import Button from '@/components/Base/Button/index.vue'
 import AuthButton from '@/components/AuthButton.vue';
+import BackTitle from '@/components/BackTitle.vue';
+import BalanceItem from '@/components/BalanceItem.vue';
 import { useI18n } from 'vue-i18n';
 import useToast from '@/hooks/useToast';
 import { timesDecimals, isValidNerveAddress } from '@/utils/util';
@@ -89,7 +80,6 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['refresh']);
 
-const router = useRouter()
 const { t } = useI18n();
 const { toast, toastError} = useToast();
 const { getWalletInfo, handleResult } = useBroadcastNerveHex();

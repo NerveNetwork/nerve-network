@@ -3,14 +3,7 @@
     <div
       class="contract-deploy card-wrapper mx-auto max-w-[470px]"
       v-loading="loading">
-      <div class="relative mb-6 text-center">
-        <button
-          class="absolute left-0 rounded-full p-1.5 transition-colors duration-300 hover:bg-card2"
-          @click="router.go(-1)">
-          <i-custom-back class="h-5 w-5" />
-        </button>
-        <span class="text-lg">Contract Deploy</span>
-      </div>
+      <BackTitle title="Contract Deploy" />
       <el-form label-position="top" :model="model" :rules="rules" ref="form">
         <el-form-item label="Deploy Chain" prop="L1Chain">
           <Input class="bg-input" disabled v-model="model.L1Chain" />
@@ -85,6 +78,7 @@ import AuthButton from '@/components/AuthButton.vue'
 import Input from '@/components/Base/Input/index.vue'
 import Select from '@/components/Base/Select/index.vue'
 import Button from '@/components/Base/Button/index.vue'
+import BackTitle from '@/components/BackTitle.vue';
 import { useWalletStore } from '@/store/wallet'
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import useToast from '@/hooks/useToast';

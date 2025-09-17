@@ -32,9 +32,13 @@
           max-height="280px"
           class="hidden xl:block">
           <el-table-column
-            width="135"
+            width="170"
             :label="$t('staking.staking4')"
-            prop="symbol"></el-table-column>
+            prop="symbol">
+          <template v-slot="scope">
+          <AssetInfo :symbol="scope.row.symbol" />
+        </template>
+          </el-table-column>
           <el-table-column
             width="90"
             :label="$t('staking.staking5')"
@@ -117,6 +121,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import Skeleton from '@/components/Base/Skeleton/index.vue'
+import AssetInfo from './AssetInfo.vue'
 import {
   getStakingInfo as getStakingInfoApi,
   getStackingRate

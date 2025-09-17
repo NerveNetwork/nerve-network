@@ -97,7 +97,7 @@
   </div>
   <Modal
     container-class="w-[480px]"
-    title="Cross Out TXID"
+    title="Re-record Transaction Hash"
     v-model="showAddCrossTxID"
     @closed="onNewTxHashModalClosed">
     <Input
@@ -309,7 +309,7 @@ async function handleFCHTx(tx: TxInfo) {
   return {
     hash: tx.hash,
     result: {
-      status: result?.blockHeight > 0 ? 1 : 0
+      status: result?.[tx.hash]?.height > 0 ? 1 : 0
     }
   }
 }
@@ -345,7 +345,7 @@ async function handleEVMTx(tx: TxInfo) {
 const handleAddTx = async () => {
   const exist = accountTxs.value.find(v => v.hash === newTxHash.value)
   if (exist) {
-    toastError('Invalid Withdrawal Hash')
+    toastError('Transaction Hash exist')
     newTxHash.value = ''
     return
   }

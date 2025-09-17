@@ -29,7 +29,7 @@
           </div>
 
           <div
-            class="flex h-8 items-center justify-center rounded-2xl bg-card2 p-1 pr-2.5">
+            class="flex h-8 items-center justify-center rounded-2xl bg-card2 p-1 pr-0">
             <SwitchChain
               v-model="showSwitchChain"
               :currentChain="chain"
@@ -68,7 +68,7 @@
               :address="nerveAddress"
               @disconnect="disconnectProvider">
               <div
-                class="flex cursor-pointer items-center transition-all duration-300 hover:opacity-70">
+                class="flex cursor-pointer items-center transition-all duration-300 hover:opacity-70 pr-2.5">
                 <img
                   class="mr-1.5 h-6 w-6"
                   src="../../assets/img/nerveIcon.png"

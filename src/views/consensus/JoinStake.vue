@@ -26,14 +26,15 @@
             :options="deadlineList"
             @change="projectedRevenue" />
         </el-form-item>
-        <div class="float-right flex items-center gap-1.5 text-label">
-          <i-custom-wallet />
-          {{ currentCurrency.available }}
-        </div>
         <el-form-item
-          :label="$t('staking.staking16')"
           prop="amount"
           class="append-input">
+          <template #label>
+            <div class="flex items-center justify-between">
+              <span>{{ $t('staking.staking16') }}</span>
+              <BalanceItem :balance="currentCurrency.available" />
+            </div>
+          </template>
           <Input v-model="joinStakingModel.amount" class="bg-input">
             <template #append>
               <div class="flex items-center gap-4">
@@ -84,6 +85,7 @@ import Modal from '@/components/Base/Modal/index.vue'
 import Select from '@/components/Base/Select/index.vue'
 import Input from '@/components/Base/Input/index.vue'
 import Button from '@/components/Base/Button/index.vue'
+import BalanceItem from '@/components/BalanceItem.vue'
 import { useWalletStore } from '@/store/wallet'
 import useToast from '@/hooks/useToast'
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex'

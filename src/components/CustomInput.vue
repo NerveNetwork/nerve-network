@@ -8,15 +8,13 @@
     ">
     <div class="mb-6 flex items-center justify-between text-label">
       <span>{{ label }}</span>
-      <div class="flex items-center gap-1.5" v-if="nerveAddress && !isPush">
-        <i-custom-wallet />
-        <span>{{ balance || 0 }}</span>
+      <BalanceItem :balance="balance" v-if="nerveAddress && !isPush">
         <button
           class="btn h-[22px] rounded-xl bg-btn-primary px-1.5 text-xs leading-[22px] text-white"
           @click="max">
           Max
         </button>
-      </div>
+      </BalanceItem>
     </div>
     <div class="mb-2 flex items-center justify-between">
       <div
@@ -75,6 +73,7 @@ import { ref, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import Input from '@/components/Base/Input/index.vue'
 import SymbolIcon from '@/components/SymbolIcon.vue'
+import BalanceItem from '@/components/BalanceItem.vue'
 import AssetsDialog from '@/components/AssetsDialog.vue'
 import _ from 'lodash'
 import { useWalletStore } from '@/store/wallet'

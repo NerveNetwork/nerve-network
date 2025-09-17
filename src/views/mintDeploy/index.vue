@@ -1,23 +1,14 @@
 <template>
   <div
     class="mint-deploy-page w1200 w-full max-w-[500px] rounded-xl bg-card p-6">
-    <div class="relative mb-6 text-center">
-      <button
-        class="absolute left-0 rounded-full p-1.5 transition-colors duration-300 hover:bg-card2"
-        @click="router.go(-1)">
-        <i-custom-back class="h-5 w-5" />
-      </button>
-      <span class="text-lg">{{ $t('mint.mint1') }}</span>
-    </div>
+    <BackTitle :title="$t('mint.mint1')" />
     <el-form label-position="top" :model="model" :rules="rules" ref="form">
-      <div class="float-right flex items-center">
-        <i-custom-wallet />
-        <span class="ml-1.5 text-label">{{ mintAsset?.available || '0' }}</span>
-        <!-- {{ $t('public.public12') }}{{ mintAsset?.available || '0' }} -->
-      </div>
       <el-form-item prop="tick">
         <template #label>
-          <Tip :label="$t('mint.mint2')" :tip="$t('mint.mint4')" />
+          <div class="flex items-center justify-between">
+            <Tip :label="$t('mint.mint2')" :tip="$t('mint.mint4')" />
+            <BalanceItem :balance="mintAsset?.available" />
+          </div>
         </template>
         <Select
           v-model="model.tick"
@@ -300,6 +291,8 @@ import Select from '@/components/Base/Select/index.vue'
 import Switch from '@/components/Base/Switch/index.vue'
 import Checkbox from '@/components/Base/Checkbox/index.vue'
 import Button from '@/components/Base/Button/index.vue'
+import BackTitle from '@/components/BackTitle.vue'
+import BalanceItem from '@/components/BalanceItem.vue'
 import { useWalletStore } from '@/store/wallet'
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex'
 import useToast from '@/hooks/useToast'

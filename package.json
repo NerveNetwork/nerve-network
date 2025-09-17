@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --mode beta",
     "dev-beta": "vite --mode beta",
-    "dev-prod": "vite --mode prod --force",
+    "dev-prod": "vite --mode prod",
     "build-beta": "vite build --mode beta",
     "build-prod": "vite build --mode prod",
     "preview": "vite preview"
@@ -37,6 +37,7 @@
     "tronweb": "^4.1.0",
     "vconsole": "^3.15.1",
     "vee-validate": "^4.12.5",
+    "virtua": "^0.43.1",
     "vue": "^3.3.4",
     "vue-i18n": "^11.1.11",
     "vue-router": "^4.2.4",

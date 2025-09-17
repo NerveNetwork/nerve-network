@@ -36,6 +36,13 @@ export default function useAssetsList() {
     return _networkInfo[network.value]?.assetKey || _networkInfo.NERVE.assetKey
   })
 
+  const L1ChainId = computed(() => {
+    if (!network.value) {
+      return _networkInfo.NERVE.chainId
+    }
+    return _networkInfo[network.value]?.chainId || _networkInfo.NERVE.chainId
+  })
+
   watch(
     () => assetsList.value,
     val => {
@@ -108,6 +115,11 @@ export default function useAssetsList() {
           // 默认需要显示L1主资产
           result.push(v)
         }
+
+        if(v.symbol === 'USDT' && v.registerChainId === L1ChainId.value || v.symbol === 'USDTN') {
+          result.push(v)
+        }
+
         focusAssets.map((item: string) => {
           if (item === v.assetKey) {
             result.push(v)
@@ -120,6 +132,7 @@ export default function useAssetsList() {
         return (
           v.assetKey === nvtKey ||
           v.assetKey === mainAssetKey.value ||
+          v.symbol === 'USDT' && v.registerChainId === L1ChainId.value || v.symbol === 'USDTN' ||
           Number(v.available) > 0
         )
       })
@@ -191,6 +204,7 @@ export default function useAssetsList() {
     selectAssets,
     filteredAssets,
     mainAssetKey,
+    L1ChainId,
     crossInOutSymbol,
     filterAssets,
     addAssets,

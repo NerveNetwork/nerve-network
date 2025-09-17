@@ -10,10 +10,13 @@
       leave-to-class="opacity-0">
       <div class="absolute right-0 top-[40px] z-[111]" v-if="show">
         <div
-          class="min-w-[310px] rounded-[10px] border border-line bg-card p-4">
-          <div class="mb-4 flex items-center">
-            <img class="h-6 w-6" :src="providerLogo" alt="" />
-            <span class="ml-1.5 mr-2">{{ superLong(address, 8) }}</span>
+          class="min-w-[320px] rounded-[10px] border border-line bg-card p-4">
+          <div class="mb-4 flex items-center justify-between">
+            <div class="flex items-center mr-2">
+              <img class="h-6 w-6" :src="providerLogo" alt="" />
+              <span class="ml-1.5">{{ superLong(address, 8) }}</span>
+            </div>
+
             <div class="flex gap-1">
               <button
                 @click="$copy(address)"

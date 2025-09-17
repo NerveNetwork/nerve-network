@@ -330,9 +330,9 @@ export function openL1Explorer(chain: string, type: string, query: string) {
   let url = _networkInfo[chain].origin;
   if (chain === 'FCH') {
     if (type === 'address') {
-      url += '/address?address=' + query;
+      url += '/html/cid-detail.html?id=' + query;
     } else if (type === 'hash') {
-      url += '/transaction?hash=' + query;
+      url += '/html/tx-detail.html?id=' + query;
     }
   } else {
     if (type === 'address') {

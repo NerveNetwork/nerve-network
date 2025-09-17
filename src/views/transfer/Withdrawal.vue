@@ -207,6 +207,8 @@ onMounted(async () => {
         // getBTCCrossOutFeeHandle()
       }
     }
+  } else {
+    getCrossOutFeeHandle()
   }
 })
 
@@ -228,7 +230,7 @@ function getFeeAssetInfo() {
     return asset.assetKey === defaultFeeAsset.assetKey
   }) as AssetItem
   feeSymbol.value =
-    network === 'ENULS' ? NSymbol : _networkInfo[network].mainAsset
+    network === 'ENULS' ? NSymbol : _networkInfo[network]?.mainAsset
   supportedFeeAssets.value = feeAssets
 }
 

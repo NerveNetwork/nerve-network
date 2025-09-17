@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="nav-menu flex h-full w-[150px] flex-col bg-card pt-0 xl:w-full xl:flex-row xl:bg-transparent xl:pt-3"
+    class="nav-menu flex h-full w-[150px] flex-col bg-card pt-3 xl:w-full xl:flex-row xl:bg-transparent xl:pt-0"
     @click.stop="">
     <template v-for="item in menus" :key="item.key">
       <div

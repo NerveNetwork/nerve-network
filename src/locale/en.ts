@@ -704,7 +704,7 @@ const en = {
     staking45: 'All',
     staking46: 'Detail',
     staking47: 'The asset cannot be transferred',
-    staking48: 'The withdrawed NVT will be locked for 7days',
+    staking48: 'The withdrawed NVT will be locked for 7 days',
     staking49: 'The minimum staking amount is ',
     staking50: 'The maximum transfer amount is: ',
     staking51:

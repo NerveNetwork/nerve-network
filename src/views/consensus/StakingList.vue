@@ -8,6 +8,7 @@
 
       <Button
         class="h-6 rounded-lg px-2.5 text-xs"
+        :disabled="choosedItems.length < 2"
         @click="batchHandle(BatchHandle.QUIT)">
         {{ $t('staking.staking36') }}
       </Button>
@@ -22,15 +23,9 @@
       </el-tooltip>
 
       <Button
-        v-else-if="!canBatchChange"
-        class="h-6 rounded-lg px-2.5 text-xs"
-        disabled>
-        {{ $t('staking.staking37') }}
-      </Button>
-
-      <Button
         v-else
         class="h-6 rounded-lg px-2.5 text-xs"
+        :disabled="choosedItems.length < 2 || !canBatchChange"
         @click="batchHandle(BatchHandle.CHANGE)">
         {{ $t('staking.staking37') }}
       </Button>
@@ -46,6 +41,7 @@
       <Button
         v-else
         class="h-6 rounded-lg px-2.5 text-xs"
+        :disabled="choosedItems.length < 2"
         @click="batchHandle(BatchHandle.MERGE)">
         {{ $t('staking.staking38') }}
       </Button>
@@ -61,9 +57,13 @@
         </template>
       </el-table-column>
       <el-table-column
-        width="160"
+        width="170"
         :label="$t('staking.staking4')"
-        prop="symbol"></el-table-column>
+        prop="symbol">
+        <template v-slot="scope">
+          <AssetInfo :symbol="scope.row.symbol" />
+        </template>
+      </el-table-column>
       <el-table-column width="180" label="Hash">
         <template v-slot="scope">
           <div
@@ -259,7 +259,7 @@
         <Button class="flex-1" variant="outline" @click="confirmQuit = false">
           {{ $t('public.public8') }}
         </Button>
-        <Button class="flex-1" @click="emit('quitStaking', quitItem)">
+        <Button class="flex-1" @click="emitQuit">
           {{ $t('public.public9') }}
         </Button>
       </div>
@@ -276,7 +276,7 @@ import Checkbox from '@/components/Base/Checkbox/index.vue'
 import Select from '@/components/Base/Select/index.vue'
 import Button from '@/components/Base/Button/index.vue'
 import Modal from '@/components/Base/Modal/index.vue'
-import { ElMessageBox } from 'element-plus'
+import AssetInfo from './AssetInfo.vue'
 import { fixNumber, Plus, superLong, toThousands } from '@/utils/util'
 import config from '@/config'
 import { BatchHandle, CanStakingListItem, StakingListItem } from './types'
@@ -329,6 +329,11 @@ const dialogTitle = computed(() => {
       : t('staking.staking38')
 })
 
+const choosedItems = computed(() => {
+  return tableData.value.filter(v => v.checked)
+})
+
+// selected items with merge amount by symbol
 const selectedItem = computed(() => {
   const selectItems: { amount: string; symbol: string }[] = []
   tableData.value.map(v => {
@@ -372,20 +377,18 @@ function chooseAll() {
 }
 
 function chooseItem() {
-  const hasChoose = tableData.value.filter(v => v.checked)
-  selectAll.value = symbolCount === hasChoose.length
+  selectAll.value = symbolCount === choosedItems.value.length
   tableData.value = [...tableData.value]
 }
 
 function batchHandle(type: BatchHandle) {
-  const selectedItem = tableData.value.filter(v => v.checked)
-  if (selectedItem.length < 2) {
+  if (choosedItems.value.length < 2) {
     toast.warning(t('staking.staking41'))
     return
   }
   //稳定币不能转定期
   if (type === BatchHandle.CHANGE) {
-    const notStable = checkShow(selectedItem[0])
+    const notStable = checkShow(choosedItems.value[0])
     if (!notStable) {
       toast.warning(t('staking.staking47'))
       return
@@ -397,17 +400,16 @@ function batchHandle(type: BatchHandle) {
 
 // 是否能批量转定期
 const canBatchChange = computed(() => {
-  const selectedItem = tableData.value.filter(v => v.checked)
-  if (!selectedItem.length) return true
-  const notStable = checkShow(selectedItem[0])
-  console.log(notStable, 123465789)
+  if (!choosedItems.value.length) return true
+  const notStable = checkShow(choosedItems.value[0])
+  // console.log(notStable, 123465789)
   return notStable
 })
 
 function batchEmit() {
   const selectedItem = selectedRow.value
     ? [selectedRow.value]
-    : tableData.value.filter(v => v.checked)
+    : choosedItems.value
   dialogShow.value = false
   // console.log(selectedItem, 123456)
   const params = {
@@ -433,6 +435,11 @@ function handleQuit(e: StakingListItem) {
   } else {
     emit('quitStaking', e)
   }
+}
+
+const emitQuit = () => {
+  confirmQuit.value = false
+  emit('quitStaking', quitItem.value)
 }
 
 function toUrl(hash: string) {

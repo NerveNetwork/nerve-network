@@ -257,7 +257,8 @@ export async function getTronTx(hash: string) {
 export async function getFCHTx(hash: string) {
   const baseUrl = _networkInfo.FCH.origin;
   const res = await http.get({
-    url: baseUrl + '/api/fc/tx/' + hash
+    url: baseUrl + '/APIP/sn2/v1/txByIds',
+    params: { ids: hash }
   });
   return res.data || null;
 }

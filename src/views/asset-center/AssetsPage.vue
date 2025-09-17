@@ -158,12 +158,13 @@
       </div>
     </template>
 
-    <assets-manage
+    <AssetsManage
       v-model:showAssetManage="showAssetManage"
       :mainAssetKey="mainAssetKey"
+      :L1ChainId="L1ChainId"
       :assetList="allAssetsList"
       :selectAssets="selectAssets"
-      @addAssets="addAssets"></assets-manage>
+      @addAssets="addAssets" />
 
     <Modal title="Tips" v-model="showSwitch">
       <p>
@@ -178,7 +179,7 @@
 </template>
 
 <script lang="ts" setup>
-import { provide, ref, reactive, watch, onUnmounted } from 'vue'
+import { provide, ref, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import Skeleton from '@/components/Base/Skeleton/index.vue'
@@ -217,6 +218,7 @@ const {
   filteredAssets,
   filterAssets,
   mainAssetKey,
+  L1ChainId,
   crossInOutSymbol,
   addAssets,
   assetClick

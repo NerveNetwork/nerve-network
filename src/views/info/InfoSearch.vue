@@ -31,7 +31,7 @@
             </template>
             <template v-else>
               <div
-                class="btn grid cursor-pointer grid-cols-[1.8fr_0.5fr]  sm:grid-cols-[1.8fr_1fr_1fr_0.5fr] py-2"
+                class="btn grid items-center cursor-pointer grid-cols-[1.8fr_0.5fr]  sm:grid-cols-[1.8fr_1fr_1fr_0.5fr] py-2"
                 v-for="item in assets"
                 :key="item.assetKey"
                 @click="toUrl('token', item.assetKey)">
@@ -67,7 +67,7 @@
             </template>
             <template v-else>
               <div
-                class="btn grid cursor-pointer grid-cols-[1.8fr_0.5fr] sm:grid-cols-[2.8fr_0fr_1fr_0.5fr] py-2"
+                class="btn grid items-center cursor-pointer grid-cols-[1.8fr_0.5fr] sm:grid-cols-[2.8fr_0fr_1fr_0.5fr] py-2"
                 v-for="item in pools"
                 :key="item.address"
                 @click="toUrl('pool', item.address)">

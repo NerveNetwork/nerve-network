@@ -25,9 +25,13 @@
         <i-custom-search />
       </template>
     </Input>
-    <ul class="max-h-[50vh] overflow-y-auto" v-if="list.length">
-      <li
-        v-for="item in list"
+    <VList
+      v-if="list.length"
+      :data="list"
+      :style="{ height: '50vh' }"
+      :item-size="10"
+      #default="{ item, index }">
+      <div
         :key="item.assetKey"
         @click="changeSelect(item.assetKey)"
         :class="
@@ -55,8 +59,8 @@
           :checked="item.added"
           :disabled="unCancelbleKey(item.assetKey)"
           @change="changeSelect(item.assetKey)" />
-      </li>
-    </ul>
+      </div>
+    </VList>
     <p v-else class="no-data" style="line-height: 30px">
       {{ $t('public.public19') }}
     </p>
@@ -76,6 +80,7 @@
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue'
+import { VList } from 'virtua/vue'
 import Modal from '@/components/Base/Modal/index.vue'
 import Input from '@/components/Base/Input/index.vue'
 import Checkbox from '@/components/Base/Checkbox/index.vue'
@@ -90,6 +95,7 @@ import { AssetItemType } from './types'
 
 interface Props {
   mainAssetKey: string
+  L1ChainId: number
   showAssetManage: boolean
   assetList: AssetItemType[]
   selectAssets: AssetItemType[]
@@ -192,12 +198,20 @@ function closed() {
 function unCancelbleKey(key: string) {
   const nvtKey = config.chainId + '-' + config.assetId
   const mainAssetKey = props.mainAssetKey
+  const asset = list.value.find(v => v.assetKey === key)!
+  const { symbol, registerChainId } = asset
+  if (
+    symbol === 'USDTN' ||
+    (registerChainId === props.L1ChainId && symbol === 'USDT')
+  ) {
+    return true
+  }
   return key === nvtKey || key === mainAssetKey
 }
 
-function submitToken() {
-  window.open(
-    'https://docs.google.com/forms/d/e/1FAIpQLSdPXX4EDtzxqBg3OBMIq7EtoiBxnxcqokIeVzAqyXQFYbmf4w/viewform'
-  )
-}
+// function submitToken() {
+//   window.open(
+//     'https://docs.google.com/forms/d/e/1FAIpQLSdPXX4EDtzxqBg3OBMIq7EtoiBxnxcqokIeVzAqyXQFYbmf4w/viewform'
+//   )
+// }
 </script>

@@ -3,14 +3,8 @@
     <div
       class="create-farm card-wrapper mx-auto max-w-[470px]"
       v-loading="loading">
-      <div class="relative mb-6 text-center">
-        <button
-          class="absolute left-0 rounded-full p-1.5 transition-colors duration-300 hover:bg-card2"
-          @click="router.go(-1)">
-          <i-custom-back class="h-5 w-5" />
-        </button>
-        <span class="text-lg">{{ $t('farm.farm12') }}</span>
-      </div>
+      <BackTitle :title="$t('farm.farm12')" />
+
       <el-form label-position="top" :model="model" :rules="rules" ref="form">
         <el-form-item :label="$t('farm.farm13')" prop="tokenA">
           <Select
@@ -60,11 +54,13 @@
             :placeholder="$t('createFarm.createFarm4')"
           ></el-input> -->
         </el-form-item>
-        <div class="float-right flex items-center gap-1.5 text-label">
-          <i-custom-wallet />
-          <span>{{ balance }}</span>
-        </div>
-        <el-form-item :label="$t('farm.farm17')" prop="syrupTotalAmount">
+        <el-form-item prop="syrupTotalAmount">
+          <template #label>
+            <div class="flex items-center justify-between">
+              <span>{{ $t('farm.farm17') }}</span>
+              <BalanceItem :balance="balance" />
+            </div>
+          </template>
           <Input
             v-model="model.syrupTotalAmount"
             :placeholder="$t('createFarm.createFarm5')" />
@@ -192,6 +188,8 @@ import Select from '@/components/Base/Select/index.vue'
 import Checkbox from '@/components/Base/Checkbox/index.vue'
 import Switch from '@/components/Base/Switch/index.vue'
 import Button from '@/components/Base/Button/index.vue'
+import BackTitle from '@/components/BackTitle.vue'
+import BalanceItem from '@/components/BalanceItem.vue'
 import { useWalletStore } from '@/store/wallet'
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex'
 import useToast from '@/hooks/useToast'
@@ -295,7 +293,7 @@ const earnTokenList = computed(() => {
 
 const balance = computed(() => {
   const tokenB = assetList.value.find(v => v.assetKey === model.tokenB)
-  if (!tokenB) return 0
+  if (!tokenB) return '0'
   return tokenB.available
 })
 function validateSyrupPerDay(rule: any, value: any, callback: any) {

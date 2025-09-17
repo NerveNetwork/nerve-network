@@ -7159,6 +7159,11 @@ vee-validate@^4.12.5:
     "@vue/devtools-api" "^7.5.2"
     type-fest "^4.8.3"
 
+virtua@^0.43.1:
+  version "0.43.1"
+  resolved "https://registry.yarnpkg.com/virtua/-/virtua-0.43.1.tgz#90c77ed44218680cdba5adcc6840065d899b44fd"
+  integrity sha512-379ETgqWgzugIJ/crFxNGbqUSMUv0cGxJdpXC7SYvsUpdFWzaqFJIz1XXnJVlTjmE5CYjT+2ipQvAn5N9efGag==
+
 vite-plugin-compression@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/vite-plugin-compression/-/vite-plugin-compression-0.5.1.tgz#a75b0d8f48357ebb377b65016da9f20885ef39b6"

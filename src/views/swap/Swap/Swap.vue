@@ -855,9 +855,10 @@ async function swapTrade() {
     handleResult(63, res, amountRemark)
     if (res && res.hash) {
       emit('selectAsset', state.fromAsset!, state.toAsset!)
-      state.fromAmount = ''
-      state.toAmount = ''
-      state.priceImpact = ''
+      forceRefresh()
+      // state.fromAmount = ''
+      // state.toAmount = ''
+      // state.priceImpact = ''
     }
   } catch (e) {
     console.log(e, 'Swap-error')

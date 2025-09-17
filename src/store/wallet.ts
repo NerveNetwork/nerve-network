@@ -27,7 +27,7 @@ export const useWalletStore = defineStore('wallet', () => {
   })
 
   const chainInfo = computed(() => {
-    return _networkInfo[chain.value]
+    return _networkInfo[chain.value] || {}
   })
 
   const changeAccount = (info: Account) => {

@@ -26,10 +26,7 @@
                     : $t('nodeDetail.nodeDetail16') + ': '
                 }}
               </span>
-              <div class="flex items-center gap-1.5" v-if="handleType === HandleType.ADDITION">
-                <i-custom-wallet />
-                {{ balance }}
-              </div>
+              <BalanceItem v-if="handleType === HandleType.ADDITION" :balance="balance" />
             </p>
           </template>
           <Input v-model="formData.amount" />
@@ -52,6 +49,7 @@ import { ElForm } from 'element-plus';
 import Modal from '@/components/Base/Modal/index.vue'
 import Input from '@/components/Base/Input/index.vue'
 import Button from '@/components/Base/Button/index.vue'
+import BalanceItem from '@/components/BalanceItem.vue';
 
 import { HandleType } from '@/views/node/types';
 import { useI18n } from 'vue-i18n';

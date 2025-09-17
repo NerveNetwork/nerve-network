@@ -95,6 +95,7 @@ async function getStakingList(isLoading = true) {
       pager.index,
       pager.size,
       nerveAddress.value
+      // 'NERVEepb6E7h5QS1mq6VaDTbXR6JM97j4ejaCg'
     )
     if (result) {
       const nowDate = Math.round(Number(new Date()) / 1000)
@@ -134,7 +135,7 @@ async function quitStaking(asset: StakingListItem) {
   try {
     // loading.value = true
     const { provider, EVMAddress, pub } = getWalletInfo()
-    const { assetChainId, assetId, amountStr, txHash, symbol } = asset
+    const { assetChainId, assetId, amountStr, txHash, symbol, amount } = asset
     const transferInfo = {
       from: props.address,
       assetsChainId: assetChainId,
@@ -162,7 +163,7 @@ async function quitStaking(asset: StakingListItem) {
       EVMAddress,
       pub
     })
-    handleResult(6, result, `${toThousands(amountStr)} ${symbol}`)
+    handleResult(6, result, `${toThousands(amount)} ${symbol}`)
     /* const result: any = await handleTxInfo(transferInfo, 6, txData);
     if (result && result.hash) {
       refreshList();

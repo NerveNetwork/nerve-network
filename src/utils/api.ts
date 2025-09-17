@@ -796,6 +796,7 @@ export class ETransfer {
   getProvider(chain?: string) {
     if (!chain) {
       const { provider } = getProvider();
+      if (!provider) return
       this.provider = new ethers.providers.Web3Provider(provider);
     } else {
       this.provider = new ethers.providers.JsonRpcProvider(

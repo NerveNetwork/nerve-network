@@ -64,9 +64,9 @@
       <template #progress="scope">
         <div class="w-[100px]">
           <p class="text-center text-xs">{{ scope.row.progress }}%</p>
-          <div class="h-1.5 rounded-[2px] bg-[#292C36]">
+          <div class="h-1.5 rounded-full bg-[#292C36]">
             <div
-              class="h-full rounded-[2px]"
+              class="h-full rounded-full"
               :style="{
                 width: scope.row.progress + 'px',
                 background:
@@ -116,11 +116,11 @@ const columns = computed(() => {
     {
       label: t('mint.mint37'),
       slotName: 'name',
-      width: 170
+      'min-width': 110
     },
     {
       label: t('mint.mint38'),
-      width: 120,
+      'min-width': 110,
       slotName: 'amount',
       headerSlot: 'amountHeader'
     },
@@ -147,7 +147,7 @@ const columns = computed(() => {
     },
     {
       label: t('mint.mint44'),
-      'min-width': 150,
+      width: 130,
       slotName: 'opt'
     },
     { width: 10 }

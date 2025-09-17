@@ -76,9 +76,16 @@ onUnmounted(() => {
 
 .Vue-Toastification__container.top-right {
   top: 80px !important;
+  z-index: 999999;
   .Vue-Toastification__toast {
     padding: 20px 16px;
     min-height: 60px;
+  }
+  .Vue-Toastification__toast--warning {
+    background-color: #F5B400;
+  }
+  .Vue-Toastification__icon {
+    margin-right: 8px;
   }
   @media only screen and (max-width: 600px) {
     top: 60px !important;

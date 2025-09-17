@@ -1,53 +1,52 @@
-import config from '@/config';
-const isBeta = config.isBeta;
+import config from '@/config'
+const isBeta = config.isBeta
 
-import NULSLogo from '@/assets/img/chainLogo/NAI.png';
-import NERVELogo from '@/assets/img/chainLogo/NERVE.png';
-import ETHLogo from '@/assets/img/chainLogo/ETH.png';
-import BSCLogo from '@/assets/img/chainLogo/BSC.jpg';
-import HecoLogo from '@/assets/img/chainLogo/Heco.png';
-import OECLogo from '@/assets/img/chainLogo/OEC.png';
-import HarmonyLogo from '@/assets/img/chainLogo/Harmony.png';
-import PolygonLogo from '@/assets/img/chainLogo/Polygon.png';
-import KCCLogo from '@/assets/img/chainLogo/KCC.png';
-import CROLogo from '@/assets/img/chainLogo/Cronos.png';
-import AVAVLogo from '@/assets/img/chainLogo/AVAX.png';
-import ARBILogo from '@/assets/img/chainLogo/arbitrum.png';
-import FTMLogo from '@/assets/img/chainLogo/fantom.png';
-import TRONLogo from '@/assets/img/chainLogo/tron.png';
-import MetisLogo from '@/assets/img/chainLogo/Metis.png';
-import LotexLogo from '@/assets/img/chainLogo/LOTEX.png';
-import OptimismLogo from '@/assets/img/chainLogo/optimism.png';
-import KAIALogo from '@/assets/img/chainLogo/KAIA.png';
-import SmartBCHLogo from '@/assets/img/chainLogo/smartBCH.png';
-import ENULSLogo from '@/assets/img/chainLogo/ENULS.png';
-import KavaLogo from '@/assets/img/chainLogo/KAVA.png';
-import ETHWLogo from '@/assets/img/chainLogo/ETHW.png';
-import REILogo from '@/assets/img/chainLogo/REI.png';
-import ZKLogo from '@/assets/img/chainLogo/zksync.png';
-import EOSEVM from '@/assets/img/chainLogo/EOSEVM.png';
-import PolygonZkEVM from '@/assets/img/chainLogo/PolygonzkEVM.png';
-import Linea from '@/assets/img/chainLogo/Linea.png';
-import CELOLogo from '@/assets/img/chainLogo/CELO.svg';
-import ETCLogo from '@/assets/img/chainLogo/ETC.png';
-import BASELogo from '@/assets/img/chainLogo/BASE.png';
-import ScrollLogo from '@/assets/img/chainLogo/Scroll.jpg';
-import BitgertLogo from '@/assets/img/chainLogo/Bitgert.jpg';
-import JanusLogo from '@/assets/img/chainLogo/Janus.jpg';
-import MantaLogo from '@/assets/img/chainLogo/Manta.jpg';
-import BTCLogo from '@/assets/img/chainLogo/BTC.png';
-import ZetaLogo from '@/assets/img/chainLogo/Zeta.png';
-import XLayerLogo from '@/assets/img/chainLogo/XLayer.jpg';
-import ShardeumLogo from '@/assets/img/chainLogo/shardeum.jpg';
-import ModeLogo from '@/assets/img/chainLogo/MODE.jpg';
-import BlastLogo from '@/assets/img/chainLogo/Blast.jpg';
-import MerlinLogo from '@/assets/img/chainLogo/Merlin.jpg';
-import PulseLogo from '@/assets/img/chainLogo/Pulse.jpg';
-import FCHLogo from '@/assets/img/chainLogo/FCH.jpg';
-import BCHLogo from '@/assets/img/chainLogo/BCH.png';
-import MintLogo from '@/assets/img/chainLogo/Mint.jpg';
-import TBCLogo from '@/assets/img/chainLogo/TBC.png';
-import AkashicLogo from '@/assets/img/chainLogo/AKS.jpg';
+import BTCLogo from '@/assets/img/chainLogo/BTC.svg'
+import ETHLogo from '@/assets/img/chainLogo/ETH.svg'
+import BSCLogo from '@/assets/img/chainLogo/BSC.svg'
+import BASELogo from '@/assets/img/chainLogo/Base.svg'
+import XLayerLogo from '@/assets/img/chainLogo/XLayer.svg'
+import TRONLogo from '@/assets/img/chainLogo/TRON.svg'
+import PolygonLogo from '@/assets/img/chainLogo/Polygon.svg'
+import OKTCLogo from '@/assets/img/chainLogo/OKTC.svg'
+import AVAVLogo from '@/assets/img/chainLogo/AVAX.svg'
+import HarmonyLogo from '@/assets/img/chainLogo/Harmony.svg'
+import KCCLogo from '@/assets/img/chainLogo/KCC.svg'
+import CROLogo from '@/assets/img/chainLogo/Cronos.svg'
+import ARBILogo from '@/assets/img/chainLogo/Arbitrum.svg'
+import FTMLogo from '@/assets/img/chainLogo/Fantom.svg'
+import MetisLogo from '@/assets/img/chainLogo/Metis.svg'
+import LotexLogo from '@/assets/img/chainLogo/IoTex.svg'
+import OptimismLogo from '@/assets/img/chainLogo/Optimism.svg'
+import KAIALogo from '@/assets/img/chainLogo/KAIA.svg'
+import SmartBCHLogo from '@/assets/img/chainLogo/smartBCH.svg'
+import ENULSLogo from '@/assets/img/chainLogo/ENULS.svg'
+import KavaLogo from '@/assets/img/chainLogo/KAVA.svg'
+import ETHWLogo from '@/assets/img/chainLogo/ETHW.svg'
+import REILogo from '@/assets/img/chainLogo/REI.svg'
+import ZKLogo from '@/assets/img/chainLogo/zkSync.svg'
+import EOSEVM from '@/assets/img/chainLogo/EOSEVM.svg'
+import PolygonZkEVM from '@/assets/img/chainLogo/PolygonzkEVM.svg'
+import Linea from '@/assets/img/chainLogo/Linea.svg'
+import CELOLogo from '@/assets/img/chainLogo/Celo.svg'
+import ETCLogo from '@/assets/img/chainLogo/ETC.svg'
+import ScrollLogo from '@/assets/img/chainLogo/Scroll.svg'
+import BitgertLogo from '@/assets/img/chainLogo/Bitgert.svg'
+import JanusLogo from '@/assets/img/chainLogo/Janus.jpg'
+import MantaLogo from '@/assets/img/chainLogo/Manta.svg'
+import ZetaLogo from '@/assets/img/chainLogo/Zeta.svg'
+import ShardeumLogo from '@/assets/img/chainLogo/shardeum.jpg'
+import ModeLogo from '@/assets/img/chainLogo/Mode.svg'
+import BlastLogo from '@/assets/img/chainLogo/Blast.svg'
+import MerlinLogo from '@/assets/img/chainLogo/Merlin.svg'
+import PulseLogo from '@/assets/img/chainLogo/Pulse.svg'
+import FCHLogo from '@/assets/img/chainLogo/FCH.svg'
+import BCHLogo from '@/assets/img/chainLogo/BCH.svg'
+import MintLogo from '@/assets/img/chainLogo/Mint.jpg'
+import TBCLogo from '@/assets/img/chainLogo/TBC.svg'
+import AkashicLogo from '@/assets/img/chainLogo/Akashic.svg'
+import NULSLogo from '@/assets/img/chainLogo/NULSAI.svg'
+import NERVELogo from '@/assets/img/chainLogo/NERVE.png'
 
 // explorer
 const Origin = {
@@ -60,7 +59,6 @@ const Origin = {
   Polygon: isBeta
     ? 'https://mumbai.polygonscan.com'
     : 'https://polygonscan.com',
-  // Heco: isBeta ? 'https://testnet.hecoinfo.com' : 'https://hecoinfo.com',
   OKTC: isBeta
     ? 'https://www.oklink.com/okexchain-test'
     : 'https://www.oklink.com/okexchain',
@@ -138,7 +136,7 @@ const Origin = {
   Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : '',
   TBC: 'http://explorer.turingbitchain.io',
   Akashic: 'https://blockscout-mainnet.akashicrecords.io'
-};
+}
 
 export const RPC_URL = {
   Ethereum: isBeta
@@ -150,9 +148,6 @@ export const RPC_URL = {
   Polygon: isBeta
     ? 'https://polygon-testnet.public.blastapi.io'
     : 'https://polygon-rpc.com',
-  // Heco: isBeta
-  //   ? 'https://http-testnet.hecochain.com'
-  //   : 'https://http-mainnet.hecochain.com',
   OKTC: isBeta
     ? 'https://exchaintestrpc.okex.org'
     : 'https://exchainrpc.okex.org',
@@ -238,23 +233,23 @@ export const RPC_URL = {
   Mint: isBeta ? 'https://sepolia-testnet-rpc.mintchain.io' : '',
   TBC: 'https://turingwallet.xyz/v1/tbc',
   Akashic: 'https://rpc2-mainnet.akashicrecords.io'
-};
+}
 
 interface IChain {
   [key: string]: {
-    type: string;
-    name: string;
-    chainName: string;
-    label?: string;
-    chainId: number;
-    assetKey: string;
-    origin: string;
-    mainAsset: string;
-    nativeId: string;
-    logo: string;
-    decimals?: number;
-    rpcUrl?: string;
-  };
+    type: string
+    name: string
+    chainName: string
+    label?: string
+    chainId: number
+    assetKey: string
+    origin: string
+    mainAsset: string
+    nativeId: string
+    logo: string
+    decimals?: number
+    rpcUrl?: string
+  }
 }
 export const _networkInfo: IChain = {
   BTC: {
@@ -309,6 +304,44 @@ export const _networkInfo: IChain = {
     decimals: 18,
     rpcUrl: RPC_URL.BSC
   },
+  Base: {
+    type: 'EVM',
+    name: 'Base',
+    chainName: isBeta ? 'Base_Beta' : 'Base',
+    chainId: 129,
+    assetKey: isBeta ? '5-153' : '9-705',
+    origin: Origin.Base,
+    mainAsset: 'ETH',
+    nativeId: isBeta ? '0x14a33' : '0x2105',
+    logo: BASELogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.BASE
+  },
+  'X Layer': {
+    type: 'EVM',
+    name: 'X Layer',
+    chainName: isBeta ? 'X Layer_Beta' : 'X Layer',
+    chainId: 134,
+    assetKey: isBeta ? '5-170' : '9-801',
+    origin: Origin.X1,
+    mainAsset: 'OKB',
+    nativeId: isBeta ? '0xc3' : '0xc4',
+    logo: XLayerLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.X1
+  },
+  TRON: {
+    type: 'TRON',
+    name: 'TRON',
+    chainName: 'TRON',
+    chainId: 108,
+    assetKey: isBeta ? '5-55' : '9-218',
+    origin: Origin.TRON,
+    mainAsset: 'TRX',
+    nativeId: isBeta ? '0x5f5e101' : '0x5f5e102',
+    logo: TRONLogo,
+    decimals: 6
+  },
   Polygon: {
     type: 'EVM',
     name: 'Polygon',
@@ -331,7 +364,7 @@ export const _networkInfo: IChain = {
     origin: Origin.OKTC,
     mainAsset: 'OKT',
     nativeId: isBeta ? '0x41' : '0x42',
-    logo: OECLogo,
+    logo: OKTCLogo,
     decimals: 18,
     rpcUrl: RPC_URL.OKTC
   },
@@ -412,18 +445,6 @@ export const _networkInfo: IChain = {
     logo: FTMLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Fantom
-  },
-  TRON: {
-    type: 'TRON',
-    name: 'TRON',
-    chainName: 'TRON',
-    chainId: 108,
-    assetKey: isBeta ? '5-55' : '9-218',
-    origin: Origin.TRON,
-    mainAsset: 'TRX',
-    nativeId: isBeta ? '0x5f5e101' : '0x5f5e102',
-    logo: TRONLogo,
-    decimals: 6
   },
   Metis: {
     type: 'EVM',
@@ -622,19 +643,6 @@ export const _networkInfo: IChain = {
     decimals: 18,
     rpcUrl: RPC_URL.ETC
   },
-  Base: {
-    type: 'EVM',
-    name: 'Base',
-    chainName: isBeta ? 'Base_Beta' : 'Base',
-    chainId: 129,
-    assetKey: isBeta ? '5-153' : '9-705',
-    origin: Origin.Base,
-    mainAsset: 'ETH',
-    nativeId: isBeta ? '0x14a33' : '0x2105',
-    logo: BASELogo,
-    decimals: 18,
-    rpcUrl: RPC_URL.BASE
-  },
   Scroll: {
     type: 'EVM',
     name: 'Scroll',
@@ -699,19 +707,6 @@ export const _networkInfo: IChain = {
     logo: JanusLogo,
     decimals: 18,
     rpcUrl: RPC_URL.Janus
-  },
-  'X Layer': {
-    type: 'EVM',
-    name: 'X Layer',
-    chainName: isBeta ? 'X Layer_Beta' : 'X Layer',
-    chainId: 134,
-    assetKey: isBeta ? '5-170' : '9-801',
-    origin: Origin.X1,
-    mainAsset: 'OKB',
-    nativeId: isBeta ? '0xc3' : '0xc4',
-    logo: XLayerLogo,
-    decimals: 18,
-    rpcUrl: RPC_URL.X1
   },
   Shardeum: {
     type: 'EVM',
@@ -841,19 +836,6 @@ export const _networkInfo: IChain = {
     decimals: 18,
     rpcUrl: RPC_URL.Akashic
   },
-  // Heco: {
-  //   type: 'EVM',
-  //   name: 'Heco',
-  //   chainName: isBeta ? 'Heco_Beta' : 'Heco',
-  //   chainId: 103,
-  //   assetKey: isBeta ? '5-9' : '9-55',
-  //   origin: Origin.Heco,
-  //   mainAsset: 'HT',
-  //   nativeId: isBeta ? '0x100' : '0x80',
-  //   logo: HecoLogo,
-  //   decimals: 18,
-  //   rpcUrl: RPC_URL.Heco
-  // },
   NULS: {
     type: 'NULS',
     name: 'NULS',
@@ -876,37 +858,37 @@ export const _networkInfo: IChain = {
     nativeId: '0x-2',
     logo: NERVELogo
   }
-};
+}
 
 Object.values(_networkInfo).map(chain => {
   if (chain.name === 'BSC') {
-    chain.label = 'BNB Chain';
+    chain.label = 'BNB Chain'
   } else if (chain.name === 'NULS') {
-    chain.label = 'NULS AI';
+    chain.label = 'NULS AI'
   } else {
-    chain.label = chain.name;
+    chain.label = chain.name
   }
-});
+})
 
 if (isBeta) {
   // @ts-ignore
-  delete _networkInfo.Ethereum;
+  delete _networkInfo.Ethereum
   // @ts-ignore
-  delete _networkInfo.ETHW;
+  delete _networkInfo.ETHW
 } else {
   // @ts-ignore
-  delete _networkInfo.Goerli;
+  delete _networkInfo.Goerli
   // @ts-ignore
-  delete _networkInfo.Janus;
+  delete _networkInfo.Janus
   // @ts-ignore
-  delete _networkInfo.Shardeum;
+  delete _networkInfo.Shardeum
   // @ts-ignore
-  delete _networkInfo['Mint Sepolia'];
+  delete _networkInfo['Mint Sepolia']
 }
 
 const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
   navigator.userAgent
-);
+)
 if (!isMobile) {
   // @ts-ignore
   // delete _networkInfo.FCH;
@@ -917,24 +899,24 @@ if (!isMobile) {
 } */
 
 export function getChainNameById(sourceChainId: number, assetChainId: number) {
-  const chains = Object.values(_networkInfo);
-  let chainName = '';
+  const chains = Object.values(_networkInfo)
+  let chainName = ''
   if (sourceChainId !== 0) {
-    chainName = chains.find(v => v.chainId === sourceChainId)!.name || '';
-    chainName = chainName === 'NULS' ? 'NULS AI' : chainName;
+    chainName = chains.find(v => v.chainId === sourceChainId)!.name || ''
+    chainName = chainName === 'NULS' ? 'NULS AI' : chainName
   } else {
-    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS AI';
+    chainName = config.chainId === assetChainId ? 'NERVE' : 'NULS AI'
   }
-  return chainName;
+  return chainName
 }
 
 export function getChainLogoById(sourceChainId: number, assetChainId: number) {
-  const chains = Object.values(_networkInfo);
-  let logo = '';
+  const chains = Object.values(_networkInfo)
+  let logo = ''
   if (sourceChainId !== 0) {
-    logo = chains.find(v => v.chainId === sourceChainId)!.logo || '';
+    logo = chains.find(v => v.chainId === sourceChainId)!.logo || ''
   } else {
-    logo = config.chainId === assetChainId ? NERVELogo : NULSLogo;
+    logo = config.chainId === assetChainId ? NERVELogo : NULSLogo
   }
-  return logo;
+  return logo
 }

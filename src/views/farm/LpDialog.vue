@@ -15,10 +15,7 @@
       <!-- form -->
       <div class="flex items-center justify-between text-label mb-2">
         <span v-if="lpName">{{ lpName }}</span>
-        <div class="flex items-center gap-1.5">
-          <i-custom-wallet />
-          {{ balance || '0' }}
-        </div>
+        <BalanceItem :balance="balance" />
       </div>
       <Input v-model="numberValue" class="bg-input" placeholder="0.0">
         <template #append>
@@ -52,6 +49,7 @@ import { ref, watch, computed } from 'vue';
 import Modal from '@/components/Base/Modal/index.vue'
 import Input from '@/components/Base/Input/index.vue'
 import Button from '@/components/Base/Button/index.vue'
+import BalanceItem from '@/components/BalanceItem.vue';
 import { Minus } from '@/utils/util';
 import { useI18n } from 'vue-i18n';
 import { LpDialogType } from './types';
