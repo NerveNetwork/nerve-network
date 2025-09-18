@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-12 items-center justify-center rounded-xl bg-card2">
-    Pending registration review, tip to expedite approval
+    Under review, tip to speed up
   </div>
   <a
     class="my-6 inline-block w-full"
