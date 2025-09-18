@@ -130,7 +130,7 @@ export default function useBroadcastNerveHex() {
     }
   }
 
-  function handleResult(type: number, res: any, amountRemark: string, hId?: number) {
+  function handleResult(type: number | string, res: any, amountRemark: string, hId?: number) {
     if (res && res.hash) {
       const txInfo: TxInfo = {
         type,

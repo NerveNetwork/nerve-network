@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-footer pt-7 pb-5">
+  <div class="bg-footer pb-5 pt-7">
     <div class="w1200 flex flex-wrap justify-between">
       <div class="w-full lg:w-auto">
         <div class="mb-5 xl:mb-14">
@@ -15,16 +15,16 @@
             </Button>
           </p>
         </div>
-        <p class="hidden text-label lg:block">{{ copyRight }}</p>
+        <p class="hidden text-xs text-label lg:block">{{ copyRight }}</p>
       </div>
       <div class="flex flex-wrap">
         <ul
           v-for="linkItem in linkConfig"
           :key="linkItem.label"
           class="mr-10 lg:mr-20">
-          <li class="mb-2 text-xs font-medium">{{ linkItem.label }}</li>
+          <li class="mb-2 font-medium">{{ linkItem.label }}</li>
           <li
-            class="mb-2 text-xs text-label transition-colors duration-300 hover:text-primary"
+            class="mb-2 text-label transition-colors duration-300 hover:text-primary"
             v-for="item in linkItem.items"
             :key="item.label">
             <template v-if="item.href.startsWith('/')">
@@ -38,7 +38,7 @@
           </li>
         </ul>
         <div class="mt-5 w-full sm:mt-0 sm:w-auto">
-          <div class="mb-2 text-xs font-medium">{{ socials.label }}</div>
+          <div class="mb-2 font-medium">{{ socials.label }}</div>
           <div class="flex gap-3">
             <a
               v-for="item in socials.items"
@@ -51,7 +51,7 @@
           </div>
         </div>
       </div>
-      <p class="w-full pt-3 lg:hidden text-xs text-label">
+      <p class="w-full pt-3 text-xs text-label lg:hidden">
         {{ copyRight }}
       </p>
     </div>
@@ -116,11 +116,15 @@ const linkConfig = computed(() => {
           href: config.explorerUrl
         },
         {
+          label: 'Listing Token',
+          href: '/listing-token'
+        },
+        {
           label: t('footer.footer9'),
           href: '/node'
         },
         {
-          label: 'Contract Deploy',
+          label: 'Deploy Bridge Token',
           href: '/contract-deploy'
         },
         {

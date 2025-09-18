@@ -26,6 +26,7 @@ export function useFocusPools() {
       if (val && val.length) {
         getFocusPools(val);
       } else {
+        loading.value = false
         focusPools.value = [];
       }
     },
@@ -78,6 +79,7 @@ export function useFocusTokens() {
       if (val && val.length) {
         getFocusTokens(val);
       } else {
+        loading.value = false
         focusTokens.value = [];
       }
     },

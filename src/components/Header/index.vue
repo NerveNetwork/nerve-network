@@ -65,7 +65,9 @@
             <div class="mx-2 h-[14px] w-[1px] bg-[#44495A]"></div>
             <AccountInfo
               v-model="manageAccount"
-              :address="nerveAddress"
+              :nerveAddress="nerveAddress"
+              :L1Chain="chain"
+              :L1Address="address"
               @disconnect="disconnectProvider">
               <div
                 class="flex cursor-pointer items-center transition-all duration-300 hover:opacity-70 pr-2.5">

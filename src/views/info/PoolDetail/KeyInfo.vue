@@ -26,7 +26,7 @@
           <div class="text-base font-medium md:text-2xl md:leading-[30px]">
             {{ props.info.name }}
           </div>
-          <div class="text-label">ID: {{ props.info.assetKey || props.info.tokenLP }}</div>
+          <div class="text-label ml-1.5">ID: {{ props.info.assetKey || props.info.tokenLP }}</div>
           <CollectIcon class="ml-7" v-model="isCollected" @change="change" />
         </div>
         <div class="text-base">

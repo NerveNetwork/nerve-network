@@ -243,7 +243,11 @@ watch(
 
 //选择币种下拉
 function changeCurrency() {
-  nextTick(projectedRevenue)
+  nextTick(() => {
+    joinFormRef.value?.validateField('amount')
+    projectedRevenue()
+  }
+)
 }
 
 // 预估收益值

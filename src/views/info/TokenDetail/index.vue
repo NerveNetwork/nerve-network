@@ -90,7 +90,7 @@ async function getTokenDetail() {
     if (key === NKey) {
       res.symbol = NSymbol
       res.decimals = NDecimals
-      res.price = divisionDecimals(res.price, NDecimals)
+      // res.price = divisionDecimals(res.price, NDecimals)
     }
     res.symbol = replaceNULS(res.symbol)
 

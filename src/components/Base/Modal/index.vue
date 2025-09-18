@@ -53,7 +53,7 @@
           </div>
 
           <!-- body -->
-          <div :class="clsxm('p-4 pt-0 sm:p-6 sm:pt-0', bodyClass)">
+          <div :class="clsxm('p-4 pt-0 sm:p-6 sm:pt-0 max-h-[80vh] overflow-y-auto no-scrollbar', bodyClass)">
             <slot />
           </div>
 

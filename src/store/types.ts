@@ -50,7 +50,7 @@ export interface TxInfo {
   hash: string;
   time: number;
   status: 0 | 1;
-  type?: number;
+  type?: number | string;
   L1Chain?: string;
   L1Type?: string;
   expand?: boolean;

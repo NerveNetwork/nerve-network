@@ -52,6 +52,12 @@ const TRC20_ALLOWANCE_ABI = [
   }
 ];
 
+const tokenABI = [
+  { "constant": true, "inputs": [], "name": "name", "outputs": [{ "name": "", "type": "string" }], "type": "function" },
+  { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "name": "", "type": "string" }], "type": "function" },
+  { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "name": "", "type": "uint8" }], "type": "function" }
+];
+
 export function generateTronAddress(pub: string) {
   pub = pub.startsWith('0x') ? pub : '0x' + pub;
   const unCompressPub = ethers.utils.computePublicKey(
@@ -142,6 +148,11 @@ class TronLinkApi {
   }
 
   validAddress(address: string) {
+    const tronWeb = this.getTronWeb();
+    return tronWeb.isAddress(address);
+  }
+
+  validateAddress(address: string) {
     const tronWeb = this.getTronWeb();
     return tronWeb.isAddress(address);
   }
@@ -356,6 +367,29 @@ class TronLinkApi {
     const tronWeb = this.getTronWeb();
     const res = await tronWeb.trx.getTransaction(hash);
     console.log(res, 666666666);
+  }
+
+  async getTokenInfo(tokenAddress: string) {
+    try {
+      // 创建合约实例
+      const tronWeb = this.getTronWeb();
+      const tokenContract = await tronWeb.contract(tokenABI, tokenAddress);
+
+      return Promise.all([tokenContract.name().call(), tokenContract.symbol().call(), tokenContract.decimals().call()])
+      // 调用合约函数
+      // const name = await tokenContract.name().call();
+      // const symbol = await tokenContract.symbol().call();
+      // const decimals = await tokenContract.decimals().call();
+
+      // console.log("Token Name:", name);
+      // console.log("Token Symbol:", symbol);
+      // console.log("Token Decimals:", decimals);
+
+      // return { name, symbol, decimals };
+    } catch (error) {
+      console.error("Error fetching token info:", error);
+      return null
+    }
   }
 }
 

@@ -45,7 +45,14 @@
           <Input class="bg-input" disabled v-model="model.minter" />
         </el-form-item>
         <el-form-item>
-          <div class="w-full pt-4">
+          <div class="w-full pt-6">
+            <AuthButton class="w-full" v-if="!nerveAddress" />
+            <Button class="w-full" @click="submitForm" v-else-if="!tokenContract">
+              {{ $t('farm.farm19') }}
+            </Button>
+            <SubmitSuccess v-else />
+          </div>
+          <!-- <div class="w-full pt-4">
             <Button
               class="w-full"
               @click="submitForm"
@@ -53,11 +60,7 @@
               {{ $t('farm.farm19') }}
             </Button>
             <auth-button class="w-full" v-else></auth-button>
-          </div>
-          <!-- <el-button type="primary" @click="submitForm" v-if="nerveAddress">
-            {{ $t('farm.farm19') }}
-          </el-button>
-          <auth-button v-else></auth-button> -->
+          </div> -->
         </el-form-item>
       </el-form>
       <div class="pt-5" v-if="tokenContract">
@@ -79,6 +82,7 @@ import Input from '@/components/Base/Input/index.vue'
 import Select from '@/components/Base/Select/index.vue'
 import Button from '@/components/Base/Button/index.vue'
 import BackTitle from '@/components/BackTitle.vue';
+import SubmitSuccess from '../listing-token/SubmitSuccess.vue';
 import { useWalletStore } from '@/store/wallet'
 import useBroadcastNerveHex from '@/hooks/useBroadcastNerveHex';
 import useToast from '@/hooks/useToast';
@@ -223,6 +227,14 @@ const tokenList = computed(() => {
       value: k.assetKey
     }));
 });
+
+watch(
+  () => model,
+  () => {
+    tokenContract.value = ''
+  },
+  { deep: true }
+)
 
 watch(
   () => model.token,

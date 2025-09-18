@@ -12,7 +12,12 @@
         >{{ props.name }}</span
       >
       <span :class="clsxm('text-xs text-label', props.keyClass)">
-        {{ chainName }}&nbsp;&nbsp;|&nbsp;&nbsp;ID: {{ props.assetKey }}
+        {{ chainName }}&nbsp;&nbsp;|&nbsp;&nbsp;
+        <span
+          :class="[IDClickable && 'cursor-pointer']"
+          @click.stop.prevent="handleIDClick">
+          ID: {{ props.assetKey }}
+        </span>
       </span>
     </div>
   </div>
@@ -22,16 +27,24 @@
 import { computed, ref } from 'vue'
 import clsxm from '@/utils/clsxm'
 import SymbolIcon from '@/components/SymbolIcon.vue'
+import { openExplorer } from '@/utils/util'
+import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 
-const props = defineProps<{
-  logo?: string
-  name: string
-  chain?: string
-  assetKey: string
-  class?: string
-  nameClass?: string
-  keyClass?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    logo?: string
+    name: string
+    chain?: string
+    assetKey: string
+    class?: string
+    nameClass?: string
+    keyClass?: string
+    IDClickable?: boolean
+  }>(),
+  {
+    IDClickable: false
+  }
+)
 
 const name = ref('hi')
 
@@ -41,4 +54,12 @@ const chainName = computed(() => {
   }
   return props.chain
 })
+
+const handleIDClick = (e:Event) => {
+  if (props.IDClickable) {
+    e.stopPropagation()
+    const origin = _networkInfo.NERVE.origin
+    window.open(origin + '/asset/' + props.assetKey)
+  }
+}
 </script>

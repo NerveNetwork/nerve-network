@@ -71,7 +71,9 @@
             <div class="hidden md:block">
               {{
                 item.type
-                  ? $t('transferType.' + item.type)
+                  ? isNaN(item.type)
+                    ? item.type
+                    : $t('transferType.' + item.type)
                   : item.L1Chain + ' ' + item.L1Type
               }}
             </div>
@@ -401,7 +403,7 @@ const handleShowAddFee = (tx: TxInfo) => {
   addFeeTx.value = tx
 }
 
-const onAddFee= () => {
+const onAddFee = () => {
   showAddFeeModal.value = false
   addFeeTx.value = {} as TxInfo
   updateAccountInfo()

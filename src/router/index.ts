@@ -28,6 +28,7 @@ const CreateFarm = () => import('@/views/createFarm/index.vue')
 const Mint = () => import('@/views/mint/index.vue')
 const MintDeploy = () => import('@/views/mintDeploy/index.vue')
 const ContractDeploy = () => import('@/views/contract-deploy/index.vue')
+const ListingToken = () => import('@/views/listing-token/index.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -131,6 +132,11 @@ const routes: RouteRecordRaw[] = [
     path: '/contract-deploy',
     name: 'contractDeploy',
     component: ContractDeploy
+  },
+  {
+    path: '/listing-token',
+    name: 'listingToken',
+    component: ListingToken
   }
 ]
 

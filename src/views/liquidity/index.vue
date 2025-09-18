@@ -5,7 +5,8 @@
         <div class="top-part">
           <div>
             <h3 class="text-xl mb-1.5">{{ $t('liquidity.liquidity1') }}</h3>
-            <p>{{ $t('liquidity.liquidity2') }}</p>
+            <!-- <p>{{ $t('liquidity.liquidity2') }}</p> -->
+            <p>Add liquidity to earn LP fee rewards</p>
           </div>
           <div class="py-7">
             <Button class="w-full" @click="addLiquidity = true">{{ $t('liquidity.liquidity3') }}</Button>

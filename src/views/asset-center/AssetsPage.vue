@@ -17,7 +17,9 @@
         <el-table :data="filteredAssets" class="show_table" v-loading="loading">
           <el-table-column :label="$t('public.public1')">
             <template v-slot="scope">
-              <div class="flex items-center">
+              <router-link
+                :to="getSwapLink(scope.row)"
+                class="btn flex items-center">
                 <el-tooltip placement="top" v-if="scope.row.registerContract">
                   <template #content>
                     <div>
@@ -31,15 +33,16 @@
                     :logo="scope.row.icon"
                     :name="scope.row.symbol"
                     :chain="scope.row.originNetwork"
-                    :asset-key="scope.row.assetKey"></SymbolInfo>
+                    :asset-key="scope.row.assetKey" />
                 </el-tooltip>
                 <SymbolInfo
                   v-else
                   :logo="scope.row.icon"
                   :name="scope.row.symbol"
                   :chain="scope.row.originNetwork"
-                  :asset-key="scope.row.assetKey"></SymbolInfo>
-              </div>
+                  :asset-key="scope.row.assetKey"
+                  IDClickable />
+              </router-link>
             </template>
           </el-table-column>
           <el-table-column :label="$t('public.public2')">
@@ -65,7 +68,9 @@
             align="center"
             width="260px">
             <template v-slot="scope">
-              <div class="flex items-center justify-center gap-3" v-if="scope.row">
+              <div
+                class="flex items-center justify-center gap-3"
+                v-if="scope.row">
                 <button
                   v-if="scope.row.canToL1"
                   type="button"
@@ -73,14 +78,18 @@
                   @click="toTransfer(scope.row, TransferType.CrossIn)">
                   {{ $t('transfer.transfer1') }}
                 </button>
-                <div v-if="scope.row.canToL1" class="h-2 w-[1px] bg-label"></div>
+                <div
+                  v-if="scope.row.canToL1"
+                  class="h-2 w-[1px] bg-label"></div>
                 <button
                   type="button"
                   class="btn text-primary"
                   @click="toTransfer(scope.row, TransferType.General)">
                   {{ $t('transfer.transfer2') }}
                 </button>
-                <div v-if="scope.row.canToL1" class="h-2 w-[1px] bg-label"></div>
+                <div
+                  v-if="scope.row.canToL1"
+                  class="h-2 w-[1px] bg-label"></div>
                 <button
                   type="button"
                   class="btn text-primary"
@@ -101,10 +110,14 @@
         <div v-for="(item, index) in filteredAssets" v-else :key="index">
           <div class="border-b border-line p-3" @click="assetClick(item)">
             <div class="flex items-center justify-between">
-              <SymbolInfo
-                :name="item.symbol"
-                :chain="item.originNetwork"
-                :asset-key="item.assetKey"></SymbolInfo>
+              <router-link :to="getSwapLink(item)">
+                <SymbolInfo
+                  :name="item.symbol"
+                  :chain="item.originNetwork"
+                  :asset-key="item.assetKey"
+                  IDClickable />
+              </router-link>
+
               <div class="flex flex-1 items-center justify-end">
                 <div class="text-right">
                   <div>
@@ -114,13 +127,20 @@
                     ≈{{ toThousands(item.valuation) }}
                   </div>
                 </div>
-                <el-icon
+                <div
+                  :class="[
+                    'ml-2 transition-transform duration-300',
+                    item.showDetail && 'rotate-180'
+                  ]">
+                  <i-custom-arrow-down />
+                </div>
+                <!-- <el-icon
                   :class="[
                     'icon-caret-right ml-1 transition-all duration-100',
                     item.showDetail ? '-rotate-90' : ''
                   ]">
                   <CaretRight />
-                </el-icon>
+                </el-icon> -->
               </div>
             </div>
             <div class="flex justify-between text-xs text-label">
@@ -179,7 +199,7 @@
 </template>
 
 <script lang="ts" setup>
-import { provide, ref, reactive, watch } from 'vue'
+import { provide, ref, reactive, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import Skeleton from '@/components/Base/Skeleton/index.vue'
@@ -233,6 +253,19 @@ const showSwitch = ref(false)
 const currentTab = ref<TransferType>(TransferType.General)
 const transferAsset = ref<AssetItemType>({} as AssetItemType) // 当前交易的资产
 const assetCanCross = ref(true)
+
+const BTC = computed(() => {
+  return allAssetsList.value.find(v => v.assetKey === '9-787')
+})
+
+const getSwapLink = (asset: AssetItemType) => {
+  const BTCKey = BTC.value?.assetKey
+  if (asset.assetKey === BTCKey) {
+    return `/swap/${BTCKey}/9-1`
+  } else {
+    return `/swap/${BTCKey}/${asset.assetKey}`
+  }
+}
 
 function toTransfer(asset: AssetItemType, type: TransferType) {
   assetCanCross.value = !(disableTx.value || !canToL1OnCurrent(asset))

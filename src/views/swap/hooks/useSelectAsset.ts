@@ -5,10 +5,11 @@ import { useWalletStore } from '@/store/wallet';
 import {
   userTradeHistoryPage,
   userStableTradeHistoryPage,
-  getStablePairListForSwapTrade
+  getStablePairListForSwapTrade,
+  getTokenAnalytics
 } from '@/service/api';
 import dayjs from 'dayjs';
-import { divisionDecimals, getOriginChain } from '@/utils/util';
+import { divisionAndFix, divisionDecimals, getOriginChain } from '@/utils/util';
 import {
   SwapSymbol,
   OrderItem,
@@ -17,6 +18,7 @@ import {
   AssetItem
 } from '../types';
 import { NDecimals, NSymbol } from '@/constants/constants';
+import { ChartItem } from '@/views/info/types';
 
 export default function useSelectAsset() {
   const walletStore = useWalletStore()
@@ -33,6 +35,11 @@ export default function useSelectAsset() {
 
   const selectedAsset = ref<DefaultAsset>();
   const swapSymbol = ref<SwapSymbol>({} as SwapSymbol);
+
+  const chartLoading = ref(true)
+  const lineData = ref<ChartItem[]>([])
+
+  const listLoading = ref(true)
   const orderList = ref<OrderItem[]>([] as OrderItem[]);
   const pager = reactive<Pager>({
     index: 1,
@@ -40,6 +47,26 @@ export default function useSelectAsset() {
     total: 0
   });
   const txType = ref('swap'); // swap | multiRouting
+
+  const getChartData = async (fromAsset?: AssetItem, toAsset?: AssetItem) => {
+    if (!walletStore.nerveAddress || !fromAsset || !toAsset) return;
+    chartLoading.value = true
+    const res = await getTokenAnalytics(toAsset.assetKey)
+    chartLoading.value = false
+    if (res) {
+      const price: ChartItem[] = [];
+      res.map(v => {
+        const priceItem = {
+          label: v.period,
+          value: divisionAndFix(v.price, 18, 18)
+        };
+        price.push(priceItem);
+      })
+      lineData.value = price
+    } else {
+      lineData.value = []
+    }
+  }
 
   async function selectAsset(fromAsset?: AssetItem, toAsset?: AssetItem) {
     if (!walletStore.nerveAddress || !fromAsset || !toAsset) return;
@@ -60,8 +87,8 @@ export default function useSelectAsset() {
     );
     const data = {
       pairAddress,
-      // userAddress: walletStore.nerveAddress,
-      userAddress: 'NERVEepb65YYwPnX3rcMhd8u8jFfy9QMweY9rA',
+      userAddress: walletStore.nerveAddress,
+      // userAddress: 'NERVEepb65YYwPnX3rcMhd8u8jFfy9QMweY9rA',
       pageIndex: pager.index,
       pageSize: pager.size
     };
@@ -120,13 +147,18 @@ export default function useSelectAsset() {
       });
       orderList.value = list;
     }
+    listLoading.value = false
   }
   return {
     swapSymbol,
+    listLoading,
     orderList,
     pager,
     txType,
     selectAsset,
-    selectedAsset
+    selectedAsset,
+    chartLoading,
+    lineData,
+    getChartData
   };
 }

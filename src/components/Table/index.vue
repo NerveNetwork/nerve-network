@@ -31,7 +31,7 @@
       <Pagination
         class="pt-4"
         v-if="showPagination"
-        v-bind:current-page="currentPage"
+        v-model:current-page="currentPage"
         :page-size="props.pageSize"
         :total="props.total"
         @change="pageChange" />

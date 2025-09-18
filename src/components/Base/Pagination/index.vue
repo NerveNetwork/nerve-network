@@ -161,7 +161,7 @@ const showJumpNext = computed(() => {
 
 const handlePageChange = (page: number | string) => {
   page = +page
-  if (page >= 1 && page <= totalPages.value) {
+  if (page >= 1 && page <= totalPages.value && page !== props.currentPage) {
     emit('update:currentPage', page)
     emit('change', page)
   }

@@ -12,19 +12,19 @@
         <div
           class="min-w-[320px] rounded-[10px] border border-line bg-card p-4">
           <div class="mb-4 flex items-center justify-between">
-            <div class="flex items-center mr-2">
+            <div class="mr-2 flex items-center">
               <img class="h-6 w-6" :src="providerLogo" alt="" />
-              <span class="ml-1.5">{{ superLong(address, 8) }}</span>
+              <span class="ml-1.5">{{ superLong(nerveAddress, 8) }}</span>
             </div>
 
             <div class="flex gap-1">
               <button
-                @click="$copy(address)"
+                @click="$copy(nerveAddress)"
                 class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#2C303E] hover:opacity-70">
                 <i-custom-copy />
               </button>
               <button
-                @click="openExplorer('address', address)"
+                @click="openExplorer('address', nerveAddress)"
                 class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#2C303E] hover:opacity-70"
                 href="">
                 <i-custom-open class="text-white" />
@@ -38,10 +38,32 @@
               </router-link>
             </div>
           </div>
+          <div class="mb-4 flex items-center justify-between">
+            <div class="mr-2 flex items-center">
+              <div
+                class="flex h-6 w-6 items-center justify-center rounded-full bg-card2 text-xs leading-none">
+                L1
+              </div>
+              <span class="ml-1.5">{{ superLong(L1Address, 8) }}</span>
+            </div>
+            <div class="flex gap-1">
+              <button
+                @click="$copy(L1Address)"
+                class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#2C303E] hover:opacity-70">
+                <i-custom-copy />
+              </button>
+              <button
+                @click="openL1Explorer(L1Chain, 'address', L1Address)"
+                class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#2C303E] hover:opacity-70"
+                href="">
+                <i-custom-open class="text-white" />
+              </button>
+            </div>
+          </div>
           <div class="flex items-center justify-center">
             <button
               @click="emit('disconnect')"
-              class="h-7 rounded-lg bg-[#202B39] px-3 text-primary hover:opacity-70">
+              class="h-7 rounded-lg bg-[#202B39] px-3 leading-none text-primary hover:opacity-70">
               Disconnect
             </button>
           </div>
@@ -54,12 +76,14 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import useClickOutside from '@/hooks/useClickOutside'
-import { superLong, openExplorer } from '@/utils/util'
+import { superLong, openExplorer, openL1Explorer } from '@/utils/util'
 import { getProviderName, ALL_Provider } from '@/utils/providerUtil'
 
 const props = defineProps<{
   modelValue: boolean
-  address: string
+  nerveAddress: string
+  L1Chain: string
+  L1Address: string
 }>()
 
 const emit = defineEmits<{

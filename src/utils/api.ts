@@ -780,6 +780,12 @@ const erc20TransferAbiFragment = [
   }
 ];
 
+const tokenABI = [
+  'function name() view returns (string)',
+  'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)'
+]
+
 const tokenGaslimit = 150000;
 const defaultGaslimit = 35000;
 
@@ -1197,6 +1203,22 @@ export class ETransfer {
           .toString();
       }
       return formatEthers(result, feeDecimals);
+    }
+  }
+  async getTokenInfo(contract: string) {
+    try {
+      const tokenContract = new ethers.Contract(
+        contract,
+        tokenABI,
+        this.provider
+      )
+      return Promise.all([
+        tokenContract.name(),
+        tokenContract.symbol(),
+        tokenContract.decimals()
+      ])
+    } catch (e) {
+      return null
     }
   }
 }

@@ -13,6 +13,8 @@ export default function useOverview() {
     checkIsMobile();
     if (isMobile.value) {
       // context.emit("update:collapseMenu", true);
+    } else {
+      showOverview.value = true
     }
     window.addEventListener('resize', checkIsMobile);
   });

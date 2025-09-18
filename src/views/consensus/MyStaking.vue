@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mb-4 mr-0 h-[360px] w-full rounded-xl bg-card xl:mr-5 xl:w-[528px]">
+    class="flex flex-col mb-4 mr-0 w-full rounded-xl bg-card xl:mr-5 xl:w-[528px]">
     <div class="flex w-full items-center justify-between p-3 sm:px-6 sm:py-4">
       <div class="flex items-center gap-2 text-base font-semibold sm:text-lg">
         <span>{{ $t('staking.staking32') }}</span>
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="h-60 px-4">
+    <div class="flex-1 w-full px-4">
       <PieChart :data="pieData" />
     </div>
 

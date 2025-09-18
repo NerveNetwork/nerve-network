@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="mint-list" v-loading="loading"> -->
   <div class="mint-list">
-    <template v-if="loading">
+    <template v-show="loading">
       <div class="flex flex-col gap-4">
         <Skeleton class="h-9" />
         <Skeleton class="h-9" />
@@ -10,7 +10,7 @@
       </div>
     </template>
     <Table
-      v-else
+      v-show="!loading"
       title=""
       :data="list"
       :total="total"

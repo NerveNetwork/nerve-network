@@ -40,17 +40,17 @@
           @mouseleave="handleMouseLeave"
           :style="dropdownStyle">
           <slot name="dropdown">
-            <div class="w-40 rounded-[10px] bg-card px-1.5 py-3 text-white">
+            <div class="w-40 rounded-[10px] bg-card2 px-1.5 py-3 text-white">
               <a
                 href="https://swapbox.nabox.io/"
                 target="_blank"
-                class="block rounded-md px-4 py-2 transition-colors duration-300 hover:bg-card2">
+                class="block rounded-md px-4 py-2 transition-colors duration-300 hover:bg-card">
                 Bridge
               </a>
               <a
                 href="https://scan.nerve.network"
                 target="_blank"
-                class="block rounded-md px-4 py-2 transition-colors duration-300 hover:bg-card2">
+                class="block rounded-md px-4 py-2 transition-colors duration-300 hover:bg-card">
                 Explorer
               </a>
             </div>

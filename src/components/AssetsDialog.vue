@@ -3,19 +3,18 @@
     titleAlign="left"
     :title="$t('transfer.transfer12')"
     container-class="mt-[10vh]"
-    body-class="p-2 pt-0 sm:p-4 sm:pt-0"
     v-model="show"
     @closed="searchVal = ''">
     <Input
       v-if="!hideSearchInput"
-      class="mx-2 mb-2"
+      class="mb-2 bg-card2"
       v-model="searchVal"
       :placeholder="$t(showAmount ? 'assets.assets8' : 'assets.assets9')">
       <template #prepend>
         <i-custom-search />
       </template>
     </Input>
-    <ul class="mx-2 flex flex-wrap gap-2 py-2">
+    <ul class="flex flex-wrap gap-2 py-2">
       <li
         v-for="item in hotAssets"
         :key="item.assetKey"
@@ -80,7 +79,7 @@
             class="max-w-[60%] truncate text-right text-base"
             v-if="showBalance">
             <span class="truncate" v-if="showAmount">
-              {{ item.listAvailable }}
+              {{ toThousands(item.listAvailable) }}
             </span>
           </div>
         </div>
@@ -95,7 +94,7 @@ import Modal from '@/components/Base/Modal/index.vue'
 import Input from '@/components/Base/Input/index.vue'
 import SymbolIcon from '@/components/SymbolIcon.vue'
 import { VList } from 'virtua/vue'
-import { superLong } from '@/utils/util'
+import { superLong, toThousands } from '@/utils/util'
 import clsxm from '@/utils/clsxm'
 
 import { AssetItem } from '@/store/types'

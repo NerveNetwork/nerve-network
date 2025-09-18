@@ -8,12 +8,11 @@
       <div
         class="flex items-center justify-between text-lg leading-[50px] sm:leading-[70px]">
         <span>{{ $t('assets.assets7') }}</span>
-        <a
-          class="text-sm text-primary"
-          href="https://docs.google.com/forms/d/e/1FAIpQLSdPXX4EDtzxqBg3OBMIq7EtoiBxnxcqokIeVzAqyXQFYbmf4w/viewform"
-          target="_blank">
-          {{ $t('assets.assets13') }}
-        </a>
+        <router-link
+          to="/listing-token"
+          class="text-sm text-primary btn">
+          Listing Token
+        </router-link>
       </div>
     </template>
     <Input

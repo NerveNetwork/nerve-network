@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-4 h-auto w-full rounded-xl bg-card xl:h-[360px] xl:w-[732px]">
+  <div class="mb-4 w-full rounded-xl bg-card xl:w-[732px]">
     <!-- title -->
     <div class="flex items-center justify-between p-3 sm:px-6 sm:py-4">
       <span class="text-base font-semibold sm:text-lg">{{
@@ -17,7 +17,7 @@
     </div>
 
     <!-- table -->
-    <div class="px-3 sm:px-6">
+    <div class="px-3 pb-6 sm:px-6">
       <template v-if="loading">
         <div class="flex flex-col gap-4">
           <Skeleton class="h-9" />
@@ -29,7 +29,6 @@
         <el-table
           :data="stakingRate"
           v-loading="loading"
-          max-height="280px"
           class="hidden xl:block">
           <el-table-column
             width="170"

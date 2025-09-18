@@ -295,9 +295,10 @@ async function farmStake(number: string) {
         pub
       })
     }
-    const amountRemark =
-      number !== '0' ? `${toThousands(number)} ${stakeTokenSymbol}` : ''
-    handleResult(66, result, amountRemark)
+    const _amount = number !== '0' ? number : tokenInfo.pendingReward
+    const amountRemark = `${toThousands(_amount)} ${stakeTokenSymbol}`
+    const type = number !== '0' ? 66 : 'Farm Claim'
+    handleResult(type, result, amountRemark)
     if (result.hash) {
       dialogAddOrMinus.value = false
     }

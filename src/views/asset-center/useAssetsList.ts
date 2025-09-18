@@ -106,6 +106,8 @@ export default function useAssetsList() {
   function filterAssets() {
     let result: AssetItemType[] = []
     const focusAssets = currentAccount.value.focusAssets
+    const USDTs = sortDataByValue.filter(v => v.symbol === 'USDT')
+    const USDTN = sortDataByValue.find(v => v.symbol === 'USDTN')
     if (focusAssets && focusAssets.length) {
       sortDataByValue.map(v => {
         if (
@@ -116,7 +118,13 @@ export default function useAssetsList() {
           result.push(v)
         }
 
-        if(v.symbol === 'USDT' && v.registerChainId === L1ChainId.value || v.symbol === 'USDTN') {
+        const USDT = USDTs.find(u => u.registerChainId === L1ChainId.value)
+        if (USDT?.assetKey === v.assetKey && !focusAssets.includes(USDT?.assetKey)) {
+          // add L1 origin USDT
+          result.push(v)
+        }
+        if (USDTN?.assetKey === v.assetKey && !focusAssets.includes(USDTN?.assetKey)) {
+          // add USDTN
           result.push(v)
         }
 

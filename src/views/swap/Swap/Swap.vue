@@ -7,7 +7,6 @@
         <div class="h-6 w-6">
           <button
             class="btn flex h-full w-full items-center justify-center rounded-md bg-card2"
-            v-if="state.fromAsset && state.toAsset"
             @click="toggleExpand">
             <i-custom-on-expand v-if="!showOverview" />
             <i-custom-off-expand v-else />
@@ -233,7 +232,6 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'updateRate', rate: string): void
   (e: 'selectAsset', fromAsset: AssetItem, toAsset: AssetItem): void
   (e: 'toggleExpand'): void
 }
@@ -310,18 +308,19 @@ async function selectAsset(asset: AssetItem, type: string) {
   state.priceImpact = ''
   if (type === 'from') {
     if (state.toAsset && state.toAsset.assetKey === asset.assetKey) {
+      // selected from asset is to asset
       state.toAsset = { ...state.fromAsset } as AssetItem
-      state.fromAsset = asset
+      state.fromAsset = asset      
     } else {
       state.fromAsset = asset
-      if (state.toAsset) {
-        if (
-          state.fromAsset &&
-          state.fromAsset.assetKey === state.toAsset.assetKey
-        ) {
-          state.toAsset = null
-        }
-      }
+      // if (state.toAsset) {
+      //   if (
+      //     state.fromAsset &&
+      //     state.fromAsset.assetKey === state.toAsset.assetKey
+      //   ) {
+      //     state.toAsset = null
+      //   }
+      // }
     }
   } else {
     if (state.fromAsset && asset.assetKey === state.fromAsset.assetKey) {
@@ -329,19 +328,20 @@ async function selectAsset(asset: AssetItem, type: string) {
       state.toAsset = asset
     } else {
       state.toAsset = asset
-      if (
-        state.fromAsset &&
-        state.fromAsset.assetKey === state.toAsset.assetKey
-      ) {
-        state.fromAsset = null
-      }
+      // if (
+      //   state.fromAsset &&
+      //   state.fromAsset.assetKey === state.toAsset.assetKey
+      // ) {
+      //   state.fromAsset = null
+      // }
     }
   }
+
+  emit('selectAsset', state.fromAsset!, state.toAsset!)
 
   state.insufficient = false
 
   getSwapRate(true)
-  emit('updateRate', '')
 
   if (
     state.toAsset &&
@@ -351,11 +351,9 @@ async function selectAsset(asset: AssetItem, type: string) {
   ) {
     swap.checkIsSpecialSwap()
     // TODO
-    emit('selectAsset', state.fromAsset, state.toAsset)
+    
     storeSwapPairInfo(false, false)
     storeSwapPairInfo(false, true)
-  } else {
-    emit('updateRate', '')
   }
 }
 
@@ -811,7 +809,6 @@ const priceImpactColor = computed(() => {
 
 const settingDialog = ref(false)
 function toggleExpand() {
-  // if (!state.fromAsset.symbol || !state.toAsset.symbol) return;
   emit('toggleExpand')
 }
 function toggleSettingDialog() {
@@ -854,7 +851,7 @@ async function swapTrade() {
     const amountRemark = `${toThousands(state.fromAmount)} ${state.fromAsset?.symbol}`
     handleResult(63, res, amountRemark)
     if (res && res.hash) {
-      emit('selectAsset', state.fromAsset!, state.toAsset!)
+      // emit('selectAsset', state.fromAsset!, state.toAsset!)
       forceRefresh()
       // state.fromAmount = ''
       // state.toAmount = ''

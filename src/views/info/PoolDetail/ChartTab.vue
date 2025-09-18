@@ -94,8 +94,8 @@ async function getChartData(key: string, tokenKey?: string) {
       };
       liq.push(liqItem);
       if (!props.isPool && !props.isMultiRouting) {
-        v.price =
-          props.assetKey === NKey ? divisionDecimals(v.price, 5) : v.price;
+        // v.price =
+        //   props.assetKey === NKey ? divisionDecimals(v.price, 5) : v.price;
         const priceItem = {
           label: v.period,
           value: divisionAndFix(v.price, 18, 18)

@@ -78,7 +78,8 @@ export const useWalletStore = defineStore('wallet', () => {
 
   const getNVTPrice = async () => {
     const res = await getNVTPriceApi(config.chainId, config.assetId)
-    nvtPrice.value = res?.usdPrice || '0'
+
+    nvtPrice.value = res || '0'
   }
 
   const changeHeight = (val: number) => {
