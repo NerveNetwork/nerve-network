@@ -1,6 +1,6 @@
 <template>
   <div
-    class="xl:mr-5 w-full overflow-auto rounded-xl bg-card p-6 pt-4 xl:w-3/5">
+    class="w-full overflow-auto rounded-xl bg-card p-6 pt-4 xl:mr-5 xl:w-3/5">
     <div class="mb-8">
       <template v-if="chartLoading">
         <div class="flex flex-col gap-4">
@@ -13,15 +13,30 @@
           <div class="flex items-center">
             <SymbolIcon
               class="!h-6 !w-6"
-              :icon="swapSymbol.to"
-              :key="swapSymbol.to" />
-            <SymbolIcon
-              class="-ml-1 !h-6 !w-6"
-              :icon="swapSymbol.from"
-              :key="swapSymbol.from" />
-            <div class="ml-2">{{ swapSymbol.from }}/{{ swapSymbol.to }}</div>
+              :icon="assetInfo.symbol"
+              :assetKey="assetInfo.assetKey" />
+            <div class="ml-2 mr-3 flex items-center">
+              <span class="mr-1.5 text-lg font-medium">
+                {{ assetInfo.symbol }}
+              </span>
+              <span class="text-label">ID: {{ assetInfo.assetKey }}</span>
+            </div>
+            <router-link
+              :to="`/liquidity/${assetInfo.assetKey}/${config.BTCKey}`"
+              class="btn flex h-6 items-center justify-center rounded-md bg-card2 px-2 text-xs text-primary">
+              <i-custom-add />
+              <span>Add Liquidity</span>
+            </router-link>
           </div>
-          <div class="text-xl font-medium">${{ $format(totalVal) }}</div>
+          <div class="flex items-center">
+            <span class="mr-1.5 text-lg font-medium">
+              ${{ toThousands(assetInfo.price) }}
+            </span>
+            <span :class="Number(assetInfo.chg) > 0 ? 'text-up' : 'text-down'">
+              {{ Number(assetInfo.chg) > 0 ? '+' : '' }}{{ assetInfo.chg }}%
+            </span>
+          </div>
+          <!-- <div class="text-xl font-medium">${{ $format(totalVal) }}</div> -->
         </div>
         <div
           class="h-[328px] rounded-xl bg-[#101116] p-2 xl:p-5"
@@ -63,12 +78,19 @@ import Tabs from '@/components/Base/Tabs/index.vue'
 import TxList from './TxList.vue'
 import Pagination from '@/components/Base/Pagination/index.vue'
 import Skeleton from '@/components/Base/Skeleton/index.vue'
-import { formatNumber, priceFormat } from '@/utils/util'
+import { formatNumber, priceFormat, toThousands } from '@/utils/util'
 import dayjs from 'dayjs'
 import { SwapSymbol, OrderItem, Pager } from '../types'
 import { ChartItem } from '@/views/info/types'
+import config from '@/config'
 
 interface Props {
+  assetInfo: {
+    assetKey: string
+    symbol: string
+    price: string
+    chg: string
+  }
   swapSymbol: SwapSymbol
   lineData: ChartItem[]
   list: OrderItem[]

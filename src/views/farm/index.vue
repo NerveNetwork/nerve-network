@@ -47,7 +47,7 @@
           <router-link :to="{ name: 'createFarm' }">
             <Button class="h-9 px-2">
               <span class="mr-1">{{ $t('farm.farm11') }}</span>
-              <i-custom-add />
+              <i-custom-add class="text-white" />
             </Button>
           </router-link>
         </div>

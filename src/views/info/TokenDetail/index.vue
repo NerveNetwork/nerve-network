@@ -29,7 +29,7 @@
           </p>
         </div>
         <div class="flex items-center justify-between md:block">
-          <p class="mb-1.5 text-[#57AEFE]">{{ $t('info.info12') }}</p>
+          <p class="mb-1.5 text-[#57AEFE]">Transactions 24H</p>
           <p class="text-base font-medium md:text-2xl">
             {{ $format(tokenInfo.tx_24_count) }}
           </p>

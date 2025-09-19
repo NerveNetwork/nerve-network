@@ -10,6 +10,7 @@ import {
 } from '@/service/api'
 import { isBeta } from '@/utils/util'
 import { replaceNULS } from '@/constants/constants'
+import config from '@/config'
 
 const LpSource = [10, 11, 12]
 
@@ -45,11 +46,11 @@ export default function useAsset(isLiquidity = false) {
   })
 
   const default_from = computed(() => {
-    return filterLPAssets.value.find(item => item.assetKey === '9-787') as AssetItem
+    return filterLPAssets.value.find(item => item.assetKey === config.BTCKey) as AssetItem
   })
 
   const default_to = computed(() => {
-    return filterLPAssets.value.find(item => item.assetKey === '9-1') as AssetItem
+    return filterLPAssets.value.find(item => item.assetKey === config.NVTKey) as AssetItem
   })
 
   onMounted(() => {

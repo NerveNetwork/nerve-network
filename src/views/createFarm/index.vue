@@ -10,6 +10,7 @@
           <Select
             v-model="model.tokenA"
             :options="stakeTokenList"
+            filterable
             :placeholder="$t('createFarm.createFarm1')" />
           <!-- <el-select
             v-model="model.tokenA"
@@ -30,6 +31,7 @@
           <Select
             v-model="model.tokenB"
             :options="earnTokenList"
+            filterable
             :placeholder="$t('createFarm.createFarm3')" />
           <!-- <el-select
             v-model="model.tokenB"

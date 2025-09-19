@@ -214,7 +214,7 @@ import { superLong, checkCanToL1OnCurrent, toThousands } from '@/utils/util'
 import { useWalletStore } from '@/store/wallet'
 import useAssetsList from './useAssetsList'
 import { specialChain } from '@/hooks/useEthereum'
-import storage from '@/utils/storage'
+import config from '@/config'
 
 import { AssetItemType, rootCmpKey, TransferType } from './types'
 
@@ -255,13 +255,13 @@ const transferAsset = ref<AssetItemType>({} as AssetItemType) // 当前交易的
 const assetCanCross = ref(true)
 
 const BTC = computed(() => {
-  return allAssetsList.value.find(v => v.assetKey === '9-787')
+  return allAssetsList.value.find(v => v.assetKey === config.BTCKey)
 })
 
 const getSwapLink = (asset: AssetItemType) => {
   const BTCKey = BTC.value?.assetKey
   if (asset.assetKey === BTCKey) {
-    return `/swap/${BTCKey}/9-1`
+    return `/swap/${BTCKey}/${config.NVTKey}`
   } else {
     return `/swap/${BTCKey}/${asset.assetKey}`
   }

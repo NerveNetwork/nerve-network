@@ -40,7 +40,9 @@ const config = {
     pushFeeScale: '',
     trxWithdrawFee: '40000000',
     explorerUrl: 'http://beta.scan.nerve.network',
-    bridgeUrl: 'http://beta.bridge.nerve.network/'
+    bridgeUrl: 'http://beta.bridge.nerve.network/',
+    NVTKey: '5-1',
+    BTCKey: '2-1'
   },
   prod: {
     isBeta: false,
@@ -65,7 +67,9 @@ const config = {
     pushFeeScale: 6,
     trxWithdrawFee: '40000000',
     explorerUrl: 'https://scan.nerve.network',
-    bridgeUrl: 'https://bridge.nerve.network/'
+    bridgeUrl: 'https://bridge.nerve.network/',
+    NVTKey: '9-1',
+    BTCKey: '9-787'
   }
 };
 

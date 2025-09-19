@@ -13,6 +13,7 @@
         <Select
           v-model="model.tick"
           :options="_assetsList"
+          filterable
           :placeholder="$t('mint.mint3')"
           dropdown-class="max-h-[300px]" />
         <!-- <el-select
@@ -43,6 +44,7 @@
           <Select
             v-model="model.feetick"
             :options="_assetsList"
+            filterable
             :placeholder="$t('mint.mint72')"
             class="w-40"
             dropdown-class="max-h-[300px]"

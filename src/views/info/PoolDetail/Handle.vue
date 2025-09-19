@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <Button class="h-10 w-32 mr-3" variant="outline" @click="addLiquidity">
+    <Button class="mr-3 h-10 w-32" variant="outline" @click="addLiquidity">
       {{ $t('info.info17') }}
     </Button>
     <Button class="h-10 w-32" @click="swap">
@@ -12,6 +12,7 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router'
 import Button from '@/components/Base/Button/index.vue'
+import config from '@/config'
 
 const props = defineProps<{
   info: any
@@ -25,7 +26,9 @@ function addLiquidity() {
     const { token0, token1 } = props.info
     router.push(`/liquidity/${token0}/${token1}`)
   } else {
-    router.push(`/liquidity/${props.info.assetKey}`)
+    router.push(
+      `/liquidity/${props.info.assetKey}/${props.info.assetKey === config.BTCKey ? config.NVTKey : config.BTCKey}`
+    )
   }
 }
 function swap() {

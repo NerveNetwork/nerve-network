@@ -48,7 +48,7 @@
     <router-link :to="{ name: 'mintDeploy' }">
       <Button class="h-9 px-2">
         <span class="mr-1">{{ $t('mint.mint1') }}</span>
-        <i-custom-add />
+        <i-custom-add class="text-white" />
       </Button>
     </router-link>
   </div>

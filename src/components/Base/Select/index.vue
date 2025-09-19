@@ -7,18 +7,33 @@
     @keydown.enter="toggleDropdown"
     @keydown.space.prevent="toggleDropdown"
     @keydown.escape="closeDropdown"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
     tabindex="0"
     role="combobox"
     :aria-expanded="isOpen"
     :aria-haspopup="true">
     <!-- content -->
-     <div :class="displayTextClasses">
-        <div class="overflow-hidden">{{ displayText }}</div>
-     </div>
+    <div :class="displayTextClasses">
+      <input
+        v-if="filterable"
+        ref="filterInputRef"
+        v-model="filterText"
+        :class="filterInputClasses"
+        :placeholder="selectedOption?.label || placeholder"
+        @input="handleFilterInput"
+        @keydown.enter.stop="handleEnterKey"
+        @keydown.escape.stop="closeDropdown"
+        @keydown.arrow-down.prevent="handleArrowDown"
+        @keydown.arrow-up.prevent="handleArrowUp" />
+      <div v-else class="overflow-hidden">{{ displayText }}</div>
+    </div>
 
-    <!-- drop -->
-    <div :class="arrowClasses">
+    <!-- drop/clear icon -->
+    <div :class="arrowClasses" @click.stop="handleIconClick">
+      <i-custom-close v-if="showClearIcon" class="h-3 w-3 text-label" />
       <svg
+        v-else
         width="8"
         height="8"
         viewBox="0 0 8 8"
@@ -48,11 +63,11 @@
         :style="dropdownStyle"
         @click.stop>
         <div
-          v-for="option in normalizedOptions"
+          v-for="option in filteredOptions"
           :key="getOptionValue(option)"
           :class="getOptionClasses(option)"
           @click="selectOption(option)"
-          @mouseenter="hoveredIndex = normalizedOptions.indexOf(option)"
+          @mouseenter="hoveredIndex = filteredOptions.indexOf(option)"
           @mouseleave="hoveredIndex = -1"
           role="option"
           :aria-selected="isSelected(option)">
@@ -60,7 +75,7 @@
         </div>
 
         <div
-          v-if="normalizedOptions.length === 0"
+          v-if="filteredOptions.length === 0"
           class="px-4 py-3 text-sm text-label">
           No Data
         </div>
@@ -88,6 +103,8 @@ interface Props {
   class?: string
   maxHeight?: string
   dropdownClass?: string
+  filterable?: boolean
+  clearable?: boolean
 }
 
 interface Emits {
@@ -100,7 +117,9 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: 'Select',
   disabled: false,
   class: '',
-  maxHeight: '200px'
+  maxHeight: '200px',
+  filterable: false,
+  clearable: false
 })
 
 const emit = defineEmits<Emits>()
@@ -108,9 +127,12 @@ const emit = defineEmits<Emits>()
 const { elValidate } = useValidate()
 
 const selectRef = ref<HTMLElement>()
+const filterInputRef = ref<HTMLInputElement>()
 const isOpen = ref(false)
 const hoveredIndex = ref(-1)
 const dropdownStyle = ref({})
+const filterText = ref('')
+const isHovered = ref(false)
 
 const normalizedOptions = computed(() => {
   return props.options.map(option => {
@@ -121,6 +143,15 @@ const normalizedOptions = computed(() => {
   })
 })
 
+const filteredOptions = computed(() => {
+  if (!props.filterable || !filterText.value) {
+    return normalizedOptions.value
+  }
+  return normalizedOptions.value.filter(option =>
+    option.label.toLowerCase().includes(filterText.value.toLowerCase())
+  )
+})
+
 const selectedOption = computed(() => {
   return normalizedOptions.value.find(
     option => option.value === props.modelValue
@@ -129,6 +160,24 @@ const selectedOption = computed(() => {
 
 const displayText = computed(() => {
   return selectedOption.value?.label || props.placeholder
+})
+
+const showClearIcon = computed(() => {
+  return (
+    props.clearable &&
+    !isOpen.value &&
+    isHovered.value &&
+    props.modelValue !== undefined &&
+    props.modelValue !== null &&
+    props.modelValue !== ''
+  )
+})
+
+const filterInputClasses = computed(() => {
+  return clsxm(
+    'w-full bg-transparent outline-none text-sm text-white',
+    selectedOption.value?.value ? 'placeholder-white' : 'placeholder-label'
+  )
 })
 
 const triggerClasses = computed(() => {
@@ -150,7 +199,10 @@ const triggerClasses = computed(() => {
 })
 
 const displayTextClasses = computed(() => {
-  return clsxm('whitespace-nowrap flex-1 text-sm overflow-hidden pr-1.5', selectedOption.value ? 'text-white' : 'text-label')
+  return clsxm(
+    'whitespace-nowrap flex-1 text-sm overflow-hidden pr-1.5',
+    selectedOption.value ? 'text-white' : 'text-label'
+  )
 })
 
 const arrowClasses = computed(() => {
@@ -181,7 +233,7 @@ const isSelected = (option: Option) => {
 }
 
 const getOptionClasses = (option: Option) => {
-  const index = normalizedOptions.value.indexOf(option)
+  const index = filteredOptions.value.indexOf(option)
   return clsxm(
     'px-5 py-3 text-sm cursor-pointer transition-colors duration-150',
     {
@@ -208,11 +260,18 @@ const openDropdown = async () => {
   isOpen.value = true
   await nextTick()
   updateDropdownPosition()
+
+  // Focus filter input if filterable
+  if (props.filterable && filterInputRef.value) {
+    await nextTick()
+    filterInputRef.value.focus()
+  }
 }
 
 const closeDropdown = () => {
   isOpen.value = false
   hoveredIndex.value = -1
+  filterText.value = ''
 }
 
 const selectOption = (option: Option) => {
@@ -222,6 +281,57 @@ const selectOption = (option: Option) => {
   emit('change', option.value, option)
   elValidate('change')
   closeDropdown()
+}
+
+const clearValue = () => {
+  emit('update:modelValue', undefined)
+  emit('change', undefined, { label: '', value: undefined })
+  elValidate('change')
+}
+
+const handleMouseEnter = () => {
+  isHovered.value = true
+}
+
+const handleMouseLeave = () => {
+  isHovered.value = false
+}
+
+const handleIconClick = () => {
+  if (showClearIcon.value && selectedOption.value?.value) {
+    clearValue()
+  } else {
+    toggleDropdown()
+  }
+}
+
+const handleFilterInput = () => {
+  hoveredIndex.value = -1
+}
+
+const handleEnterKey = () => {
+  if (filteredOptions.value.length > 0) {
+    const targetIndex = hoveredIndex.value >= 0 ? hoveredIndex.value : 0
+    selectOption(filteredOptions.value[targetIndex])
+  }
+}
+
+const handleArrowDown = () => {
+  if (filteredOptions.value.length === 0) return
+
+  hoveredIndex.value =
+    hoveredIndex.value < filteredOptions.value.length - 1
+      ? hoveredIndex.value + 1
+      : 0
+}
+
+const handleArrowUp = () => {
+  if (filteredOptions.value.length === 0) return
+
+  hoveredIndex.value =
+    hoveredIndex.value > 0
+      ? hoveredIndex.value - 1
+      : filteredOptions.value.length - 1
 }
 
 const updateDropdownPosition = () => {

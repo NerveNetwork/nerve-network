@@ -7,6 +7,7 @@
           <Select
             v-model="model.L1Chain"
             :options="chains"
+            filterable
             placeholder="Select a Native Chain" />
         </el-form-item>
         <el-form-item label="Token Contract" prop="tokenContract">
@@ -112,7 +113,7 @@ async function validateContarct(rule: any, value: any, callback: any) {
 watch(
   () => model,
   () => {
-    listSuccess.value = true
+    listSuccess.value = false
   },
   { deep: true }
 )
@@ -124,7 +125,6 @@ watch(
     model.tokenName = ''
     model.tokenSymbol = ''
     model.tokenDecimals = ''
-    listSuccess.value = false
     if (val) {
       const chain = Object.values(_networkInfo).find(
         v => Number(model.L1Chain) === v.chainId

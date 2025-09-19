@@ -13,6 +13,7 @@
           <Select
             v-model="model.token"
             :options="tokenList"
+            filterable
             placeholder="Select a token asset" />
           <!-- <el-select
             v-model="model.token"

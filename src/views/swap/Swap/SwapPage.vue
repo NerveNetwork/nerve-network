@@ -5,6 +5,7 @@
       :chart-loading="chartLoading"
       :list-loading="listLoading"
       :line-data="lineData"
+      :assetInfo="assetInfo"
       :swapSymbol="swapSymbol"
       :list="orderList"
       v-model:pager="pager"
@@ -28,6 +29,7 @@
         :chart-loading="chartLoading"
         :list-loading="listLoading"
         :line-data="lineData"
+        :assetInfo="assetInfo"
         :swapSymbol="swapSymbol"
         :list="orderList"
         destroy-on-close
@@ -62,8 +64,9 @@ const {
   selectAsset,
   selectedAsset,
   chartLoading,
+  assetInfo,
   lineData,
-  getChartData
+  getAssetInfo
 } = useSelectAsset()
 
 // url带交易对信息时请求一次订单列表信息
@@ -71,7 +74,7 @@ watch(
   defaultAsset,
   val => {
     if (val.to) {
-      getChartData(val.from, val.to)
+      getAssetInfo(val.from, val.to)
       selectAsset(val.from, val.to)
     }
   },
@@ -94,7 +97,7 @@ watch(
 
 function onSelectAsset(from: AssetItem, to: AssetItem) {
   replaceRoute(from, to)
-  getChartData(from, to)
+  getAssetInfo(from, to)
   changeOrderList(from, to)
 }
 
