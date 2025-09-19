@@ -3,14 +3,14 @@
     <Overview
       v-if="showOverview && !isMobile"
       :chart-loading="chartLoading"
-      :list-loading="listLoading"
       :line-data="lineData"
+      :txLoading="txLoading"
+      :holdersLoading="holdersLoading"
+      :txList="txList"
+      :holdersList="holdersList"
       :assetInfo="assetInfo"
       :swapSymbol="swapSymbol"
-      :list="orderList"
-      v-model:pager="pager"
-      v-model:txType="txType"
-      @changeList="changeList" />
+      v-model:txType="txType" />
     <Swap
       :assetsList="assetsList"
       :hotAssets="hotAssets"
@@ -27,15 +27,15 @@
       @closed="showOverview = false">
       <Overview
         :chart-loading="chartLoading"
-        :list-loading="listLoading"
+        :txLoading="txLoading"
         :line-data="lineData"
+        :holdersLoading="holdersLoading"
+        :txList="txList"
+        :holdersList="holdersList"
         :assetInfo="assetInfo"
         :swapSymbol="swapSymbol"
-        :list="orderList"
         destroy-on-close
-        v-model:pager="pager"
-        v-model:txType="txType"
-        @changeList="changeList" />
+        v-model:txType="txType" />
     </Modal>
   </div>
 </template>
@@ -57,16 +57,18 @@ const { assetsList, defaultAsset, hotAssets, replaceRoute } = useAsset()
 
 const {
   swapSymbol,
-  listLoading,
-  orderList,
-  pager,
+  txLoading,
+  txList,
+  holdersLoading,
+  holdersList,
   txType,
-  selectAsset,
   selectedAsset,
   chartLoading,
   assetInfo,
   lineData,
-  getAssetInfo
+  getAssetInfo,
+  getTxList,
+  getHoldersList
 } = useSelectAsset()
 
 // url带交易对信息时请求一次订单列表信息
@@ -75,7 +77,8 @@ watch(
   val => {
     if (val.to) {
       getAssetInfo(val.from, val.to)
-      selectAsset(val.from, val.to)
+      getTxList(val.to)
+      getHoldersList(val.to)
     }
   },
   { immediate: true }
@@ -84,8 +87,8 @@ watch(
   assetsList,
   val => {
     if (val && val.length) {
-      if (selectedAsset.value) {
-        selectAsset(selectedAsset.value.from, selectedAsset.value.to)
+      if (selectedAsset.value?.to) {
+        getTxList(selectedAsset.value.to)
       }
     }
   },
@@ -97,34 +100,21 @@ watch(
 
 function onSelectAsset(from: AssetItem, to: AssetItem) {
   replaceRoute(from, to)
-  getAssetInfo(from, to)
-  changeOrderList(from, to)
+  if (to.assetKey !== assetInfo.value.assetKey) {
+    getAssetInfo(from, to)
+    resetTxList(to)
+    resetHoldersList(to)
+  }
 }
 
 // 切换兑换资产后刷新兑换记录
-function changeOrderList(from: AssetItem, to: AssetItem) {
-  pager.index = 1
-  pager.total = 0
-  listLoading.value = true
-  selectAsset(from, to)
+function resetTxList(asset: AssetItem) {
+  txLoading.value = true
+  getTxList(asset)
 }
 
-// 分页
-function changeList() {
-  listLoading.value = true
-  selectAsset(selectedAsset.value?.from, selectedAsset.value?.to)
+function resetHoldersList(asset: AssetItem) {
+  getHoldersList(asset)
 }
 
-watch(
-  () => txType.value,
-  val => {
-    if (val) {
-      pager.index = 1
-      pager.total = 0
-      // orderList.value = []
-      listLoading.value = true
-      selectAsset(selectedAsset.value?.from, selectedAsset.value?.to)
-    }
-  }
-)
 </script>

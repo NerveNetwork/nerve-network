@@ -42,6 +42,7 @@
       </div>
     </div>
     <PoolsTable
+      class="mb-6"
       :title="$t('info.info2')"
       :data="pools"
       :total="poolTotal"

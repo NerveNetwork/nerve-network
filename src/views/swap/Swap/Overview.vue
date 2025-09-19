@@ -41,47 +41,40 @@
         <div
           class="h-[328px] rounded-xl bg-[#101116] p-2 xl:p-5"
           v-if="lineData.length">
-          <Chart
-            type="line"
-            :options="lineOptions"
-            height="100%"
-            @chartMouseMove="chartHover" />
+          <Chart type="line" :options="lineOptions" height="100%" />
         </div>
       </template>
     </div>
 
     <Tabs :activeTab="txType" :tabs="tabs" @change="changeTxType" />
-    <template v-if="listLoading">
-      <div class="flex flex-col gap-4">
-        <Skeleton class="h-9" />
-        <Skeleton class="h-9" />
-      </div>
-    </template>
-    <template v-else>
-      <TxList :list="list" v-show="txType === 'swap'"></TxList>
-      <TxList :list="list" v-show="txType === 'multiRouting'"></TxList>
-      <Pagination
-        class="pt-4"
-        v-model:current-page="newPager.index"
-        :page-size="newPager.size"
-        :total="newPager.total"
-        @change="changeList" />
-    </template>
+
+    <TxList
+      v-show="txType === 'tx'"
+      :loading="txLoading"
+      :list="txList"
+      :asset-key="assetInfo.assetKey" />
+
+    <HolderList
+      v-show="txType === 'holders'"
+      :loading="holdersLoading"
+      :list="holdersList"
+      :asset-key="assetInfo.assetKey" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import SymbolIcon from '@/components/SymbolIcon.vue'
 import Chart from '@/components/Charts/index.vue'
 import Tabs from '@/components/Base/Tabs/index.vue'
 import TxList from './TxList.vue'
-import Pagination from '@/components/Base/Pagination/index.vue'
+import HolderList from './HolderList.vue'
 import Skeleton from '@/components/Base/Skeleton/index.vue'
-import { formatNumber, priceFormat, toThousands } from '@/utils/util'
+import { formatNumber, toThousands } from '@/utils/util'
 import dayjs from 'dayjs'
-import { SwapSymbol, OrderItem, Pager } from '../types'
-import { ChartItem } from '@/views/info/types'
+import { SwapSymbol } from '../types'
+import { ChartItem, TxItem } from '@/views/info/types'
+import { IHolder } from '@/service/api/types/dataInfo'
 import config from '@/config'
 
 interface Props {
@@ -93,38 +86,36 @@ interface Props {
   }
   swapSymbol: SwapSymbol
   lineData: ChartItem[]
-  list: OrderItem[]
-  pager: Pager
   txType: string
+  txList: TxItem[]
+  holdersList: IHolder[]
   chartLoading: boolean
-  listLoading: boolean
+  txLoading: boolean
+  holdersLoading: boolean
 }
 
 interface Emit {
-  (e: 'update:pager', pager: Pager): void
   (e: 'update:txType', type: string): void
-  (e: 'changeList'): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
   swapSymbol: () => ({}) as SwapSymbol,
   lineData: () => [],
-  list: () => [],
-  pager: () => ({}) as Pager
+  txList: () => []
 })
 const emit = defineEmits<Emit>()
 
-const defaultIndex = computed(() => {
-  return props.lineData.length - 1
-})
+// const defaultIndex = computed(() => {
+//   return props.lineData.length - 1
+// })
 
-const activeIndex = ref(null)
+// const activeIndex = ref(null)
 
-const totalVal = computed(() => {
-  if (!props.lineData?.length) return 0
-  const index = activeIndex.value ? activeIndex.value : defaultIndex.value
-  return priceFormat(props.lineData[index!].value)
-})
+// const totalVal = computed(() => {
+//   if (!props.lineData?.length) return 0
+//   const index = activeIndex.value ? activeIndex.value : defaultIndex.value
+//   return priceFormat(props.lineData[index!].value)
+// })
 
 const lineOptions = computed(() => {
   return {
@@ -220,32 +211,21 @@ const lineOptions = computed(() => {
 
 const tabs = computed(() => {
   return [
-    { label: 'Transaction', value: 'swap' },
-    { label: 'Multi-Routing', value: 'multiRouting' }
+    { label: 'Transactions', value: 'tx' },
+    { label: 'Holders', value: 'holders' }
   ]
 })
 
-function chartHover(index: number | null) {
-  if (index === null || !props.lineData[index]) {
-    activeIndex.value = null
-  } else {
-    activeIndex.value = index
-  }
-}
+// function chartHover(index: number | null) {
+//   if (index === null || !props.lineData[index]) {
+//     activeIndex.value = null
+//   } else {
+//     activeIndex.value = index
+//   }
+// }
 
-const newPager = computed({
-  get() {
-    return props.pager
-  },
-  set(val) {
-    emit('update:pager', val)
-  }
-})
 function changeTxType(type: string) {
   if (type === props.txType) return
   emit('update:txType', type)
-}
-function changeList() {
-  emit('changeList')
 }
 </script>

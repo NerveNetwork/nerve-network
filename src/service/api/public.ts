@@ -223,6 +223,11 @@ export async function getTx(hash: string) {
   return res?.result || null
 }
 
+export async function getTokenHolders(assetKey: string) {
+  const res = await http.rPost('getHoldersByAssetKey', [assetKey, 1, 6])
+  return res?.result?.list || []
+}
+
 export async function getTronTx(hash: string) {
   const origin = config.isBeta
     ? 'https://shastapi.tronscan.org'
