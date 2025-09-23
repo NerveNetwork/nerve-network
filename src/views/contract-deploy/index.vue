@@ -195,6 +195,7 @@ function validateSymbol(rule: any, value: any, callback: any) {
 watch(
   () => chain.value,
   val => {
+    tokenContract.value = ''
     if (val) {
       const chainInfo = Object.values(_networkInfo).find(
         v => v.name === val
@@ -202,7 +203,10 @@ watch(
       if (chainInfo) {
         L1ChainType = chainInfo.type;
         L1ChainId = chainInfo.chainId;
-        getDeployMinter(L1ChainId).then(res => (model.minter = res));
+        getDeployMinter(L1ChainId).then(res => {
+          model.minter = res
+          form.value?.validateField('minter')
+        });
       } else {
         L1ChainType = '';
         L1ChainId = 0;
@@ -230,11 +234,10 @@ const tokenList = computed(() => {
 });
 
 watch(
-  () => model,
+  () => model.token,
   () => {
     tokenContract.value = ''
-  },
-  { deep: true }
+  }
 )
 
 watch(

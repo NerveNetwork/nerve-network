@@ -8,9 +8,7 @@
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
       @after-leave="handleClosed">
-      <div
-        v-if="modelValue"
-        class="fixed inset-0 z-[9999]">
+      <div v-if="modelValue" class="fixed inset-0 z-[9999]">
         <!-- mask -->
         <div class="fixed inset-0 bg-mask" @click="handleBackdropClick"></div>
 
@@ -18,12 +16,14 @@
         <div
           :class="
             clsxm(
-              'relative mx-auto mt-[20vh] mb-14 min-w-[350px] max-w-[90vw] xl:max-w-2xl overflow-hidden rounded-xl bg-card',
+              'relative mx-auto mb-14 mt-[20vh] min-w-[350px] max-w-[90vw] overflow-hidden rounded-xl bg-card xl:max-w-2xl',
               containerClass
             )
           ">
           <!-- title -->
-          <div v-if="showTitle" class="relative h-[50px] w-full px-4 sm:h-[70px] sm:px-6">
+          <div
+            v-if="showTitle"
+            class="relative h-[50px] w-full px-4 sm:h-[70px] sm:px-6">
             <button
               v-if="showBack"
               class="group absolute left-4 top-4 rounded-full p-1.5 transition-colors duration-300 hover:bg-card2"
@@ -53,7 +53,13 @@
           </div>
 
           <!-- body -->
-          <div :class="clsxm('p-4 pt-0 sm:p-6 sm:pt-0 max-h-[80vh] overflow-y-auto no-scrollbar', bodyClass)">
+          <div
+            :class="
+              clsxm(
+                'no-scrollbar max-h-[80vh] overflow-y-auto p-4 pt-0 sm:p-6 sm:pt-0',
+                bodyClass
+              )
+            ">
             <slot />
           </div>
 
@@ -70,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 import clsxm from '@/utils/clsxm'
 
 const props = withDefaults(
@@ -124,6 +130,22 @@ const handleKeydown = (e: KeyboardEvent) => {
     handleBackdropClick()
   }
 }
+
+const bodyStyle = document.body.style
+watch(
+  () => props.modelValue,
+  val => {
+    if (val) {
+      const scrollBarWidth =
+        window.innerWidth - document.documentElement.clientWidth
+      bodyStyle.overflow = 'hidden'
+      bodyStyle.paddingRight = `${scrollBarWidth}px`
+    } else {
+      bodyStyle.overflow = ''
+      bodyStyle.paddingRight = ''
+    }
+  }
+)
 
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)

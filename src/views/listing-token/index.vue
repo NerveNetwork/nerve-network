@@ -98,7 +98,7 @@ async function validateContarct(rule: any, value: any, callback: any) {
   }
   try {
     const valid = provider.validateAddress(value)
-    console.log(valid, 234)
+    // console.log(valid, 234)
     if (valid) {
       getTokenInfo()
       callback()
@@ -111,11 +111,10 @@ async function validateContarct(rule: any, value: any, callback: any) {
 }
 
 watch(
-  () => model,
+  () => model.tokenContract,
   () => {
     listSuccess.value = false
-  },
-  { deep: true }
+  }
 )
 
 watch(
