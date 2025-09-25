@@ -27,7 +27,7 @@
               :class="
                 clsxm(
                   'flex h-full w-full items-center justify-center overflow-hidden',
-                  !canRefresh && 'animate-refreshing origin-center'
+                  !canRefresh && 'origin-center animate-refreshing'
                 )
               ">
               <i-custom-refresh />
@@ -182,10 +182,10 @@
         v-model:slippageTolerance="state.protectPercent"
         @close="setUserSlippage" />
     </div>
-    <p class="text-center text-primary">
-      <router-link to="/asset-center">{{
-        $t('trading.trading49')
-      }}</router-link>
+    <p class="text-center text-primary btn">
+      <router-link to="/asset-center">
+        {{ $t('trading.trading49') }}
+      </router-link>
     </p>
   </div>
 </template>
@@ -310,7 +310,7 @@ async function selectAsset(asset: AssetItem, type: string) {
     if (state.toAsset && state.toAsset.assetKey === asset.assetKey) {
       // selected from asset is to asset
       state.toAsset = { ...state.fromAsset } as AssetItem
-      state.fromAsset = asset      
+      state.fromAsset = asset
     } else {
       state.fromAsset = asset
       // if (state.toAsset) {
@@ -351,7 +351,7 @@ async function selectAsset(asset: AssetItem, type: string) {
   ) {
     swap.checkIsSpecialSwap()
     // TODO
-    
+
     storeSwapPairInfo(false, false)
     storeSwapPairInfo(false, true)
   }

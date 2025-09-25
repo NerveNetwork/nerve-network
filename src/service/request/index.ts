@@ -2,7 +2,6 @@ import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { createRPCParams } from '@/utils/util';
 import config from '@/config';
-console.log(axios.defaults.headers, 234);
 
 class Request {
   instance: AxiosInstance;

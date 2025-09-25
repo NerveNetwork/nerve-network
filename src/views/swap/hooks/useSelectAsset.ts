@@ -18,12 +18,12 @@ import {
   Times
 } from '@/utils/util'
 import { SwapSymbol, DefaultAsset, AssetItem } from '../types'
-import { NDecimals, NSymbol, replaceNULS } from '@/constants/constants'
+import { NDecimals, NKey, NSymbol, replaceNULS } from '@/constants/constants'
 import { ChartItem, TxItem, TxType } from '@/views/info/types'
 import { IHolder } from '@/service/api/types/dataInfo'
 
 export default function useSelectAsset() {
-  const walletStore = useWalletStore()
+  // const walletStore = useWalletStore()
 
   const selectedAsset = ref<DefaultAsset>()
   const swapSymbol = ref<SwapSymbol>({} as SwapSymbol)
@@ -45,8 +45,8 @@ export default function useSelectAsset() {
 
   const txType = ref<'tx' | 'holders'>('tx') // tx | holders
 
-  const getAssetInfo = async (fromAsset?: AssetItem, toAsset?: AssetItem) => {
-    if (!walletStore.nerveAddress || !fromAsset || !toAsset) return
+  const getAssetInfo = async (toAsset?: AssetItem) => {
+    if (!toAsset) return
 
     const assetKey = toAsset.assetKey
     if (assetKey === assetInfo.value.assetKey) return
@@ -66,6 +66,12 @@ export default function useSelectAsset() {
     // const res = await getTokenAnalytics(toAsset.assetKey)
     chartLoading.value = false
     if (tokenInfo) {
+      const key = tokenInfo.assetChainId + '-' + tokenInfo.assetId
+      if (key === NKey) {
+        tokenInfo.symbol = NSymbol
+        tokenInfo.decimals = NDecimals
+      }
+      tokenInfo.symbol = replaceNULS(tokenInfo.symbol)
       assetInfo.value = {
         assetKey,
         symbol: tokenInfo.symbol,

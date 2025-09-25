@@ -76,7 +76,7 @@ watch(
   defaultAsset,
   val => {
     if (val.to) {
-      getAssetInfo(val.from, val.to)
+      getAssetInfo(val.to)
       getTxList(val.to)
       getHoldersList(val.to)
     }
@@ -101,7 +101,7 @@ watch(
 function onSelectAsset(from: AssetItem, to: AssetItem) {
   replaceRoute(from, to)
   if (to.assetKey !== assetInfo.value.assetKey) {
-    getAssetInfo(from, to)
+    getAssetInfo(to)
     resetTxList(to)
     resetHoldersList(to)
   }
