@@ -42,8 +42,9 @@ export function getNAddressByPub(pub, isNULS = false) {
 }
 
 function checkIsNULSLedger(provider) {
-  const _provider = getWebProvider(provider);
-  return _provider?.isNabox && _provider?.isNULSLedger;
+  return false
+  // const _provider = getWebProvider(provider);
+  // return _provider?.isNabox && _provider?.isNULSLedger;
 }
 
 export function checkProvider(provider) {
