@@ -12,7 +12,7 @@ import OKXLogo from '@/assets/img/provider/metax.svg';
 import safepalLogo from '@/assets/img/provider/safepal.svg';
 import coin98Logo from '@/assets/img/provider/coin98.svg';
 // import bitkeep from '@/assets/img/provider/bitkeep.jpg';
-import BitgetLogo from '@/assets/img/provider/bitget.svg';
+import BitgetLogo from '@/assets/img/provider/Bitget.svg';
 import ontoLogo from '@/assets/img/provider/ONTO.svg';
 import unisatLogo from '@/assets/img/provider/unisat.svg';
 import tronLogo from '@/assets/img/provider/tronlink.svg';
