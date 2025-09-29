@@ -828,7 +828,7 @@ export const _networkInfo: IChain = {
     name: 'Akashic',
     chainName: 'Akashic',
     chainId: 144,
-    assetKey: isBeta ? '5-193' : '9-907',
+    assetKey: isBeta ? '5-193' : '9-924',
     origin: Origin.Akashic,
     mainAsset: 'AKC',
     nativeId: '0x236e',
