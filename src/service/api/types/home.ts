@@ -8,6 +8,7 @@ export interface OverviewData {
 }
 
 export interface SummaryData {
+  amountUsdtToday: string
   amountUsdtValue: string;
   tvl: string;
   maxFarmApr: string;

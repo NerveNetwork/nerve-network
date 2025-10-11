@@ -39,7 +39,7 @@ const iconSrc = computed(() => {
   if (!props.assetKey || !logoConfig[props.assetKey]) {
     return getIconSrc(tokenSymbol.value || '');
   } else {
-    console.log(logoConfig[props.assetKey], 234);
+    // console.log(logoConfig[props.assetKey], 234);
     return logoConfig[props.assetKey];
   }
 });

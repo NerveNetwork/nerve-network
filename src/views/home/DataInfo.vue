@@ -20,10 +20,10 @@
       </div>
       <div class="p-3 xl:p-0 flex flex-col xl:flex-row items-center">
         <div class="flex items-center justify-between w-full xl:flex-col xl:w-auto xl:flex-1 xl:py-[50px]">
-          <p class="text-label xl:mb-2">{{ $t('home.home7') }}</p>
+          <p class="text-label xl:mb-2">Volume Today</p>
           <p>
             <span class="linear-data">
-              ${{ $format(summaryData.txAmount) }}
+              ${{ $format(summaryData.vol_today) }}
             </span>
 
             <!--        $<CountUp :end-val="summaryData.txAmount" />-->
@@ -60,6 +60,7 @@ import { useObserveAnimate } from '@/hooks/useObserveAnimate'
 // import CountUp from '@/components/CountUp.vue';
 
 const summaryData = ref({
+  vol_today: '0',
   txAmount: '',
   tvl: '',
   apr: ''
@@ -72,7 +73,9 @@ const dataInfoRef = useObserveAnimate()
 
 onMounted(() => {
   getSummaryData().then(res => {
+    // console.log(res, '-=-=-=');
     summaryData.value = {
+      vol_today: divisionAndFix(res.amountUsdtToday, 18, 2),
       txAmount: divisionAndFix(res.amountUsdtValue, 18, 2),
       tvl: divisionAndFix(res.tvl, 18, 2),
       apr: res.maxFarmApr

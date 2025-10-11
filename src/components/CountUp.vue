@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch, withDefaults } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { CountUp, CountUpOptions } from 'countup.js';
 
 const props = withDefaults(
@@ -27,15 +27,16 @@ watch(
 
 const countUpDom = ref<HTMLElement>();
 
-let countUpInstance = null;
+let countUpInstance: CountUp;
 onMounted(() => {
-  countUpInstance = new CountUp(countUpDom.value, props.endVal, props.options);
+  if (!countUpDom.value) return
+  countUpInstance = new CountUp(countUpDom.value, +props.endVal, props.options);
   if (props.endVal) {
     update(props.endVal);
   }
 });
 
-function update(newEndVal) {
+function update(newEndVal: string | number) {
   return countUpInstance.update(newEndVal);
 }
 </script>
