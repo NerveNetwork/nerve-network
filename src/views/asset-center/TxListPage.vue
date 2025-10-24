@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, onUnmounted, computed } from 'vue'
+import { onMounted, ref, onUnmounted, computed, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import dayjs from 'dayjs'
 import nerveswap from 'nerveswap-sdk'
@@ -147,14 +147,35 @@ const walletStore = useWalletStore()
 const {
   nerveAddress,
   currentAddress: address,
-  showAddCrossTxID,
-  addressInfo
+  showAddCrossTxID
 } = storeToRefs(walletStore)
 
 const { toastSuccess, toastError } = useToast()
 
 const showAddFeeModal = ref(false)
 const addFeeTx = ref<TxInfo>({} as TxInfo)
+
+const accountTxs = ref<TxInfo[]>([])
+
+const getAccountTxs = () => {
+  const currentAccount: Account = getCurrentAccount(address.value)
+  if (!address.value || !currentAccount?.pub) {
+    accountTxs.value = []
+    return
+  }
+  const txs = currentAccount.txs || []
+  accountTxs.value = txs.sort((a, b) => (a.time > b.time ? -1 : 1))
+}
+
+watch(
+  () => address.value,
+  val => {
+    if (val) {
+      getAccountTxs()
+    }
+  },
+  { immediate: true }
+)
 
 let isQuery = false,
   timer: number
@@ -169,11 +190,12 @@ onUnmounted(() => {
   clearInterval(timer)
 })
 
-const accountTxs = computed(() => {
-  if (!addressInfo.value?.pub) return []
-  const txs = addressInfo.value.txs || []
-  return txs.sort((a, b) => (a.time > b.time ? -1 : 1))
-})
+// const accountTxs = computed(() => {
+//   if (!addressInfo.value?.pub) return []
+//   console.log(addressInfo.value, new Date().toISOString(), 2)
+//   const txs = addressInfo.value.txs || []
+//   return txs.sort((a, b) => (a.time > b.time ? -1 : 1))
+// })
 
 const newTxHash = ref('')
 const newTxLoading = ref(false)
@@ -221,8 +243,9 @@ async function checkTxStatus() {
         })
         storage.set('accountList', accountList)
 
-        const account = getCurrentAccount(address.value)
-        walletStore.changeAccount(account)
+        /* const account = getCurrentAccount(address.value)
+        walletStore.changeAccount(account) */
+        updateAccountInfo()
       }
     } catch (e) {
       //
@@ -411,5 +434,6 @@ const onAddFee = () => {
 const updateAccountInfo = () => {
   const account = getCurrentAccount(address.value)
   walletStore.changeAccount(account)
+  getAccountTxs()
 }
 </script>
