@@ -920,3 +920,12 @@ export function getChainLogoById(sourceChainId: number, assetChainId: number) {
   }
   return logo
 }
+
+export const H_NULS = {
+  rpcUrl: 'https://api.nuls.io/',
+  symbol: 'NULS',
+  assetKey: '5-194',
+  decimals: 8,
+  chainId: 301,
+  origin: 'https://nulscan.io/'
+}

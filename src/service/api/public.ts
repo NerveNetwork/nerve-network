@@ -325,3 +325,44 @@ export async function doListingToken(chainId: string, contract: string) {
     throw result.msg
   }
 }
+
+function createRPCParams(method: string, data: any) {
+  return {
+    jsonrpc: '2.0',
+    id: Math.floor(Math.random() * 1000),
+    method,
+    params: data
+  }
+}
+
+export async function getNULSBalanceList(
+  address: string,
+  assets: { chainId: number; assetId: number; contractAddress: string }[]
+) {
+  const res = await http.request<any>({
+    url: 'https://api.nuls.io/jsonrpc',
+    method: 'POST',
+    data: createRPCParams('getBalanceList', [1, address, assets])
+  })
+  return res.result
+}
+
+export async function getTokenAllowance(
+  owner: string,
+  tokenContract: string,
+  spenderContract: string
+) {
+  const params = createRPCParams('invokeView', [
+    1,
+    tokenContract,
+    'allowance',
+    '(Address owner, Address spender) return BigInteger',
+    [owner, spenderContract]
+  ])
+  const res = await http.request<any>({
+    url: 'https://api.nuls.io/jsonrpc',
+    method: 'POST',
+    data: params
+  })
+  return res?.result?.result || '0'
+}
