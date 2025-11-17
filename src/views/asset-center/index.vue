@@ -7,7 +7,8 @@
           v-if="showBtn"
           class="btn h-8 rounded-[10px] bg-[#202b39] px-1.5 md:px-2.5 text-primary"
           @click="walletStore.showAddCrossTxID = true">
-          Re-record Transaction Hash
+          <span class="hidden md:inline-block">Re-record Transaction Hash</span>
+          <i-custom-add class="inline-block w-5 h-5 md:hidden" />
         </button>
       </div>
       <router-view></router-view>
