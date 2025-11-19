@@ -334,6 +334,12 @@ export function openL1Explorer(chain: string, type: string, query: string) {
     } else if (type === 'hash') {
       url += '/html/tx-detail.html?id=' + query;
     }
+  } else if(chain === 'TBC') {
+    if (type === 'address') {
+      url += '/home/addressDetails?address=' + query;
+    } else if (type === 'hash') {
+      url += '/home/transactiondetails?transaction=' + query;
+    }
   } else {
     if (type === 'address') {
       url += '/address/' + query;
