@@ -1534,6 +1534,17 @@ export async function getTxHex({
   }
   if (type === 10) {
     if (provider.isNabox && provider.nai) {
+      // Hardware wallet, and it's on the Nuls chain.
+      if (provider.isNULSLedger && provider.naboxChainId === -1) {
+        const unsignedHex = await getUnSignHex(
+          type,
+          inputs,
+          outputs,
+          remark,
+          txData
+        );
+        return await window.nabox.signNULSTransaction({ txHex: unsignedHex });
+      }
       return await provider.nai.signTxHex({
         address: signAddress,
         txHex: tAssemble.txSerialize().toString('hex')
