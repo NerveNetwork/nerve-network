@@ -31,6 +31,22 @@
         </router-link>
       </div>
     </template>
+    <div
+      :class="
+        clsxm(
+          'block h-12 px-4 leading-[48px] text-text transition-colors duration-300 hover:text-primary xl:hidden'
+        )
+      ">
+      <a href="https://swapbox.nabox.io/" target="_blank"> Bridge </a>
+    </div>
+    <div
+      :class="
+        clsxm(
+          'block h-12 px-4 leading-[48px] text-text transition-colors duration-300 hover:text-primary xl:hidden'
+        )
+      ">
+      <a href="https://scan.nerve.network" target="_blank"> Explorer </a>
+    </div>
     <div class="hidden px-4 text-text xl:block">
       <More />
     </div>

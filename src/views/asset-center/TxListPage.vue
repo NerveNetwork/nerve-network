@@ -87,6 +87,9 @@
               <template v-else-if="item.type === 43 && item.hId !== 204">
                 <span></span>
                 <i-custom-loading class="h-3 w-3 animate-spin text-label" />
+                <button @click="handleShowAddFee(item)">
+                  <i-custom-add class="text-primary h-4 w-4" />
+                </button>
               </template>
               <template v-else>
                 <i-custom-loading class="h-3 w-3 animate-spin text-label" />

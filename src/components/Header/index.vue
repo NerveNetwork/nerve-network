@@ -13,6 +13,11 @@
       </div>
       <template v-if="!address || !nerveAddress">
         <AuthButton class="h-8 rounded-2xl px-5 text-xs" />
+        <img
+          class="ml-2.5 block cursor-pointer xl:hidden"
+          src="../../assets/img/icon-menu.svg"
+          alt=""
+          @click.stop="toggleShowMenu" />
       </template>
       <template v-else>
         <div class="flex">
@@ -70,7 +75,7 @@
               :L1Address="address"
               @disconnect="disconnectProvider">
               <div
-                class="flex cursor-pointer items-center transition-all duration-300 hover:opacity-70 pr-2.5">
+                class="flex cursor-pointer items-center pr-2.5 transition-all duration-300 hover:opacity-70">
                 <img
                   class="mr-1.5 h-6 w-6"
                   src="../../assets/img/nerveIcon.png"
