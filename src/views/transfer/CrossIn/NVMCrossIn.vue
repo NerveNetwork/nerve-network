@@ -127,6 +127,12 @@ watch(
 )
 
 const disableTransfer = computed(() => {
+  // console.log(!fee.value, '1')
+  // console.log(!amount.value, '2')
+  // console.log(!balance.value, '3')
+  // console.log(amountErrorTip.value, '4')
+  // console.log(authLoading.value, '5')
+  // console.log(wrongChain.value, '6')
   return !!(
     !fee.value ||
     !amount.value ||

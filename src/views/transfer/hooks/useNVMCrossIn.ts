@@ -9,13 +9,13 @@ import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 import { getGasLimit } from './useCrossOutFee'
 
 export const getNVMFee = async (chainName: string) => {
-    const chain = _networkInfo[chainName]
-    const { gasLimitOfWithdraw, extend } = await getGasLimit(chain.chainId)
-    const crossFee = await nerve.getNulsL1Fee(chain.chainId, chain.decimals)
-    const gasFee = gasLimitOfWithdraw * extend
-    let _fee = Number(crossFee) + gasFee + ''
-    return divisionDecimals(_fee, chain.decimals)
-  }
+  const chain = _networkInfo[chainName]
+  const { gasLimitOfWithdraw, extend } = await getGasLimit(chain.chainId)
+  const crossFee = await nerve.getNulsL1Fee(chain.chainId, chain.decimals)
+  const gasFee = gasLimitOfWithdraw * extend
+  let _fee = Number(crossFee) + gasFee + ''
+  return divisionDecimals(_fee, chain.decimals)
+}
 
 export default function useNVMCrossIn(currentChain: Ref<string>) {
   const chainInfo = computed(() => {
@@ -44,7 +44,8 @@ export default function useNVMCrossIn(currentChain: Ref<string>) {
 
   const fee = ref('')
   async function getFee() {
-    return getNVMFee(chainInfo.value.chainName)
+    const _fee = await getNVMFee(chainInfo.value.chainName)
+    fee.value = _fee
   }
 
   const needAuth = ref(false)
