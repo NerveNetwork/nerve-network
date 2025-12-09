@@ -38,7 +38,7 @@
 import { computed, ref, watch } from 'vue'
 import { useWalletStore } from '@/store/wallet'
 import clsxm from '@/utils/clsxm'
-import useEthereum, { AddChain, specialChain } from '@/hooks/useEthereum'
+import useEthereum, { AddChain, N_CHAINS, N_CHAIN } from '@/hooks/useEthereum'
 import {
   getProvider,
   getEVMProvider,
@@ -117,14 +117,16 @@ async function switchChain(item: ChainItem) {
   show.value = false
   // const { provider, providerType } = getProvider();
   try {
-    if (item.name === 'NULS' || item.name === 'NERVE') {
+    if (N_CHAINS.includes(item.name as N_CHAIN)) {
       if (provider.isNabox) {
-        await switchNULSChain(item.name)
+        await switchNULSChain(item.name as N_CHAIN)
         walletStore.changeNetwork(item.name)
         walletStore.changeIsWrongChain(false)
-        if (network !== 'NULS' && network !== 'NERVE') {
+        if (!N_CHAINS.includes(network as N_CHAIN)) {
+          // others chains need reload
           reload()
         }
+        // reload()
       } else {
         walletStore.changeNetwork(item.name)
         walletStore.changeIsWrongChain(false)
@@ -182,8 +184,7 @@ async function switchChain(item: ChainItem) {
         // newChainId !== oldChainId;
         if (
           specialChains.includes(network) ||
-          network === 'NULS' ||
-          network === 'NERVE'
+          N_CHAINS.includes(network as N_CHAIN)
         ) {
           storage.set('network', item.name)
           reload()

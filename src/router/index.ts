@@ -137,17 +137,7 @@ const routes: RouteRecordRaw[] = [
     path: '/listing-token',
     name: 'listingToken',
     component: ListingToken
-  },
-  {
-    path: '/nuls-transfer/:type?',
-    name: 'testNULSCross',
-    component: () => import('@/views/test-nuls-cross/index.vue'),
-    children: [
-      { path: '1', component: () => import('@/views/test-nuls-cross/CrossIn/index.vue') },
-      { path: '2', component: () => import('@/views/test-nuls-cross/CommonTransfer.vue') },
-      { path: '3', component: () => import('@/views/test-nuls-cross/Withdrawal.vue') }
-    ]
-  },
+  }
 ]
 
 const router = createRouter({

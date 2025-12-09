@@ -84,11 +84,11 @@
               <template v-if="item.status === 1">
                 <i-custom-success />
               </template>
-              <template v-else-if="item.type === 43 && item.hId !== 204">
+              <template v-else-if="item.type === 43 && !item.isNVM">
                 <span></span>
                 <i-custom-loading class="h-3 w-3 animate-spin text-label" />
                 <button @click="handleShowAddFee(item)">
-                  <i-custom-add class="text-primary h-4 w-4" />
+                  <i-custom-add class="h-4 w-4 text-primary" />
                 </button>
               </template>
               <template v-else>
@@ -143,8 +143,9 @@ import {
 import { useWalletStore } from '@/store/wallet'
 import useToast from '@/hooks/useToast'
 import { Account, TxInfo } from '@/store/types'
-import { getTronTx, getTx, getFCHTx } from '@/service/api'
+import { getTronTx, getTx, getFCHTx, getNVMTx } from '@/service/api'
 import storage from '@/utils/storage'
+import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 
 const walletStore = useWalletStore()
 const {
@@ -258,10 +259,13 @@ async function checkTxStatus() {
 }
 
 function openUrl(item: TxInfo) {
-  if (item.L1Chain) {
-    openL1Explorer(item.L1Chain, 'hash', item.hash)
+  const { isNVM, L1Chain, hash } = item
+  if (isNVM) {
+    openExplorer('hash', hash, false, L1Chain)
+  } else if (L1Chain) {
+    openL1Explorer(L1Chain, 'hash', hash)
   } else {
-    openExplorer('hash', item.hash)
+    openExplorer('hash', hash)
   }
 }
 
@@ -274,6 +278,8 @@ async function pollingTx(txs: TxInfo[]) {
       } else {
         return handleTx(v)
       }
+    } else if (v.L1Chain === 'ITAC') {
+      return handleNVMTx(v)
     } else if (v.L1Chain === 'TRON') {
       return handleTronTx(v)
     } else if (v.L1Chain === 'BTC') {
@@ -295,6 +301,16 @@ async function pollingTx(txs: TxInfo[]) {
 async function handleTx(tx: TxInfo) {
   const txState = { hash: tx.hash, result: null }
   const res = await getTx(tx.hash)
+  if (res) {
+    return { hash: tx.hash, result: res }
+  }
+  return txState
+}
+
+async function handleNVMTx(tx: TxInfo) {
+  const txState = { hash: tx.hash, result: null }
+  const { rpcUrl, N_ChainId } = _networkInfo[tx.L1Chain!]
+  const res = await getNVMTx(rpcUrl!, N_ChainId!, tx.hash)
   if (res) {
     return { hash: tx.hash, result: res }
   }
@@ -363,10 +379,17 @@ async function handleTBCTx(tx: TxInfo) {
 }
 
 async function handleEVMTx(tx: TxInfo) {
-  const transfer = new ETransfer(tx.L1Chain)
-  return {
-    hash: tx.hash,
-    result: await transfer.provider.getTransactionReceipt(tx.hash)
+  try {
+    const transfer = new ETransfer(tx.L1Chain)
+    return {
+      hash: tx.hash,
+      result: await transfer.provider.getTransactionReceipt(tx.hash)
+    }
+  } catch (e) {
+    return {
+      hash: tx.hash,
+      result: null
+    }
   }
 }
 

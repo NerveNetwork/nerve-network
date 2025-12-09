@@ -72,6 +72,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
+import nerve from 'nerve-sdk-js'
 import useToast from '@/hooks/useToast'
 import CustomInput from '@/components/CustomInput.vue'
 import Checkbox from '@/components/Base/Checkbox/index.vue'
@@ -130,12 +131,18 @@ const toAddress = ref(currentAddress.value)
 const addressError = ref('')
 const fee = ref('')
 const confirmTip = ref(false)
+
 watch(
   () => toAddress.value,
   val => {
     if (val) {
       let flag = true
+      const { type } = chainInfo.value
       try {
+        if (type === 'NVM') {
+          validateNVMAddress(val)
+          return
+        }
         if (chain.value === 'TRON') {
           const tron = new TronLinkApi()
           flag = tron.validAddress(val)
@@ -154,6 +161,26 @@ watch(
     }
   }
 )
+
+const validateNVMAddress = (address: string) => {
+  if (address) {
+    let res: any
+    try {
+      res = nerve.verifyAddress(address)
+    } catch (e) {}
+    if (!res || !res.right || res.chainId !== 1) {
+      addressError.value = t('transfer.transfer29')
+    } else if (res.type === 2) {
+      // type 1:主网地址 2：合约地址 3:多签地址
+      addressError.value = t('transfer.transfer26')
+    } else {
+      addressError.value = ''
+    }
+  } else {
+    addressError.value = ''
+  }
+}
+
 const amount = ref('')
 
 const balance = computed(() => {
@@ -305,6 +332,26 @@ async function getBTCCrossOutFeeHandle() {
     withdrawalChain
   })
   validateAmount()
+}
+
+// NVM calculate fee
+async function getNVMCrossOutFeeHandle() {
+  const {
+    chainId,
+    assetId,
+    decimals,
+    originNetwork: feeChain
+  } = selectedFeeAsset.value
+  const { isToken, heterogeneousChainId } = heterogeneousInfo.value!
+  const feeIsNVT = chainId === config.chainId && assetId === config.assetId
+  fee.value = await getCrossOutFee({
+    hId: heterogeneousChainId,
+    useMainAsset: feeChain === 'NULS AI',
+    feeDecimals: decimals,
+    feeAssetKey: chainId + '-' + assetId,
+    isNVT: feeIsNVT,
+    isTRX: feeChain === 'TRON'
+  })
 }
 
 async function changeFeeAsset(asset: AssetItem) {

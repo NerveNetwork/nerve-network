@@ -5,14 +5,14 @@
       <div class="mb-2 text-label">From</div>
       <div class="flex h-[68px] items-center rounded-xl bg-input px-4">
         <div class="mr-6 flex items-center gap-2">
-          <img :src="NULSLogo" alt="" class="h-7 w-7 rounded-full" />
-          <span>NULS AI</span>
+          <img :src="chainInfo.logo" alt="" class="h-7 w-7 rounded-full" />
+          <span>{{ chainInfo.label }}</span>
         </div>
         <div
           class="flex cursor-pointer items-center text-base text-primary"
-          @click="openUrl(NULSAddress)">
+          @click="openUrl(currentAddress)">
           <span class="mr-1.5">
-            {{ superLong(NULSAddress, 6) }}
+            {{ superLong(currentAddress, 6) }}
           </span>
           <i-custom-open />
         </div>
@@ -31,11 +31,18 @@
       @selectAsset="changeAsset"
       @max="max" />
 
+    <div v-if="!assetCanCross" class="mt-2 text-error">
+      The current network does not support cross-chain transfers of this asset.
+      Please switch networks or select another asset.
+    </div>
 
     <div class="pt-10">
+      <Button class="w-full" v-if="!assetCanCross" @click="showReConnect">
+        Switch Network
+      </Button>
       <Button
         class="w-full"
-        v-if="!needAuth || authLoading"
+        v-else-if="!needAuth || authLoading"
         :disabled="disableTransfer"
         @click="handleSendTx">
         {{
@@ -57,14 +64,13 @@ import CustomInput from '@/components/CustomInput.vue'
 import Button from '@/components/Base/Button/index.vue'
 import { superLong, Minus, toThousands, openExplorer, timesDecimals } from '@/utils/util'
 import { useI18n } from 'vue-i18n'
-import useNULSCrossIn from '../hooks/useNULSCrossIn'
+import useNVMCrossIn from '../hooks/useNVMCrossIn'
 
 import { HeterogeneousInfo } from '@/store/types'
-import { H_NULS } from '@/utils/heterogeneousChainConfig'
+import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 import { setAccountTxs } from '@/hooks/useBroadcastNerveHex'
 import { useWalletStore } from '@/store/wallet'
 import useTransfer from '../useTransfer'
-import NULSLogo from '@/assets/img/chainLogo/NULSAI.svg'
 
 const walletStore = useWalletStore()
 const {
@@ -72,10 +78,11 @@ const {
   currentAddress,
   chain,
   nerveAddress,
-  addressInfo
+  addressInfo,
+  wrongChain
 } = storeToRefs(walletStore)
 
-const { NULSAddress, transferAsset, assetsList, changeAsset, crossList } =
+const { transferAsset, assetCanCross, crossList, changeAsset, showReConnect } =
   useTransfer()
 
 
@@ -92,10 +99,10 @@ const {
   needAuth,
   authLoading,
   updateAuthState,
-  getERC20Allowance,
-  approveERC20,
+  getNRC20Allowance,
+  approveNRC20,
   sendTx
-} = useNULSCrossIn()
+} = useNVMCrossIn(chain)
 
 const amountErrorTip = ref('')
 let checkAuthTimer: number
@@ -125,7 +132,8 @@ const disableTransfer = computed(() => {
     !amount.value ||
     !balance.value ||
     amountErrorTip.value ||
-    authLoading.value
+    authLoading.value ||
+    wrongChain.value
   )
 })
 
@@ -149,7 +157,7 @@ async function selectAsset() {
   if (timer) clearInterval(timer)
   const heterogeneousList = transferAsset.value.heterogeneousList || []
   heterogeneousInfo = heterogeneousList.find(
-    v => v.heterogeneousChainId === H_NULS.chainId
+    v => v.heterogeneousChainId === _networkInfo[chain.value].chainId
   ) as HeterogeneousInfo
 
   updateAuthState(heterogeneousInfo?.isToken ? true : false, true)
@@ -169,7 +177,7 @@ async function checkAsset() {
   await getFee()
   getBalance(
     heterogeneousInfo,
-    NULSAddress.value,
+    currentAddress.value,
     transferAsset.value.decimals
   )
 }
@@ -181,8 +189,8 @@ function startCheckAuth() {
   }
 
   const heterogeneousList = asset.heterogeneousList || []
-  const heterogeneousChainId = H_NULS.chainId
-  if (!currentAddress.value) return
+  const heterogeneousChainId = _networkInfo[chain.value]?.chainId
+  if (!heterogeneousChainId || !currentAddress.value) return
   heterogeneousInfo = heterogeneousList.find(
     v => v.heterogeneousChainId === heterogeneousChainId
   ) as HeterogeneousInfo
@@ -192,9 +200,9 @@ function startCheckAuth() {
     heterogeneousInfo?.isToken
   )
   if (heterogeneousInfo.isToken) {
-    getERC20Allowance(
+    getNRC20Allowance(
       heterogeneousInfo,
-      NULSAddress.value,
+      currentAddress.value,
       amount.value,
       asset.decimals
     )
@@ -219,7 +227,7 @@ async function handleApprove() {
   loading.value = true
   try {
     const _amount = timesDecimals(amount.value, transferAsset.value.decimals)
-    const res = await approveERC20(heterogeneousInfo, NULSAddress.value, _amount)
+    const res = await approveNRC20(heterogeneousInfo, currentAddress.value, _amount)
     handleMsg(res, 'Approve', '')
   } catch (e) {
     toastError(e)
@@ -233,7 +241,7 @@ async function handleSendTx() {
   try {
     const res = await sendTx(
       heterogeneousInfo,
-      NULSAddress.value,
+      currentAddress.value,
       nerveAddress.value,
       amount.value,
       transferAsset.value.decimals
@@ -256,15 +264,16 @@ function handleMsg(data: any, type: string, amountRemark: string) {
       hash: data.hash,
       time: new Date().getTime(),
       status: 0,
-      L1Chain: 'NULS AI',
+      L1Chain: chain.value,
       L1Type: type,
-      amountRemark
+      amountRemark,
+      isNVM: true
     })
   } else {
     toastError(data)
   }
 }
 function openUrl(address: string) {
-  openExplorer('address', address, true)
+  openExplorer('address', address, true, chain.value)
 }
 </script>

@@ -32,6 +32,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { superLong, openExplorer, openL1Explorer } from '@/utils/util'
 import { PoolItem } from '../types'
+import { N_CHAINS, N_CHAIN } from '@/hooks/useEthereum'
 
 const props = withDefaults(
   defineProps<{
@@ -95,8 +96,8 @@ function pageChange(index: number) {
 }
 
 function openUrl(chain: string, address: string) {
-  if (chain === 'NULS' || chain === 'NERVE') {
-    openExplorer('address', address, true)
+  if (N_CHAINS.includes(chain as N_CHAIN)) {
+    openExplorer('address', address, true, chain)
   } else {
     openL1Explorer(chain, 'address', address)
   }

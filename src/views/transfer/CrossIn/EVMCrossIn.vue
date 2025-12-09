@@ -53,27 +53,6 @@
       <Button class="w-full" v-else @click="handleApprove">
         {{ $t('transfer.transfer13') }}
       </Button>
-      <!-- <el-button
-        type="primary"
-        v-if="!needAuth || authLoading"
-        @click="handleSendTx"
-        :disabled="disableTransfer"
-      >
-        {{
-          amountErrorTip ? $t('transfer.transfer15') : $t('transfer.transfer9')
-        }}
-        <el-icon class="is-loading" v-if="amount && needAuth && authLoading">
-          <Loading />
-        </el-icon>
-      </el-button>
-      <el-button
-        type="primary"
-        v-else
-        @click="handleApprove"
-        :disabled="father.disableTx"
-      >
-        {{ $t('transfer.transfer13') }}
-      </el-button> -->
     </div>
   </div>
 </template>

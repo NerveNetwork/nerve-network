@@ -40,16 +40,17 @@ export async function generateAddress({
 }
 
 export function getAccountByPub(pub) {
-  const NERVE = getNAddressByPub(pub, false);
-  const NULS = getNAddressByPub(pub, true);
+  const NERVE = getNAddressByPub(pub, 'NERVE');
+  const NULS = getNAddressByPub(pub, 'NULS');
   const EVM = getEVMAddressByPub(pub);
   const TRON = getTRONAddressByPub(pub);
   const BTC = getBTCAddressByPub(pub);
   const FCH = getFCHAddressByPub(pub);
   const BCH = getBCHAddressByPub(pub);
   const TBC = getTBCAddressByPub(pub);
+  const ITAC = getNAddressByPub(pub, 'ITAC');
   return {
-    address: { NERVE, NULS, EVM, TRON, BTC, FCH, BCH, TBC },
+    address: { NERVE, NULS, EVM, TRON, BTC, FCH, BCH, TBC, ITAC },
     pub
   };
 }

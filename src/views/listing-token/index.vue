@@ -50,7 +50,6 @@ import useToast from '@/hooks/useToast'
 import { ElForm } from 'element-plus'
 import { doListingToken } from '@/service/api'
 import { _networkInfo } from '@/utils/heterogeneousChainConfig'
-import { openL1Explorer } from '@/utils/util'
 import TronLinkApi from '@/utils/tronLink'
 import { ETransfer } from '@/utils/api'
 

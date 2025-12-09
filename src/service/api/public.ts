@@ -136,6 +136,10 @@ export async function getAssetList(address = config.destroyAddress) {
     })
     v.heterogeneousList = v.list
   })
+  // 屏蔽H_NULS
+  res = res.filter((asset: any) => {
+    return asset.registerChainId !== 301
+  })
   // 主网隐藏tron相关内容
   if (!isBeta) {
     // 过滤tron资产
@@ -335,34 +339,48 @@ function createRPCParams(method: string, data: any) {
   }
 }
 
-export async function getNULSBalanceList(
+export async function getNVMBalanceList(
+  apiUrl: string,
+  chainId: number,
   address: string,
   assets: { chainId: number; assetId: number; contractAddress: string }[]
 ) {
   const res = await http.request<any>({
-    url: 'https://api.nuls.io/jsonrpc',
+    url: apiUrl,
     method: 'POST',
-    data: createRPCParams('getBalanceList', [1, address, assets])
+    data: createRPCParams('getBalanceList', [chainId, address, assets])
   })
   return res.result
 }
 
-export async function getTokenAllowance(
+export async function getNVMTokenAllowance(
+  apiUrl: string,
+  chainId: number,
   owner: string,
   tokenContract: string,
   spenderContract: string
 ) {
   const params = createRPCParams('invokeView', [
-    1,
+    chainId,
     tokenContract,
     'allowance',
     '(Address owner, Address spender) return BigInteger',
     [owner, spenderContract]
   ])
   const res = await http.request<any>({
-    url: 'https://api.nuls.io/jsonrpc',
+    url: apiUrl,
     method: 'POST',
     data: params
   })
   return res?.result?.result || '0'
+}
+
+export async function getNVMTx(apiUrl: string, chainId: number, hash: string) {
+  const res = await http.request<any>({
+    url: apiUrl,
+    method: 'POST',
+    data: createRPCParams('getTx', [chainId, hash])
+  })
+  // const res = await http.rPost('getTx', hash)
+  return res?.result || null
 }

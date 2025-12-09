@@ -100,6 +100,7 @@ const BTCProvider = [Nabox, BinanceW3W, OKXWallet, Unisat, Bitget];
 
 const TRONProvider = [Nabox, BinanceW3W, OKXWallet, TronLink, Bitget];
 
+
 export const ALL_Provider = [...EVMProvider, ...BTCProvider, ...TRONProvider]
 
 export const providerList = {
@@ -109,7 +110,8 @@ export const providerList = {
   FCH: [Nabox],
   BCH: [Nabox],
   TBC: [Nabox],
-  NULS: EVMProvider
+  NULS: EVMProvider,
+  NVM: EVMProvider, // support NULS NVM chains
 };
 
 export function getProvider(type?: string, network?: string) {
@@ -126,14 +128,6 @@ export function getProvider(type?: string, network?: string) {
     return getTBCProvider();
   } else {
     return getEVMProvider(type);
-    /* const EVMProvider = getEVMProvider(type);
-    if (
-      (network === 'NULS' || network === 'NERVE') &&
-      EVMProvider.provider.isNabox
-    ) {
-      return getNULSProvider();
-    }
-    return EVMProvider; */
   }
 }
 
