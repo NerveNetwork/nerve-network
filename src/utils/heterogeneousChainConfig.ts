@@ -136,7 +136,7 @@ const Origin = {
   BCH: 'https://www.oklink.com/bch',
   Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : '',
   TBC: 'http://explorer.turingbitchain.io',
-  // Akashic: 'https://blockscout-mainnet.akashicrecords.io',
+  Akashic: 'https://blockscout-mainnet.akashicrecords.io',
   // H_NULS: 'https://nulscan.io',
   ITAC: 'https://scan.itac.club'
 }

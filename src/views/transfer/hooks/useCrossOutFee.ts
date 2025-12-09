@@ -77,7 +77,7 @@ export default function useCrossOutFee() {
         res = nvmFee
       } else {
         const [feeChainId, feeAssetId] = feeAssetKey.split('-')
-        const [mainAssetChainId, mainAssetAssetId] = mainAssetKey
+        const [mainAssetChainId, mainAssetAssetId] = mainAssetKey.split('-')
         const feeAssetUSD = (await getAssetPrice(
           +feeChainId,
           +feeAssetId,

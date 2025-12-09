@@ -39,7 +39,7 @@
                 <span>Success</span>
               </template>
               <template
-                v-else-if="scope.row.type === 43 && scope.row.hId !== 204">
+                v-else-if="scope.row.type === 43 && !disableAddFeeIds.includes(scope.row.hId!)">
                 <i-custom-loading class="h-4 w-4 animate-spin text-label" />
                 <span
                   @click="handleShowAddFee(scope.row)"
@@ -84,7 +84,7 @@
               <template v-if="item.status === 1">
                 <i-custom-success />
               </template>
-              <template v-else-if="item.type === 43 && !item.isNVM">
+              <template v-else-if="item.type === 43 && !disableAddFeeIds.includes(item.hId!)">
                 <span></span>
                 <i-custom-loading class="h-3 w-3 animate-spin text-label" />
                 <button @click="handleShowAddFee(item)">
@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, onUnmounted, computed, watch } from 'vue'
+import { onMounted, ref, onUnmounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import dayjs from 'dayjs'
 import nerveswap from 'nerveswap-sdk'
@@ -146,6 +146,8 @@ import { Account, TxInfo } from '@/store/types'
 import { getTronTx, getTx, getFCHTx, getNVMTx } from '@/service/api'
 import storage from '@/utils/storage'
 import { _networkInfo } from '@/utils/heterogeneousChainConfig'
+
+const disableAddFeeIds = [204, 301, 302]
 
 const walletStore = useWalletStore()
 const {
