@@ -247,7 +247,8 @@ function getFeeAssetInfo() {
   )
   assetsList.value.map(v => {
     htgMainAsset.map(item => {
-      if (item.assetKey === v.assetKey) {
+      const exist = feeAssets.find(k => k.assetKey === v.assetKey)
+      if (item.assetKey === v.assetKey && !exist) {
         feeAssets.push(v)
       }
     })

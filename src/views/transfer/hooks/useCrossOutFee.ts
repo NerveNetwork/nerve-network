@@ -1,37 +1,37 @@
-import { ethers } from 'ethers';
-import storage from '@/utils/storage';
-import { ETransfer } from '@/utils/api';
-import { getAssetPrice } from '@/service/api';
-import { getWithdrawalGasLimit } from '@/utils/getSystemConfig';
-import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import { ethers } from 'ethers'
+import storage from '@/utils/storage'
+import { ETransfer } from '@/utils/api'
+import { getAssetPrice } from '@/service/api'
+import { getWithdrawalGasLimit } from '@/utils/getSystemConfig'
+import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 import {
   floatToCeil,
   Times,
   Minus,
-  fixNumber
-} from '@/utils/util';
-import { getNVMFee } from './useNVMCrossIn';
-
+  fixNumber,
+  timesDecimals
+} from '@/utils/util'
+import { getNVMFee } from './useNVMCrossIn'
 
 export async function getGasLimit(chainId: number) {
-  let gasLimitConfig = storage.get('gasLimitConfig');
+  let gasLimitConfig = storage.get('gasLimitConfig')
   if (!gasLimitConfig) {
-    gasLimitConfig = await getWithdrawalGasLimit();
+    gasLimitConfig = await getWithdrawalGasLimit()
   }
   if (!gasLimitConfig) {
-    throw 'Fail to get GasLimit';
+    throw 'Fail to get GasLimit'
   }
-  return gasLimitConfig[chainId];
+  return gasLimitConfig[chainId]
 }
 
 interface IGetFeeParams {
   isNVM?: boolean
-  hId: number;
-  feeDecimals: number;
-  feeAssetKey: string;
-  useMainAsset: boolean;
-  isNVT?: boolean;
-  isTRX?: boolean;
+  hId: number
+  feeDecimals: number
+  feeAssetKey: string
+  useMainAsset: boolean
+  isNVT?: boolean
+  isTRX?: boolean
 }
 
 export default function useCrossOutFee() {
@@ -59,57 +59,61 @@ export default function useCrossOutFee() {
       useMainAsset,
       isNVT = false,
       isTRX = false
-    } = params;
+    } = params
     const targetChainInfo = Object.values(_networkInfo).find(
       v => v.chainId === hId
-    );
-    if (!targetChainInfo) return '';
-    const { name: targetChainName, type: targetChainType, assetKey: mainAssetKey } = targetChainInfo;
+    )
+    if (!targetChainInfo) return ''
+    const {
+      name: targetChainName,
+      type: targetChainType,
+      assetKey: mainAssetKey,
+      decimals: mainAssetDecimals
+    } = targetChainInfo
     if (targetChainType === 'NVM') {
-      let res = '';
+      let res = ''
       const nvmFee = await getNVMFee(targetChainName)
       if (useMainAsset) {
         res = nvmFee
       } else {
-        const [feeChainId, feeAssetId] = feeAssetKey.split('-');
+        const [feeChainId, feeAssetId] = feeAssetKey.split('-')
         const [mainAssetChainId, mainAssetAssetId] = mainAssetKey
         const feeAssetUSD = (await getAssetPrice(
           +feeChainId,
           +feeAssetId,
           true // only fee asset need be true
-        )) as string;
+        )) as string
         const L1MainAssetUSD = (await getAssetPrice(
           +mainAssetChainId,
           +mainAssetAssetId
-        )) as string;
-        
-  
-        const feeUSDBig = ethers.utils.parseUnits(feeAssetUSD.toString(), 18);
+        )) as string
+
+        const feeUSDBig = ethers.utils.parseUnits(feeAssetUSD.toString(), 18)
         const mainAssetUSDBig = ethers.utils.parseUnits(
           L1MainAssetUSD.toString(),
-          18
-        );
+          mainAssetDecimals
+        )
+        const nvmFee_Big = timesDecimals(nvmFee, mainAssetDecimals)
         let result: any = mainAssetUSDBig
-          .mul(nvmFee)
+          .mul(nvmFee_Big)
           .mul(ethers.utils.parseUnits('1', feeDecimals))
           .div(ethers.utils.parseUnits('1', 18))
-          .div(feeUSDBig);
+          .div(feeUSDBig)
         if (isNVT || isTRX) {
           // 如果是nvt，向上取整
-          const numberStr = ethers.utils.formatUnits(result, feeDecimals);
-          const ceil = Math.ceil(+numberStr) || 1;
+          const numberStr = ethers.utils.formatUnits(result, feeDecimals)
+          const ceil = Math.ceil(+numberStr) || 1
           result = ethers.utils
             .parseUnits(ceil.toString(), feeDecimals)
-            .toString();
+            .toString()
         }
-        res = ethers.utils.formatUnits(result, feeDecimals).toString();
+        res = ethers.utils.formatUnits(result, feeDecimals).toString()
       }
-      return floatToCeil(res, 6);
+      return floatToCeil(res, 6)
     } else {
-      
-      const transfer = new ETransfer(targetChainName);
-      let res = '';
-      const { gasLimitOfWithdraw : gasLimit } = await getGasLimit(hId);
+      const transfer = new ETransfer(targetChainName)
+      let res = ''
+      const { gasLimitOfWithdraw: gasLimit } = await getGasLimit(hId)
       if (useMainAsset) {
         if (targetChainName === 'TRON') {
           res = transfer.calWithdrawalFeeForTRON(
@@ -118,7 +122,7 @@ export default function useCrossOutFee() {
             '',
             feeDecimals,
             true
-          );
+          )
         } else {
           res = await transfer.calWithdrawalFee(
             '',
@@ -127,21 +131,21 @@ export default function useCrossOutFee() {
             feeDecimals,
             true,
             hId
-          );
+          )
         }
       } else {
-        const [feeChainId, feeAssetId] = feeAssetKey.split('-');
+        const [feeChainId, feeAssetId] = feeAssetKey.split('-')
         const [mainAssetChainId, mainAssetAssetId] =
-          targetChainInfo.assetKey.split('-');
+          targetChainInfo.assetKey.split('-')
         const feeAssetUSD = (await getAssetPrice(
           +feeChainId,
           +feeAssetId,
           true // only fee asset need be true
-        )) as string;
+        )) as string
         const L1MainAssetUSD = (await getAssetPrice(
           +mainAssetChainId,
           +mainAssetAssetId
-        )) as string;
+        )) as string
         if (targetChainName === 'TRON') {
           res = transfer.calWithdrawalFeeForTRON(
             gasLimit,
@@ -150,7 +154,7 @@ export default function useCrossOutFee() {
             feeDecimals,
             false,
             isNVT
-          );
+          )
         } else {
           res = await transfer.calWithdrawalFee(
             L1MainAssetUSD,
@@ -161,35 +165,35 @@ export default function useCrossOutFee() {
             hId,
             isNVT,
             isTRX
-          );
+          )
         }
       }
-      res = floatToCeil(res, 6);
-      return res;
+      res = floatToCeil(res, 6)
+      return res
     }
   }
 
   async function getAddFeeAmount(params: IGetFeeParams, paied: string) {
     let addFeeAmount = ''
     try {
-      const currentFee = await getCrossOutFee(params);
-      const diff = Minus(currentFee, paied).toFixed();
+      const currentFee = await getCrossOutFee(params)
+      const diff = Minus(currentFee, paied).toFixed()
       // @ts-ignore
       if (diff > 0) {
-        const { feeDecimals, isNVT, isTRX } = params;
-        const amount = fixNumber(Times(diff, 1.1).toFixed(), feeDecimals);
+        const { feeDecimals, isNVT, isTRX } = params
+        const amount = fixNumber(Times(diff, 1.1).toFixed(), feeDecimals)
         // @ts-ignore
-        addFeeAmount = isNVT || isTRX ? Math.ceil(amount) + '' : amount;
+        addFeeAmount = isNVT || isTRX ? Math.ceil(amount) + '' : amount
       } else {
-        addFeeAmount = '';
+        addFeeAmount = ''
       }
     } catch {
-      addFeeAmount = '';
+      addFeeAmount = ''
     }
     return addFeeAmount
   }
   return {
     getCrossOutFee,
     getAddFeeAmount
-  };
+  }
 }
