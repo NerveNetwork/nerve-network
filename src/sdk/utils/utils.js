@@ -63,6 +63,11 @@ export function getChainInfo() {
       chainId: isBeta ? 2 : 1,
       assetId: 1,
       prefix: isBeta ? 'tNULS' : 'NULS'
+    },
+    ITAC: {
+      chainId: 101,
+      assetId: 1,
+      prefix: 'ITAC'
     }
   };
 }

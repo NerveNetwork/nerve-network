@@ -10,7 +10,7 @@
         </div>
         <div
           class="flex cursor-pointer items-center text-base text-primary"
-          @click="openUrl(currentAddress, chain)">
+          @click="openUrl(currentAddress)">
           <span class="mr-1.5">
             {{ superLong(currentAddress, 6) }}
           </span>
@@ -44,7 +44,6 @@
         class="w-full"
         v-else-if="!needAuth || authLoading"
         :disabled="disableTransfer"
-        :loading="!!amount && needAuth && authLoading"
         @click="handleSendTx">
         {{
           amountErrorTip ? $t('transfer.transfer15') : $t('transfer.transfer9')
@@ -63,9 +62,9 @@ import { storeToRefs } from 'pinia'
 import useToast from '@/hooks/useToast'
 import CustomInput from '@/components/CustomInput.vue'
 import Button from '@/components/Base/Button/index.vue'
-import { superLong, Minus, toThousands } from '@/utils/util'
+import { superLong, Minus, toThousands, openExplorer, timesDecimals } from '@/utils/util'
 import { useI18n } from 'vue-i18n'
-import useCrossIn from '../hooks/useCrossIn'
+import useNVMCrossIn from '../hooks/useNVMCrossIn'
 
 import { HeterogeneousInfo } from '@/store/types'
 import { _networkInfo } from '@/utils/heterogeneousChainConfig'
@@ -86,15 +85,10 @@ const {
 const { transferAsset, assetCanCross, crossList, changeAsset, showReConnect } =
   useTransfer()
 
+
 const { t } = useI18n()
 const { toastSuccess, toastError } = useToast()
 
-const isTron = computed(() => {
-  return chain.value === 'TRON'
-})
-const isENULS = computed(() => {
-  return chain.value === 'ENULS'
-})
 const loading = ref(false)
 const amount = ref('')
 const {
@@ -105,10 +99,10 @@ const {
   needAuth,
   authLoading,
   updateAuthState,
-  getERC20Allowance,
-  approveERC20,
+  getNRC20Allowance,
+  approveNRC20,
   sendTx
-} = useCrossIn(isTron.value, isENULS.value)
+} = useNVMCrossIn(chain)
 
 const amountErrorTip = ref('')
 let checkAuthTimer: number
@@ -133,6 +127,12 @@ watch(
 )
 
 const disableTransfer = computed(() => {
+  // console.log(!fee.value, '1')
+  // console.log(!amount.value, '2')
+  // console.log(!balance.value, '3')
+  // console.log(amountErrorTip.value, '4')
+  // console.log(authLoading.value, '5')
+  // console.log(wrongChain.value, '6')
   return !!(
     !fee.value ||
     !amount.value ||
@@ -162,10 +162,8 @@ onBeforeUnmount(() => {
 async function selectAsset() {
   if (timer) clearInterval(timer)
   const heterogeneousList = transferAsset.value.heterogeneousList || []
-  const heterogeneousChainId = _networkInfo[chain.value]?.chainId
-  if (!heterogeneousChainId || !currentAddress.value) return
   heterogeneousInfo = heterogeneousList.find(
-    v => v.heterogeneousChainId === heterogeneousChainId
+    v => v.heterogeneousChainId === _networkInfo[chain.value].chainId
   ) as HeterogeneousInfo
 
   updateAuthState(heterogeneousInfo?.isToken ? true : false, true)
@@ -174,7 +172,7 @@ async function selectAsset() {
     await checkAsset()
     timer = window.setInterval(() => {
       checkAsset()
-    }, 5000)
+    }, 10000)
   }
 }
 
@@ -182,7 +180,7 @@ async function checkAsset() {
   if (!heterogeneousInfo) {
     return
   }
-  await getFee(heterogeneousInfo.isToken)
+  await getFee()
   getBalance(
     heterogeneousInfo,
     currentAddress.value,
@@ -208,7 +206,7 @@ function startCheckAuth() {
     heterogeneousInfo?.isToken
   )
   if (heterogeneousInfo.isToken) {
-    getERC20Allowance(
+    getNRC20Allowance(
       heterogeneousInfo,
       currentAddress.value,
       amount.value,
@@ -216,6 +214,7 @@ function startCheckAuth() {
     )
   }
 }
+
 
 function max() {
   if (!balance.value || !Number(balance.value)) {
@@ -229,10 +228,12 @@ function max() {
     amount.value = Minus(balance.value, fee.value).toString()
   }
 }
+
 async function handleApprove() {
   loading.value = true
   try {
-    const res = await approveERC20(heterogeneousInfo, currentAddress.value)
+    const _amount = timesDecimals(amount.value, transferAsset.value.decimals)
+    const res = await approveNRC20(heterogeneousInfo, currentAddress.value, _amount)
     handleMsg(res, 'Approve', '')
   } catch (e) {
     toastError(e)
@@ -240,14 +241,15 @@ async function handleApprove() {
   loading.value = false
 }
 
+
 async function handleSendTx() {
   loading.value = true
   try {
     const res = await sendTx(
       heterogeneousInfo,
+      currentAddress.value,
       nerveAddress.value,
       amount.value,
-      currentAddress.value,
       transferAsset.value.decimals
     )
     const amountRemark = `${toThousands(amount.value)} ${transferAsset.value.symbol}`
@@ -270,14 +272,14 @@ function handleMsg(data: any, type: string, amountRemark: string) {
       status: 0,
       L1Chain: chain.value,
       L1Type: type,
-      amountRemark
+      amountRemark,
+      isNVM: true
     })
   } else {
     toastError(data)
   }
 }
-function openUrl(address: string, network: string) {
-  const { origin } = _networkInfo[network]
-  window.open(origin + '/address/' + address)
+function openUrl(address: string) {
+  openExplorer('address', address, true, chain.value)
 }
 </script>

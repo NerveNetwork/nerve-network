@@ -34,10 +34,14 @@ export async function getNPub(address) {
   return pub;
 }
 
-export function getNAddressByPub(pub, isNULS = false) {
-  const key = isNULS ? 'NULS' : 'NERVE';
+/*
+ * @param {string} pub
+ * @param {string} chain - NERVE | NULS | ITAC
+ * @returns {string}
+ */
+export function getNAddressByPub(pub, chain) {
   const chainInfo = getChainInfo();
-  const { chainId, assetId, prefix } = chainInfo[key];
+  const { chainId, assetId, prefix } = chainInfo[chain];
   return nerve.getAddressByPub(chainId, assetId, pub, prefix);
 }
 

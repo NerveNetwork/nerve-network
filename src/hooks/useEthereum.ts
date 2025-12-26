@@ -46,6 +46,9 @@ interface GenerateAddressConfig {
   prefix: string
 }
 
+export const N_CHAINS = ['NULS', 'NERVE', 'ITAC'] as const
+export type N_CHAIN = typeof N_CHAINS[number]
+
 export const NaboxProvider = 'NaboxWallet'
 export const TRONProvider = 'tronWeb'
 export const UnisatProvider = 'unisat'
@@ -136,7 +139,7 @@ export default function useEthereum() {
         addBCHListener(provider)
         initFCHChainInfo(address, network)
       }
-    } else if (network === 'NULS' || network === 'NERVE') {
+    } else if (N_CHAINS.includes(network)) {
       address = await getNULSAddress(provider)
       if (address) {
         addNULSListener(provider)
@@ -256,7 +259,7 @@ export default function useEthereum() {
   async function initNULSChaininfo(
     provider: any,
     address: string,
-    network: 'NULS' | 'NERVE'
+    network: N_CHAIN
   ) {
     if (provider.isNabox) {
       const { provider: _provider } = getNULSProvider()
@@ -379,14 +382,15 @@ export default function useEthereum() {
     }
     const { provider } = getEVMProvider()
     const network = storage.get('network')
-    if (provider.isNabox && (network === 'NULS' || network === 'NERVE')) {
+    if (provider.isNabox && (N_CHAINS.includes(network))) {
       let validAddress = false
       try {
         const res = nerve.verifyAddress(accounts[0])
         const chainId = res?.chainId
         const chainInfo = Object.values(_networkInfo).find(
-          v => v.chainId === chainId
+          v => v.N_ChainId === chainId
         )
+        console.log(res, '-=-=-=-=')
         validAddress = !!chainInfo
         if (chainInfo && network !== chainInfo.name) {
           // store.commit('changeNetwork', chainInfo.name)
@@ -454,7 +458,7 @@ export default function useEthereum() {
       provider.off('accountChanged', handleAccountChange)
     } else {
       let _provider = provider
-      if ((network === 'NULS' || network === 'NERVE') && _provider.isNabox) {
+      if (N_CHAINS.includes(network) && _provider.isNabox) {
         _provider = _provider.nuls
         _provider.off('accountsChanged', handleAccountChange)
       } else {
@@ -467,7 +471,7 @@ export default function useEthereum() {
   // 连接provider
   async function connect(providerType: string, network: string, providerName: string) {
     let { provider } = getProvider(providerType, network)
-    console.log(provider, 234234)
+    console.log(provider, 234234, network, providerType, 23)
 
     // wakeup in mobile app
     const domain = 'nerve.network'
@@ -530,7 +534,7 @@ export default function useEthereum() {
     } else if (network === 'TBC') {
       const address = await provider.getAddress()
       state.address = address?.tbcAddress || ''
-    } else if (network === 'NULS' || network === 'NERVE') {
+    } else if (N_CHAINS.includes(network as N_CHAIN)) {
       if (provider.isNabox) {
         const { provider: _provider } = getNULSProvider()
         await _provider.createSession()
@@ -548,9 +552,9 @@ export default function useEthereum() {
     storage.set('providerType', providerType)
     storage.set('providerName', providerName)
     const notEVMChains = ['TRON', 'BTC', 'FCH', 'BCH', 'TBC']
-    if (network === 'NULS' || network === 'NERVE') {
+    if (N_CHAINS.includes(network as N_CHAIN)) {
       if (provider.isNabox) {
-        await switchNULSChain(network)
+        await switchNULSChain(network as N_CHAIN)
       }
     } else if (!notEVMChains.includes(network)) {
       const chain = _networkInfo[network]
@@ -614,11 +618,15 @@ export default function useEthereum() {
     await provider.switchNetwork(btcNetwork)
   }
 
-  async function switchNULSChain(network: 'NULS' | 'NERVE') {
+  async function switchNULSChain(network: N_CHAIN) {
     const { provider } = getNULSProvider()
     const chainInfo = _networkInfo[network]
     if (chainInfo.chainId !== provider.chainId) {
-      await provider?.switchChain({ chainId: chainInfo.chainId })
+      let chainId = chainInfo.chainId
+      if (network === 'ITAC') {
+        chainId = 101
+      }
+      await provider?.switchChain({ chainId: chainId })
     }
   }
 

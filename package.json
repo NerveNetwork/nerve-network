@@ -28,7 +28,7 @@
     "ethers": "^5.7.2",
     "fch-sdk": "^1.0.12",
     "lodash": "^4.17.21",
-    "nerve-sdk-js": "^1.0.47",
+    "nerve-sdk-js": "^1.0.48",
     "nerveswap-sdk": "^1.0.20",
     "pinia": "^2.1.6",
     "tailwind-merge": "^2.6.0",

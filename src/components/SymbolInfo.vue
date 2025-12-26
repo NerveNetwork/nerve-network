@@ -24,10 +24,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import clsxm from '@/utils/clsxm'
 import SymbolIcon from '@/components/SymbolIcon.vue'
-import { openExplorer } from '@/utils/util'
 import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 
 const props = withDefaults(
@@ -45,8 +44,6 @@ const props = withDefaults(
     IDClickable: false
   }
 )
-
-const name = ref('hi')
 
 const chainName = computed(() => {
   if (props.chain === 'NULS' || props.chain === 'NAI') {

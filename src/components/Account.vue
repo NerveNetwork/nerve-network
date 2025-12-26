@@ -53,7 +53,7 @@
                 <i-custom-copy />
               </button>
               <button
-                @click="openL1Explorer(L1Chain, 'address', L1Address)"
+                @click="openL1Address"
                 class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#2C303E] hover:opacity-70"
                 href="">
                 <i-custom-open class="text-white" />
@@ -78,6 +78,7 @@ import { computed, ref, watch } from 'vue'
 import useClickOutside from '@/hooks/useClickOutside'
 import { superLong, openExplorer, openL1Explorer } from '@/utils/util'
 import { getProviderName, ALL_Provider } from '@/utils/providerUtil'
+import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 
 const props = defineProps<{
   modelValue: boolean
@@ -113,4 +114,14 @@ watch(
     }
   }
 )
+
+const openL1Address = () => {
+  const { L1Chain, L1Address } = props
+  const chain = _networkInfo[L1Chain]
+  if (chain?.type === 'NVM') {
+    openExplorer('address', L1Address, false, L1Chain)
+  } else {
+    openL1Explorer(L1Chain, 'address', L1Address)
+  }
+}
 </script>

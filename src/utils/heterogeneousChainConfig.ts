@@ -47,6 +47,7 @@ import TBCLogo from '@/assets/img/chainLogo/TBC.svg'
 import AkashicLogo from '@/assets/img/chainLogo/Akashic.svg'
 import NULSLogo from '@/assets/img/chainLogo/NULSAI.svg'
 import NERVELogo from '@/assets/img/chainLogo/NERVE.png'
+import ITACLogo from '@/assets/img/chainLogo/ITAC.png'
 
 // explorer
 const Origin = {
@@ -135,7 +136,9 @@ const Origin = {
   BCH: 'https://www.oklink.com/bch',
   Mint: isBeta ? 'https://sepolia-testnet-explorer.mintchain.io' : '',
   TBC: 'http://explorer.turingbitchain.io',
-  Akashic: 'https://blockscout-mainnet.akashicrecords.io'
+  Akashic: 'https://blockscout-mainnet.akashicrecords.io',
+  // H_NULS: 'https://nulscan.io',
+  ITAC: 'https://scan.itac.club'
 }
 
 export const RPC_URL = {
@@ -232,7 +235,9 @@ export const RPC_URL = {
     : 'https://rpc.pulsechain.com',
   Mint: isBeta ? 'https://sepolia-testnet-rpc.mintchain.io' : '',
   TBC: 'https://turingwallet.xyz/v1/tbc',
-  Akashic: 'https://rpc2-mainnet.akashicrecords.io'
+  Akashic: 'https://rpc2-mainnet.akashicrecords.io',
+  // H_NULS: 'https://api.nuls.io/jsonrpc',
+  ITAC: 'https://api.itac.club/jsonrpc'
 }
 
 interface IChain {
@@ -249,6 +254,7 @@ interface IChain {
     logo: string
     decimals?: number
     rpcUrl?: string
+    N_ChainId?: number
   }
 }
 export const _networkInfo: IChain = {
@@ -845,7 +851,8 @@ export const _networkInfo: IChain = {
     origin: Origin.NULS,
     mainAsset: 'NULS',
     nativeId: '0x-1',
-    logo: NULSLogo
+    logo: NULSLogo,
+    N_ChainId: isBeta ? 2 : 1
   },
   NERVE: {
     type: 'NULS',
@@ -856,7 +863,36 @@ export const _networkInfo: IChain = {
     origin: Origin.NERVE,
     mainAsset: 'NVT',
     nativeId: '0x-2',
-    logo: NERVELogo
+    logo: NERVELogo,
+    N_ChainId: isBeta ? 5 : 9
+  },
+  // H_NULS: {
+  //   type: 'NVM',
+  //   name: 'H_NULS',
+  //   chainName: 'H_NULS',
+  //   chainId: 301,
+  //   assetKey: '5-194',
+  //   origin: Origin.H_NULS,
+  //   mainAsset: 'NULS',
+  //   nativeId: '0X-3',
+  //   logo: NULSLogo,
+  //   decimals: 8,
+  //   rpcUrl: RPC_URL.H_NULS,
+  //   // N_ChainId: isBeta ? 2 : 1
+  // },
+  ITAC: {
+    type: 'NVM',
+    name: 'ITAC',
+    chainName: 'ITAC',
+    chainId: 302,
+    assetKey: isBeta ? '5-197' : '9-929',
+    origin: Origin.ITAC,
+    mainAsset: 'ITAC',
+    nativeId: '0x-4',
+    logo: ITACLogo,
+    decimals: 18,
+    rpcUrl: RPC_URL.ITAC,
+    N_ChainId: 101
   }
 }
 
@@ -884,6 +920,7 @@ if (isBeta) {
   delete _networkInfo.Shardeum
   // @ts-ignore
   delete _networkInfo['Mint Sepolia']
+  // delete _networkInfo.H_NULS
 }
 
 const isMobile = /Android|webOS|iPhone|iPad|BlackBerry/i.test(
@@ -920,3 +957,12 @@ export function getChainLogoById(sourceChainId: number, assetChainId: number) {
   }
   return logo
 }
+
+// export const H_NULS = {
+//   rpcUrl: 'https://api.nuls.io/',
+//   symbol: 'NULS',
+//   assetKey: '5-194',
+//   decimals: 8,
+//   chainId: 301,
+//   origin: 'https://nulscan.io/'
+// }

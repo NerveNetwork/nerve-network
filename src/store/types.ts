@@ -59,6 +59,7 @@ export interface TxInfo {
   hId?: number;
   txTypeRemark?: string
   amountRemark? :string
+  isNVM?: boolean
 }
 
 // 手动声明 state 类型
