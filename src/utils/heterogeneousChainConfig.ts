@@ -210,7 +210,7 @@ export const RPC_URL = {
   Scroll: isBeta ? 'https://alpha-rpc.scroll.io/l2' : 'https://rpc.scroll.io',
   Bitgert: isBeta
     ? 'https://testnet-rpc.brisescan.com'
-    : 'https://mainnet-rpc.brisescan.com',
+    : 'https://rpc-bitgert.icecreamswap.com',
   Janus: isBeta ? 'https://rpc.test.janusnetwork.io/' : '',
   Manta: isBeta
     ? 'https://manta-testnet.calderachain.xyz/http'
