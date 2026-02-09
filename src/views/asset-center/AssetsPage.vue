@@ -72,14 +72,14 @@
                 class="flex items-center justify-center gap-3"
                 v-if="scope.row">
                 <button
-                  v-if="scope.row.canToL1"
+                  v-if="scope.row.canToL1 && !disableSmartBCH(scope.row.assetKey)"
                   type="button"
                   class="btn text-primary"
                   @click="toTransfer(scope.row, TransferType.CrossIn)">
                   {{ $t('transfer.transfer1') }}
                 </button>
                 <div
-                  v-if="scope.row.canToL1"
+                  v-if="scope.row.canToL1 && !disableSmartBCH(scope.row.assetKey)"
                   class="h-2 w-[1px] bg-label"></div>
                 <button
                   type="button"
@@ -157,7 +157,7 @@
                 <button
                   class="btn flex h-8 w-20 items-center justify-center rounded-xl bg-primary text-xs"
                   @click="toTransfer(item, TransferType.CrossIn)"
-                  v-if="item.canToL1">
+                  v-if="item.canToL1 && !disableSmartBCH(item.assetKey)">
                   {{ $t('transfer.transfer1') }}
                 </button>
                 <button
@@ -229,6 +229,8 @@ const {
   currentAddress: address
 } = storeToRefs(walletStore)
 
+console.log(network, 234234);
+
 const {
   loading,
   searchVal,
@@ -293,6 +295,10 @@ function showReConnect() {
   )
   walletStore.changeConnectChainIds(chainIds)
   walletStore.changeConnectShow(true)
+}
+
+const disableSmartBCH = (key: string) => {
+  return network.value === 'smartBCH' && key === '9-449'
 }
 
 const rootCmp = reactive({

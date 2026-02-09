@@ -60,6 +60,7 @@
 <script lang="ts" setup>
 import { ref, watch, computed, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 import useToast from '@/hooks/useToast'
 import CustomInput from '@/components/CustomInput.vue'
 import Button from '@/components/Base/Button/index.vue'
@@ -73,6 +74,7 @@ import { setAccountTxs } from '@/hooks/useBroadcastNerveHex'
 import { useWalletStore } from '@/store/wallet'
 import useTransfer from '../useTransfer'
 
+const router = useRouter()
 const walletStore = useWalletStore()
 const {
   chainInfo,
@@ -85,6 +87,16 @@ const {
 
 const { transferAsset, assetCanCross, crossList, changeAsset, showReConnect } =
   useTransfer()
+
+watch(
+  [() => chain.value, () => transferAsset.value],
+  ([chain, asset]) => {
+    if (chain === 'smartBCH' && asset.assetKey === '9-449') {
+      router.replace(`/transfer/2?asset=9-449`)
+    }
+  },
+  { immediate: true }
+)
 
 const { t } = useI18n()
 const { toastSuccess, toastError } = useToast()

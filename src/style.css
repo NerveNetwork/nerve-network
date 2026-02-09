@@ -88,6 +88,9 @@ textarea::placeholder {
 .btn {
   @apply cursor-pointer transition-all duration-300 hover:opacity-70;
 }
+.btn:disabled {
+  cursor: not-allowed;
+}
 
 .card-wrapper {
   @apply c-table p-4 xl:p-6 bg-card rounded-xl

@@ -82,7 +82,7 @@ const Origin = {
     ? 'https://kovan-optimistic.etherscan.io'
     : 'https://optimistic.etherscan.io',
   KAIA: isBeta ? 'https://baobab.scope.klaytn.com' : 'https://scope.klaytn.com',
-  smartBCH: isBeta ? 'https://smartscan.cash' : 'https://smartscan.cash',
+  smartBCH: isBeta ? 'https://smartbch-explorer.web.app' : 'https://smartbch-explorer.web.app',
   ENULS: isBeta ? 'https://beta.evmscan.nuls.io' : 'https://evmscan.nuls.io',
   KAVA: isBeta
     ? 'https://explorer.testnet.kava.io'
