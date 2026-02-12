@@ -178,7 +178,7 @@ export const RPC_URL = {
     : 'https://babel-api.mainnet.iotex.io',
   Optimism: isBeta
     ? 'https://kovan.optimism.io'
-    : 'https://optimism-mainnet.public.blastapi.io',
+    : 'https://mainnet.optimism.io',
   KAIA: isBeta
     ? 'https://api.baobab.klaytn.net:8651'
     : 'https://klaytn-pokt.nodies.app',
