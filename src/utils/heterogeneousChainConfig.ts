@@ -86,7 +86,7 @@ const Origin = {
   ENULS: isBeta ? 'https://beta.evmscan.nuls.io' : 'https://evmscan.nuls.io',
   KAVA: isBeta
     ? 'https://explorer.testnet.kava.io'
-    : 'https://explorer.kava.io',
+    : 'https://www.oklink.com/kava',
   ETHW: 'https://mainnet.ethwscan.com',
   REI: isBeta ? 'https://scan-test.rei.network' : 'https://scan.rei.network',
   zkSync: isBeta

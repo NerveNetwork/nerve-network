@@ -147,7 +147,7 @@ const columns = computed(() => {
     },
     {
       label: t('mint.mint44'),
-      width: 130,
+      'min-width': 130,
       slotName: 'opt'
     },
     { width: 10 }

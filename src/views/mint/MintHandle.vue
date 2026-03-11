@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center">
     <template v-if="!nerveAddress">
-      <AuthButton />
+      <AuthButton class="h-10 rounded-lg" />
     </template>
     <template v-else>
       <el-tooltip
