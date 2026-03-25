@@ -24,18 +24,39 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import BackTitle from '@/components/BackTitle.vue'
 import clsxm from '@/utils/clsxm'
+import { useWalletStore } from '@/store/wallet'
 
 const route = useRoute()
+const router = useRouter()
+const walletStore = useWalletStore()
 
 const routeConfig = computed(() => {
+  if (disableCross.value) {
+    return [{ label: 'Transfer', path: '/transfer/2' }]
+  }
   return [
     { label: 'Cross In', path: '/transfer/1' },
     { label: 'Transfer', path: '/transfer/2' },
     { label: 'Cross Out', path: '/transfer/3' }
   ]
 })
+
+const disableCross = computed(() => {
+  const disabledNetworks = ['BTC', 'FCH', 'BCH', 'TBC']
+  return disabledNetworks.includes(walletStore.chain)
+})
+
+watch(
+  () => route.path,
+  val => {
+    if (val !== '/transfer/2' && disableCross.value) {
+      router.replace('/transfer/2')
+    }
+  },
+  { immediate: true }
+)
 </script>

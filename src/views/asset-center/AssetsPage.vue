@@ -72,14 +72,14 @@
                 class="flex items-center justify-center gap-3"
                 v-if="scope.row">
                 <button
-                  v-if="scope.row.canToL1 && !disableSmartBCH(scope.row.assetKey)"
+                  v-if="scope.row.canToL1 && !disableSmartBCH(scope.row.assetKey) && !disableCross"
                   type="button"
                   class="btn text-primary"
                   @click="toTransfer(scope.row, TransferType.CrossIn)">
                   {{ $t('transfer.transfer1') }}
                 </button>
                 <div
-                  v-if="scope.row.canToL1 && !disableSmartBCH(scope.row.assetKey)"
+                  v-if="scope.row.canToL1 && !disableSmartBCH(scope.row.assetKey) && !disableCross"
                   class="h-2 w-[1px] bg-label"></div>
                 <button
                   type="button"
@@ -88,12 +88,12 @@
                   {{ $t('transfer.transfer2') }}
                 </button>
                 <div
-                  v-if="scope.row.canToL1"
+                  v-if="scope.row.canToL1 && !disableCross"
                   class="h-2 w-[1px] bg-label"></div>
                 <button
                   type="button"
                   class="btn text-primary"
-                  v-if="scope.row.canToL1"
+                  v-if="scope.row.canToL1 && !disableCross"
                   @click="toTransfer(scope.row, TransferType.Withdrawal)">
                   {{ $t('transfer.transfer3') }}
                 </button>
@@ -157,7 +157,7 @@
                 <button
                   class="btn flex h-8 w-20 items-center justify-center rounded-xl bg-primary text-xs"
                   @click="toTransfer(item, TransferType.CrossIn)"
-                  v-if="item.canToL1 && !disableSmartBCH(item.assetKey)">
+                  v-if="item.canToL1 && !disableSmartBCH(item.assetKey) && !disableCross">
                   {{ $t('transfer.transfer1') }}
                 </button>
                 <button
@@ -168,7 +168,7 @@
                 <button
                   class="btn flex h-8 w-20 items-center justify-center rounded-xl bg-primary text-xs"
                   @click="toTransfer(item, TransferType.Withdrawal)"
-                  v-if="item.canToL1">
+                  v-if="item.canToL1 && !disableCross">
                   {{ $t('transfer.transfer3') }}
                 </button>
               </div>
@@ -229,7 +229,7 @@ const {
   currentAddress: address
 } = storeToRefs(walletStore)
 
-console.log(network, 234234);
+// console.log(network, 234234);
 
 const {
   loading,
@@ -300,6 +300,11 @@ function showReConnect() {
 const disableSmartBCH = (key: string) => {
   return network.value === 'smartBCH' && key === '9-449'
 }
+
+const disableCross = computed(() => {
+  const disabledNetworks = ['BTC', 'FCH', 'BCH', 'TBC']
+  return disabledNetworks.includes(network.value)
+})
 
 const rootCmp = reactive({
   nerveAddress,
