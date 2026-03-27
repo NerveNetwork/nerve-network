@@ -150,7 +150,7 @@ export const RPC_URL = {
     : 'https://bsc-dataseed.binance.org/',
   Polygon: isBeta
     ? 'https://polygon-testnet.public.blastapi.io'
-    : 'https://polygon-rpc.com',
+    : 'https://wallet.okx.com/fullnode/poly/discover/rpc',
   OKTC: isBeta
     ? 'https://exchaintestrpc.okex.org'
     : 'https://exchainrpc.okex.org',
