@@ -46,9 +46,10 @@ const routeConfig = computed(() => {
 })
 
 const disableCross = computed(() => {
-  const disabledNetworks = ['BTC', 'FCH', 'BCH', 'TBC']
-  // return disabledNetworks.includes(walletStore.chain)
-  return false
+  // const disabledNetworks = ['BTC', 'FCH', 'BCH', 'TBC']
+  const disabledNetworks = ['BRISE', 'Bitgert']
+  return disabledNetworks.includes(walletStore.chain)
+  // return false
 })
 
 watch(

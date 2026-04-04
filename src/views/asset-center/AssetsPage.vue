@@ -302,9 +302,9 @@ const disableSmartBCH = (key: string) => {
 }
 
 const disableCross = computed(() => {
-  const disabledNetworks = ['BTC', 'FCH', 'BCH', 'TBC']
-  // return disabledNetworks.includes(network.value)
-  return false
+  const disabledNetworks = ['BRISE', 'Bitgert']
+  return disabledNetworks.includes(network.value)
+  // return false
 })
 
 const rootCmp = reactive({
