@@ -284,6 +284,21 @@ export async function crossChainInfo() {
   return res?.result || null
 }
 
+// 获取已暂停跨链的htgChainId列表
+export async function getCrossChainPausedHtgChainIds(networkType: number) {
+  const res = await http.request<{ result?: { htgChainIds: number[] } }>({
+    url: 'https://api.nerve.network/jsonrpc',
+    method: 'POST',
+    data: {
+      jsonrpc: '2.0',
+      id: Math.floor(Math.random() * 1000),
+      method: 'getCrossChainPausedHtgChainIds',
+      params: [networkType]
+    }
+  })
+  return res?.result?.htgChainIds || []
+}
+
 export async function getDeployMinter(chainId: number) {
   const res = await http.get({
     url: `${config.sys_url}/api/minter/${chainId}`
