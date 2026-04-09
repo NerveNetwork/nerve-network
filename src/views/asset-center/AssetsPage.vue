@@ -305,7 +305,7 @@ const disableSmartBCH = (key: string) => {
 }
 
 const disableCross = computed(() => {
-  const disabledNetworks = ['BRISE', 'Bitgert']
+  const disabledNetworks = ['BRISE', 'Bitgert', 'TBC']
   return disabledNetworks.includes(network.value)
   // return false
 })
