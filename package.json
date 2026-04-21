@@ -9,7 +9,8 @@
     "dev-prod": "vite --mode prod",
     "build-beta": "vite build --mode beta",
     "build-prod": "vite build --mode prod",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:rpc": "node scripts/generate-rpc-urls.mjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

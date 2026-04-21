@@ -17,6 +17,11 @@ import config from '@/config';
 import { getProvider } from '../utils/providerUtil';
 import { broadcastHex, getAssetBalance } from '@/service/api';
 import { _networkInfo } from '@/utils/heterogeneousChainConfig';
+import {
+  canUsePluginAsFallback,
+  getFallbackRpcProvider,
+  getPluginWeb3Provider
+} from '@/utils/rpcProvider';
 
 interface NProps {
   chain: 'NERVE' | 'NULS';
@@ -788,6 +793,7 @@ const tokenABI = [
 
 const tokenGaslimit = 150000;
 const defaultGaslimit = 35000;
+const L1_EXTRA_FEE_CHAINS = new Set([115, 129, 136, 138, 139, 130, 133])
 
 export function getGasLimit(isToken: boolean) {
   return isToken ? tokenGaslimit : defaultGaslimit;
@@ -795,19 +801,48 @@ export function getGasLimit(isToken: boolean) {
 
 export class ETransfer {
   provider: any;
+  pluginProvider: any;
+  chainName?: string;
   constructor(chain?: string) {
     this.getProvider(chain);
   }
 
   getProvider(chain?: string) {
+    this.chainName = chain;
     if (!chain) {
       const { provider } = getProvider();
       if (!provider) return
       this.provider = new ethers.providers.Web3Provider(provider);
     } else {
-      this.provider = new ethers.providers.JsonRpcProvider(
-        _networkInfo[chain].rpcUrl
-      );
+      this.pluginProvider = getPluginWeb3Provider();
+      const chainInfo = _networkInfo[chain];
+      if (chainInfo?.type === 'EVM') {
+        try {
+          this.provider = getFallbackRpcProvider(chain);
+        } catch (e) {
+          this.provider = this.pluginProvider || null;
+        }
+      } else {
+        this.provider = this.pluginProvider || null;
+      }
+    }
+  }
+
+  async withReadFallback<T>(readFn: (provider: any) => Promise<T>): Promise<T> {
+    if (!this.provider) {
+      throw new Error('Provider unavailable');
+    }
+    try {
+      return await readFn(this.provider);
+    } catch (e) {
+      if (!this.chainName || !this.pluginProvider) {
+        throw e;
+      }
+      const canFallback = await canUsePluginAsFallback(this.chainName);
+      if (!canFallback) {
+        throw e;
+      }
+      return await readFn(this.pluginProvider);
     }
   }
 
@@ -934,11 +969,11 @@ export class ETransfer {
   }
 
   getEthBalance(address: string) {
-    let balancePromise = this.provider.getBalance(address);
-    return balancePromise
-      .then((balance: any) => {
+    return this.withReadFallback(provider => provider.getBalance(address)).then(
+      (balance: any) => {
         return ethers.utils.formatEther(balance);
-      })
+      }
+    )
       .catch((e: Error) => {
         // console.error('获取余额失败' + e)
         throw '获取余额失败' + e;
@@ -956,19 +991,18 @@ export class ETransfer {
     tokenDecimals: number,
     address: string
   ) {
-    let contract = new ethers.Contract(
-      contractAddress,
-      erc20BalanceAbiFragment,
-      this.provider
-    );
-    let balancePromise = contract.balanceOf(address);
-    return balancePromise
+    return this.withReadFallback(provider => {
+      const contract = new ethers.Contract(
+        contractAddress,
+        erc20BalanceAbiFragment,
+        provider
+      );
+      return contract.balanceOf(address);
+    })
       .then((balance: any) => {
-        // console.log(balance, 123456);
         return ethers.utils.formatUnits(balance, tokenDecimals);
       })
       .catch((e: Error) => {
-        // console.error('获取ERC20余额失败' + e)
         throw '获取余额失败' + e;
       });
   }
@@ -1073,11 +1107,13 @@ export class ETransfer {
   // 获取手续费
   getGasPrice(isToken: boolean) {
     const gasLimit = getGasLimit(isToken);
-    return this.provider.getGasPrice().then((gasPrice: any) => {
+    return this.withReadFallback(provider => provider.getGasPrice()).then(
+      (gasPrice: any) => {
       return ethers.utils
         .formatEther(gasPrice.mul(gasLimit).toString())
         .toString();
-    });
+      }
+    );
   }
 
   // 加速手续费
@@ -1091,16 +1127,20 @@ export class ETransfer {
   // 加速gasprice
   getSpeedUpGasPrice() {
     const GWEI_10 = ethers.utils.parseUnits('10', 9);
-    return this.provider.getGasPrice().then((gasPrice: any) => {
+    return this.withReadFallback(provider => provider.getGasPrice()).then(
+      (gasPrice: any) => {
       return gasPrice.add(GWEI_10);
-    });
+      }
+    );
   }
 
   // 提现gas
   getWithdrawGas() {
-    return this.provider.getGasPrice().then((gasPrice: any) => {
+    return this.withReadFallback(provider => provider.getGasPrice()).then(
+      (gasPrice: any) => {
       return gasPrice;
-    });
+      }
+    );
   }
 
   /**
@@ -1129,13 +1169,15 @@ export class ETransfer {
     const gasLimit_big = BigNumber.from(gasLimit);
     const GWEI_5 = ethers.utils.parseUnits('5', 9);
     let extraL1FeeBig = GWEI_5
-    if (!isBeta) {
+    if (!isBeta && L1_EXTRA_FEE_CHAINS.has(htgChainId)) {
       const ethereumChain = isBeta ? _networkInfo.Goerli : _networkInfo.Ethereum;
-      const ethereumProvider = new ethers.providers.JsonRpcProvider(
-        ethereumChain.rpcUrl
-      );
-      const ethGasPrice = await ethereumProvider.getGasPrice();
-      extraL1FeeBig = sdkApi.getL1Fee(htgChainId, ethGasPrice);
+      try {
+        const ethereumProvider = getFallbackRpcProvider(ethereumChain.name);
+        const ethGasPrice = await ethereumProvider.getGasPrice();
+        extraL1FeeBig = sdkApi.getL1Fee(htgChainId, ethGasPrice);
+      } catch (e) {
+        // Do not block cross-out fee rendering when optional Ethereum L1 quote is unavailable.
+      }
     }
     const totalL1Fee = gasLimit_big.mul(gasPrice).add(extraL1FeeBig);
     if (isMainAsset) {
@@ -1207,19 +1249,21 @@ export class ETransfer {
   }
   async getTokenInfo(contract: string) {
     try {
-      const tokenContract = new ethers.Contract(
-        contract,
-        tokenABI,
-        this.provider
-      )
-      return Promise.all([
-        tokenContract.name(),
-        tokenContract.symbol(),
-        tokenContract.decimals()
-      ])
+      return await this.withReadFallback(provider => {
+        const tokenContract = new ethers.Contract(contract, tokenABI, provider)
+        return Promise.all([
+          tokenContract.name(),
+          tokenContract.symbol(),
+          tokenContract.decimals()
+        ])
+      })
     } catch (e) {
       return null
     }
+  }
+
+  async getTransactionReceipt(hash: string) {
+    return await this.withReadFallback(provider => provider.getTransactionReceipt(hash))
   }
 }
 

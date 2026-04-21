@@ -13,6 +13,7 @@ import {
 import storage from '@/utils/storage'
 import { getCurrentAccount, isBeta, isMobile } from '@/utils/util'
 import { _networkInfo } from '@/utils/heterogeneousChainConfig'
+import { getRpcConfig } from '@/utils/rpcManager'
 import nerveswap from 'nerveswap-sdk'
 import nerve from 'nerve-sdk-js'
 
@@ -560,9 +561,10 @@ export default function useEthereum() {
       const chain = _networkInfo[network]
       const { nativeId, rpcUrl, chainName, name, mainAsset, decimals, origin } =
         chain
+      const rpcConfig = getRpcConfig(network)
       await addEthereumChain({
         chainId: nativeId,
-        rpcUrls: [rpcUrl!],
+        rpcUrls: rpcConfig.urls.length ? rpcConfig.urls : rpcUrl ? [rpcUrl] : [],
         chainName: chainName,
         nativeCurrency: {
           name: name,

@@ -162,6 +162,8 @@ const showAddFeeModal = ref(false)
 const addFeeTx = ref<TxInfo>({} as TxInfo)
 
 const accountTxs = ref<TxInfo[]>([])
+const txQueryCache = new Map<string, { ts: number; result: any }>()
+const CACHE_TTL = 15000
 
 const getAccountTxs = () => {
   const currentAccount: Account = getCurrentAccount(address.value)
@@ -311,9 +313,24 @@ async function handleTx(tx: TxInfo) {
 
 async function handleNVMTx(tx: TxInfo) {
   const txState = { hash: tx.hash, result: null }
+  const cacheKey = `nvm-${tx.L1Chain}-${tx.hash}`
+  const cached = txQueryCache.get(cacheKey)
+  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+    return { hash: tx.hash, result: cached.result }
+  }
   const { rpcUrl, N_ChainId } = _networkInfo[tx.L1Chain!]
-  const res = await getNVMTx(rpcUrl!, N_ChainId!, tx.hash)
+  let res: any = null
+  for (let retry = 0; retry < 2 && !res; retry++) {
+    try {
+      res = await getNVMTx(rpcUrl!, N_ChainId!, tx.hash)
+    } catch (e) {
+      if (retry === 1) {
+        console.error('nvm tx query failed', rpcUrl, e)
+      }
+    }
+  }
   if (res) {
+    txQueryCache.set(cacheKey, { ts: Date.now(), result: res })
     return { hash: tx.hash, result: res }
   }
   return txState
@@ -381,11 +398,21 @@ async function handleTBCTx(tx: TxInfo) {
 }
 
 async function handleEVMTx(tx: TxInfo) {
+  const cacheKey = `evm-${tx.L1Chain}-${tx.hash}`
+  const cached = txQueryCache.get(cacheKey)
+  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+    return { hash: tx.hash, result: cached.result }
+  }
   try {
     const transfer = new ETransfer(tx.L1Chain)
+    let receipt: any = null
+    for (let retry = 0; retry < 2 && !receipt; retry++) {
+      receipt = await transfer.getTransactionReceipt(tx.hash)
+    }
+    txQueryCache.set(cacheKey, { ts: Date.now(), result: receipt })
     return {
       hash: tx.hash,
-      result: await transfer.provider.getTransactionReceipt(tx.hash)
+      result: receipt
     }
   } catch (e) {
     return {

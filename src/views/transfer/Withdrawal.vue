@@ -30,8 +30,15 @@
       </div>
       <div v-else class="mt-2 flex items-center text-sm text-label">
         <span class="mr-1">{{ $t('public.public15') }}</span>
-        <i-custom-loading class="h-4 w-4 animate-spin text-label" v-if="!fee" />
-        <span v-else>{{ fee + ' ' + feeSymbol }}</span>
+        <i-custom-loading class="h-4 w-4 animate-spin text-label" v-if="!minFee" />
+        <div v-else class="flex items-center">
+          <Input
+            class="w-[140px]"
+            input-class="h-7 leading-7 bg-input"
+            borderColor="border-line"
+            v-model.trim="fee" />
+          <span class="ml-1">{{ feeSymbol }}</span>
+        </div>
         <div
           class="ml-5 flex cursor-pointer items-center text-primary"
           @click="showFeeDialog = true">
@@ -39,7 +46,13 @@
           <span>{{ $t('transfer.transfer22') }}</span>
         </div>
       </div>
+      <div v-if="feeError" class="mt-1 text-xs text-error">
+        {{ feeError }}
+      </div>
       <div class="pt-5">
+        <div class="mb-2 flex items-center justify-end">
+          <RpcAdvancedModal :button-class="advancedBtnClass" />
+        </div>
         <Checkbox
           labelClass="items-start"
           textClass="text-error leading-[18px]"
@@ -91,6 +104,7 @@ import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 import storage from '@/utils/storage'
 import nerveswap from 'nerveswap-sdk'
 import { NSymbol } from '@/constants/constants'
+import RpcAdvancedModal from '@/components/RpcAdvancedModal.vue'
 
 const { t } = useI18n()
 const { toastError } = useToast()
@@ -130,6 +144,8 @@ const loading = ref(false)
 const toAddress = ref(currentAddress.value)
 const addressError = ref('')
 const fee = ref('')
+const minFee = ref('')
+const feeError = ref('')
 const confirmTip = ref(false)
 
 watch(
@@ -194,6 +210,8 @@ const amountErrorTip = ref('')
 const disableTransfer = computed(() => {
   return !!(
     !fee.value ||
+    !minFee.value ||
+    feeError.value ||
     !amount.value ||
     !balance.value ||
     amountErrorTip.value ||
@@ -205,9 +223,27 @@ const disableTransfer = computed(() => {
 })
 const feeSymbol = ref('')
 const showFeeDialog = ref(false)
+const advancedBtnClass = computed(() => {
+  const base = 'btn text-[11px] text-label hover:text-primary transition-opacity'
+  return chainInfo.value?.type === 'EVM' ? base : `${base} opacity-40 hover:opacity-100`
+})
 
 const selectedFeeAsset = ref<AssetItem>({} as AssetItem) // 手续费资产信息--L1网络在nerve上的主资产
 const supportedFeeAssets = ref<AssetItem[]>([]) // 可充当提现手续费的资产
+
+watch(
+  [() => fee.value, () => minFee.value],
+  ([feeVal, minFeeVal]) => {
+    if (!feeVal || !minFeeVal) {
+      feeError.value = ''
+      return
+    }
+    feeError.value =
+      Minus(feeVal, minFeeVal).toNumber() < 0
+        ? `Fee cannot be lower than ${minFeeVal} ${feeSymbol.value}`
+        : ''
+  }
+)
 
 watch(
   () => transferAsset.value,
@@ -277,6 +313,7 @@ const FeeAsset_TransferAsset_IsSame = computed(() => {
 // 选择交易资产
 function selectAsset() {
   fee.value = ''
+  minFee.value = ''
   amount.value = ''
   if (heterogeneousInfo.value) {
     getCrossOutFeeHandle()
@@ -306,7 +343,7 @@ async function getCrossOutFeeHandle() {
     } = selectedFeeAsset.value
     const { isToken, heterogeneousChainId } = heterogeneousInfo.value!
     const feeIsNVT = chainId === config.chainId && assetId === config.assetId
-    fee.value = await getCrossOutFee({
+    const computedFee = await getCrossOutFee({
       hId: heterogeneousChainId,
       useMainAsset: feeChain === withdrawalChain,
       feeDecimals: decimals,
@@ -314,6 +351,8 @@ async function getCrossOutFeeHandle() {
       isNVT: feeIsNVT,
       isTRX: feeChain === 'TRON'
     })
+    minFee.value = computedFee
+    fee.value = computedFee
   }
 }
 
@@ -327,7 +366,7 @@ async function getBTCCrossOutFeeHandle() {
     originNetwork: feeChain
   } = selectedFeeAsset.value
   const feeIsNVT = chainId === config.chainId && assetId === config.assetId
-  fee.value = await getBTCsCrossOutFee({
+  const computedFee = await getBTCsCrossOutFee({
     amount: amount.value,
     useMainAsset: feeChain === withdrawalChain,
     feeDecimals: decimals,
@@ -335,6 +374,8 @@ async function getBTCCrossOutFeeHandle() {
     isNVT: feeIsNVT,
     withdrawalChain
   })
+  minFee.value = computedFee
+  fee.value = computedFee
   validateAmount()
 }
 
@@ -363,6 +404,7 @@ async function changeFeeAsset(asset: AssetItem) {
   selectedFeeAsset.value = asset
   feeSymbol.value = asset.symbol
   fee.value = ''
+  minFee.value = ''
   await getCrossOutFeeHandle()
   validateAmount()
 }

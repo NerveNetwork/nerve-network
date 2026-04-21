@@ -254,6 +254,7 @@ interface IChain {
     logo: string
     decimals?: number
     rpcUrl?: string
+    rpcUrls?: string[]
     N_ChainId?: number
   }
 }
@@ -897,6 +898,9 @@ export const _networkInfo: IChain = {
 }
 
 Object.values(_networkInfo).map(chain => {
+  if (chain.rpcUrl && !chain.rpcUrls?.length) {
+    chain.rpcUrls = [chain.rpcUrl]
+  }
   if (chain.name === 'BSC') {
     chain.label = 'BNB Chain'
   } else if (chain.name === 'NULS') {

@@ -461,6 +461,11 @@ export function getHetergenousChainConfig() {
     delete _networkInfo.Janus;
     delete _networkInfo.X1;
   }
+  Object.values(_networkInfo).forEach(chain => {
+    if (chain.rpcUrl && !chain.rpcUrls) {
+      chain.rpcUrls = [chain.rpcUrl];
+    }
+  });
   return _networkInfo;
 }
 

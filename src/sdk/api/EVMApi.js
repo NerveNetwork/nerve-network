@@ -214,12 +214,35 @@ async function validateTx(provider, tx) {
   if (isShardeum) {
     return;
   }
-  return await provider.call(tx).then(result => {
-    const reason = ethers.utils.toUtf8String('0x' + result.substr(138));
-    if (reason) {
-      throw reason;
+  let result;
+  try {
+    result = await provider.call(tx);
+  } catch (e) {
+    const msg = e?.message || String(e);
+    const isSimRevert =
+      e?.code === 'CALL_EXCEPTION' ||
+      e?.code === 'UNPREDICTABLE_GAS_LIMIT' ||
+      msg.includes('missing revert data') ||
+      msg.includes('execution reverted');
+    if (isSimRevert) {
+      const hint =
+        '链上模拟执行失败，请检查：1) 钱包网络与资产所在链一致 2) ERC20 是否已 Approve 3) 余额与 gas 是否足够 4) 跨链是否暂停 ';
+      throw new Error(hint + (e.reason ? `(${e.reason})` : `(${msg})`));
     }
-  });
+    throw e;
+  }
+  if (result && result.length > 138) {
+    try {
+      const reason = ethers.utils.toUtf8String('0x' + result.substr(138));
+      if (reason) {
+        throw reason;
+      }
+    } catch (e) {
+      if (typeof e === 'string') {
+        throw e;
+      }
+    }
+  }
 }
 
 async function sendTransaction(provider, tx) {

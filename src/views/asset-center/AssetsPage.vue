@@ -217,6 +217,7 @@ import { specialChain } from '@/hooks/useEthereum'
 import config from '@/config'
 import { getCrossChainPausedHtgChainIds } from '@/service/api/public'
 import { _networkInfo } from '@/utils/heterogeneousChainConfig'
+import storage from '@/utils/storage'
 
 import { AssetItemType, rootCmpKey, TransferType } from './types'
 
@@ -318,8 +319,23 @@ const isNetworkPaused = computed(() => {
 
 // 初始化暂停链ID列表
 async function initPausedChainIds() {
+  const cacheKey = 'pausedChainIdsCache'
+  const cached = storage.get(cacheKey, 'session')
+  if (cached?.list && Date.now() - cached.ts < 60 * 1000) {
+    pausedChainIds.value = cached.list
+    return
+  }
   try {
-    pausedChainIds.value = await getCrossChainPausedHtgChainIds(config.chainId)
+    let list: number[] = []
+    for (let retry = 0; retry < 2 && !list.length; retry++) {
+      try {
+        list = await getCrossChainPausedHtgChainIds(config.chainId)
+      } catch (e) {
+        if (retry === 1) throw e
+      }
+    }
+    pausedChainIds.value = list
+    storage.set(cacheKey, { list, ts: Date.now() }, 'session')
   } catch (e) {
     console.error('Failed to get paused chain ids:', e)
     pausedChainIds.value = []

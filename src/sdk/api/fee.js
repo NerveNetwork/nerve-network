@@ -39,9 +39,11 @@ export async function getWithdrawalInfo(chainId) {
     totalL1Fee = gasLimit;
   } else {
     const ethereumChain = configs.Ethereum;
-    const withdrawalProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
-    const ethereumProvider = new ethers.providers.JsonRpcProvider(
-      ethereumChain.rpcUrl
+    const withdrawalProvider = getFallbackProvider(
+      heterogeneousChain.rpcUrls || [rpcUrl]
+    );
+    const ethereumProvider = getFallbackProvider(
+      ethereumChain.rpcUrls || [ethereumChain.rpcUrl]
     );
 
     const gasPrice = await withdrawalProvider.getGasPrice();
@@ -72,6 +74,24 @@ export async function getWithdrawalInfo(chainId) {
     },
     heterogeneousChainId: chainId
   };
+}
+
+function getFallbackProvider(rpcUrls = []) {
+  const providers = rpcUrls
+    .filter(Boolean)
+    .map((url, index) => ({
+      provider: new ethers.providers.JsonRpcProvider(url),
+      priority: index + 1,
+      weight: index === 0 ? 2 : 1,
+      stallTimeout: 1500
+    }));
+  if (!providers.length) {
+    throw new Error('No rpc url available');
+  }
+  if (providers.length === 1) {
+    return providers[0].provider;
+  }
+  return new ethers.providers.FallbackProvider(providers, 1);
 }
 
 async function getGasLimit(chainId) {

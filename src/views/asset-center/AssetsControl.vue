@@ -9,6 +9,7 @@
         <template #prepend><i-custom-search /></template>
       </Input>
       <Checkbox v-model="checkboxVal" :text="$t('assets.assets12')" />
+      <RpcAdvancedModal button-class="btn ml-3 text-[11px] text-label hover:text-primary" />
     </div>
     <button @click="emit('showDialog')" class="btn">
       <i-custom-add-asset />
@@ -20,6 +21,7 @@
 import { computed } from 'vue'
 import Input from '@/components/Base/Input/index.vue'
 import Checkbox from '@/components/Base/Checkbox/index.vue'
+import RpcAdvancedModal from '@/components/RpcAdvancedModal.vue'
 
 const props = defineProps<{
   searchVal: string

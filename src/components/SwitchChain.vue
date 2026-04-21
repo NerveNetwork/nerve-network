@@ -54,6 +54,7 @@ import useToast from '@/hooks/useToast'
 import useClickOutside from '@/hooks/useClickOutside'
 import { _networkInfo } from '@/utils/heterogeneousChainConfig'
 import storage from '@/utils/storage'
+import { getRpcConfig } from '@/utils/rpcManager'
 
 interface ChainItem extends AddChain {
   logo: string
@@ -76,9 +77,10 @@ const { toastError } = useToast()
 
 const supportChainList: ChainItem[] = []
 Object.values(_networkInfo).map((v: any) => {
+  const rpcConfig = getRpcConfig(v.name)
   supportChainList.push({
     chainId: v.nativeId,
-    rpcUrls: v.rpcUrl ? [v.rpcUrl] : [],
+    rpcUrls: rpcConfig.urls.length ? rpcConfig.urls : v.rpcUrl ? [v.rpcUrl] : [],
     name: v.name,
     chainName: v.chainName,
     // @ts-ignore
