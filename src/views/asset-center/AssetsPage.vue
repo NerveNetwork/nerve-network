@@ -72,14 +72,14 @@
                 class="flex items-center justify-center gap-3"
                 v-if="scope.row">
                 <button
-                  v-if="scope.row.canToL1 && !disableSmartBCH(scope.row.assetKey) && !disableCross && !isNetworkPaused"
+                  v-if="showCrossIn(scope.row)"
                   type="button"
                   class="btn text-primary"
                   @click="toTransfer(scope.row, TransferType.CrossIn)">
                   {{ $t('transfer.transfer1') }}
                 </button>
                 <div
-                  v-if="scope.row.canToL1 && !disableSmartBCH(scope.row.assetKey) && !disableCross && !isNetworkPaused"
+                  v-if="showCrossIn(scope.row)"
                   class="h-2 w-[1px] bg-label"></div>
                 <button
                   type="button"
@@ -88,12 +88,12 @@
                   {{ $t('transfer.transfer2') }}
                 </button>
                 <div
-                  v-if="scope.row.canToL1 && !disableCross && !isNetworkPaused"
+                  v-if="showCrossOut(scope.row)"
                   class="h-2 w-[1px] bg-label"></div>
                 <button
                   type="button"
                   class="btn text-primary"
-                  v-if="scope.row.canToL1 && !disableCross && !isNetworkPaused"
+                  v-if="showCrossOut(scope.row)"
                   @click="toTransfer(scope.row, TransferType.Withdrawal)">
                   {{ $t('transfer.transfer3') }}
                 </button>
@@ -157,7 +157,7 @@
                 <button
                   class="btn flex h-8 w-20 items-center justify-center rounded-xl bg-primary text-xs"
                   @click="toTransfer(item, TransferType.CrossIn)"
-                  v-if="item.canToL1 && !disableSmartBCH(item.assetKey) && !disableCross && !isNetworkPaused">
+                  v-if="showCrossIn(item)">
                   {{ $t('transfer.transfer1') }}
                 </button>
                 <button
@@ -168,7 +168,7 @@
                 <button
                   class="btn flex h-8 w-20 items-center justify-center rounded-xl bg-primary text-xs"
                   @click="toTransfer(item, TransferType.Withdrawal)"
-                  v-if="item.canToL1 && !disableCross && !isNetworkPaused">
+                  v-if="showCrossOut(item)">
                   {{ $t('transfer.transfer3') }}
                 </button>
               </div>
@@ -215,9 +215,8 @@ import { useWalletStore } from '@/store/wallet'
 import useAssetsList from './useAssetsList'
 import { specialChain } from '@/hooks/useEthereum'
 import config from '@/config'
-import { getCrossChainPausedHtgChainIds } from '@/service/api/public'
-import { _networkInfo } from '@/utils/heterogeneousChainConfig'
-import storage from '@/utils/storage'
+import { canShowCrossIn, canShowCrossOut } from '@/utils/crossVisibility'
+import usePausedCrossChainIds from '@/hooks/usePausedCrossChainIds'
 
 import { AssetItemType, rootCmpKey, TransferType } from './types'
 
@@ -253,7 +252,7 @@ watch(() => network.value, filterAssets)
 
 const showAssetManage = ref(false) // 资产管理弹窗
 const showSwitch = ref(false)
-const pausedChainIds = ref<number[]>([]) // 已暂停跨链的htgChainId列表
+const { isNetworkPaused } = usePausedCrossChainIds(() => network.value)
 
 // 显示交易tab
 const currentTab = ref<TransferType>(TransferType.General)
@@ -301,47 +300,13 @@ function showReConnect() {
   walletStore.changeConnectShow(true)
 }
 
-const disableSmartBCH = (key: string) => {
-  return network.value === 'smartBCH' && key === '9-449'
+const showCrossIn = (asset: AssetItemType) => {
+  return canShowCrossIn(network.value, isNetworkPaused.value, asset)
 }
 
-const disableCross = computed(() => {
-  const disabledNetworks = ['BRISE', 'Bitgert', 'TBC']
-  return disabledNetworks.includes(network.value)
-  // return false
-})
-
-// 检查当前网络是否已暂停跨链
-const isNetworkPaused = computed(() => {
-  const currentChainId = _networkInfo[network.value]?.chainId
-  return pausedChainIds.value.includes(currentChainId)
-})
-
-// 初始化暂停链ID列表
-async function initPausedChainIds() {
-  const cacheKey = 'pausedChainIdsCache'
-  const cached = storage.get(cacheKey, 'session')
-  if (cached?.list && Date.now() - cached.ts < 60 * 1000) {
-    pausedChainIds.value = cached.list
-    return
-  }
-  try {
-    let list: number[] = []
-    for (let retry = 0; retry < 2 && !list.length; retry++) {
-      try {
-        list = await getCrossChainPausedHtgChainIds(config.chainId)
-      } catch (e) {
-        if (retry === 1) throw e
-      }
-    }
-    pausedChainIds.value = list
-    storage.set(cacheKey, { list, ts: Date.now() }, 'session')
-  } catch (e) {
-    console.error('Failed to get paused chain ids:', e)
-    pausedChainIds.value = []
-  }
+const showCrossOut = (asset: AssetItemType) => {
+  return canShowCrossOut(network.value, isNetworkPaused.value, asset)
 }
-initPausedChainIds()
 
 const rootCmp = reactive({
   nerveAddress,

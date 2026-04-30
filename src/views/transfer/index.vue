@@ -5,7 +5,7 @@
     <div class="mb-7 flex items-center justify-around">
       <template v-for="item in routeConfig" :key="item.path">
         <router-link
-          :to="item.path + `?asset=${route.query.asset}`"
+          :to="item.path + assetQuery"
           :class="
             clsxm(
               'flex h-8 items-center justify-center rounded-[10px] px-3 text-base transition-colors duration-300',
@@ -26,37 +26,57 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import BackTitle from '@/components/BackTitle.vue'
 import clsxm from '@/utils/clsxm'
 import { useWalletStore } from '@/store/wallet'
+import { canShowCrossIn, canShowCrossOut } from '@/utils/crossVisibility'
+import usePausedCrossChainIds from '@/hooks/usePausedCrossChainIds'
 
 const route = useRoute()
 const router = useRouter()
 const walletStore = useWalletStore()
+const { assetsList } = storeToRefs(walletStore)
+const { isNetworkPaused } = usePausedCrossChainIds(() => walletStore.chain)
 
-const routeConfig = computed(() => {
-  if (disableCross.value) {
-    return [{ label: 'Transfer', path: '/transfer/2' }]
-  }
-  return [
-    { label: 'Cross In', path: '/transfer/1' },
-    { label: 'Transfer', path: '/transfer/2' },
-    { label: 'Cross Out', path: '/transfer/3' }
-  ]
+const assetQuery = computed(() => {
+  return typeof route.query.asset === 'string' ? `?asset=${route.query.asset}` : ''
 })
 
-const disableCross = computed(() => {
-  // const disabledNetworks = ['BTC', 'FCH', 'BCH', 'TBC']
-  const disabledNetworks = ['BRISE', 'Bitgert', 'TBC']
-  return disabledNetworks.includes(walletStore.chain)
-  // return false
+const transferAsset = computed(() => {
+  if (typeof route.query.asset !== 'string') return null
+  return assetsList.value.find(v => v.assetKey === route.query.asset) || null
+})
+
+const showCrossInTab = computed(() => {
+  return canShowCrossIn(walletStore.chain, isNetworkPaused.value, transferAsset.value)
+})
+
+const showCrossOutTab = computed(() => {
+  return canShowCrossOut(
+    walletStore.chain,
+    isNetworkPaused.value,
+    transferAsset.value
+  )
+})
+
+const routeConfig = computed(() => {
+  const tabs = [{ label: 'Transfer', path: '/transfer/2' }]
+  if (showCrossInTab.value) {
+    tabs.unshift({ label: 'Cross In', path: '/transfer/1' })
+  }
+  if (showCrossOutTab.value) {
+    tabs.push({ label: 'Cross Out', path: '/transfer/3' })
+  }
+  return tabs
 })
 
 watch(
-  () => route.path,
-  val => {
-    if (val !== '/transfer/2' && disableCross.value) {
-      router.replace('/transfer/2')
+  [() => route.path, () => routeConfig.value],
+  ([path, tabs]) => {
+    const tabEnabled = tabs.some(item => item.path === path)
+    if (!tabEnabled) {
+      router.replace(`/transfer/2${assetQuery.value}`)
     }
   },
   { immediate: true }
