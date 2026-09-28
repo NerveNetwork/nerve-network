@@ -1,28 +1,28 @@
 <template>
   <div class="refund-page w1200 card-wrapper">
-    <h2 class="mb-4 text-lg font-semibold md:text-xl">Nerve 归还工单查询</h2>
+    <h2 class="mb-4 text-lg font-semibold md:text-xl">Nerve Refund Tickets</h2>
     <form class="toolbar" @submit.prevent="search">
       <label class="field">
-        <span>Nerve 地址</span>
-        <input v-model="qAddress" placeholder="锁箱转入发送方" autocomplete="off" />
+        <span>Nerve Address</span>
+        <input v-model="qAddress" placeholder="Sender address of the lockbox transfer" autocomplete="off" />
       </label>
       <label class="field">
-        <span>Nerve hash</span>
-        <input v-model="qHash" placeholder="转入 hash 或关单 hash" autocomplete="off" />
+        <span>Nerve Hash</span>
+        <input v-model="qHash" placeholder="Transfer hash or closing hash" autocomplete="off" />
       </label>
       <label class="field narrow">
-        <span>状态</span>
+        <span>Status</span>
         <select v-model="filterStatus">
-          <option value="">全部</option>
-          <option value="PENDING">待审</option>
-          <option value="PROCESSING">处理中</option>
-          <option value="PAID">已付</option>
-          <option value="REJECTED">驳回</option>
+          <option value="">All</option>
+          <option value="PENDING">Pending</option>
+          <option value="PROCESSING">Processing</option>
+          <option value="PAID">Paid</option>
+          <option value="REJECTED">Rejected</option>
         </select>
       </label>
       <div class="toolbar-actions">
-        <button type="submit" class="btn" :disabled="loading">查询</button>
-        <button type="button" class="btn secondary" :disabled="loading" @click="reset">重置</button>
+        <button type="submit" class="btn" :disabled="loading">Search</button>
+        <button type="button" class="btn secondary" :disabled="loading" @click="reset">Reset</button>
       </div>
     </form>
     <p v-if="error" class="error mb-3">{{ error }}</p>
@@ -31,22 +31,22 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>状态</th>
-            <th>资产</th>
-            <th>目标网络</th>
-            <th>金额</th>
-            <th>发送方</th>
-            <th>Nerve hash</th>
-            <th>收款</th>
+            <th>Status</th>
+            <th>Asset</th>
+            <th>Target Network</th>
+            <th>Amount</th>
+            <th>Sender</th>
+            <th>Nerve Hash</th>
+            <th>Recipient</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="loading">
-            <td colspan="9" class="empty">加载中...</td>
+            <td colspan="9" class="empty">Loading...</td>
           </tr>
           <tr v-else-if="!rows.length">
-            <td colspan="9" class="empty">无匹配工单</td>
+            <td colspan="9" class="empty">No matching tickets</td>
           </tr>
           <template v-else>
             <tr v-for="t in rows" :key="t.id">
@@ -61,7 +61,7 @@
               <td class="mono">{{ t.fromAddress }}</td>
               <td class="mono">{{ t.nerveTxHash }}</td>
               <td class="mono nowrap">{{ t.payoutAddress || '' }}</td>
-              <td><button class="btn" @click="openDetail(t.id)">打开</button></td>
+              <td><button class="btn" @click="openDetail(t.id)">View</button></td>
             </tr>
           </template>
         </tbody>
@@ -72,70 +72,70 @@
       <div class="modal" role="dialog" aria-modal="true">
         <div class="modal-head">
           <h3>
-            工单 #{{ current.id }}
+            Ticket #{{ current.id }}
             <span class="status" :class="statusClass(current.status)">{{ current.status }}</span>
           </h3>
-          <button class="btn secondary" @click="current = null">关闭</button>
+          <button class="btn secondary" @click="current = null">Close</button>
         </div>
         <dl class="kv">
           <div>
-            <dt>Nerve hash</dt>
+            <dt>Nerve Hash</dt>
             <dd class="mono">{{ current.nerveTxHash }}</dd>
           </div>
           <div>
-            <dt>Nerve 资产</dt>
+            <dt>Nerve Asset</dt>
             <dd class="inline-gap">
               <span>{{ current.symbol || '-' }}</span>
               <span class="mono">{{ current.assetKey }}</span>
               <span class="muted">{{ current.assetChainName }}</span>
-              <span>金额 {{ current.amountDisplay || current.amount }}</span>
+              <span>Amount {{ current.amountDisplay || current.amount }}</span>
             </dd>
           </div>
           <div>
-            <dt>手续费 / 实际回款</dt>
+            <dt>Fee / Net Refund</dt>
             <dd>
-              手续费 {{ current.feeRatePercent || 0 }}%
-              <span class="muted">扣除 {{ current.feeAmountDisplay || '0' }}</span>
+              Fee {{ current.feeRatePercent || 0 }}%
+              <span class="muted">Deducted {{ current.feeAmountDisplay || '0' }}</span>
               <br />
-              实际应回款 {{ current.netAmountDisplay || current.amountDisplay || current.amount }}
+              Net refund {{ current.netAmountDisplay || current.amountDisplay || current.amount }}
             </dd>
           </div>
           <div>
-            <dt>交易时间</dt>
+            <dt>Transaction Time</dt>
             <dd>{{ formatDateTime(current.txTime) }}</dd>
           </div>
           <div>
-            <dt>发送方</dt>
+            <dt>Sender</dt>
             <dd class="mono">{{ current.fromAddress }}</dd>
           </div>
           <div>
-            <dt>目标网络</dt>
+            <dt>Target Network</dt>
             <dd>{{ payoutChainLabel(current) }}</dd>
           </div>
           <div>
-            <dt>回款 token</dt>
+            <dt>Refund Token</dt>
             <dd>
               {{ current.payoutTokenSymbol || current.symbol || '-' }}
-              精度 {{ current.payoutTokenDecimals ?? current.decimals ?? '-' }}
+              Decimals {{ current.payoutTokenDecimals ?? current.decimals ?? '-' }}
               <br />
-              <span class="mono">{{ current.payoutTokenAddress || '原生资产（无合约）' }}</span>
+              <span class="mono">{{ current.payoutTokenAddress || 'Native asset (no contract)' }}</span>
             </dd>
           </div>
           <div>
-            <dt>收款</dt>
+            <dt>Recipient</dt>
             <dd class="mono">{{ current.payoutAddress || '-' }}</dd>
           </div>
           <div v-if="current.payoutTxHash">
-            <dt>归还交易 hash</dt>
+            <dt>Refund Tx Hash</dt>
             <dd class="mono">{{ current.payoutTxHash }}</dd>
           </div>
           <div v-if="current.busTxHash">
-            <dt>Nerve 关单交易</dt>
+            <dt>Nerve Closing Tx</dt>
             <dd class="mono">{{ current.busTxHash }}</dd>
           </div>
         </dl>
-        <p v-if="current.noRoute" class="error mt-3">无映射，暂不能处理</p>
-        <p v-if="current.rejectReason" class="mt-3">驳回原因：{{ current.rejectReason }}</p>
+        <p v-if="current.noRoute" class="error mt-3">No asset route configured; this ticket cannot be processed yet</p>
+        <p v-if="current.rejectReason" class="mt-3">Reject reason: {{ current.rejectReason }}</p>
       </div>
     </div>
   </div>
@@ -172,7 +172,7 @@ async function search() {
     tickets.value = await getRefundTickets(qAddress.value, qHash.value);
   } catch (e) {
     tickets.value = [];
-    error.value = (e as Error).message || '查询失败';
+    error.value = errorText(e);
   } finally {
     loading.value = false;
   }
@@ -190,8 +190,14 @@ async function openDetail(id: number) {
   try {
     current.value = await getRefundTicket(id);
   } catch (e) {
-    error.value = (e as Error).message || '查询失败';
+    error.value = errorText(e);
   }
+}
+
+function errorText(e: unknown) {
+  const message = (e as Error)?.message || '';
+  // Refund desk errors are in Chinese; show a generic English message instead.
+  return !message || /[^\x00-\x7F]/.test(message) ? 'Query failed, please try again later' : message;
 }
 
 function statusClass(status: string) {
@@ -279,6 +285,7 @@ function formatDateTime(value?: string) {
 }
 table {
   width: 100%;
+  min-width: 1180px;
   border-collapse: collapse;
   font-size: 12px;
   th,
