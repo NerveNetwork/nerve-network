@@ -155,12 +155,10 @@ async function getUserLiquidity() {
 }
 
 function toggleDetail(item: LiquidityItem) {
-  for (let liquidityItem of liquidityList.value) {
-    if (item.amount === liquidityItem.amount) {
-      item.showDetail = !item.showDetail;
-    } else {
-      liquidityItem.showDetail = false;
-    }
+  const next = !item.showDetail;
+  for (const liquidityItem of liquidityList.value) {
+    liquidityItem.showDetail =
+      next && liquidityItem.pairAddress === item.pairAddress;
   }
 }
 
