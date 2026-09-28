@@ -29,6 +29,7 @@ const Mint = () => import('@/views/mint/index.vue')
 const MintDeploy = () => import('@/views/mintDeploy/index.vue')
 const ContractDeploy = () => import('@/views/contract-deploy/index.vue')
 const ListingToken = () => import('@/views/listing-token/index.vue')
+const Refund = () => import('@/views/refund/index.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -137,6 +138,11 @@ const routes: RouteRecordRaw[] = [
     path: '/listing-token',
     name: 'listingToken',
     component: ListingToken
+  },
+  {
+    path: '/refund',
+    name: 'refund',
+    component: Refund
   }
 ]
 
